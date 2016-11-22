@@ -11,7 +11,9 @@ module.exports = function(app, passport) {
      * home page
      */
     app.get('/', function(req, res) {
-        res.render('index.ejs'); // load the index.ejs file
+        res.render('index.ejs', {
+            pageTitle : "Composizione classi"
+        }); // load the index.ejs file
     });
 
 
