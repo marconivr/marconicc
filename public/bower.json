@@ -1,0 +1,14 @@
+{
+  "name": "public",
+  "authors": [
+    "Taioli Francesco <taioli.francesco98@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "dependencies": {
+    "semantic": "semantic-ui#^2.2.6"
+  }
+}
