@@ -1,5 +1,6 @@
-cd server
-
+cd composizione_classi
 npm install
+-----
 
-node server.js
+cd public
+bower install
