@@ -1,5 +1,6 @@
 .pageBackground{
     background-image: url("../img/preview.jpg");
+
 }
 .robotoWhiteTitle{
     font-family: Roboto, sans-serif;
@@ -12,4 +13,8 @@
     margin-top: 2em;
     text-align: center;
     padding: 0.65em 0 0.65em 0.7em;
+}
+
+.column {
+    max-width: 60%;
 }
