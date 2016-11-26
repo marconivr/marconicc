@@ -18,3 +18,7 @@
 .column {
     max-width: 60%;
 }
+
+ body > .grid {
+    height: 100%;
+}

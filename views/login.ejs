@@ -2,7 +2,7 @@
 <body class="pageBackground">
 
         <!--sematic login-->
-        <div class="ui middle aligned center aligned grid">
+        <div class="ui middle aligned center aligned grid ">
             <div class="column">
                 <form class="ui large form" action="/login" method="post" >
                     <div class="ui stacked segment">
@@ -45,6 +45,13 @@
                 </div>
             </div>
         </div>
-
+        <script >
+            $(document).ready(
+                    function () {
+                        $('.ui.checkbox')
+                                .checkbox()
+                        ;
+                    });
+        </script>
 </body>
 </html>
