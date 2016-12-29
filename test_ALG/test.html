@@ -1,0 +1,30 @@
+<!doctype HTML>
+<html>
+    <head>
+        <script src="script.js"></script>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <h1>Composizione classi</h1>
+        Nome: <input id="nome"/>
+        Cognome: <input id="cognome"/>
+        Media: <input type="number" id="media"/>
+        Residenza: <input id="residenza"/>
+        Nazionalita: <input id="nazionalita"/>
+        
+        Codice Fiscale:  <input id="cf"/>
+        <br/><br/>
+        <!--Test di insert:
+        <button onclick="insertAlunno(new Alunno('test','test',8, 'tedesca', 'Verona', '000'))">Test</button>
+        <button onclick="insertAlunno(new Alunno('sergio','franzogna',9, 'italiana', 'Verona', '001'))">Sergio</button>
+        <button onclick="insertAlunno(new Alunno('test2','test2',5, 'tedesca', 'Verona', '002'))">Test2</button>-->
+        <br/><br/>
+        Insert con parametri inseriti:
+        <button onclick="insertAlunno(new Alunno(nome.value, cognome.value, media.value, nazionalita.value, residenza.value, cf.value))">Insert</button>
+        <br/><br/>
+        <button onclick="creaClassi();">Crea classe</button>
+        <button onclick="printClassi();">Print</button>
+        <br/>
+        <div id="print"/>
+    </body>
+</html>
