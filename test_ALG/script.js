@@ -38,6 +38,7 @@ function Alunno(nome, cognome, media, nazionalita, residenza, cf){
  */
 function setImpostazioni(){
     var mediaT = 0;
+    var i ;
     var numStranieriT = 0;
     if (listAlunni.length > 0){
         for(i = 0; i < listAlunni.length; i++){
@@ -125,14 +126,16 @@ function searchAlunno(cf){
  */
 function printClassi(){
     var text = "";
-    alert("indice:" + listClass.length);
+    //alert("indice:" + listClass.length);
+    var i,k;
     for (i = 0; i < listClass.length; i++){
-        alert(listClass[i].nome + " ," + i);
+        //alert(listClass[i].nome + " ," + i);
+        console.log(i);
         text += "<h3>" + listClass[i].nome + "</h3><br/>";
         for (k = 0; k < listClass[i].alunni.length; k++){
             text += listClass[i].alunni[k].nome + " ," +  listClass[i].alunni[k].cognome + " ,cf" + listClass[i].alunni[k].cf + "<br/>";
         }
-        alert("Io di qui ci esco");
+        //alert("Io di qui ci esco");
         text += "media classe: " + mediaClasse(listClass[i]) + "<br/>";
     }
     document.getElementById("print").innerHTML = text;
@@ -145,6 +148,7 @@ function printClassi(){
  */
 function mediaClasse (objclasse){
     var sum = 0.0;
+    var i ;
     for (i = 0; i < objclasse.alunni.length; i++){
         sum += objclasse.alunni[i].media;
     }
@@ -321,9 +325,10 @@ function sortListAlunni(){
 function popolamentoInClassi(){
     sortListAlunni();
     var ind = 0;
-    for (i = 0; i < listClass.length; i++){
-        alert("Indice: " + i);
-        alert(listClass[i].nome);
+    for (  i = 0; i < listClass.length; i++){
+       // alert("Indice: " + i);
+        //alert(listClass[i].nome);
+        console.log(i);
         while (listClass[i].alunni.length <= impostazioni.studXClMax){
             ind = Math.floor(Math.random() * listAlunni.length);
             controlloIdoneità(listAlunni[ind], listClass[i]);

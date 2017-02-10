@@ -27,11 +27,21 @@ app.controller('BasicModel', ['$scope', '$element', 'dragularService', function 
         content: 'Item 8'
     }];
 
+    $scope.items3 = [{
+        content: 'Item 5'
+    }, {
+        content: 'Item 6'
+    }, {
+        content: 'Item 11'
+    }, {
+        content: 'Item 11'
+    }];
+
 
 
     var containers = $element.children().children();
-    dragularService([containers[0],containers[1]],{
-        containersModel: [$scope.items1, $scope.items2]
+    dragularService([containers[0],containers[1],containers[2]],{
+        containersModel: [$scope.items1, $scope.items2,$scope.items3]
     });
 }]);
 
