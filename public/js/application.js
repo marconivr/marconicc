@@ -8,9 +8,9 @@ var app = angular.module('application', ['dragularModule']);
 app.controller('BasicModel', ['$scope', '$element', 'dragularService', function TodoCtrl($scope, $element, dragularService) {
 
     $scope.items1 = [{
-        content: 'Move me, but you can only drop me in one of these containers.'
+        content: '1'
     }, {
-        content: 'If you try to drop me somewhere other than these containers, I\'ll just come back.'
+        content: '2'
     }, {
         content: 'Item 3'
     }, {

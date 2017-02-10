@@ -62,10 +62,12 @@
 
 .containerVertical:nth-child(odd) {
     background-color: rgba(0, 0, 0, 0.2);
+    padding-left: 3px;
 }
 
 .containerVertical:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.4);
+    padding-left: 3px;
 }
 
 .containerVertical pre {

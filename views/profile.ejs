@@ -2,7 +2,7 @@
 
 <body ng-app="application">
 
-<div class='wrapper' ng-controller="BasicModel">
+
     <!-- HTML -->
 
 
@@ -13,6 +13,7 @@
     </div>
     <!--prima-->
     <div class="ui bottom attached tab segment active" data-tab="first">
+        <div class='wrapper' ng-controller="BasicModel">
         <div class='tableRow'>
             <div class='containerVertical'>
                 <div ng-repeat="item in items1">{{item.content}}</div>
@@ -22,6 +23,7 @@
             </div>
 
         </div>
+            </div>
     </div>
     <!--seconda-->
     <div class="ui bottom attached tab segment" data-tab="second">
@@ -42,8 +44,6 @@
 
 
 
-
-</div>
 
 <script>
     $('.menu .item')
