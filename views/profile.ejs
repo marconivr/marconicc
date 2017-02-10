@@ -12,7 +12,7 @@
 
     </div>
     <!--prima-->
-    <div class="ui bottom attached tab segment active" data-tab="first">
+    <div class="ui bottom attached tab segment active" data-tab="first" style="overflow-x:scroll">
         <div class='wrapper' ng-controller="BasicModel">
             <div class='tableRow'>
                 <div class='containerVertical'>
@@ -20,6 +20,12 @@
                 </div>
                 <div class='containerVertical'>
                     <div ng-repeat="item in items2">{{item.content}}</div>
+                </div>
+                <div class='containerVertical'>
+                    <div ng-repeat="item in items3">{{item.content}}</div>
+                </div>
+                <div class='containerVertical'>
+                    <div ng-repeat="item in items3">{{item.content}}</div>
                 </div>
 
             </div>
@@ -31,6 +37,10 @@
                 <div class="container">
                     <div>Items2:
                         <br/>{{items2 | json}}</div>
+                </div>
+                <div class="container">
+                    <div>Items3:
+                        <br/>{{items3 | json}}</div>
                 </div>
             </div>
         </div>
