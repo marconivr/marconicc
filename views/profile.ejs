@@ -14,29 +14,31 @@
     <!--prima-->
     <div class="ui bottom attached tab segment active" data-tab="first">
         <div class='wrapper' ng-controller="BasicModel">
-        <div class='tableRow'>
-            <div class='containerVertical'>
-                <div ng-repeat="item in items1">{{item.content}}</div>
-            </div>
-            <div class='containerVertical'>
-                <div ng-repeat="item in items2">{{item.content}}</div>
-            </div>
+            <div class='tableRow'>
+                <div class='containerVertical'>
+                    <div ng-repeat="item in items1">{{item.content}}</div>
+                </div>
+                <div class='containerVertical'>
+                    <div ng-repeat="item in items2">{{item.content}}</div>
+                </div>
 
-        </div>
             </div>
+            <div class="tableRow">
+                <div class="container">
+                    <div>Items1:
+                        <br/>{{items1 | json}}</div>
+                </div>
+                <div class="container">
+                    <div>Items2:
+                        <br/>{{items2 | json}}</div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <!--seconda-->
     <div class="ui bottom attached tab segment" data-tab="second">
-        <div class="tableRow">
-            <div class="container">
-                <div>Items1:
-                    <br/>{{items1 | json}}</div>
-            </div>
-            <div class="container">
-                <div>Items2:
-                    <br/>{{items2 | json}}</div>
-            </div>
-        </div>
+        ##
     </div>
 
 
