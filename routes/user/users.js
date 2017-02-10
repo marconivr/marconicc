@@ -31,12 +31,11 @@ module.exports = function(app, passport) {
      * login post request
      */
     app.post('/login', passport.authenticate('local-login', {
-            successRedirect : '/profile', // redirect to the secure profile section
-            failureRedirect : '/login', // redirect back to the signup page if there is an error
-            failureFlash : true // allow flash messages
+            successRedirect : '/profile',
+            failureRedirect : '/login',
+            failureFlash : true
         }),
-        function(req, res) {
-            console.log("hello");
+        function(req, res) {;
 
             if (req.body.remember) {
                 req.session.cookie.maxAge = 1000 * 60 * 3;
@@ -71,7 +70,8 @@ module.exports = function(app, passport) {
      */
     app.get('/profile', middleware.isLoggedIn, function(req, res) {
         res.render('profile.ejs', {
-            user : req.user // get the user out of session and pass to template
+            user : req.user ,
+            pageTitle : " main "
         });
     });
 
