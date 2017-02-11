@@ -31,7 +31,7 @@ module.exports = function(app, passport) {
      * login post request
      */
     app.post('/login', passport.authenticate('local-login', {
-            successRedirect : '/profile',
+            successRedirect : '/home',
             failureRedirect : '/login',
             failureFlash : true
         }),
@@ -59,7 +59,7 @@ module.exports = function(app, passport) {
      * registration post request
      */
     app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect : '/profile', // redirect to the secure profile section
+        successRedirect : '/home', // redirect to the secure profile section
         failureRedirect : '/signup', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }));
@@ -68,8 +68,8 @@ module.exports = function(app, passport) {
     /**
      * profile -> if is logged
      */
-    app.get('/profile', middleware.isLoggedIn, function(req, res) {
-        res.render('profile.ejs', {
+    app.get('/home', middleware.isLoggedIn, function(req, res) {
+        res.render('home.ejs', {
             user : req.user ,
             pageTitle : " main "
         });
