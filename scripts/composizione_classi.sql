@@ -379,7 +379,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`) VALUES
-(1, '16392', '$2a$10$3M0dV7GC34Vjw5mi.24kOeTGEIQxb9n5/vPhmzRa/oOpWsxOB9F12');
+(1, 'admin', '$2a$10$3M0dV7GC34Vjw5mi.24kOeTGEIQxb9n5/vPhmzRa/oOpWsxOB9F12');
 
 --
 -- Indici per le tabelle scaricate
