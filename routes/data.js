@@ -4,6 +4,7 @@
  */
 
 
+var query = require('./../query/query.js');
 
 var csv = require("csv");
 var middleware = require ('./middleware/middleware');
@@ -12,11 +13,8 @@ module.exports = function (app,passport,upload) {
 
 
     app.post('/upload-csv', upload.single('csv') , middleware.isLoggedIn ,function(req, res){
-        var data = req.file;
 
-        //information about data uploaded
-        console.log(data);
-
+        var data = req.file; //information about data uploaded (post method)
 
         csv().from.path(data.path,{
             delimiter: ";",
@@ -25,7 +23,7 @@ module.exports = function (app,passport,upload) {
 
         .on("record",function (row,index) {
 
-            console.log(row);
+            query.insertRecordFromCSV(row);
 
         }).on("end",function () {
 

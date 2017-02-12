@@ -17,12 +17,30 @@ connection.query('USE ' + dbconfig.database);
 module.exports = {
 
 
-    //test method
-    getUsersInformations:function getUsersInformations(){
-        connection.query("SELECT * FROM users WHERE id = ? ",[id], function(err, rows){
-            done(err, rows[0]);
-        });
+    insertRecordFromCSV:function (arrayRow) {
 
+        var tableName = 'alunni';
+
+        var cognome = arrayRow[0];
+        var nome = arrayRow[1];
+        var cf = arrayRow[2];
+        var sesso = arrayRow[3];
+        var dataDiNascita = arrayRow[4];
+        var statoRichiesta = arrayRow[5];
+        var cap = arrayRow[6];
+        var indirizzo = arrayRow[7];
+        var annoScolastico = arrayRow[8];
+        var anno = arrayRow[9];
+        var codice_cat = arrayRow[10];
+        var media_voto = arrayRow[11];
+
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",[cognome,nome,cf,sesso,dataDiNascita,statoRichiesta,cap,indirizzo,annoScolastico,anno,codice_cat,media_voto],function (err, row) {
+            if (err){
+                console.log(err);
+            }else {
+                console.log("INSERITO CORRETTAMENTE");
+            }
+        });
     }
 
 
