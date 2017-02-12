@@ -38,6 +38,18 @@ module.exports = function (app,passport,upload) {
 
 
 
+    app.get('/studenti-prima-json', middleware.isLoggedIn ,function(req, res){
+
+        query.getStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        });
+    });
+
+
+
 }
 
 

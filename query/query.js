@@ -16,7 +16,9 @@ connection.query('USE ' + dbconfig.database);
 
 module.exports = {
 
-
+    /*
+     * Function for insert students into db having an array of data
+     */
     insertRecordFromCSV:function (arrayRow) {
 
         var tableName = 'alunni';
@@ -33,12 +35,26 @@ module.exports = {
         var anno = arrayRow[9];
         var codice_cat = arrayRow[10];
         var media_voto = arrayRow[11];
+        var classe_futura = arrayRow[12];
 
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",[cognome,nome,cf,sesso,dataDiNascita,statoRichiesta,cap,indirizzo,annoScolastico,anno,codice_cat,media_voto],function (err, row) {
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",[cognome,nome,cf,sesso,dataDiNascita,statoRichiesta,cap,indirizzo,annoScolastico,anno,codice_cat,media_voto,classe_futura],function (err, row) {
             if (err){
                 console.log(err);
             }else {
                 console.log("INSERITO CORRETTAMENTE");
+            }
+        });
+    }
+
+    ,
+
+    getStudentiPrima:function (callback) {
+
+        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA'",function (err, rows) {
+            if (err){
+                console.log('error');
+            }else {
+               callback(err,rows);
             }
         });
     }
