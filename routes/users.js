@@ -2,7 +2,7 @@
  * Created by matti on 10/11/2016.
  */
 
-middleware = require ('../middleware');
+var middleware = require ('./middleware/middleware');
 
 
 module.exports = function(app, passport) {

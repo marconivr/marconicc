@@ -28,7 +28,13 @@
     <a class="item" data-tab="second">Terze</a>
 </div>
 
-<!-- tabs 'prima'-->
+    <form method="post" enctype="multipart/form-data" action="/upload-csv">
+        <input type="file" name="csv">
+        <input type="submit">
+    </form>
+
+
+    <!-- tabs 'prima'-->
 <div class="ui bottom attached tab segment active" data-tab="first" style="overflow-x:scroll">
     <!--wrapper per gli items-->
     <div class='wrapper' ng-controller="BasicModel">
@@ -70,14 +76,14 @@
 </div>
 </div>
 
+
+
 <!--<script>-->
     <!--$('.menu .item').tab();-->
 <!--//</script>-->
     <script>
         $('.ui.sidebar')
-                .sidebar('toggle')
-
-        ;
+                .sidebar('toggle');
     </script>
 
 <script>
@@ -97,7 +103,6 @@
 //        $menu
 //    });
 </script>
-</div>
 </body>
 
 </html>
