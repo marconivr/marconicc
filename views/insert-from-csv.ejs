@@ -1,0 +1,13 @@
+<% include header %>
+<body>
+
+<% include sidebar-start.ejs %>
+    <div class="ui raised very padded text container segment">
+        <h2 class="ui header">Inserisci studenti da un csv</h2>
+
+        <form method="post" enctype="multipart/form-data" action="/upload-csv">
+            <input type="file" name="csv">
+            <input type="submit">
+        </form>
+    </div>
+<% include sidebar-stop.ejs%>

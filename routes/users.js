@@ -84,4 +84,18 @@ module.exports = function(app, passport) {
         res.redirect('/');
     });
 
+
+    app.get('/insert-from-csv',function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('insert-from-csv.ejs', {
+            pageTitle : " main "
+        });
+    });
+
+    app.get('/example-page',function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('example.ejs', {
+            pageTitle : " example "
+        });
+    });
+
+
 };
