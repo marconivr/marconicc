@@ -91,7 +91,7 @@ module.exports = function(app, passport) {
         });
     });
 
-    app.get('/example-page',function (req, res) { // render the page and pass in any flash data if it exists
+    app.get('/example-page', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('example.ejs', {
             pageTitle : " example "
         });
