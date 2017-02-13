@@ -59,5 +59,36 @@ module.exports = {
         });
     }
 
+    ,
+
+    getNumberGirl: function (callback, classe) {
+
+        connection.query("SELECT count(*) girls from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F'",function (err, rows) {
+            if (err){
+                console.log('MySQL error');
+            }else {
+                callback(err,rows);
+            }
+        });
+    }
+
+    ,
+
+    getNumberSameResidence: function (callback, classe, cap, catasto){
+        var qry = "SELECT count(*) residences from alunni WHERE classe_futura = '" + classe + "' AND cap_provenienza = " + cap;
+
+        if (catasto != "*") {
+            qry += " AND catasto = '" + catasto +"'";
+        }
+
+        connection.query(qry, function (err, rows) {
+            if (err){
+                console.log('MySQL error');
+            }else {
+                callback(err,rows);
+            }
+        });
+    }
+
 
 };
