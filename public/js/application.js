@@ -57,12 +57,52 @@ app.controller('BasicModel', ['$scope', '$element', 'dragularService', function 
         content: 'Item 11'
     }];
 
+    $scope.items6 = [{
+        content: 'Item 5'
+    }, {
+        content: 'Item 6'
+    }, {
+        content: 'Item 11'
+    }, {
+        content: 'Item 11'
+    }];
+
+    $scope.items7 = [{
+        content: 'Item 5'
+    }, {
+        content: 'Item 6'
+    }, {
+        content: 'Item 11'
+    }, {
+        content: 'Item 11'
+    }];
+
+    $scope.items8 = [{
+        content: 'Item 5'
+    }, {
+        content: 'Item 6'
+    }, {
+        content: 'Item 11'
+    }, {
+        content: 'Item 11'
+    }];
+
+    $scope.items9 = [{
+        content: 'Item 5'
+    }, {
+        content: 'Item 6'
+    }, {
+        content: 'Item 11'
+    }, {
+        content: 'Item 11'
+    }];
+
 
 
 
     var containers = $element.children().children();
-    dragularService([containers[0],containers[1],containers[2],containers[3],containers[4]],{
-        containersModel: [$scope.items1, $scope.items2,$scope.items3,$scope.items4,$scope.items5]
+    dragularService([containers[0],containers[1],containers[2],containers[3],containers[4],containers[5],containers[6],containers[7],containers[8],containers[9]],{
+        containersModel: [$scope.items1, $scope.items2,$scope.items3,$scope.items4,$scope.items5,$scope.items6,$scope.items7,$scope.items8,$scope.items9]
     });
 }]);
 
