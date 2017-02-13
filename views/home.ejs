@@ -1,54 +1,14 @@
 <% include header %>
 
-<body ng-app="application">
+<body >
 <% include sidebar-start.ejs %>
-<!--tabs-->
-<div class="ui top attached tabular menu">
-    <a class="item active" data-tab="first">Prima</a>
-    <a class="item" data-tab="second">Terze</a>
-</div>
 
 
 
 
-    <!-- tabs 'prima'-->
-<div class="ui bottom attached tab segment active" data-tab="first" style="overflow-x:scroll">
-    <!--wrapper per gli items-->
-    <div class='wrapper' ng-controller="BasicModel">
-        <div class='tableRow'>
-            <div class='containerVertical'>
-                <div ng-repeat="item in items1">{{item.content}}</div>
-            </div>
-            <div class='containerVertical'>
-                <div ng-repeat="item in items2">{{item.content}}</div>
-            </div>
-            <div class='containerVertical'>
-                <div ng-repeat="item in items3">{{item.content}}</div>
-            </div>
-            <div class='containerVertical'>
-                <div ng-repeat="item in items3">{{item.content}}</div>
-            </div>
+<p>
+dd
+    <p>
 
-        </div>
-        <div class="tableRow">
-            <div class="container">
-                <div>Items1:
-                    <br/>{{items1 | json}}</div>
-            </div>
-            <div class="container">
-                <div>Items2:
-                    <br/>{{items2 | json}}</div>
-            </div>
-            <div class="container">
-                <div>Items3:
-                    <br/>{{items3 | json}}</div>
-            </div>
-        </div>
-    </div>
 
-</div>
-<!-- tab 'seconda'-->
-<div class="ui bottom attached tab segment" data-tab="second">
-    ##
-</div>
 <% include sidebar-stop.ejs%>
