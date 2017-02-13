@@ -44,10 +44,7 @@ module.exports = {
                 console.log("INSERITO CORRETTAMENTE");
             }
         });
-    }
-
-    ,
-
+    },
     getStudentiPrima:function (callback) {
 
         connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA'",function (err, rows) {
