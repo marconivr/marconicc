@@ -2,7 +2,7 @@
  * Created by matti on 10/11/2016.
  */
 
-middleware = require ('../middleware');
+var middleware = require ('./middleware/middleware');
 
 
 module.exports = function(app, passport) {
@@ -83,5 +83,19 @@ module.exports = function(app, passport) {
         req.logout();
         res.redirect('/');
     });
+
+
+    app.get('/insert-from-csv',function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('insert-from-csv.ejs', {
+            pageTitle : " main "
+        });
+    });
+
+    app.get('/example-page', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('example.ejs', {
+            pageTitle : " example "
+        });
+    });
+
 
 };

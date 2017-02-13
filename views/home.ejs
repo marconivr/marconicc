@@ -1,85 +1,14 @@
 <% include header %>
 
-<body ng-app="application">
-
-
-<div class="example">
-
-    <div class="ui inverted left vertical sidebar menu" id="left-menu">
-        <a class="item">Home</a>
-        <a class="item">Option 2</a>
-    </div>
-
-
-    <div class="pusher">
-
-        <div class="ui sticky menu" id="top-menu">
-            <a class="item mobile-button">Menu</a>
-        </div>
-
-            <!--prima-->
-            <div class="ui bottom attached tab segment active" data-tab="first" style="overflow-x:scroll">
-                <div class='wrapper' ng-controller="BasicModel">
-                    <div class='tableRow'>
-                        <div class='containerVertical'>
-                            <div ng-repeat="item in items1">{{item.content}}</div>
-                        </div>
-                        <div class='containerVertical'>
-                            <div ng-repeat="item in items2">{{item.content}}</div>
-                        </div>
-                        <div class='containerVertical'>
-                            <div ng-repeat="item in items3">{{item.content}}</div>
-                        </div>
-                        <div class='containerVertical'>
-                            <div ng-repeat="item in items3">{{item.content}}</div>
-                        </div>
-
-                    </div>
-                    <div class="tableRow">
-                        <div class="container">
-                            <div><b>Items1:</b>
-                                <br/>{{items1 | json}}</div>
-                        </div>
-                        <br>
-                        <div class="container">
-                            <div><b>Items2:</b>
-                                <br/>{{items2 | json}}</div>
-                        </div>
-                        <br>
-                        <div class="container">
-                            <div><b>Items3:</b>
-                                <br/>{{items3 | json}}</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <!--seconda-->
-            <div class="ui bottom attached tab segment" data-tab="second">
-                ##
-            </div>
-        </div>
-
-
-</div>
+<body >
+<% include sidebar-start.ejs %>
 
 
 
 
+<p>
+dd
+    <p>
 
 
-<script>
-    $('.menu .item').tab();
-
-
-    $('#left-menu').first()
-        .sidebar('setting', {transition: 'push'})
-        .sidebar('attach events', '.mobile-button');
-
-    $('#top-menu')
-        .sticky({
-        });
-</script>
-</body>
-
-</html>
+<% include sidebar-stop.ejs%>

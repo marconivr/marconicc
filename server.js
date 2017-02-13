@@ -8,7 +8,8 @@ var app = express();
 var port = process.env.PORT || 8080;
 var passport = require('passport');
 var flash = require('connect-flash');
-
+var multer = require('multer');
+var upload = multer({ dest: 'files/' });
 
 
 
@@ -36,9 +37,11 @@ app.use(flash());
 app.use(express.static(__dirname + '/public'));
 
 
-// routes ======================================================================
-require('./routes/user/users.js')(app, passport); // import routes users
 
+// routes ======================================================================
+require('./routes/users.js')(app, passport); // import routes users
+require('./routes/home.js')(app, passport);
+require('./routes/data.js')(app, passport,upload);
 
 
 
