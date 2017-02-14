@@ -421,3 +421,18 @@ ALTER TABLE `users`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+-- Struttura della tabella `impostazioni`
+--
+
+CREATE TABLE `impostazioni` (
+  `id` INT PRIMARY KEY,
+  `alunni` INT,
+  `femmine` INT,
+  `stranieri` INT,
+  `stessa_provenienza` INT,
+  `media_min` FLOAT,
+  `media_max` FLOAT,
+  `bocciati` INT
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
