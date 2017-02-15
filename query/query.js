@@ -44,10 +44,7 @@ module.exports = {
                 console.log("INSERITO CORRETTAMENTE");
             }
         });
-    }
-
-    ,
-
+    },
     getStudentiPrima:function (callback) {
 
         connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA'",function (err, rows) {
@@ -55,6 +52,37 @@ module.exports = {
                 console.log('error');
             }else {
                callback(err,rows);
+            }
+        });
+    }
+
+    ,
+
+    getNumberGirl: function (callback, classe) {
+
+        connection.query("SELECT count(*) girls from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F'",function (err, rows) {
+            if (err){
+                console.log('MySQL error');
+            }else {
+                callback(err,rows);
+            }
+        });
+    }
+
+    ,
+
+    getNumberSameResidence: function (callback, classe, cap, catasto){
+        var qry = "SELECT count(*) residences from alunni WHERE classe_futura = '" + classe + "' AND cap_provenienza = " + cap;
+
+        if (catasto != "*") {
+            qry += " AND catasto = '" + catasto +"'";
+        }
+
+        connection.query(qry, function (err, rows) {
+            if (err){
+                console.log('MySQL error');
+            }else {
+                callback(err,rows);
             }
         });
     }

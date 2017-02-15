@@ -3,6 +3,7 @@
  */
 
 var middleware = require ('./middleware/middleware');
+var query = require('./../query/query.js');
 
 module.exports = function () {
 

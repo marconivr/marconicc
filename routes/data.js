@@ -48,8 +48,31 @@ module.exports = function (app,passport,upload) {
         });
     });
 
+    /**
+     * Per visualizzare il numero di ragazze di prima
+    */
+    app.get('/numero-ragazze-prima', middleware.isLoggedIn ,function(req, res){
 
+        query.getNumberGirl(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, "PRIMA");
+    });
 
+    /**
+     * Per visualizzare il numero di ragazzi stesso cap con * altrimenti si specifica il codice catastale
+     */
+    app.get('/numero-stesso-cap', middleware.isLoggedIn ,function(req, res){
+
+        query.getNumberSameResidence(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, "PRIMA", 37030, "*");
+    });
 }
 
 
