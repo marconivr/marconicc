@@ -5,34 +5,51 @@
 
 
 
-<table id="example" class="ui celled table">
+<table id="example" class="ui celled table" cellspacing="0" width="100%">
     <thead>
-        <tr>
-            <th>cognome</th>
-            <th>nome</th>
-            <th>cf</th>
-            <th>sesso</th>
-            <th>data_di_nascita</th>
-            <th>stato</th>
-            <th>cap_provenienza</th>
-            <th>anno_scolastico</th>
-            <th>anno</th>
-            <th>cod_cat</th>
-            <th>media_voti</th>
-            <th>classe_futura</th>
-        </tr>
+    <tr>
+        <th>cognome</th>
+        <th>nome</th>
+        <th>cf</th>
+        <th>sesso</th>
+        <th>data_di_nascita</th>
+        <th>stato</th>
+        <th>cap_provenienza</th>
+        <th>scelta_indirizzo</th>
+        <th>anno_scolastico</th>
+        <th>anno</th>
+        <th>cod_cat</th>
+        <th>media_voti</th>
+        <th>classe_futura</th>
+    </tr>
     </thead>
-</table>
+    <tfoot>
+    <tr>
+        <th>cognome</th>
+        <th>nome</th>
+        <th>cf</th>
+        <th>sesso</th>
+        <th>data_di_nascita</th>
+        <th>stato</th>
+        <th>cap_provenienza</th>
+        <th>scelta_indirizzo</th>
+        <th>anno_scolastico</th>
+        <th>anno</th>
+        <th>cod_cat</th>
+        <th>media_voti</th>
+        <th>classe_futura</th>
 
+    </tr>
+    </tfoot>
+</table>
 <% include sidebar-stop.ejs%>
 <!--personal script for specific page -->
 <script>
 
-  <!--https://datatables.net/extensions/buttons/examples/styling/semanticui.html-->
+    <!--https://datatables.net/extensions/buttons/examples/styling/semanticui.html-->
+
     $(document).ready(function() {
-        var table = $('#example').DataTable( {
-            lengthChange: false,
-            buttons: [ 'copy', 'excel', 'pdf', 'colvis' ],
+        $('#example').DataTable( {
             "processing": true,
             "ajax": {
                 "url": "studenti-prima-json",
@@ -46,6 +63,7 @@
                 { "data": "data_di_nascita" },
                 { "data": "stato" },
                 { "data": "cap_provenienza" },
+                { "data": "scelta_indirizzo" },
                 { "data": "anno_scolastico" },
                 { "data": "anno" },
                 { "data": "cod_cat" },
@@ -53,9 +71,6 @@
                 { "data": "classe_futura" }
             ]
         } );
-
-        table.buttons().container()
-            .appendTo( $('div.eight.column:eq(0)', table.table().container()) );
     } );
 </script>
 <!--close html tag-->
