@@ -436,3 +436,4 @@ CREATE TABLE `impostazioni` (
   `media_max` FLOAT,
   `bocciati` INT
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
