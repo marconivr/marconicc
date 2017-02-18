@@ -13,8 +13,8 @@ var connection = mysql.createConnection(dbconfig.connection);
 
 connection.query('USE ' + dbconfig.database);
 
-//for query
-var anno_sc = "SELECT CONCAT_WS('-', YEAR(CURDATE()), YEAR(DATE_ADD(CURDATE(), INTERVAL 1 YEAR))) AS anno_scolastico;";
+//for select strudents of this year
+var anno_sc = "SELECT CONCAT_WS('-', YEAR(CURDATE()), YEAR(DATE_ADD(CURDATE(), INTERVAL 1 YEAR))) AS anno_scolastico";
 
 
 module.exports = {
@@ -80,7 +80,7 @@ module.exports = {
         if (catasto != "*") {
             qry += " AND catasto = '" + catasto +"'";
         }
-        qry +=  "AND anno_scolastico = (" + anno_sc + ")"
+        qry +=  " AND anno_scolastico = (" + anno_sc + ")"
         connection.query(qry, function (err, rows) {
             if (err){
                 console.log('MySQL error');
