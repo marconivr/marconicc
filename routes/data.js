@@ -31,7 +31,8 @@ module.exports = function (app,passport,upload) {
 
         }).on("error",function (error) {
 
-            console.log(error.message);
+            console.error(error.message);
+            throw 'error when i try to upload data in db';
 
         })
     });

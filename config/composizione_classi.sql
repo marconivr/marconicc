@@ -1,6 +1,29 @@
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+-- phpMyAdmin SQL Dump
+-- version 4.5.1
+-- http://www.phpmyadmin.net
+--
+-- Host: 127.0.0.1
+-- Creato il: Feb 18, 2017 alle 19:22
+-- Versione del server: 10.1.13-MariaDB
+-- Versione PHP: 7.0.5
 
-CREATE TABLE IF NOT EXISTS `alunni` (
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `composizione_classi`
+--
+CREATE DATABASE IF NOT EXISTS `composizione_classi` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `composizione_classi`;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `alunni`
+--
+
+DROP TABLE IF EXISTS `alunni`;
+CREATE TABLE `alunni` (
   `cognome` varchar(255) NOT NULL,
   `nome` varchar(255) NOT NULL,
   `cf` char(16) NOT NULL,
@@ -13,9 +36,12 @@ CREATE TABLE IF NOT EXISTS `alunni` (
   `anno` varchar(4) NOT NULL,
   `cod_cat` varchar(10) NOT NULL,
   `media_voti` double NOT NULL,
-  `classe_futura` varchar(50) NOT NULL,
-  PRIMARY KEY (`cf`)
+  `classe_futura` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dump dei dati per la tabella `alunni`
+--
 
 INSERT INTO `alunni` (`cognome`, `nome`, `cf`, `sesso`, `data_di_nascita`, `stato`, `cap_provenienza`, `scelta_indirizzo`, `anno_scolastico`, `anno`, `cod_cat`, `media_voti`, `classe_futura`) VALUES
 ('BABIC', 'STEFAN', 'BBCSFN03E08L174F', 'M', '0000-00-00', 'INOLTRATA', 37014, 'PR-BIENNIO COMUNE - INFORMATICA E TELECOMUNICAZION', '2017-2018', '2018', 'C225', 6, 'PRIMA'),
@@ -322,34 +348,137 @@ INSERT INTO `alunni` (`cognome`, `nome`, `cf`, `sesso`, `data_di_nascita`, `stat
 ('ZORZI', 'IRENE', 'ZRZRNI03E47B296Q', 'F', '0000-00-00', 'INOLTRATA', 37068, 'PR-BIENNIO COMUNE - INFORMATICA E TELECOMUNICAZION', '2017-2018', '2018', 'L869', 8, 'PRIMA'),
 ('ZATTONI', 'MATTIA', 'ZTTMTT03D16F861C', 'M', '0000-00-00', 'INOLTRATA', 37131, 'PR-BIENNIO COMUNE - INFORMATICA E TELECOMUNICAZION', '2017-2018', '2018', 'L781', 10, 'PRIMA');
 
-CREATE TABLE IF NOT EXISTS `amici` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `matricola_1` int(5) NOT NULL,
-  `matricola_2` int(5) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+-- --------------------------------------------------------
 
+--
+-- Struttura della tabella `amici`
+--
 
-CREATE TABLE IF NOT EXISTS `impostazioni` (
+DROP TABLE IF EXISTS `amici`;
+CREATE TABLE `amici` (
   `id` int(11) NOT NULL,
-  `alunni` int(11) DEFAULT NULL,
-  `femmine` int(11) DEFAULT NULL,
-  `stranieri` int(11) DEFAULT NULL,
+  `matricola_1` int(5) NOT NULL,
+  `matricola_2` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `impostazioni`
+--
+
+DROP TABLE IF EXISTS `impostazioni`;
+CREATE TABLE `impostazioni` (
+  `id` int(11) NOT NULL,
+  `max_alunni` int(11) DEFAULT NULL,
+  `max_femmine` int(11) DEFAULT NULL,
+  `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
   `media_min` float DEFAULT NULL,
   `media_max` float DEFAULT NULL,
   `bocciati` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `anno_scolastico` varchar(25) NOT NULL,
+  `descrizione` varchar(255) NOT NULL,
+  `classe_futura` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+--
+-- Struttura della tabella `priorita_scelta`
+--
+
+DROP TABLE IF EXISTS `priorita_scelta`;
+CREATE TABLE `priorita_scelta` (
+  `id` int(11) NOT NULL,
+  `scelta` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dump dei dati per la tabella `priorita_scelta`
+--
+
+INSERT INTO `priorita_scelta` (`id`, `scelta`) VALUES
+(1, 'femmine'),
+(2, 'stranieri'),
+(3, 'bocciati'),
+(4, 'alunni'),
+(5, 'stessa_nazionalita'),
+(6, 'media');
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
   `username` varchar(20) NOT NULL,
-  `password` char(60) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+  `password` char(60) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dump dei dati per la tabella `users`
+--
 
 INSERT INTO `users` (`id`, `username`, `password`) VALUES
 (1, 'admin', '$2a$10$3M0dV7GC34Vjw5mi.24kOeTGEIQxb9n5/vPhmzRa/oOpWsxOB9F12'),
-(2, 'root', '$2a$10$Ph6FEDvFVxcZXgD1TL6ufepr5k/LhYecorEy1KmWdNsIVjbHQUFBy');
+(2, 'root', '$2a$10$Ph6FEDvFVxcZXgD1TL6ufepr5k/LhYecorEy1KmWdNsIVjbHQUFBy'),
+(3, 'taioli', '$2a$10$9PyQRGXKKTy0anT6dzynnuLjyY3hesRK3ODYOoYcFVfyr3l/5pxJq');
+
+--
+-- Indici per le tabelle scaricate
+--
+
+--
+-- Indici per le tabelle `alunni`
+--
+ALTER TABLE `alunni`
+  ADD PRIMARY KEY (`cf`,`anno_scolastico`);
+
+--
+-- Indici per le tabelle `amici`
+--
+ALTER TABLE `amici`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indici per le tabelle `impostazioni`
+--
+ALTER TABLE `impostazioni`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indici per le tabelle `priorita_scelta`
+--
+ALTER TABLE `priorita_scelta`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indici per le tabelle `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT per le tabelle scaricate
+--
+
+--
+-- AUTO_INCREMENT per la tabella `amici`
+--
+ALTER TABLE `amici`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT per la tabella `priorita_scelta`
+--
+ALTER TABLE `priorita_scelta`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT per la tabella `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
