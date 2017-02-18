@@ -4,6 +4,8 @@
 <% include sidebar-start.ejs %>
 
 
+<div class="ui two column centered grid">
+    <div class="column">
 
 <table id="example" class="ui celled table" cellspacing="0" width="100%">
     <thead>
@@ -42,6 +44,10 @@
     </tr>
     </tfoot>
 </table>
+
+    </div>
+</div>
+
 <% include sidebar-stop.ejs%>
 <!--personal script for specific page -->
 <script>
@@ -49,12 +55,14 @@
     <!--https://datatables.net/extensions/buttons/examples/styling/semanticui.html-->
 
     $(document).ready(function() {
-        $('#example').DataTable( {
-            "processing": true,
-            "ajax": {
-                "url": "studenti-prima-json",
-                "dataSrc": ""
-            },
+        var table = $('#example').DataTable( {
+            processing:true,
+            lengthChange: false,
+            buttons: [ 'copy', 'excel', 'pdf' ],
+//            "ajax": {
+//                "url": "studenti-prima-json",
+//                "dataSrc": ""
+//            },
             "columns": [
                 { "data": "cognome" },
                 { "data": "nome" },
@@ -71,6 +79,8 @@
                 { "data": "classe_futura" }
             ]
         } );
+        table.buttons().container()
+            .appendTo( $('div.eight.column:eq(0)', table.table().container()) );
     } );
 </script>
 <!--close html tag-->
