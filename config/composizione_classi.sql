@@ -422,7 +422,7 @@ CREATE TABLE `impostazioni` (
   `alunni` INT,
   `femmine` INT,
   `stranieri` INT,
-  `stessa_provenienza` INT,
+  `stessa_residenza` INT,
   `media_min` FLOAT,
   `media_max` FLOAT,
   `bocciati` INT
