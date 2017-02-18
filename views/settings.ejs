@@ -31,79 +31,142 @@
 
 <% include sidebar-start.ejs %>
 
-<!--sematic grid-->
-<div class="ui centered grid">
-    <div class="six wide tablet eight wide computer column">
+<div class="ui internally celled grid">
+    <div class="row">
+        <!--this section represent the relatime data-->
+        <div class="three wide column">
+            <a class="ui teal tag label"> Statistiche RealTime</a>
+            <b>Numero di  classi:</b> <p id="classe-realtime"></p>
+        </div>
+        <div class="ten wide column">
+            <div class="ui centered grid">
+            <div class="six wide tablet ten wide computer column">
+                <!--sematic form-->
+                <form class="ui form">
+                    <h4 class="ui dividing header">Settings</h4>
 
-        <!--sematic form-->
-        <form class="ui form">
-            <h4 class="ui dividing header">Settings</h4>
-
-            <!--sematic fields-->
-            <div class="field">
-                <label>Alunni</label>
-                <input name="settings[alunni]" placeholder="Alunni" type="text">
-            </div>
-            <div class="field">
-                <label>Femmine</label>
-                <input name="settings[femmine]" placeholder="Femmine" type="text">
-            </div>
-            <div class="field">
-                <label>Stranieri</label>
-                <input name="settings[stranieri]" placeholder="Stranieri" type="text">
-            </div>
-            <div class="field">
-                <label>Bocciati</label>
-                <input name="settings[bocciati]" placeholder="Bocciati" type="text">
-            </div>
-            <div class="field">
-                <label>Stessa residenza</label>
-                <input name="settings[residenza]" placeholder="Residenza" type="text">
-            </div>
-            <div class="field">
-                <label>Media</label>
-                <div class="two fields">
+                    <!--sematic fields-->
                     <div class="field">
-                        <input type="text" name="shipping[media-min]" placeholder="Media minima">
+                        <label>Alunni Max</label>
+                        <input name="settings[descrizione]" id="max-number-of-students" placeholder="numero di alunni massimo " type="number" onchange="setDataRealtimeNumberOfStudents()">
                     </div>
-                    <div class="field">
-                        <input type="text" name="shipping[media-max]" placeholder="Media massima">
-                    </div>
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Priorità delle impostazioni</label>
-
-                <!--sematic grid-->
-                <div class="ui equal width grid">
-                    <div class="column">
-                        <div class="containerVertical">
-
-                            <ul id="sortable1" class="connectedSortable">
-                                <li class="ui-state-default">Alunni</li>
-                                <li class="ui-state-default">Femmine</li>
-                                <li class="ui-state-default">Stranieri</li>
-                                <li class="ui-state-default">Bocciati</li>
-                                <li class="ui-state-default">Stessa nazionalità</li>
-                                <li class="ui-state-default">Media</li>
-                            </ul>
-
+                    <label>Classe</label><br>
+                    <div class="ui selection dropdown" id="classe">
+                        <input type="hidden" name="settings[classe_futura]">
+                        <i class="dropdown icon"></i>
+                        <div class="default text" data-value="prima">Prima</div>
+                        <div class="menu">
+                            <div class="item" data-value="prima">Prima</div>
+                            <div class="item" data-value="terza">Terza</div>
                         </div>
                     </div>
-                </div>
+                    <div class="field">
+                        <label>Alunni</label>
+                        <input name="settings[alunni]" placeholder="Alunni" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Femmine</label>
+                        <input name="settings[femmine]" placeholder="Femmine" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Stranieri</label>
+                        <input name="settings[stranieri]" placeholder="Stranieri" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Bocciati</label>
+                        <input name="settings[bocciati]" placeholder="Bocciati" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Stessa residenza</label>
+                        <input name="settings[residenza]" placeholder="Residenza" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Media</label>
+                        <div class="two fields">
+                            <div class="field">
+                                <input type="text" name="shipping[media-min]" placeholder="Media minima">
+                            </div>
+                            <div class="field">
+                                <input type="text" name="shipping[media-max]" placeholder="Media massima">
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="field">
+                        <label>Priorità delle impostazioni</label>
+
+                        <!--sematic grid-->
+                        <div class="ui equal width grid">
+                            <div class="column">
+                                <div class="containerVertical">
+
+                                    <ul id="sortable1" class="connectedSortable">
+                                        <li class="ui-state-default">Alunni</li>
+                                        <li class="ui-state-default">Femmine</li>
+                                        <li class="ui-state-default">Stranieri</li>
+                                        <li class="ui-state-default">Bocciati</li>
+                                        <li class="ui-state-default">Stessa nazionalità</li>
+                                        <li class="ui-state-default">Media</li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--sematic button-->
+                    <div class="ui button" tabindex="0">Send</div>
+                </form>
             </div>
-
-            <!--sematic button-->
-            <div class="ui button" tabindex="0">Send</div>
-        </form>
+                </div>
+        </div>
+        <!--this section represent data in db-->
+        <div class="three wide column">
+            <a class="ui red tag label">Dati Studenti</a><br>
+            <b>Numero studenti prima:</b> <p id="alunni-in-classe-prima"> <%= data[0][0].number%></p>
+        </div>
     </div>
+    <!--<div class="row">-->
+        <!--<div class="three wide column">-->
+           <!--hjhj-->
+        <!--</div>-->
+        <!--<div class="ten wide column">-->
+            <!--hjhj-->
+        <!--</div>-->
+        <!--<div class="three wide column">-->
+            <!--<img>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>
+
 
 
 
 <% include sidebar-stop.ejs%>
 <!--personal script for specific page -->
+
+
+<script>
+    $('.ui.dropdown').dropdown();
+
+</script>
+<script>
+
+
+//this function set the number of student for class
+function setDataRealtimeNumberOfStudents(){
+   var classe = $('#classe').dropdown('get value');
+    if (classe == "prima")
+    {
+        alunniPrima =  $( "#alunni-in-classe-prima" ).text();
+        maxNumberOfAlunni= $("#max-number-of-students").val();
+        $("#classe-realtime").html(Math.floor(alunniPrima/maxNumberOfAlunni))
+
+    }
+}
+</script>
+
+
 <!--close html tag-->
 <% include tag-close.ejs%>

@@ -88,6 +88,17 @@ module.exports = {
                 callback(err,rows);
             }
         });
+    },
+
+    getNumerOfStudentiPrima:function (callback) {
+
+        connection.query("SELECT  DISTINCT COUNT(classe_futura) as number from alunni WHERE classe_futura = 'PRIMA'",function (err, rows) {
+            if (err){
+                console.log('error');
+            }else {
+                callback(err,rows);
+            }
+        });
     }
 
 

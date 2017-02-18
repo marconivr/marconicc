@@ -4,7 +4,7 @@
 
 var middleware = require('./middleware/middleware');
 var query = require('./../query/query.js');
-
+var dataInSettings = [];
 module.exports = function (app, passport) {
 
     /**
@@ -91,10 +91,21 @@ module.exports = function (app, passport) {
     });
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+
+        query.getNumerOfStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results);
+
+        });
         res.render('settings.ejs', {
-            pageTitle: " settings "
+            pageTitle: " settings ",
+            data:dataInSettings
         });
     });
 
-
+      function setValueOfArrayForSettings(rows) {
+         dataInSettings.push(rows);
+    }
 };
