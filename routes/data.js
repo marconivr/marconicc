@@ -74,6 +74,22 @@ module.exports = function (app,passport,upload) {
         }, "PRIMA", 37030, "*");
     });
 
+    /**
+     * Elenco studenti in tabella
+     */
+    app.get('/studenti', middleware.isLoggedIn, function (req, res) {
+        query.getStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.render('studenti.ejs', {
+                    user: req.user,
+                    pageTitle: " Studenti ",
+                    studentsData: results
+                });
+        });
+    });
+
 
 }
 
