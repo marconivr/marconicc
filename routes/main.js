@@ -4,7 +4,7 @@
 
 var middleware = require('./middleware/middleware');
 var query = require('./../query/query.js');
-var dataInSettings = [];
+var dataInSettings = new Object();
 module.exports = function (app, passport) {
 
     /**
@@ -91,21 +91,39 @@ module.exports = function (app, passport) {
     });
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        //var jsonString= JSON.stringify(obj);
 
         query.getNumerOfStudentiPrima(function (err, results) {
             if (err)
                 throw err;
             else
-                setValueOfArrayForSettings(results);
+                setValueOfArrayForSettings(results,"numberOfStudentiPrima");
 
         });
+
+        query.getNumerOfStudentiTerza(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"numberOfStudentiTerza");
+
+        });
+
+        query.getNumberGirl(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"numberOfGirlPrima");
+        }, "PRIMA");
+
         res.render('settings.ejs', {
             pageTitle: " settings ",
-            data:dataInSettings
+            data:JSON.stringify(dataInSettings)
         });
     });
 
-      function setValueOfArrayForSettings(rows) {
-         dataInSettings.push(rows);
+
+      function setValueOfArrayForSettings(rows,key) {
+          dataInSettings[key]= rows[0].result;
     }
 };

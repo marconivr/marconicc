@@ -35,7 +35,7 @@
     <div class="row">
         <!--this section represent the relatime data-->
         <div class="three wide column">
-            <a class="ui teal tag label"> Statistiche RealTime</a>
+            <a class="ui teal tag label"> Statistiche RealTime</a><br>
             <b>Numero di  classi:</b> <p id="classe-realtime"></p>
         </div>
         <div class="ten wide column">
@@ -123,8 +123,33 @@
         </div>
         <!--this section represent data in db-->
         <div class="three wide column">
+
             <a class="ui red tag label">Dati Studenti</a><br>
-            <b>Numero studenti prima:</b> <p id="alunni-in-classe-prima"> <%= data[0][0].number%></p>
+
+            <!--dati max studetni di prima-->
+            <label>Prima</label><br>
+            <div class="ui compact menu">
+                <a class="item">
+                    <i class="student icon"></i> Studenti
+                    <div class="floating ui red label"><p id="alunni-in-classe-prima">
+                            <% var msg = JSON.parse(data) %>
+                            <%= msg.numberOfStudentiPrima %></p></div>
+                </a>
+                <a class="item">
+                    <i class="female icon"></i> Donne
+                    <div class="floating ui teal label"><p id="donne-in-classe-prima">
+                            <% var msg = JSON.parse(data) %>
+                            <%= msg.numberOfGirlPrima %></p></div>
+                </a>
+            </div>
+
+            <br>
+            <!--dati max studenti di terza-->
+            <label>TERZA:</label>
+            <b>Numero studenti Terza:</b> <p id="alunni-in-classe-terza">
+                <% var msg = JSON.parse(data) %>
+                <%= msg.numberOfStudentiTerza %></p>
+
         </div>
     </div>
     <!--<div class="row">-->
@@ -151,9 +176,8 @@
     $('.ui.dropdown').dropdown();
 
 </script>
+
 <script>
-
-
 //this function set the number of student for class
 function setDataRealtimeNumberOfStudents(){
    var classe = $('#classe').dropdown('get value');
