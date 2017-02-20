@@ -13,6 +13,9 @@ var connection = mysql.createConnection(dbconfig.connection);
 
 connection.query('USE ' + dbconfig.database);
 
+//for select strudents of this year
+var anno_sc = "SELECT CONCAT_WS('-', YEAR(CURDATE()), YEAR(DATE_ADD(CURDATE(), INTERVAL 1 YEAR))) AS anno_scolastico";
+
 
 module.exports = {
 
@@ -45,9 +48,12 @@ module.exports = {
             }
         });
     },
+
+    //insertSettings:function
+
     getStudentiPrima:function (callback) {
 
-        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA'",function (err, rows) {
+        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")",function (err, rows) {
             if (err){
                 console.log('error');
             }else {
@@ -60,7 +66,7 @@ module.exports = {
 
     getNumberGirl: function (callback, classe) {
 
-        connection.query("SELECT count(*) girls from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F'",function (err, rows) {
+        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND anno_scolastico = (" + anno_sc + ")",function (err, rows) {
             if (err){
                 console.log('MySQL error');
             }else {
@@ -77,7 +83,7 @@ module.exports = {
         if (catasto != "*") {
             qry += " AND catasto = '" + catasto +"'";
         }
-
+        qry +=  " AND anno_scolastico = (" + anno_sc + ")"
         connection.query(qry, function (err, rows) {
             if (err){
                 console.log('MySQL error');
@@ -85,7 +91,31 @@ module.exports = {
                 callback(err,rows);
             }
         });
+    },
+
+    getNumerOfStudentiPrima:function (callback) {
+
+        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'PRIMA'",function (err, rows) {
+            if (err){
+                console.log('error');
+            }else {
+                callback(err,rows);
+            }
+        });
+    },
+
+    getNumerOfStudentiTerza:function (callback) {
+
+        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'TERZA'",function (err, rows) {
+            if (err){
+                console.log('error');
+            }else {
+                callback(err,rows);
+            }
+        });
     }
+
+
 
 
 };

@@ -31,7 +31,8 @@ module.exports = function (app,passport,upload) {
 
         }).on("error",function (error) {
 
-            console.log(error.message);
+            console.error(error.message);
+            throw 'error when i try to upload data in db';
 
         })
     });
@@ -73,6 +74,24 @@ module.exports = function (app,passport,upload) {
                 res.send(JSON.stringify(results));
         }, "PRIMA", 37030, "*");
     });
+
+    /**
+     * Elenco studenti in tabella
+     */
+    app.get('/studenti', middleware.isLoggedIn, function (req, res) {
+        query.getStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.render('studenti.ejs', {
+                    user: req.user,
+                    pageTitle: " Studenti ",
+                    studentsData: results
+                });
+        });
+    });
+
+
 }
 
 

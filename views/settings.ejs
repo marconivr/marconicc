@@ -1,0 +1,196 @@
+<% include header %>
+
+<body>
+
+<style>
+    #sortable1, #sortable2,#sortable3 , #sortable4, #sortable5, #sortable6, #sortable7, #sortable8{
+        border: 1px solid #eee;
+        width: 142px;
+        min-height: 20px;
+        list-style-type: none;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+    }
+    #sortable1 li, #sortable2 li, #sortable3 li, #sortable4 li, #sortable5 li, #sortable6 li, #sortable7 li,#sortable8 li{
+        margin: 0 5px 5px 5px;
+        padding: 5px;
+        font-size: 1.2em;
+        width: 120px;
+    }
+</style>
+
+<script>
+    $( function() {
+        $("#sortable1, #sortable2,#sortable3, #sortable4, #sortable5, #sortable6, #sortable7,#sortable8").sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+    } );
+</script>
+
+<% include sidebar-start.ejs %>
+
+<div class="ui internally celled grid">
+    <div class="row">
+        <!--this section represent the relatime data-->
+        <div class="three wide column">
+            <a class="ui teal tag label"> Statistiche RealTime</a><br>
+            <b>Numero di  classi:</b> <p id="classe-realtime"></p>
+        </div>
+        <div class="ten wide column">
+            <div class="ui centered grid">
+            <div class="six wide tablet ten wide computer column">
+                <!--sematic form-->
+                <form class="ui form">
+                    <h4 class="ui dividing header">Settings</h4>
+
+                    <!--sematic fields-->
+                    <label>Classe</label><br>
+                    <div class="ui selection dropdown" id="classe">
+                        <input type="hidden" name="settings[classe_futura]">
+                        <i class="dropdown icon"></i>
+                        <div class="default text" data-value="prima">Prima</div>
+                        <div class="menu">
+                            <div class="item" data-value="prima">Prima</div>
+                            <div class="item" data-value="terza">Terza</div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Alunni Min</label>
+                        <input name="settings[alunni]" placeholder="Alunni" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Alunni Max</label>
+                        <input name="settings[descrizione]" id="max-number-of-students" placeholder="numero di alunni massimo " type="number" onchange="setDataRealtimeNumberOfStudents()">
+                    </div>
+                    <div class="field">
+                        <label>Femmine</label>
+                        <input name="settings[femmine]" placeholder="Femmine" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Stranieri</label>
+                        <input name="settings[stranieri]" placeholder="Stranieri" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Stessa residenza</label>
+                        <input name="settings[residenza]" placeholder="Residenza" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Media</label>
+                        <div class="two fields">
+                            <div class="field">
+                                <input type="text" name="shipping[media-min]" placeholder="Media minima">
+                            </div>
+                            <div class="field">
+                                <input type="text" name="shipping[media-max]" placeholder="Media massima">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Bocciati</label>
+                        <input name="settings[bocciati]" placeholder="Bocciati" type="text">
+                    </div>
+
+                    <div class="field">
+                        <label>Priorità delle impostazioni</label>
+
+                        <!--sematic grid-->
+                        <div class="ui equal width grid">
+                            <div class="column">
+                                <div class="containerVertical">
+
+                                    <ul id="sortable1" class="connectedSortable">
+                                        <li class="ui-state-default">Alunni</li>
+                                        <li class="ui-state-default">Femmine</li>
+                                        <li class="ui-state-default">Stranieri</li>
+                                        <li class="ui-state-default">Bocciati</li>
+                                        <li class="ui-state-default">Stessa nazionalità</li>
+                                        <li class="ui-state-default">Media</li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--sematic button-->
+                    <div class="ui button" tabindex="0">Send</div>
+                </form>
+            </div>
+                </div>
+        </div>
+        <!--this section represent data in db-->
+        <div class="three wide column">
+
+            <a class="ui red tag label">Dati Studenti</a><br>
+
+            <!--dati max studetni di prima-->
+            <label>Prima</label><br>
+            <div class="ui compact menu">
+                <a class="item">
+                    <i class="student icon"></i> Studenti
+                    <div class="floating ui red label"><p id="alunni-in-classe-prima">
+                            <% var msg = JSON.parse(data) %>
+                            <%= msg.numberOfStudentiPrima %></p></div>
+                </a>
+                <a class="item">
+                    <i class="female icon"></i> Donne
+                    <div class="floating ui teal label"><p id="donne-in-classe-prima">
+                            <% var msg = JSON.parse(data) %>
+                            <%= msg.numberOfGirlPrima %></p></div>
+                </a>
+            </div>
+
+            <br>
+            <!--dati max studenti di terza-->
+            <label>TERZA:</label>
+            <b>Numero studenti Terza:</b> <p id="alunni-in-classe-terza">
+                <% var msg = JSON.parse(data) %>
+                <%= msg.numberOfStudentiTerza %></p>
+
+        </div>
+    </div>
+    <!--<div class="row">-->
+        <!--<div class="three wide column">-->
+           <!--hjhj-->
+        <!--</div>-->
+        <!--<div class="ten wide column">-->
+            <!--hjhj-->
+        <!--</div>-->
+        <!--<div class="three wide column">-->
+            <!--<img>-->
+        <!--</div>-->
+    <!--</div>-->
+</div>
+
+
+
+
+<% include sidebar-stop.ejs%>
+<!--personal script for specific page -->
+
+
+<script>
+    $('.ui.dropdown').dropdown();
+
+</script>
+
+<script>
+//this function set the number of student for class
+function setDataRealtimeNumberOfStudents(){
+   var classe = $('#classe').dropdown('get value');
+    if (classe == "prima")
+    {
+        alunniPrima =  $( "#alunni-in-classe-prima" ).text();
+        maxNumberOfAlunni= $("#max-number-of-students").val();
+        $("#classe-realtime").html(Math.floor(alunniPrima/maxNumberOfAlunni))
+
+    }
+}
+</script>
+
+
+<!--close html tag-->
+<% include tag-close.ejs%>

@@ -1,0 +1,101 @@
+<% include header %>
+
+<body >
+<% include sidebar-start.ejs %>
+
+
+<div class="ui two column centered grid">
+    <div class="column">
+
+<table id="studenti" class="ui celled table" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th>cognome</th>
+        <th>nome</th>
+        <th>cf</th>
+        <th>sesso</th>
+        <th>data_di_nascita</th>
+        <th>stato</th>
+        <th>cap_provenienza</th>
+        <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
+        <th>anno_scolastico</th>
+        <th>anno</th>
+        <th>cod_cat</th>
+        <th>media_voti</th>
+        <th>classe_futura</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <%for(var i=0; i<studentsData.length; i++){ %>
+    <tr>
+        <td><%= studentsData[i].cognome %></td>
+        <td><%= studentsData[i].nome %></td>
+        <td><%= studentsData[i].cf %></td>
+        <td><%= studentsData[i].sesso %></td>
+        <td><%= studentsData[i].data_di_nascita %></td>
+        <td><%= studentsData[i].stato %></td>
+        <td><%= studentsData[i].cap_provenienza %></td>
+        <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
+        <td><%= studentsData[i].anno_scolastico %></td>
+        <td><%= studentsData[i].anno %></td>
+        <td><%= studentsData[i].cod_cat %></td>
+        <td><%= studentsData[i].media_voti %></td>
+        <td><%= studentsData[i].classe_futura %></td>
+    </tr>
+    <%}%>
+
+    </tbody>
+    <tfoot>
+    <tr>
+        <th>cognome</th>
+        <th>nome</th>
+        <th>cf</th>
+        <th>sesso</th>
+        <th>data_di_nascita</th>
+        <th>stato</th>
+        <th>cap_provenienza</th>
+       <!-- <th>scelta_indirizzo</th> ho commentato perchè troppo largo e rompe layout tabella -->
+        <th>anno_scolastico</th>
+        <th>anno</th>
+        <th>cod_cat</th>
+        <th>media_voti</th>
+        <th>classe_futura</th>
+
+    </tr>
+    </tfoot>
+</table>
+
+    </div>
+</div>
+
+<% include sidebar-stop.ejs%>
+<!--personal script for specific page -->
+<script>
+    $(document).ready(function() {
+        var table = $('#studenti').DataTable( {
+            processing:true,
+            lengthChange: false,
+            buttons: ['excel'],
+            "columns": [
+                { "data": "cognome" },
+                { "data": "nome" },
+                { "data": "cf" },
+                { "data": "sesso" },
+                { "data": "data_di_nascita" },
+                { "data": "stato" },
+                { "data": "cap_provenienza" },
+                //{ "data": "scelta_indirizzo" },
+                { "data": "anno_scolastico" },
+                { "data": "anno" },
+                { "data": "cod_cat" },
+                { "data": "media_voti" },
+                { "data": "classe_futura" }
+            ]
+        } );
+        table.buttons().container()
+            .appendTo( $('div.eight.column:eq(0)', table.table().container()) );
+    } );
+</script>
+<!--close html tag-->
+<% include tag-close.ejs%>
