@@ -48,6 +48,9 @@ module.exports = {
             }
         });
     },
+
+    //insertSettings:function
+
     getStudentiPrima:function (callback) {
 
         connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")",function (err, rows) {
@@ -100,6 +103,8 @@ module.exports = {
             }
         });
     }
+
+
 
 
 };
