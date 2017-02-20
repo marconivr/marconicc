@@ -2,6 +2,9 @@
     background-image: url("../img/preview.jpg");
 
 }
+.signupBackground{
+    background-image: url("../img/Classe.jpg");
+}
 .robotoWhiteTitle{
     font-family: Roboto, sans-serif;
     font-size: 2.7em;
@@ -16,7 +19,7 @@
 }
 
 .column {
-    max-width: 60%;
+    max-width: 30%;
 }
 
  body > .grid {
