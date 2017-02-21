@@ -91,8 +91,6 @@ module.exports = function (app, passport) {
     });
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        //var jsonString= JSON.stringify(obj);
-
         query.getNumerOfStudentiPrima(function (err, results) {
             if (err)
                 throw err;
@@ -115,6 +113,13 @@ module.exports = function (app, passport) {
             else
                 setValueOfArrayForSettings(results,"numberOfGirlPrima");
         }, "PRIMA");
+
+        query.getAVGOfStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"AVGOfStudentiPrima");
+        });
 
         res.render('settings.ejs', {
             pageTitle: " settings ",

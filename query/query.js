@@ -113,9 +113,18 @@ module.exports = {
                 callback(err,rows);
             }
         });
+    },
+    //
+    getAVGOfStudentiPrima:function (callback) {
+
+        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'PRIMA' ",function (err, rows) {
+            if (err){
+                console.log('error');
+            }else {
+                callback(err,rows);
+            }
+        });
     }
-
-
-
+    
 
 };

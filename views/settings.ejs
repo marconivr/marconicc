@@ -141,9 +141,16 @@
                             <% var msg = JSON.parse(data) %>
                             <%= msg.numberOfGirlPrima %></p></div>
                 </a>
+                <a class="item">
+                    <i class="write icon"></i> Media
+                    <div class="floating ui teal label"><p id="media-in-classe-prima">
+                            <% var msg = JSON.parse(data) %>
+                            <%= msg.AVGOfStudentiPrima %></p></div>
+                </a>
             </div>
 
             <br>
+            <hr>
             <!--dati max studenti di terza-->
             <label>TERZA:</label>
             <b>Numero studenti Terza:</b> <p id="alunni-in-classe-terza">
