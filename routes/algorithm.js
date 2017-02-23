@@ -23,7 +23,7 @@ var listClassi = [] //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Ross
 module.exports = {
     loadListAlunni: function (classe) {
         if (classe.toLowerCase() == "prima") {
-            query.getNumerOfStudentiPrima(function (err, results) {
+            query.getStudentiPrima(function (err, results) {
                 if (err)
                     throw err;
                 else{
