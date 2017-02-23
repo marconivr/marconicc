@@ -20,6 +20,51 @@ var priority = {}
 var listAlunni = [];
 var listClassi = [] //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
+
+//
+// {
+//     "classi":[
+//     {
+//         "nome_classe":"1af",
+//         "alunni":
+//             [
+//                 {
+//                     "name":"luigi",
+//                     "surname" : "verdi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 },
+//                 {
+//                     "name":"mario",
+//                     "surname" : "rossi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 }
+//
+//             ]
+//     },
+//     {
+//         "nome_classe":"1ad",
+//         "alunni":
+//             [
+//                 {
+//                     "name":"luigi",
+//                     "surname" : "verdi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 },
+//                 {
+//                     "name":"mario",
+//                     "surname" : "rossi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 }
+//
+//             ]
+//     }
+//
+// ]
+// }
 module.exports = {
     loadListAlunni: function (classe) {
         if (classe.toLowerCase() == "prima") {
