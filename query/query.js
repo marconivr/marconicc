@@ -122,5 +122,27 @@ module.exports = {
                 callback(err,rows);
             }
         });
-    }
+    },
+
+    getNumberOfGirlTerza:function (callback) {
+
+        connection.query("SELECT COUNT(classe_futura) as result from alunni where classe_futura = 'TERZA' and sesso = 'F' ",function (err, rows) {
+            if (err){
+                console.log('error');
+            }else {
+                callback(err,rows);
+            }
+        });
+    },
+
+    getAVGOfStudentiTerza:function (callback) {
+
+        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'TERZA' ",function (err, rows) {
+            if (err){
+                console.log('error');
+            }else {
+                callback(err,rows);
+            }
+        });
+    },
 };

@@ -102,9 +102,7 @@ module.exports = {
                 }
             });
         }
-    }
-
-    ,
+    },
 
     createListClassi: function(classe){
         if (classe.toLowerCase() == "prima") {
