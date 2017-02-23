@@ -94,7 +94,7 @@ module.exports = {
                     var num = Math.round(json[0].result / (settings.min_al));
 
                     for(i = 0 ; i < num; i++){
-                        listClassi.push({nome:""});
+                        listClassi.push({nome:"", alunni:[]});
                     }
 
                     console.log(listClassi);
@@ -108,9 +108,18 @@ module.exports = {
 
     createListClassi: function(classe){
         if (classe.toLowerCase() == "prima") {
-            for(var c in listClassi){
 
+            while (listAlunni.length != 0){
+                for(var c in listClassi){
+                    for (i = 0; i < settings.max_al; i++){
+                        c.alunni.push(Math.floor(Math.random() * listAlunni.length));
+                        if (c.alunni.length >= settings.min_al){
+                            break;
+                        }
+                    }
+                }
             }
+            console.log(listClassi);
         }
     }
 
