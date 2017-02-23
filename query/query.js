@@ -60,9 +60,7 @@ module.exports = {
                callback(err,rows);
             }
         });
-    }
-
-    ,
+    },
 
     getNumberGirl: function (callback, classe) {
 
@@ -125,6 +123,4 @@ module.exports = {
             }
         });
     }
-    
-
 };
