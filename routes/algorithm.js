@@ -8,7 +8,7 @@ var query = require('./../query/query.js');
 //settings var
 var settings = {
     max_al: 28,
-    min_al: 28,
+    min_al: 25,
     max_fem: 3,
     max_str: 5,
     stessa_pr: 4,
@@ -76,20 +76,10 @@ module.exports = {
                     var string = JSON.stringify(results);
                     var json =  JSON.parse(string);
                     listAlunni.push(json);
-                    console.log(listAlunni);
                 }
             });
         }
     }
-
-    ,
-
-    createListClassi: function(classe){
-        if (classe.toLowerCase() == "prima") {
-
-        }
-    }
-
     ,
 
     numberOfClassi:function(classe){
@@ -101,9 +91,26 @@ module.exports = {
                     var string = JSON.stringify(results);
                     var json =  JSON.parse(string);
 
-                    var num = json[0].result / (settings.)
+                    var num = Math.round(json[0].result / (settings.min_al));
+
+                    for(i = 0 ; i < num; i++){
+                        listClassi.push({nome:""});
+                    }
+
+                    console.log(listClassi);
+                    console.log(num);
                 }
             });
+        }
+    }
+
+    ,
+
+    createListClassi: function(classe){
+        if (classe.toLowerCase() == "prima") {
+            for(var c in listClassi){
+
+            }
         }
     }
 
