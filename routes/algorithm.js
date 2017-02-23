@@ -17,7 +17,7 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 }
-var priority = {}
+var priority = ['alunni','femmine','media','stranieri','bocciati','stessa_provenienza']
 var listAlunni = [];
 var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -80,6 +80,7 @@ module.exports = {
             });
         }
     }
+
     ,
 
     numberOfClassi:function(classe){
@@ -120,5 +121,53 @@ module.exports = {
             console.log(listClassi);
         }
     }
+
+}
+
+var findPriority = function (classe) {
+    for (i=0;i<priority.length;i++){
+
+        if (priority[i] == "alunni"){
+            countAlunni(classe)
+        }
+        if (priority[i] == "femmine"){
+            countFemmine(classe)
+        }
+        if (priority[i] == "stranieri"){
+            countStranieri(classe)
+        }
+        if (priority[i] == "bocciati"){
+            countBocciati(classe)
+        }
+        if (priority[i] == "stessa_provenienza"){
+            countStessaProv(classe)
+        }
+        if (priority[i] == "media"){
+            media(classe)
+        }
+    }
+}
+
+var countAlunni = function(classe){
+
+}
+
+var countFemmine = function(classe){
+
+}
+
+var countStranieri = function(classe){
+
+}
+
+var countBocciati = function(classe){
+
+}
+
+var countStessaProv = function(classe){
+
+}
+
+var media = function(classe){
 
 }
