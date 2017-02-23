@@ -128,6 +128,7 @@ module.exports = {
                             break;
                         }
                     }
+                    findPriority(classe);
                 }
             }
             console.log(listClassi);
@@ -136,6 +137,7 @@ module.exports = {
 
 }
 var findPriority = function (classe) {
+
     for (i=0;i<priority.length;i++){
 
         if (priority[i] == "alunni"){
@@ -160,7 +162,7 @@ var findPriority = function (classe) {
 }
 
 var countAlunni = function(classe){
-
+    console.log(classe.alunni.length) ;
 }
 
 var countFemmine = function(classe){
