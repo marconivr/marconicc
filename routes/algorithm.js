@@ -20,9 +20,9 @@ var settings = {
 var priority = ['alunni','femmine','media','stranieri','bocciati','stessa_provenienza']
 var listAlunni = [];
 var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
+var CLASS = ["a","b","c","d","f","g","h","i","l","m","n","o","p","q","r","s","t","u","v","z"];
 
-
-//
+//               ESEMPIO JSON CHE SI DOVRA' CREARE
 // {
 //     "classi":[
 //     {
@@ -79,9 +79,7 @@ module.exports = {
                 }
             });
         }
-    }
-
-    ,
+    },
 
     numberOfClassi:function(classe){
         if (classe.toLowerCase() == "prima") {
@@ -94,8 +92,15 @@ module.exports = {
 
                     var num = Math.round(json[0].result / (settings.min_al));
 
-                    for(i = 0 ; i < num; i++){
-                        listClassi.push({nome:"", alunni:[]});
+                    for(var i = 0 ; i < num; i++){
+                        //esempio di inserimento classi
+                        try {
+                            classe = "1" + CLASS[i] + "";
+                        }
+                        catch (err){
+                            classe = "1a"  + "";
+                        }
+                        listClassi.push({nome:classe, alunni:[]});
                     }
 
                     console.log(listClassi);
