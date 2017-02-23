@@ -17,12 +17,13 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 }
-var priority = ['alunni','femmine','media','stranieri','bocciati','stessa_provenienza']
+var priority = {}
 var listAlunni = [];
 var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 var CLASS = ["a","b","c","d","f","g","h","i","l","m","n","o","p","q","r","s","t","u","v","z"];
 
-//               ESEMPIO JSON CHE SI DOVRA' CREARE
+
+//
 // {
 //     "classi":[
 //     {
@@ -79,7 +80,8 @@ module.exports = {
                 }
             });
         }
-    },
+    }
+    ,
 
     numberOfClassi:function(classe){
         if (classe.toLowerCase() == "prima") {
@@ -92,7 +94,7 @@ module.exports = {
 
                     var num = Math.round(json[0].result / (settings.min_al));
 
-                    for(var i = 0 ; i < num; i++){
+                    for(i = 0 ; i < num; i++){
                         //esempio di inserimento classi
                         try {
                             classe = "1" + CLASS[i] + "";
@@ -100,7 +102,7 @@ module.exports = {
                         catch (err){
                             classe = "1a"  + "";
                         }
-                        listClassi.push({nome:classe, alunni:[]});
+                        listClassi.push({nome:"", alunni:[]});
                     }
 
                     console.log(listClassi);
@@ -128,7 +130,6 @@ module.exports = {
     }
 
 }
-
 var findPriority = function (classe) {
     for (i=0;i<priority.length;i++){
 
