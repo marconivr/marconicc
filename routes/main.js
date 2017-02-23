@@ -126,6 +126,21 @@ module.exports = function (app, passport) {
                 setValueOfArrayForSettings(results,"AVGOfStudentiPrima");
         });
 
+        query.getNumberOfGirlTerza(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"numberOfGirlTerza");
+        });
+
+
+        query.getAVGOfStudentiTerza(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"AVGOfStudentiTerza");
+        });
+
         res.render('settings.ejs', {
             pageTitle: " settings ",
             data:JSON.stringify(dataInSettings)
