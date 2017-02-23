@@ -8,6 +8,7 @@ var query = require('./../query/query.js');
 //settings var
 var settings = {
     max_al: 28,
+    min_al: 28,
     max_fem: 3,
     max_str: 5,
     stessa_pr: 4,
@@ -18,7 +19,7 @@ var settings = {
 }
 var priority = {}
 var listAlunni = [];
-var listClassi = [] //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
+var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 
 //
@@ -72,12 +73,35 @@ module.exports = {
                 if (err)
                     throw err;
                 else{
-                    console.log('>> results: ', results );
                     var string = JSON.stringify(results);
-                    console.log('>> string: ', string );
                     var json =  JSON.parse(string);
-                    console.log('>> json: ', json);
-                    console.log('>> user.name: ', json[0]);
+                    listAlunni.push(json);
+                    console.log(listAlunni);
+                }
+            });
+        }
+    }
+
+    ,
+
+    createListClassi: function(classe){
+        if (classe.toLowerCase() == "prima") {
+
+        }
+    }
+
+    ,
+
+    numberOfClassi:function(classe){
+        if (classe.toLowerCase() == "prima") {
+            query.getNumerOfStudentiPrima(function (err, results) {
+                if (err)
+                    throw err;
+                else{
+                    var string = JSON.stringify(results);
+                    var json =  JSON.parse(string);
+
+                    var num = json[0].result / (settings.)
                 }
             });
         }

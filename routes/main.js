@@ -131,7 +131,11 @@ module.exports = function (app, passport) {
     });
 
     app.get('/test', middleware.isLoggedIn, function (req, res) {
+<<<<<<< Updated upstream
 
+=======
+        alg.numberOfClassi("prima");
+>>>>>>> Stashed changes
     });
 
 
