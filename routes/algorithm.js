@@ -76,10 +76,14 @@ module.exports = {
                 else{
                     var string = JSON.stringify(results);
                     var json =  JSON.parse(string);
+                    module.exports.numberOfClassi("prima");
                     listAlunni.push(json);
+                    module.exports.createListClassi("prima");
+
                 }
             });
         }
+
     }
     ,
 
