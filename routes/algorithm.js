@@ -114,12 +114,13 @@ module.exports = {
 
     createListClassi: function(classe){
         if (classe.toLowerCase() == "prima") {
-
             while (listAlunni.length != 0){
-                for(var c in listClassi){
+                for(var classe in listClassi){
                     for (i = 0; i < settings.max_al; i++){
-                        c.alunni.push(Math.floor(Math.random() * listAlunni.length));
-                        if (c.alunni.length >= settings.min_al){
+                        var alunno = listAlunni[Math.floor(Math.random() * listAlunni.length)];
+                        classe.alunni.push(alunno);
+                        listAlunni.splice(listAlunni.indexOf(alunno), 1);
+                        if (classe.alunni.length >= settings.min_al){
                             break;
                         }
                     }
