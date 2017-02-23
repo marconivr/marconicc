@@ -102,7 +102,7 @@ module.exports = {
                         catch (err){
                             classe = "1a"  + "";
                         }
-                        listClassi.push({nome:"", alunni:[]});
+                        listClassi.push({nome:classe, alunni:[]});
                     }
 
                     console.log(listClassi);
