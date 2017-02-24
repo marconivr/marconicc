@@ -86,14 +86,23 @@ module.exports = function (app, passport) {
         });
     });
 
-    app.get
-    ('/example-page', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        alg.loadListAlunni("prima");
+    app.get('/example-page', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        var classi;
+        alg.loadListAlunni("prima",function (err, results) {
+            if (err)
+                throw err;
+            else {
+                res.render('example.ejs', {
+                    pageTitle: " example ",
+                    classiJSON : results
+                });
+            }
+
+        });
+    console.log(classi)
         // alg.numberOfClassi("prima");
         // alg.createListClassi("prima");
-        res.render('example.ejs', {
-            pageTitle: " example "
-        });
+        
     });
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists

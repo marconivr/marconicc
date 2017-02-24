@@ -68,7 +68,7 @@ var CLASS = ["a","b","c","d","f","g","h","i","l","m","n","o","p","q","r","s","t"
 // ]
 // }
 module.exports = {
-    loadListAlunni: function (classe) {
+    loadListAlunni: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
             query.getStudentiPrima(function (err, results) {
                 if (err)
@@ -82,10 +82,10 @@ module.exports = {
 
                 }
             });
+            callback(null,listAlunni);
         }
 
-    }
-    ,
+    },
 
     numberOfClassi: function (classe) {
         if (classe.toLowerCase() == "prima") {

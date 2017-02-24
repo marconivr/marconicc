@@ -144,10 +144,13 @@
         <li class="ui-state-highlight">Item 4</li>
         <li class="ui-state-highlight">Item 5</li>
     </ul>
-
-
-
-
+    <ul>
+        <% for(var i=0; i<classiJSON.length; i++) {%>
+        <li><%= classiJSON[i] %></li>
+        <li><%= classiJSON.length %></li>
+        <% debugger; %>
+        <% } %>
+    </ul>
 </div>
 
 <% include sidebar-stop.ejs%>
