@@ -145,6 +145,12 @@
         <li class="ui-state-highlight">Item 5</li>
     </ul>
 
+    <ul id="sortable8" class="connectedSortable">
+        <%for (var result in results){%>
+        <li class="ui-state-highlight"><%=result%>:<%=results[result.nome + ", " + result.cognome]%></li>
+        <%}%>
+    </ul>
+
 
 
 

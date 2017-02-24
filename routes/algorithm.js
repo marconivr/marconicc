@@ -7,7 +7,7 @@ var query = require('./../query/query.js');
 
 //settings var
 var settings = {
-    max_al: 29,
+    max_al: 28,
     min_al: 25,
     max_fem: 3,
     max_str: 5,

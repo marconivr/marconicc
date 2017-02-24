@@ -91,8 +91,10 @@ module.exports = function (app, passport) {
         alg.loadListAlunni("prima");
         // alg.numberOfClassi("prima");
         // alg.createListClassi("prima");
+        //result
         res.render('example.ejs', {
-            pageTitle: " example "
+            pageTitle: " example ",
+            results:[{nome:"alberto", cognome:"angela"}, {nome:"piero", cognome:"angela"}]//result[i].alunni
         });
     });
 
