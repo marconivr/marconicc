@@ -7,7 +7,7 @@ var query = require('./../query/query.js');
 
 //settings var
 var settings = {
-    max_al: 28,
+    max_al: 29,
     min_al: 25,
     max_fem: 3,
     max_str: 5,
@@ -76,8 +76,8 @@ module.exports = {
                 else{
                     var string = JSON.stringify(results);
                     var json =  JSON.parse(string);
+                    listAlunni = json;
                     module.exports.numberOfClassi("prima");
-                    listAlunni.push(json);
                     module.exports.createListClassi("prima");
 
                 }
@@ -87,48 +87,35 @@ module.exports = {
     }
     ,
 
-    numberOfClassi:function(classe){
+    numberOfClassi: function (classe) {
         if (classe.toLowerCase() == "prima") {
-            query.getNumerOfStudentiPrima(function (err, results) {
-                if (err)
-                    throw err;
-                else{
-                    var string = JSON.stringify(results);
-                    var json =  JSON.parse(string);
-
-                    var num = Math.round(json[0].result / (settings.min_al));
-
-                    for(i = 0 ; i < num; i++){
-                        //esempio di inserimento classi
-                        try {
-                            classe = "1" + CLASS[i] + "";
-                        }
-                        catch (err){
-                            classe = "1a"  + "";
-                        }
-                        listClassi.push({nome:classe, alunni:[]});
-                    }
-
-                    console.log(listClassi);
-                    console.log(num);
+            var num = Math.round(listAlunni.length / (settings.min_al));
+            for (i = 0; i < num; i++) {
+                try {
+                    classe = "1" + CLASS[i] + "";
                 }
-            });
+                catch (err) {
+                    classe = "1a" + "";
+                }
+                listClassi.push({nome: classe, alunni: []});
+            }
         }
-    },
+    }
+    ,
 
-    createListClassi: function(classe){
+    createListClassi: function (classe) {
         if (classe.toLowerCase() == "prima") {
             while (listAlunni.length != 0){
-                for(var classe in listClassi){
+                for(k = 0; k < listClassi.length; k++){
                     for (i = 0; i < settings.max_al; i++){
                         var alunno = listAlunni[Math.floor(Math.random() * listAlunni.length)];
-                        classe.alunni.push(alunno);
+                        listClassi[k].alunni.push(alunno);
                         listAlunni.splice(listAlunni.indexOf(alunno), 1);
-                        if (classe.alunni.length >= settings.min_al){
+                        if (listClassi[k].alunni.length >= settings.min_al){
                             break;
                         }
                     }
-                    findPriority(classe);
+                    findPriority(listClassi[k]);
                 }
             }
             console.log(listClassi);
@@ -136,27 +123,51 @@ module.exports = {
     }
 
 }
+
+
+/*
+ if (priority[i] == "alunni"){
+ countAlunni(classe)
+ }
+ else if (priority[i] == "femmine"){
+ countFemmine(classe)
+ }
+ else if (priority[i] == "stranieri"){
+ countStranieri(classe)
+ }
+ else if (priority[i] == "bocciati"){
+ countBocciati(classe)
+ }
+ else if (priority[i] == "stessa_provenienza"){
+ countStessaProv(classe)
+ }
+ else if (priority[i] == "media"){
+ media(classe)
+ }
+ */
+// credo sia meglio lo switch case
 var findPriority = function (classe) {
 
-    for (i=0;i<priority.length;i++){
-
-        if (priority[i] == "alunni"){
-            countAlunni(classe)
-        }
-        if (priority[i] == "femmine"){
-            countFemmine(classe)
-        }
-        if (priority[i] == "stranieri"){
-            countStranieri(classe)
-        }
-        if (priority[i] == "bocciati"){
-            countBocciati(classe)
-        }
-        if (priority[i] == "stessa_provenienza"){
-            countStessaProv(classe)
-        }
-        if (priority[i] == "media"){
-            media(classe)
+    for (i = 0;i < priority.length;i++){
+        switch (priority[i]){
+            case "alunni":
+                countAlunni(classe);
+                break;
+            case "femmine":
+                countFemmine(classe);
+                break;
+            case "stranieri":
+                countStranieri(classe);
+                break;
+            case "bocciati":
+                countBocciati(classe)
+                break;
+            case "stessa_provenienza":
+                countStessaProv(classe)
+                break;
+            case "media":
+                media(classe);
+                break;
         }
     }
 }
