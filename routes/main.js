@@ -90,7 +90,7 @@ module.exports = function (app, passport) {
         var classi;
         alg.loadListAlunni("prima",function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else {
                 res.render('example.ejs', {
                     pageTitle: " example ",

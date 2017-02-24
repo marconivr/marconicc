@@ -4,6 +4,7 @@
 
 var middleware = require('./middleware/middleware');
 var query = require('./../query/query.js');
+var async = require('async');
 
 //settings var
 var settings = {
@@ -74,20 +75,52 @@ module.exports = {
                 if (err)
                     throw err;
                 else{
-                    var string = JSON.stringify(results);
-                    var json =  JSON.parse(string);
-                    listAlunni = json;
-                    module.exports.numberOfClassi("prima");
-                    module.exports.createListClassi("prima");
 
+                    async.waterfall(
+                        [
+                            function (callback) {
+                                var string = JSON.stringify(results);
+                                callback(null,string);
+
+                            },
+                            function (string,callback) {
+                                var json =  JSON.parse(string);
+                                callback(null,json);
+                            },
+                            function (json,callback) {
+                                listAlunni = json;
+                                callback();
+                            },
+                            function (callback) {
+                                module.exports.numberOfClassi("prima",function () {
+                                    callback();
+                                });
+                            },
+                            function (callback) {
+                                module.exports.createListClassi("prima",function () {
+                                    callback();
+                                });
+                            }
+                        ],
+                        function (err,succes) {
+                            if (err){
+                                console.log(err);
+
+                            }else{
+                                callback(err,listAlunni);
+                            }
+
+                        }
+
+                    )
                 }
             });
-            callback(null,listAlunni);
+
         }
 
     },
 
-    numberOfClassi: function (classe) {
+    numberOfClassi: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
             var num = Math.round(listAlunni.length / (settings.min_al));
             for (i = 0; i < num; i++) {
@@ -100,10 +133,11 @@ module.exports = {
                 listClassi.push({nome: classe, alunni: []});
             }
         }
+        callback();
     }
     ,
 
-    createListClassi: function (classe) {
+    createListClassi: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
             while (listAlunni.length != 0){
                 for(k = 0; k < listClassi.length; k++){
@@ -119,6 +153,7 @@ module.exports = {
                 }
             }
             console.log(listClassi);
+            callback();
         }
     }
 
