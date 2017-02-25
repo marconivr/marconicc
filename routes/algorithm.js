@@ -107,7 +107,7 @@ module.exports = {
                                 console.log(err);
 
                             }else{
-                                callback(err,listAlunni);
+                                callback(err,listClassi);
                             }
 
                         }

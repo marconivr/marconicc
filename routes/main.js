@@ -92,10 +92,7 @@ module.exports = function (app, passport) {
             if (err)
                 console.log(err);
             else {
-                res.render('example.ejs', {
-                    pageTitle: " example ",
-                    classiJSON : results
-                });
+                res.send(results);
             }
 
         });
