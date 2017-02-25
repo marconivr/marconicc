@@ -24,6 +24,50 @@ var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Ros
 var CLASS = ["a","b","c","d","f","g","h","i","l","m","n","o","p","q","r","s","t","u","v","z"];
 
 
+//
+// {
+//     "classi":[
+//     {
+//         "nome_classe":"1af",
+//         "alunni":
+//             [
+//                 {
+//                     "name":"luigi",
+//                     "surname" : "verdi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 },
+//                 {
+//                     "name":"mario",
+//                     "surname" : "rossi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 }
+//
+//             ]
+//     },
+//     {
+//         "nome_classe":"1ad",
+//         "alunni":
+//             [
+//                 {
+//                     "name":"luigi",
+//                     "surname" : "verdi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 },
+//                 {
+//                     "name":"mario",
+//                     "surname" : "rossi",
+//                     "media_voti":7,
+//                     "cf":"dfhsddg44f"
+//                 }
+//
+//             ]
+//     }
+//
+// ]
+// }
 module.exports = {
     loadListAlunni: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
@@ -31,6 +75,7 @@ module.exports = {
                 if (err)
                     throw err;
                 else{
+
                     async.waterfall(
                         [
                             function (callback) {
@@ -78,27 +123,25 @@ module.exports = {
     numberOfClassi: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
             var num = Math.round(listAlunni.length / (settings.min_al));
-            for (var i = 0; i < num; i++) {
-                try {
-                    classe = "1" + CLASS[i] + "";
-                }
-                catch (err) {
-                    classe = "1a" + "";
-                }
+            for (i = 0; i < num; i++) {
+                //assing class name
+                 var classe = "1" + String.fromCharCode(65+i);
                 listClassi.push({nome: classe, alunni: []});
             }
         }
         callback();
     }
-
     ,
 
     createListClassi: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
             while (listAlunni.length != 0){
                 for(k = 0; k < listClassi.length; k++){
-                    for (var i = 0; i < settings.max_al; i++){
+                    for (i = 0; i < settings.max_al; i++){
                         var alunno = listAlunni[Math.floor(Math.random() * listAlunni.length)];
+                        if(alunno === undefined) {
+                            console.log("f")
+                        }
                         listClassi[k].alunni.push(alunno);
                         listAlunni.splice(listAlunni.indexOf(alunno), 1);
                         if (listClassi[k].alunni.length >= settings.min_al){
@@ -115,6 +158,28 @@ module.exports = {
 
 }
 
+
+/*
+ if (priority[i] == "alunni"){
+ countAlunni(classe)
+ }
+ else if (priority[i] == "femmine"){
+ countFemmine(classe)
+ }
+ else if (priority[i] == "stranieri"){
+ countStranieri(classe)
+ }
+ else if (priority[i] == "bocciati"){
+ countBocciati(classe)
+ }
+ else if (priority[i] == "stessa_provenienza"){
+ countStessaProv(classe)
+ }
+ else if (priority[i] == "media"){
+ media(classe)
+ }
+ */
+// credo sia meglio lo switch case
 var findPriority = function (classe) {
 
     for (i = 0;i < priority.length;i++){
@@ -163,19 +228,4 @@ var countStessaProv = function(classe){
 
 var media = function(classe){
 
-}
-
-/**
- * findClasseFromString data una stringa ritorna l'oggetto classe dato il nome
- * @param nomeClasse stringa
- * @returns {object}
- */
-
-var findClasseFromString = function (nomeClasse) {
-    for(var k = 0; k < listClassi.length; k++){
-        if(listClassi[k].nome == nomeClasse){
-            return listClassi[k];
-        }
-    }
-    return null;
 }
