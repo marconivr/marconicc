@@ -158,28 +158,6 @@ module.exports = {
 
 }
 
-
-/*
- if (priority[i] == "alunni"){
- countAlunni(classe)
- }
- else if (priority[i] == "femmine"){
- countFemmine(classe)
- }
- else if (priority[i] == "stranieri"){
- countStranieri(classe)
- }
- else if (priority[i] == "bocciati"){
- countBocciati(classe)
- }
- else if (priority[i] == "stessa_provenienza"){
- countStessaProv(classe)
- }
- else if (priority[i] == "media"){
- media(classe)
- }
- */
-// credo sia meglio lo switch case
 var findPriority = function (classe) {
 
     for (i = 0;i < priority.length;i++){
@@ -237,8 +215,8 @@ var media = function(classe){
  */
 
 var findClasseFromString = function (nomeClasse) {
-    for(var k = 0; k < listClassi.length; k++){
-        if(listClassi[k].nome == nomeClasse){
+    for (var k = 0; k < listClassi.length; k++) {
+        if (listClassi[k].nome == nomeClasse) {
             return listClassi[k];
         }
     }
