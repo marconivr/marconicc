@@ -1,6 +1,13 @@
 .pageBackground{
     background-image: url("../img/preview.jpg");
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 
+}
+.signupBackground{
+    background-image: url("../img/Classe.jpg");
 }
 .robotoWhiteTitle{
     font-family: Roboto, sans-serif;

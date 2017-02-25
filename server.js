@@ -37,13 +37,9 @@ app.use(flash());
 app.use(express.static(__dirname + '/public'));
 
 
-
 // routes ======================================================================
-require('./routes/users.js')(app, passport); // import routes users
-require('./routes/home.js')(app, passport);
+require('./routes/main.js')(app, passport); // import routes users
 require('./routes/data.js')(app, passport,upload);
-
-
 
 
 // launch ======================================================================

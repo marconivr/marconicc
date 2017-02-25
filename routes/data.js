@@ -1,11 +1,9 @@
-
 /**
  * Created by matti on 10/11/2016.
  */
 
 
 var query = require('./../query/query.js');
-
 var csv = require("csv");
 var middleware = require ('./middleware/middleware');
 
@@ -25,15 +23,16 @@ module.exports = function (app,passport,upload) {
 
             query.insertRecordFromCSV(row);
 
-        }).on("end",function () {
-
-            res.send('ok');
-
         }).on("error",function (error) {
 
-            console.log(error.message);
+            console.log(error);
 
-        })
+        }).on("end",function () {
+
+            console.log("Finita lettura file");
+        });
+
+
     });
 
 
@@ -72,6 +71,22 @@ module.exports = function (app,passport,upload) {
             else
                 res.send(JSON.stringify(results));
         }, "PRIMA", 37030, "*");
+    });
+
+    /**
+     * Elenco studenti in tabella
+     */
+    app.get('/studenti', middleware.isLoggedIn, function (req, res) {
+        query.getStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.render('studenti.ejs', {
+                    user: req.user,
+                    pageTitle: " Studenti ",
+                    studentsData: results
+                });
+        });
     });
 
 

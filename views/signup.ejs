@@ -1,47 +1,41 @@
-<!-- views/signup.ejs -->
-<!doctype html>
-<html>
-<head>
-	<title>Node Authentication</title>
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-	<style>
-		body 		{ padding-top:80px; }
-	</style>
-</head>
-<body>
-<div class="container">
-
-<div class="col-sm-6 col-sm-offset-3">
-
-	<h1><span class="fa fa-sign-in"></span> Signup</h1>
-
-	<!-- show any messages that come back with authentication -->
-	<% if (message.length > 0) { %>
+<% include header %>
+<body class="signupBackground">
+<div class="ui middle aligned center aligned grid ">
+	<div class="column">
+		<!-- show any messages that come back with authentication -->
+        <% if (message.length > 0) { %>
 		<div class="alert alert-danger"><%= message %></div>
-	<% } %>
+        <% } %>
+		<form class="ui large form" action="/signup" method="post" >
+			<div class="ui stacked segment">
+				<h2 class="ui teal image header">
+					<div class="content">
+						Signup
+					</div>
+				</h2>
+				<div class="field">
+					<div class="ui left icon input">
+						<i class="user icon"></i>
+						<input type="text" name="username" placeholder="username">
+					</div>
+				</div>
+				<div class="field">
+					<div class="ui left icon input">
+						<i class="lock icon"></i>
+						<input type="password" name="password" placeholder="Password">
+					</div>
+				</div>
 
-	<!-- LOGIN FORM -->
-	<form action="/signup" method="post">
-		<div class="form-group">
-			<label>Username</label>
-			<input type="text" class="form-control" name="username">
+				<button class="ui fluid large teal submit button" type="submit">Signup</button>
+			</div>
+		</form>
+
+		<div class="ui message">
+			Already have an account? <a href="/login">Login</a>
 		</div>
-		<div class="form-group">
-			<label>Password</label>
-			<input type="password" class="form-control" name="password">
-		</div>
-
-		<button type="submit" class="btn btn-warning btn-lg">Signup</button>
-	</form>
-
-	<hr>
-
-	<p>Already have an account? <a href="/login">Login</a></p>
-	<p>Or go <a href="/">home</a>.</p>
-
+	</div>
 </div>
 
-</div>
 </body>
+
 </html>
