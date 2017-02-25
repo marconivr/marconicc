@@ -207,15 +207,17 @@ var findPriority = function (classe) {
 }
 
 var countAlunni = function(classe){
-    console.log(classe.alunni.length) ;
+    return classe.alunni.length ;
 }
 
 var countFemmine = function(classe){
-    for (int i = 0; i < classe.alunni.length){
+    var cont = 0;
+    for (var i = 0; i < classe.alunni.length; i++){
         if (classe.alunni[i].sesso == "F"){
-
+            cont++;
         }
     }
+    return cont;
 }
 
 var countStranieri = function(classe){
@@ -230,8 +232,22 @@ var countStessaProv = function(classe){
 
 }
 
+/**
+ * media Data una classe ritorna la media dei voti vdi tutti gli studenti
+ * @param classe
+ * @returns {float}
+ */
 var media = function(classe){
+    var somma = 0;
+    var cont = 0;
+    var media;
+    for (var i = 0; i < classe.alunni.length; i++){
+        somma = somma + classe.alunni[i].media_voti;
+        cont++;
+    }
 
+    media = somma / cont;
+    return media;
 }
 
 /**
@@ -241,10 +257,10 @@ var media = function(classe){
  */
 
 var findClasseFromString = function (nomeClasse) {
-    for(var k = 0; k < listClassi.length; k++){
-        if(listClassi[k].nome == nomeClasse){
-            return listClassi[k];
+        for(var k = 0; k < listClassi.length; k++){
+            if(listClassi[k].nome == nomeClasse){
+                return listClassi[k];
+            }
         }
+        return null;
     }
-    return null;
-}

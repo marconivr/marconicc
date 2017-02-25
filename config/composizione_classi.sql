@@ -97,6 +97,7 @@ INSERT INTO `priorita_scelta` (`id`, `scelta`) VALUES
 (4, 'alunni'),
 (5, 'stessa_nazionalita'),
 (6, 'media');
+(7, 'amici');
 
 -- --------------------------------------------------------
 
