@@ -24,50 +24,6 @@ var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Ros
 var CLASS = ["a","b","c","d","f","g","h","i","l","m","n","o","p","q","r","s","t","u","v","z"];
 
 
-//
-// {
-//     "classi":[
-//     {
-//         "nome_classe":"1af",
-//         "alunni":
-//             [
-//                 {
-//                     "name":"luigi",
-//                     "surname" : "verdi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 },
-//                 {
-//                     "name":"mario",
-//                     "surname" : "rossi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 }
-//
-//             ]
-//     },
-//     {
-//         "nome_classe":"1ad",
-//         "alunni":
-//             [
-//                 {
-//                     "name":"luigi",
-//                     "surname" : "verdi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 },
-//                 {
-//                     "name":"mario",
-//                     "surname" : "rossi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 }
-//
-//             ]
-//     }
-//
-// ]
-// }
 module.exports = {
     loadListAlunni: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
@@ -159,28 +115,6 @@ module.exports = {
 
 }
 
-
-/*
- if (priority[i] == "alunni"){
- countAlunni(classe)
- }
- else if (priority[i] == "femmine"){
- countFemmine(classe)
- }
- else if (priority[i] == "stranieri"){
- countStranieri(classe)
- }
- else if (priority[i] == "bocciati"){
- countBocciati(classe)
- }
- else if (priority[i] == "stessa_provenienza"){
- countStessaProv(classe)
- }
- else if (priority[i] == "media"){
- media(classe)
- }
- */
-// credo sia meglio lo switch case
 var findPriority = function (classe) {
 
     for (i = 0;i < priority.length;i++){
