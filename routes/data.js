@@ -6,6 +6,7 @@
 var query = require('./../query/query.js');
 var csv = require("csv");
 var middleware = require ('./middleware/middleware');
+var alg = require("./algorithm.js");
 
 module.exports = function (app,passport,upload) {
 
@@ -89,7 +90,7 @@ module.exports = function (app,passport,upload) {
         });
     });
 
-    app.get('/', middleware.isLoggedIn, function (req,res) {
+    app.get('/get-classi-composte', middleware.isLoggedIn, function (req,res) {
         var classi;
         alg.loadListAlunni("prima",function (err, results) {
             if (err)

@@ -1,21 +1,24 @@
 <% include header %>
-<body ng-app="application">
-<!--this is necessary because import the sidebar-->
 
 <style>
+    .contenitoreClasse{
+        list-style-type: none;
 
-    #sortable1, #sortable2,#sortable3 , #sortable4, #sortable5, #sortable6, #sortable7, #sortable8{
-        display:table-cell;
     }
-    #sortable1 li, #sortable2 li, #sortable3 li, #sortable4 li, #sortable5 li, #sortable6 li, #sortable7 li,#sortable8 li{
+
+   .contenitoreClasse li{
         margin: 0 5px 5px 5px;
         padding: 5px;
         width: 120px;
+        border: 1px solid #eee;
     }
 
+   .wrapperClasse{
+       border: 1px solid #eee;
+       display:table-cell;
+   }
+
     #wrapper {
-        width: 680px;
-        height: 160px;
         overflow-x: scroll;
         white-space:no-wrap;
     }
@@ -27,136 +30,89 @@
     .tr {
         display:table-row;
     }
-
 </style>
 
 <script>
     $( function() {
-        $("#sortable1, #sortable2,#sortable3, #sortable4, #sortable5, #sortable6, #sortable7,#sortable8").sortable({
-            connectWith: ".connectedSortable"
+        $(".contenitoreClasse").sortable({
+            connectWith: ".contenitoreClasse"
         }).disableSelection();
     } );
+
+
+
+
 </script>
 
 <% include sidebar-start.ejs %>
 
 
-
-<div class="wrapper">
-<div class="table">
-    <div class="tr">
-    <ul id="sortable1" class="connectedSortable">
-        <li class="ui-state-default">Item 1</li>
-        <li class="ui-state-default">Item 2</li>
-        <li class="ui-state-default">Item 3</li>
-        <li class="ui-state-default">Item 4</li>
-        <li class="ui-state-default">Item 5</li>
-    </ul>
-
-    <ul id="sortable2" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
+<div id="wrapper">
+    <div class="table">
+        <div id="rowForInsertClasses" class="tr">
 
 
-    <ul id="sortable3" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-
-    <ul id="sortable4" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-
-    <ul id="sortable5" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
 
 
-    <ul id="sortable6" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-
-
-    <ul id="sortable7" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-
-    <ul id="sortable8" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-
-    <ul id="sortable8" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-    <ul id="sortable8" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-    <ul id="sortable8" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-    <ul id="sortable8" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-    <ul id="sortable8" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
-    <ul id="sortable8" class="connectedSortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-    </ul>
+        </div>
+    </div>
 </div>
-</div>
-</div>
+
+
+    <script>
+        $.ajax({
+            url: '/get-classi-composte',
+            data: {
+                format: 'json'
+            },
+            error: function() {
+                alert('error scaricamento dati');
+            },
+            dataType: 'json',
+            success: function(listaClassi) {
+                console.log(listaClassi);
+
+                for (var i=0 ; i<listaClassi.length ; i++){
+                    var nomeClasse = listaClassi[i].nome;
+                    var arrayStudenti = listaClassi[i].alunni;
+
+                    var wrapperClasse = $('<div/>', {
+                        'class':'wrapperClasse',
+                        'html': $('<h3/>').text(nomeClasse)
+                    }).appendTo('#rowForInsertClasses');
+
+                    var ul = $('<ul/>',{
+                        'class':'contenitoreClasse'
+                    }).appendTo(wrapperClasse);
+
+                    for (var j=0; j < arrayStudenti.length ; j++){
+                        if (arrayStudenti[j] !== null){
+                            var cognomeStudente = arrayStudenti[j].cognome;
+
+                            var li = $('<li/>')
+                                .addClass("ui-state-default")
+                                .text(cognomeStudente)
+                                .appendTo(ul);
+                        }
+
+                    }
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+            },
+            type: 'GET'
+        });
+    </script>
 <% include sidebar-stop.ejs%>
 <!--personal script for specific page -->
 
