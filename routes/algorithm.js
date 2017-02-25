@@ -212,7 +212,11 @@ var countAlunni = function(classe){
 }
 
 var countFemmine = function(classe){
+    for (int i = 0; i < classe.alunni.length){
+        if (classe.alunni[i].sesso == "F"){
 
+        }
+    }
 }
 
 var countStranieri = function(classe){
