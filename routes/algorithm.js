@@ -21,7 +21,7 @@ var settings = {
 var priority = {}
 var listAlunni = [];
 var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
-var CLASS = ["a", "b", "c", "d", "f", "g", "h", "i", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "z"];
+var CLASS = ["a","b","c","d","f","g","h","i","l","m","n","o","p","q","r","s","t","u","v","z"];
 
 
 //
@@ -69,48 +69,49 @@ var CLASS = ["a", "b", "c", "d", "f", "g", "h", "i", "l", "m", "n", "o", "p", "q
 // ]
 // }
 module.exports = {
-    loadListAlunni: function (classe, callback) {
+    loadListAlunni: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
             query.getStudentiPrima(function (err, results) {
                 if (err)
                     throw err;
-                else {
+                else{
 
                     async.waterfall(
                         [
                             function (callback) {
                                 var string = JSON.stringify(results);
-                                callback(null, string);
+                                callback(null,string);
 
                             },
-                            function (string, callback) {
-                                var json = JSON.parse(string);
-                                callback(null, json);
+                            function (string,callback) {
+                                var json =  JSON.parse(string);
+                                callback(null,json);
                             },
-                            function (json, callback) {
+                            function (json,callback) {
                                 listAlunni = json;
                                 callback();
                             },
                             function (callback) {
-                                module.exports.numberOfClassi("prima", function () {
+                                module.exports.numberOfClassi("prima",function () {
                                     callback();
                                 });
                             },
                             function (callback) {
-                                module.exports.createListClassi("prima", function () {
+                                module.exports.createListClassi("prima",function () {
                                     callback();
                                 });
                             }
                         ],
-                        function (err, succes) {
-                            if (err) {
+                        function (err,succes) {
+                            if (err){
                                 console.log(err);
 
-                            } else {
-                                callback(err, listClassi);
+                            }else{
+                                callback(err,listClassi);
                             }
 
                         }
+
                     )
                 }
             });
@@ -119,12 +120,12 @@ module.exports = {
 
     },
 
-    numberOfClassi: function (classe, callback) {
+    numberOfClassi: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
             var num = Math.round(listAlunni.length / (settings.min_al));
             for (i = 0; i < num; i++) {
                 //assing class name
-                var classe = "1" + String.fromCharCode(65 + i);
+                 var classe = "1" + String.fromCharCode(65+i);
                 listClassi.push({nome: classe, alunni: []});
             }
         }
@@ -132,18 +133,18 @@ module.exports = {
     }
     ,
 
-    createListClassi: function (classe, callback) {
+    createListClassi: function (classe,callback) {
         if (classe.toLowerCase() == "prima") {
-            while (listAlunni.length != 0) {
-                for (k = 0; k < listClassi.length; k++) {
-                    for (var i = 0; i < settings.max_al; i++) {
+            while (listAlunni.length != 0){
+                for(k = 0; k < listClassi.length; k++){
+                    for (var i = 0; i < settings.max_al; i++){
                         var alunno = listAlunni[Math.floor(Math.random() * listAlunni.length)];
-                        if (alunno === undefined) {
+                        if(alunno === undefined) {
                             console.log("f")
                         }
                         listClassi[k].alunni.push(alunno);
                         listAlunni.splice(listAlunni.indexOf(alunno), 1);
-                        if (listClassi[k].alunni.length >= settings.min_al) {
+                        if (listClassi[k].alunni.length >= settings.min_al){
                             break;
                         }
                     }
@@ -159,8 +160,8 @@ module.exports = {
 
 var findPriority = function (classe) {
 
-    for (i = 0; i < priority.length; i++) {
-        switch (priority[i]) {
+    for (i = 0;i < priority.length;i++){
+        switch (priority[i]){
             case "alunni":
                 countAlunni(classe);
                 break;
@@ -177,29 +178,40 @@ var findPriority = function (classe) {
                 countStessaProv(classe)
                 break;
             case "media":
-                mediaClasse(classe);
+                media(classe);
                 break;
         }
     }
 }
 
-var countAlunni = function (classe) {
-    console.log(classe.alunni.length);
+var countAlunni = function(classe){
+    console.log(classe.alunni.length) ;
 }
 
-var countFemmine = function (classe) {
+/**
+ * countFemmine Data la classe ritorna il numero di femmine
+ * @param classe
+ * @returns {number}
+ */
+var countFemmine = function(classe){
+    var cont = 0;
+    for (var i = 0; i < classe.alunni.length; i++){
+        if (classe.alunni[i].sesso == "F"){
+            cont++;
+        }
+    }
+    return cont;
+}
+
+var countStranieri = function(classe){
 
 }
 
-var countStranieri = function (classe) {
+var countBocciati = function(classe){
 
 }
 
-var countBocciati = function (classe) {
-
-}
-
-var countStessaProv = function (classe) {
+var countStessaProv = function(classe){
 
 }
 
