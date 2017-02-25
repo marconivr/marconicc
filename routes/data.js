@@ -89,6 +89,18 @@ module.exports = function (app,passport,upload) {
         });
     });
 
+    app.get('/', middleware.isLoggedIn, function (req,res) {
+        var classi;
+        alg.loadListAlunni("prima",function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                res.send(results);
+            }
+        });
+
+    })
+
 
 }
 

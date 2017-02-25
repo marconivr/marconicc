@@ -86,20 +86,10 @@ module.exports = function (app, passport) {
         });
     });
 
-    app.get('/example-page', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        var classi;
-        alg.loadListAlunni("prima",function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                res.send(results);
-            }
-
-        });
-    console.log(classi)
-        // alg.numberOfClassi("prima");
-        // alg.createListClassi("prima");
-        
+    app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('panoramica-classi.ejs',{
+            pageTitle: "Panoramica classi"
+        })
     });
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
@@ -108,7 +98,6 @@ module.exports = function (app, passport) {
                 throw err;
             else
                 setValueOfArrayForSettings(results,"numberOfStudentiPrima");
-
         });
 
         query.getNumerOfStudentiTerza(function (err, results) {
@@ -153,14 +142,6 @@ module.exports = function (app, passport) {
             data:JSON.stringify(dataInSettings)
         });
     });
-
-/*    app.get('/test', middleware.isLoggedIn, function (req, res) {
-<<<<<<< Updated upstream
-
-=======
-        alg.numberOfClassi("prima");
->>>>>>> Stashed changes
-    }); */
 
 
       function setValueOfArrayForSettings(rows,key) {
