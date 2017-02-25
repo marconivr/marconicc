@@ -137,7 +137,7 @@ module.exports = {
         if (classe.toLowerCase() == "prima") {
             while (listAlunni.length != 0){
                 for(k = 0; k < listClassi.length; k++){
-                    for (i = 0; i < settings.max_al; i++){
+                    for (var i = 0; i < settings.max_al; i++){
                         var alunno = listAlunni[Math.floor(Math.random() * listAlunni.length)];
                         if(alunno === undefined) {
                             console.log("f")
@@ -158,28 +158,6 @@ module.exports = {
 
 }
 
-
-/*
- if (priority[i] == "alunni"){
- countAlunni(classe)
- }
- else if (priority[i] == "femmine"){
- countFemmine(classe)
- }
- else if (priority[i] == "stranieri"){
- countStranieri(classe)
- }
- else if (priority[i] == "bocciati"){
- countBocciati(classe)
- }
- else if (priority[i] == "stessa_provenienza"){
- countStessaProv(classe)
- }
- else if (priority[i] == "media"){
- media(classe)
- }
- */
-// credo sia meglio lo switch case
 var findPriority = function (classe) {
 
     for (i = 0;i < priority.length;i++){
@@ -228,4 +206,19 @@ var countStessaProv = function(classe){
 
 var media = function(classe){
 
+}
+
+/**
+ * findClasseFromString data una stringa ritorna l'oggetto classe dato il nome
+ * @param nomeClasse stringa
+ * @returns {object}
+ */
+
+var findClasseFromString = function (nomeClasse) {
+    for (var k = 0; k < listClassi.length; k++) {
+        if (listClassi[k].nome == nomeClasse) {
+            return listClassi[k];
+        }
+    }
+    return null;
 }
