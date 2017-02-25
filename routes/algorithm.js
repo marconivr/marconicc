@@ -178,29 +178,31 @@ var findPriority = function (classe) {
                 countStessaProv(classe)
                 break;
             case "media":
-                media(classe);
+                mediaClasse(classe);
                 break;
         }
     }
 }
 
 var countAlunni = function(classe){
-    console.log(classe.alunni.length) ;
+    classe = classeIsObj(classe);
+    return classe.alunni.length ;
 }
 
 /**
  * countFemmine Data la classe ritorna il numero di femmine
  * @param classe
- * @returns {number}
+ * @returns {Number}
  */
 var countFemmine = function(classe){
-    var cont = 0;
+    classe = classeIsObj(classe);
+    var count = 0;
     for (var i = 0; i < classe.alunni.length; i++){
         if (classe.alunni[i].sesso == "F"){
-            cont++;
+            count++;
         }
     }
-    return cont;
+    return count;
 }
 
 var countStranieri = function(classe){

@@ -40,11 +40,9 @@ module.exports = {
         var media_voto = arrayRow[11];
         var classe_futura = arrayRow[12];
 
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",[cognome,nome,cf,sesso,dataDiNascita,statoRichiesta,cap,indirizzo,annoScolastico,anno,codice_cat,media_voto,classe_futura],function (err, row) {
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?)",[cognome,nome,cf,sesso,dataDiNascita.split(" ")[0],statoRichiesta,cap,indirizzo,annoScolastico,anno,codice_cat,media_voto,classe_futura],function (err, row) {
             if (err){
                 console.log(err);
-            }else {
-                console.log("INSERITO CORRETTAMENTE");
             }
         });
     },
