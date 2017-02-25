@@ -124,12 +124,8 @@ module.exports = {
         if (classe.toLowerCase() == "prima") {
             var num = Math.round(listAlunni.length / (settings.min_al));
             for (i = 0; i < num; i++) {
-                try {
-                    classe = "1" + CLASS[i] + "";
-                }
-                catch (err) {
-                    classe = "1a" + "";
-                }
+                //assing class name
+                 var classe = "1" + String.fromCharCode(65+i);
                 listClassi.push({nome: classe, alunni: []});
             }
         }
@@ -143,6 +139,9 @@ module.exports = {
                 for(k = 0; k < listClassi.length; k++){
                     for (i = 0; i < settings.max_al; i++){
                         var alunno = listAlunni[Math.floor(Math.random() * listAlunni.length)];
+                        if(alunno === undefined) {
+                            console.log("f")
+                        }
                         listClassi[k].alunni.push(alunno);
                         listAlunni.splice(listAlunni.indexOf(alunno), 1);
                         if (listClassi[k].alunni.length >= settings.min_al){
