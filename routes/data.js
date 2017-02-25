@@ -1,11 +1,9 @@
-
 /**
  * Created by matti on 10/11/2016.
  */
 
 
 var query = require('./../query/query.js');
-
 var csv = require("csv");
 var middleware = require ('./middleware/middleware');
 
@@ -25,16 +23,16 @@ module.exports = function (app,passport,upload) {
 
             query.insertRecordFromCSV(row);
 
-        }).on("end",function () {
-
-            res.send('ok');
-
         }).on("error",function (error) {
 
-            console.error(error.message);
-            throw 'error when i try to upload data in db';
+            console.log(error);
 
-        })
+        }).on("end",function () {
+
+            console.log("Finita lettura file");
+        });
+
+
     });
 
 
