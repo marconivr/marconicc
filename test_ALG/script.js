@@ -112,7 +112,7 @@ function searchClass(nomeClasse){
 }
 
 /**
- * searchAlunno cerca un alunno in listAlunni
+ * searchAlunno cerca un alunno in listaAlunni
  */
 function searchAlunno(cf){
     for (i=0; i < listAlunni.length; i++){

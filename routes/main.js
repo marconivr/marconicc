@@ -143,8 +143,7 @@ module.exports = function (app, passport) {
         });
     });
 
-
-      function setValueOfArrayForSettings(rows,key) {
-          dataInSettings[key]= rows[0].result;
+    function setValueOfArrayForSettings(rows, key) {
+        dataInSettings[key] = rows[0].result;
     }
 };

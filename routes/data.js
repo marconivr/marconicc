@@ -5,30 +5,30 @@
 
 var query = require('./../query/query.js');
 var csv = require("csv");
-var middleware = require ('./middleware/middleware');
+var middleware = require('./middleware/middleware');
 var alg = require("./algorithm.js");
 
-module.exports = function (app,passport,upload) {
+module.exports = function (app, passport, upload) {
 
 
-    app.post('/upload-csv', upload.single('csv') , middleware.isLoggedIn ,function(req, res){
+    app.post('/upload-csv', upload.single('csv'), middleware.isLoggedIn, function (req, res) {
 
         var data = req.file; //information about data uploaded (post method)
 
-        csv().from.path(data.path,{
+        csv().from.path(data.path, {
             delimiter: ";",
             escape: ''
         })
 
-        .on("record",function (row,index) {
+            .on("record", function (row, index) {
 
-            query.insertRecordFromCSV(row);
+                query.insertRecordFromCSV(row);
 
-        }).on("error",function (error) {
+            }).on("error", function (error) {
 
             console.log(error);
 
-        }).on("end",function () {
+        }).on("end", function () {
 
             console.log("Finita lettura file");
         });
@@ -37,8 +37,7 @@ module.exports = function (app,passport,upload) {
     });
 
 
-
-    app.get('/studenti-prima-json', middleware.isLoggedIn ,function(req, res){
+    app.get('/studenti-prima-json', middleware.isLoggedIn, function (req, res) {
 
         query.getStudentiPrima(function (err, results) {
             if (err)
@@ -50,8 +49,8 @@ module.exports = function (app,passport,upload) {
 
     /**
      * Per visualizzare il numero di ragazze di prima
-    */
-    app.get('/numero-ragazze-prima', middleware.isLoggedIn ,function(req, res){
+     */
+    app.get('/numero-ragazze-prima', middleware.isLoggedIn, function (req, res) {
 
         query.getNumberGirl(function (err, results) {
             if (err)
@@ -64,7 +63,7 @@ module.exports = function (app,passport,upload) {
     /**
      * Per visualizzare il numero di ragazzi stesso cap con * altrimenti si specifica il codice catastale
      */
-    app.get('/numero-stesso-cap', middleware.isLoggedIn ,function(req, res){
+    app.get('/numero-stesso-cap', middleware.isLoggedIn, function (req, res) {
 
         query.getNumberSameResidence(function (err, results) {
             if (err)
@@ -90,19 +89,68 @@ module.exports = function (app,passport,upload) {
         });
     });
 
-    app.get('/get-classi-composte', middleware.isLoggedIn, function (req,res) {
+    app.get('/get-classi-composte', middleware.isLoggedIn, function (req, res) {
         var classi;
-        alg.loadListAlunni("prima",function (err, results) {
+        var nAlunniCompCl;
+        var listaClassi = [];
+        var listaNomiClassi = [];
+        var listaAlunniClasse = [];
+
+        query.getNumberAlunniClassi("prima", function (err, results) {
             if (err)
-                console.log(err);
+                console.log(results);
             else {
-                res.send(results);
+                nAlunniCompCl = results[0].result;
             }
         });
 
-    })
+        console.log("Numero: " + nAlunniCompCl);
+        nAlunniCompCl = 12;
+        console.log("Numero: " + nAlunniCompCl);
 
+        if (nAlunniCompCl == 0) {
+            alg.loadListAlunni("prima", function (err, results) {
+                if (err)
+                    console.log(err);
+                else {
+                    classi = results;
+                }
+            });
 
+            query.insertClassi(alg.listaNomiClassi());
+
+            for (var i = 0; i < classi.length; i++) {
+                for (var k = 0; k < classi[i].alunni.length; k++) {
+                    if (classi[i].alunni[k] !== undefined) {
+                        query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
+                    }
+                }
+            }
+        }
+        else {
+            query.getClassi(function (err, results) {
+                if (err)
+                    console.log(err);
+                else {
+                    listaNomiClassi = results;
+                }
+            });
+
+            for (var i = 0; i < listaNomiClassi.length; i++) {
+                alg.getAlunniFromClass(listaClassi[i], function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else {
+                        listaAlunniClasse = results;
+                    }
+                });
+                listaClassi.push({nome: listaNomiClassi[i], alunni: listaAlunniClasse});
+            }
+            classi = listaAlunniClasse;
+        }
+        console.log(classi);
+        res.send(classi);
+    });
 }
 
 

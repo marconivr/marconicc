@@ -9,24 +9,24 @@ function controlloIdoneità(objalunno, objclasse, ind){
             stranieriSimiliInClasse(objclasse, objalunno.nazionalita) <= impostazioni.stranieri){
 
                 insertAlunnoInClass(objalunno, objclasse);
-                listAlunni.splice(ind, 1);
+                listaAlunni.splice(ind, 1);
                 return;
             }
             else if (clEsaurite){
                 insertAlunnoInClass(objalunno, objclasse);
-                listAlunni.splice(ind, 1);
+                listaAlunni.splice(ind, 1);
                 return;
             }
         }
         else if (clEsaurite){
             insertAlunnoInClass(objalunno, objclasse);
-            listAlunni.splice(ind, 1);
+            listaAlunni.splice(ind, 1);
             return;
         }
     }
     else if (clEsaurite){
             insertAlunnoInClass(objalunno, objclasse);
-            listAlunni.splice(ind, 1);
+            listaAlunni.splice(ind, 1);
             return;
         }
 }
@@ -36,17 +36,17 @@ function popolamentoInClassi(){
     alert("popolamento classi");
     for (i = 0; i < listClass.length; i++){
         blocco = false;
-        //alert(listClass[i].nome + ". Alunni da assegnare: " + listAlunni.length);
+        //alert(listClass[i].nome + ". Alunni da assegnare: " + listaAlunni.length);
         while (listClass[i].alunni.length <= impostazioni.studXClMax){
-            var ind = Math.floor(Math.random() * listAlunni.length);
-            controlloIdoneità(listAlunni[ind], listClass[i], ind); //insertAlunnoInClass()
+            var ind = Math.floor(Math.random() * listaAlunni.length);
+            controlloIdoneità(listaAlunni[ind], listClass[i], ind); //insertAlunnoInClass()
             /*
             if (listClass[i].alunni.length >= (impostazioni.studXClMax / 2)){
-                controlloIdoneità(listAlunni[ind], listClass[i], ind); //insertAlunnoInClass()
+                controlloIdoneità(listaAlunni[ind], listClass[i], ind); //insertAlunnoInClass()
             }
             else{
-                insertAlunnoInClass(listAlunni[ind], listClass[i]);
-                listAlunni.splice(ind, 1);
+                insertAlunnoInClass(listaAlunni[ind], listClass[i]);
+                listaAlunni.splice(ind, 1);
             }*/
             //questo controllo va in fondo in questa maniera tale che se rimane qualche alunno da inserire può essere inserito finchè non raggiunge il massimo stabilito
             //alert(listClass[i].alunni + " , " + listClass[i].alunni.length);
@@ -59,7 +59,7 @@ function popolamentoInClassi(){
         }
     }
     clEsaurite = true;
-    if (listAlunni.length > 0 && clEsaurite){
+    if (listaAlunni.length > 0 && clEsaurite){
         popolamentoInClassi();
     }
     alert("popolamento completata");

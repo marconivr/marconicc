@@ -19,149 +19,99 @@ var settings = {
     an_scol: "2017-2018"
 }
 var priority = {}
-var listAlunni = [];
-var listClassi = []  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
-var CLASS = ["a","b","c","d","f","g","h","i","l","m","n","o","p","q","r","s","t","u","v","z"];
+var listaAlunni = [];
+var listaClassi = [];  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
-
-//
-// {
-//     "classi":[
-//     {
-//         "nome_classe":"1af",
-//         "alunni":
-//             [
-//                 {
-//                     "name":"luigi",
-//                     "surname" : "verdi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 },
-//                 {
-//                     "name":"mario",
-//                     "surname" : "rossi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 }
-//
-//             ]
-//     },
-//     {
-//         "nome_classe":"1ad",
-//         "alunni":
-//             [
-//                 {
-//                     "name":"luigi",
-//                     "surname" : "verdi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 },
-//                 {
-//                     "name":"mario",
-//                     "surname" : "rossi",
-//                     "media_voti":7,
-//                     "cf":"dfhsddg44f"
-//                 }
-//
-//             ]
-//     }
-//
-// ]
-// }
 module.exports = {
-    loadListAlunni: function (classe,callback) {
+    loadListAlunni: function (classe, callback) {
         if (classe.toLowerCase() == "prima") {
             query.getStudentiPrima(function (err, results) {
                 if (err)
                     throw err;
-                else{
-
+                else {
                     async.waterfall(
                         [
                             function (callback) {
                                 var string = JSON.stringify(results);
-                                callback(null,string);
-
+                                callback(null, string);
                             },
-                            function (string,callback) {
-                                var json =  JSON.parse(string);
-                                callback(null,json);
+                            function (string, callback) {
+                                var json = JSON.parse(string);
+                                callback(null, json);
                             },
-                            function (json,callback) {
-                                listAlunni = json;
+                            function (json, callback) {
+                                listaAlunni = json;
                                 callback();
                             },
                             function (callback) {
-                                module.exports.numberOfClassi("prima",function () {
+                                module.exports.numberOfClassi("prima", function () {
                                     callback();
                                 });
                             },
                             function (callback) {
-                                module.exports.createListClassi("prima",function () {
+                                module.exports.createListClassi("prima", function () {
                                     callback();
                                 });
                             }
                         ],
-                        function (err,succes) {
-                            if (err){
+                        function (err, succes) {
+                            if (err) {
                                 console.log(err);
-
-                            }else{
-                                callback(err,listClassi);
+                            } else {
+                                callback(err, listaClassi);
                             }
-
                         }
-
                     )
                 }
             });
-
         }
-
     },
 
-    numberOfClassi: function (classe,callback) {
+    numberOfClassi: function (classe, callback) {
         if (classe.toLowerCase() == "prima") {
-            var num = Math.round(listAlunni.length / (settings.min_al));
+            var num = Math.round(listaAlunni.length / (settings.min_al));
             for (i = 0; i < num; i++) {
                 //assing class name
-                 var classe = "1" + String.fromCharCode(65+i);
-                listClassi.push({nome: classe, alunni: []});
+                var classe = "1" + String.fromCharCode(65 + i);
+                listaClassi.push({nome: classe, alunni: []});
             }
         }
         callback();
-    }
-    ,
+    },
 
-    createListClassi: function (classe,callback) {
+    createListClassi: function (classe, callback) {
         if (classe.toLowerCase() == "prima") {
-            while (listAlunni.length != 0){
-                for(k = 0; k < listClassi.length; k++){
-                    for (var i = 0; i < settings.max_al; i++){
-                        var alunno = listAlunni[Math.floor(Math.random() * listAlunni.length)];
-                        if(alunno === undefined) {
-                            console.log("f")
-                        }
-                        listClassi[k].alunni.push(alunno);
-                        listAlunni.splice(listAlunni.indexOf(alunno), 1);
-                        if (listClassi[k].alunni.length >= settings.min_al){
+            while (listaAlunni.length != 0) {
+                for (k = 0; k < listaClassi.length; k++) {
+                    for (var i = 0; i < settings.max_al; i++) {
+                        var alunno = listaAlunni[Math.floor(Math.random() * listaAlunni.length)];
+                        listaClassi[k].alunni.push(alunno);
+                        listaAlunni.splice(listaAlunni.indexOf(alunno), 1);
+                        if (listaClassi[k].alunni.length >= settings.min_al) {
                             break;
                         }
                     }
-                    findPriority(listClassi[k]);
+                    findPriority(listaClassi[k]);
                 }
             }
-            console.log(listClassi);
             callback();
         }
+    },
+
+    listaNomiClassi: function () {
+        var listaNomi = [];
+        for (var k = 0; k < listaClassi.length; k++) {
+            listaNomi.push(listaClassi[k].nome);
+        }
+        return listaNomi;
     }
 
 }
 
 var findPriority = function (classe) {
 
-    for (i = 0;i < priority.length;i++){
-        switch (priority[i]){
+    for (i = 0; i < priority.length; i++) {
+        switch (priority[i]) {
             case "alunni":
                 countAlunni(classe);
                 break;
@@ -172,10 +122,10 @@ var findPriority = function (classe) {
                 countStranieri(classe);
                 break;
             case "bocciati":
-                countBocciati(classe)
+                countBocciati(classe);
                 break;
             case "stessa_provenienza":
-                countStessaProv(classe)
+                countStessaProv(classe);
                 break;
             case "media":
                 mediaClasse(classe);
@@ -184,9 +134,9 @@ var findPriority = function (classe) {
     }
 }
 
-var countAlunni = function(classe){
+var countAlunni = function (classe) {
     classe = classeIsObj(classe);
-    return classe.alunni.length ;
+    return classe.alunni.length;
 }
 
 /**
@@ -194,26 +144,26 @@ var countAlunni = function(classe){
  * @param classe
  * @returns {Number}
  */
-var countFemmine = function(classe){
+var countFemmine = function (classe) {
     classe = classeIsObj(classe);
     var count = 0;
-    for (var i = 0; i < classe.alunni.length; i++){
-        if (classe.alunni[i].sesso == "F"){
+    for (var i = 0; i < classe.alunni.length; i++) {
+        if (classe.alunni[i].sesso == "F") {
             count++;
         }
     }
     return count;
 }
 
-var countStranieri = function(classe){
+var countStranieri = function (classe) {
 
 }
 
-var countBocciati = function(classe){
+var countBocciati = function (classe) {
 
 }
 
-var countStessaProv = function(classe){
+var countStessaProv = function (classe) {
 
 }
 
@@ -236,9 +186,9 @@ var mediaClasse = function (classe) {
  */
 
 var findClasseFromString = function (nomeClasse) {
-    for (var k = 0; k < listClassi.length; k++) {
-        if (listClassi[k].nome == nomeClasse) {
-            return listClassi[k];
+    for (var k = 0; k < listaClassi.length; k++) {
+        if (listaClassi[k].nome == nomeClasse) {
+            return listaClassi[k];
         }
     }
     return null;
