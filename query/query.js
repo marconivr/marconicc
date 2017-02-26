@@ -85,7 +85,7 @@ module.exports = {
     },
 
     getAlunniFromClassSync: function(classe, count, callback) {
-        connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "'", function (err, rows) {
+        connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "' ORDER BY alunni.cognome, alunni.nome", function (err, rows) {
             if (err) {
                 console.log(err);
             } else {

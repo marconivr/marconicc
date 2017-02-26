@@ -118,11 +118,9 @@ module.exports = function (app, passport, upload) {
                                     }
                                 }
                             }
+                            res.send(classi);
                         }
                     });
-
-                    console.log(classi);
-                    res.send(classi);
 
                 } else {
                     query.getClassi(function (err, results) {
@@ -147,18 +145,12 @@ module.exports = function (app, passport, upload) {
                                 });
                                 counter++
                             }
-
-
-
                         }
                     });
                 }
             }
         });
     });
-
-
-
 };
 
 
