@@ -129,7 +129,9 @@ module.exports = function (app, passport, upload) {
                         if (err)
                             console.log(err);
                         else {
+
                             listaNomiClassi = results;
+                            var counter = 0;
                             for (var i = 0; i < listaNomiClassi.length; i++) {
                                 query.getAlunniFromClass(listaNomiClassi[i].nome, function (err, results, nomeCl) {
                                     if (err)
@@ -137,13 +139,19 @@ module.exports = function (app, passport, upload) {
                                     else {
                                         listaAlunniClasse = results;
                                         listaClassi.push({nome: nomeCl, alunni: listaAlunniClasse});
-                                        console.log(listaClassi);
+                                        if (counter  == listaNomiClassi.length -1){
+                                            console.log(listaClassi);
+                                            res.send(listaClassi);
+                                        }
+
                                     }
                                 });
+
+                                counter++
                             }
-                            classi = listaClassi;
-                            console.log(classi);
-                            res.send(classi);
+
+
+
                         }
                     });
                 }
