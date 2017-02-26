@@ -7,6 +7,7 @@ var query = require('./../query/query.js');
 var csv = require("csv");
 var middleware = require('./middleware/middleware');
 var alg = require("./algorithm.js");
+var async = require('async');
 
 module.exports = function (app, passport, upload) {
 

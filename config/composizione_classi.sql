@@ -512,3 +512,29 @@ INSERT INTO `richiesta_amico` (`id`, `alunno`, `amico`) VALUES
 (2, 'BNTDGI03A09I775U', 'ZTTMTT03D16F861C');
 
 
+CREATE TABLE `classi` (
+  `nome` varchar(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `comp_classi`
+--
+
+CREATE TABLE `comp_classi` (
+  `nome_classe` varchar(5) NOT NULL,
+  `cf_alunno` char(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `comp_classi`
+  ADD PRIMARY KEY (`nome_classe`,`cf_alunno`),
+  ADD KEY `cf_alunno` (`cf_alunno`);
+
+--
+-- Indici per le tabelle `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+
