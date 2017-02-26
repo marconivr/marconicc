@@ -19,6 +19,7 @@ Elenco passi da eseguire per lanciare il progetto:
 
 ##Progettazione
 
+###Spina di pesce
 ###WBS
 ###GANTT
 ###Matrice responsabilità
@@ -26,6 +27,12 @@ Elenco passi da eseguire per lanciare il progetto:
 ###Unità organizzative
 ![](img\unita_organizzative.png)
 ###Strumenti utilizzati
+- WebStorm
+- NodeJs
+- Trello
+- Visio
+
+
 
 
 ##Sprint

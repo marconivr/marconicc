@@ -91,7 +91,6 @@ module.exports = {
                             break;
                         }
                     }
-                    findPriority(listaClassi[k]);
                 }
             }
             callback();
@@ -104,16 +103,79 @@ module.exports = {
             listaNomi.push(listaClassi[k].nome);
         }
         return listaNomi;
+    },
+
+    countAlunni : function (classe) {
+        //classe = classeIsObj(classe);
+        return classe.alunni.length;
+    },
+
+    /**
+     * countFemmine Data la classe ritorna il numero di femmine
+     * @param classe
+     * @returns {Number}
+     */
+    countFemmine : function (classe) {
+        classe = classeIsObj(classe);
+        var cont = 0;
+        for (var i = 0; i < classe.alunni.length; i++) {
+            if (classe.alunni[i].sesso == "F") {
+                cont++;
+            }
+        }
+        return cont;
+    },
+
+    mediaClasse : function (classe) {
+        classe = classeIsObj(classe);
+        var somma = 0;
+
+        for (var i = 0; i < classe.alunni.length; i++) {
+            somma += classe.alunni[i].media;
+        }
+
+        return (somma / classe.alunni.length);
+
+    },
+
+    countStranieri : function (classe) {
+
+    },
+
+    countBocciati : function (classe) {
+
+    },
+
+    countStessaProv : function (classe) {
+        var cont = 0;
+        var cont1 = 0;
+        var prov;
+
+        for (var i = 0; i < classe.alunni.length; i++) {
+            prov = classe.alunni[i].cap_provenienza;
+
+            for (var j = i + 1; j < classe.alunni.length; j++) {
+                if (prov == classe.alunni[j].cap_provenienza){
+                    cont+=1;
+                }
+            }
+            if (cont>=cont1){
+                cont1 = cont;
+            }
+            cont = 0;
+        }
+        return cont1;
     }
 
 }
 
+/*
 var findPriority = function (classe) {
 
     for (i = 0; i < priority.length; i++) {
         switch (priority[i]) {
             case "alunni":
-                countAlunni(classe);
+                /countAlunni(classe);
                 break;
             case "femmine":
                 countFemmine(classe);
@@ -133,51 +195,7 @@ var findPriority = function (classe) {
         }
     }
 }
-
-var countAlunni = function (classe) {
-    classe = classeIsObj(classe);
-    return classe.alunni.length;
-}
-
-/**
- * countFemmine Data la classe ritorna il numero di femmine
- * @param classe
- * @returns {Number}
- */
-var countFemmine = function (classe) {
-    classe = classeIsObj(classe);
-    var count = 0;
-    for (var i = 0; i < classe.alunni.length; i++) {
-        if (classe.alunni[i].sesso == "F") {
-            count++;
-        }
-    }
-    return count;
-}
-
-var countStranieri = function (classe) {
-
-}
-
-var countBocciati = function (classe) {
-
-}
-
-var countStessaProv = function (classe) {
-
-}
-
-var mediaClasse = function (classe) {
-    classe = classeIsObj(classe);
-    var somma = 0;
-
-    for (var i = 0; i < classe.alunni.length; i++) {
-        somma += classe.alunni[i].media;
-    }
-
-    return (somma / classe.alunni.length);
-
-}
+*/
 
 /**
  * findClasseFromString data una stringa ritorna l'oggetto classe dato il nome
