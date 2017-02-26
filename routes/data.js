@@ -42,7 +42,7 @@ module.exports = function (app, passport, upload) {
 
         query.getStudentiPrima(function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else
                 res.send(JSON.stringify(results));
         });
@@ -55,7 +55,7 @@ module.exports = function (app, passport, upload) {
 
         query.getNumberGirl(function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else
                 res.send(JSON.stringify(results));
         }, "PRIMA");
@@ -68,7 +68,7 @@ module.exports = function (app, passport, upload) {
 
         query.getNumberSameResidence(function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else
                 res.send(JSON.stringify(results));
         }, "PRIMA", 37030, "*");
@@ -80,7 +80,7 @@ module.exports = function (app, passport, upload) {
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
         query.getStudentiPrima(function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else
                 res.render('studenti.ejs', {
                     user: req.user,
@@ -90,6 +90,7 @@ module.exports = function (app, passport, upload) {
         });
     });
 
+
     app.get('/get-classi-composte', middleware.isLoggedIn, function (req, res) {
         var classi;
         var nAlunniCompCl;
@@ -97,61 +98,65 @@ module.exports = function (app, passport, upload) {
         var listaNomiClassi = [];
         var listaAlunniClasse = [];
 
+
         query.getNumberAlunniClassi("prima", function (err, results) {
             if (err)
                 console.log(results);
             else {
                 nAlunniCompCl = results[0].result;
+                if (nAlunniCompCl == 0) {
+                    alg.loadListAlunni("prima", function (err, results) {
+                        if (err)
+                            console.log(err);
+                        else {
+                            classi = results;
+                            query.insertClassi(alg.listaNomiClassi());
+                            for (var i = 0; i < classi.length; i++) {
+                                for (var k = 0; k < classi[i].alunni.length; k++) {
+                                    if (classi[i].alunni[k] !== undefined) {
+                                        query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    console.log(classi);
+                    res.send(classi);
+
+                } else {
+                    query.getClassi(function (err, results) {
+                        if (err)
+                            console.log(err);
+                        else {
+                            listaNomiClassi = results;
+                            for (var i = 0; i < listaNomiClassi.length; i++) {
+                                query.getAlunniFromClass(listaNomiClassi[i].nome, function (err, results) {
+                                    if (err)
+                                        console.log(err);
+                                    else {
+                                        listaAlunniClasse = results;
+                                    }
+                                    listaClassi.push({nome: listaNomiClassi[i].nome, alunni: listaAlunniClasse});
+                                });
+                                
+
+                            }
+                            classi = listaClassi;
+                            console.log(classi);
+                            res.send(classi);
+                        }
+                    });
+
+                }
             }
         });
-
-        console.log("Numero: " + nAlunniCompCl);
-        nAlunniCompCl = 12;
-        console.log("Numero: " + nAlunniCompCl);
-
-        if (nAlunniCompCl == 0) {
-            alg.loadListAlunni("prima", function (err, results) {
-                if (err)
-                    console.log(err);
-                else {
-                    classi = results;
-                }
-            });
-
-            query.insertClassi(alg.listaNomiClassi());
-
-            for (var i = 0; i < classi.length; i++) {
-                for (var k = 0; k < classi[i].alunni.length; k++) {
-                    if (classi[i].alunni[k] !== undefined) {
-                        query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
-                    }
-                }
-            }
-        }
-        else {
-            query.getClassi(function (err, results) {
-                if (err)
-                    console.log(err);
-                else {
-                    listaNomiClassi = results;
-                }
-            });
-
-            for (var i = 0; i < listaNomiClassi.length; i++) {
-                alg.getAlunniFromClass(listaClassi[i], function (err, results) {
-                    if (err)
-                        console.log(err);
-                    else {
-                        listaAlunniClasse = results;
-                    }
-                });
-                listaClassi.push({nome: listaNomiClassi[i], alunni: listaAlunniClasse});
-            }
-            classi = listaAlunniClasse;
-        }
-        console.log(classi);
-        res.send(classi);
     });
-}
+
+
+
+};
+
+
 
 
