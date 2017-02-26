@@ -79,7 +79,7 @@ module.exports = {
             if (err) {
                 console.log(err);
             } else {
-                callback(err, rows);
+                callback(err, rows, classe);
             }
         });
     },

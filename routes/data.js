@@ -131,23 +131,21 @@ module.exports = function (app, passport, upload) {
                         else {
                             listaNomiClassi = results;
                             for (var i = 0; i < listaNomiClassi.length; i++) {
-                                query.getAlunniFromClass(listaNomiClassi[i].nome, function (err, results) {
+                                query.getAlunniFromClass(listaNomiClassi[i].nome, function (err, results, nomeCl) {
                                     if (err)
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
+                                        listaClassi.push({nome: nomeCl, alunni: listaAlunniClasse});
+                                        console.log(listaClassi);
                                     }
-                                    listaClassi.push({nome: listaNomiClassi[i].nome, alunni: listaAlunniClasse});
                                 });
-                                
-
                             }
                             classi = listaClassi;
                             console.log(classi);
                             res.send(classi);
                         }
                     });
-
                 }
             }
         });
