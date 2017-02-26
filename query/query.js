@@ -79,7 +79,17 @@ module.exports = {
             if (err) {
                 console.log(err);
             } else {
-                callback(err, rows, classe);
+                callback(err, rows);
+            }
+        });
+    },
+
+    getAlunniFromClassSync: function(classe, count, callback) {
+        connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "'", function (err, rows) {
+            if (err) {
+                console.log(err);
+            } else {
+                callback(err, rows, classe, count);
             }
         });
     },

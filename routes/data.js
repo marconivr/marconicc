@@ -133,20 +133,18 @@ module.exports = function (app, passport, upload) {
                             listaNomiClassi = results;
                             var counter = 0;
                             for (var i = 0; i < listaNomiClassi.length; i++) {
-                                query.getAlunniFromClass(listaNomiClassi[i].nome, function (err, results, nomeCl) {
+                                query.getAlunniFromClassSync(listaNomiClassi[i].nome, counter, function (err, results, nomeCl, counter) {
                                     if (err)
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
                                         listaClassi.push({nome: nomeCl, alunni: listaAlunniClasse});
-                                        if (counter  == listaNomiClassi.length -1){
+                                        if (counter  == listaNomiClassi.length - 1){
                                             console.log(listaClassi);
                                             res.send(listaClassi);
                                         }
-
                                     }
                                 });
-
                                 counter++
                             }
 
