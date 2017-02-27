@@ -136,7 +136,11 @@ module.exports = function (app, passport, upload) {
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
-                                        listaClassi.push({nome: nomeCl, alunni: listaAlunniClasse});
+                                        var nAlunni = alg.countAlunni(listaAlunniClasse);
+                                        var nFemmine = alg.countFemmine(listaAlunniClasse);
+                                        var media = alg.mediaClasse(listaAlunniClasse);
+
+                                        listaClassi.push({nome: nomeCl, proprieta:{alunni:nAlunni, femmine:nFemmine, media:media}, alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
                                             console.log(listaClassi);
                                             res.send(listaClassi);

@@ -20,7 +20,7 @@ var settings = {
 }
 var priority = {}
 var listaAlunni = [];
-var listaClassi = [];  //esempio [{nome:"1AI", alunni:[{nome:"Mario", cognome:"Rossi"}]}]
+var listaClassi = [];  //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 module.exports = {
     loadListAlunni: function (classe, callback) {
@@ -73,7 +73,7 @@ module.exports = {
             for (i = 0; i < num; i++) {
                 //assing class name
                 var classe = "1" + String.fromCharCode(65 + i);
-                listaClassi.push({nome: classe, alunni: []});
+                listaClassi.push({nome: classe, proprieta:{}, alunni: []});
             }
         }
         callback();
@@ -92,6 +92,7 @@ module.exports = {
                         }
                     }
                 }
+
             }
             callback();
         }
@@ -105,9 +106,8 @@ module.exports = {
         return listaNomi;
     },
 
-    countAlunni : function (classe) {
-        //classe = classeIsObj(classe);
-        return classe.alunni.length;
+    countAlunni : function (listaAlunniClasse) {
+        return listaAlunniClasse.length;
     },
 
     /**
@@ -115,56 +115,54 @@ module.exports = {
      * @param classe
      * @returns {Number}
      */
-    countFemmine : function (classe) {
-        classe = classeIsObj(classe);
+    countFemmine : function (listaAlunniClasse) {
         var cont = 0;
-        for (var i = 0; i < classe.alunni.length; i++) {
-            if (classe.alunni[i].sesso == "F") {
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i].sesso == "F") {
                 cont++;
             }
         }
         return cont;
     },
 
-    mediaClasse : function (classe) {
-        classe = classeIsObj(classe);
+    mediaClasse : function (listaAlunniClasse) {
         var somma = 0;
 
-        for (var i = 0; i < classe.alunni.length; i++) {
-            somma += classe.alunni[i].media;
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            somma += listaAlunniClasse[i].media;
         }
 
-        return (somma / classe.alunni.length);
+        return (somma / listaAlunniClasse.length);
 
     },
 
-    countStranieri : function (classe) {
+    countStranieri : function (listaAlunniClasse) {
 
     },
 
-    countBocciati : function (classe) {
+    countBocciati : function (listaAlunniClasse) {
 
     },
 
-    countStessaProv : function (classe) {
+    countStessaProv : function (listaAlunniClasse) {
         var cont = 0;
         var cont1 = 0;
         var prov;
 
-        for (var i = 0; i < classe.alunni.length; i++) {
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
             prov = classe.alunni[i].cap_provenienza;
 
-            for (var j = i + 1; j < classe.alunni.length; j++) {
-                if (prov == classe.alunni[j].cap_provenienza){
+            for (var j = i + 1; j < listaAlunniClasse.length; j++) {
+                if (prov == listaAlunniClasse[j].cap_provenienza){
                     cont+=1;
                 }
             }
-            if (cont>=cont1){
+            if (cont >= cont1){
                 cont1 = cont;
             }
             cont = 0;
         }
-        return cont1;
+        return cont1 + 1;
     }
 
 }
