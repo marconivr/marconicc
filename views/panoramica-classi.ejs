@@ -89,10 +89,11 @@
                     for (var j=0; j < arrayStudenti.length ; j++){
                         if (arrayStudenti[j] !== null){
                             var cognomeStudente = arrayStudenti[j].cognome;
+                            var nomeStudente = arrayStudenti[j].nome;
 
                             var li = $('<li/>')
                                 .addClass("ui-state-default")
-                                .text(cognomeStudente)
+                                .text(nomeStudente + ' ' + cognomeStudente)
                                 .appendTo(ul);
                         }
 

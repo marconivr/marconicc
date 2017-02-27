@@ -32,6 +32,7 @@ module.exports = function (app, passport, upload) {
         }).on("end", function () {
 
             console.log("Finita lettura file");
+            res.redirect('/studenti');
         });
 
 

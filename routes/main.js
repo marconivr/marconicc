@@ -92,6 +92,12 @@ module.exports = function (app, passport) {
         })
     });
 
+    app.get('/panoramica-classi-v2', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('panoramica-classi-v2.ejs',{
+            pageTitle: "Panoramica classi-v2"
+        })
+    });
+
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         query.getNumerOfStudentiPrima(function (err, results) {
             if (err)
