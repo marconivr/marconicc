@@ -92,7 +92,7 @@
                         }
                     }
 
-                    var ul = $('<ul/>',{
+                    var div = $('<ul/>',{
                         'class':'contenitoreClasse'
                     }).appendTo(wrapperClasse);
 
@@ -104,7 +104,7 @@
                             var li = $('<li/>')
                                 .addClass("ui-state-default")
                                 .text(nomeStudente + ' ' + cognomeStudente)
-                                .appendTo(ul);
+                                .appendTo(div);
                         }
                     }
                 }
