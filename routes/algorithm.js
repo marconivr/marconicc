@@ -130,7 +130,7 @@ module.exports = {
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
         var bocciati = module.exports.countBocciati(listaAlunniClasse);
         var iniziale = module.exports.countInizialeCognome(listaAlunniClasse);
-        return {alunni:nAlunni, femmine:nFemmine, media:media, residenza:residenza, bocciati:bocciati, iniziale:iniziale};
+        return {alunni:nAlunni, femmine:nFemmine, media:media.toFixed(2), residenza:residenza, bocciati:bocciati, iniziale:iniziale};
     },
 
     /**

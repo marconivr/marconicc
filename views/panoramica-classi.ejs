@@ -3,7 +3,6 @@
 <style>
     .contenitoreClasse{
         list-style-type: none;
-
     }
 
    .contenitoreClasse li{
@@ -38,9 +37,6 @@
             connectWith: ".contenitoreClasse"
         }).disableSelection();
     } );
-
-
-
 
 </script>
 
@@ -79,15 +75,29 @@
 
                     var wrapperClasse = $('<div/>', {
                         'class':'wrapperClasse',
-                        'html': $('<h3/>').text(nomeClasse)
                     }).appendTo('#rowForInsertClasses');
+
+                    $('<h3/>').text(nomeClasse).appendTo(wrapperClasse);
+
+                    var ulClasse = $('<div/>',{
+                        'class':'ui vertical menu'
+                    }).appendTo(wrapperClasse);
+
+                    for (var prop in proprieta) {
+                        if (prop != "residenza" && prop != "iniziale") {
+                            var li = $('<div/>')
+                                .addClass("ui info message")
+                                .text(prop + ": " + proprieta[prop])
+                                .appendTo(ulClasse);
+                        }
+                    }
 
                     var ul = $('<ul/>',{
                         'class':'contenitoreClasse'
                     }).appendTo(wrapperClasse);
 
-                    for (var j=0; j < arrayStudenti.length ; j++){
-                        if (arrayStudenti[j] !== null){
+                    for (var j=0; j < arrayStudenti.length ; j++) {
+                        if (arrayStudenti[j] !== undefined) {
                             var cognomeStudente = arrayStudenti[j].cognome;
                             var nomeStudente = arrayStudenti[j].nome;
 
@@ -96,21 +106,8 @@
                                 .text(nomeStudente + ' ' + cognomeStudente)
                                 .appendTo(ul);
                         }
-
                     }
-
-
                 }
-
-
-
-
-
-
-
-
-
-
             },
             type: 'GET'
         });

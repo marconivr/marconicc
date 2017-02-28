@@ -139,7 +139,6 @@ module.exports = function (app, passport, upload) {
                                         listaAlunniClasse = results;
                                         listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse), alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
-                                            console.log(listaClassi);
                                             res.send(listaClassi);
                                         }
                                     }
