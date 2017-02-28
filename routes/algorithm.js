@@ -129,7 +129,7 @@ module.exports = {
         var somma = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            somma += listaAlunniClasse[i].media;
+            somma += listaAlunniClasse[i].media_voti;
         }
 
         return (somma / listaAlunniClasse.length);

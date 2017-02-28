@@ -139,7 +139,7 @@ module.exports = function (app, passport, upload) {
                                         listaAlunniClasse = results;
                                         var nAlunni = alg.countAlunni(listaAlunniClasse);
                                         var nFemmine = alg.countFemmine(listaAlunniClasse);
-                                        var media = alg.mediaClasse(listaAlunniClasse);
+                                        var media = parseFloat(Math.round(alg.mediaClasse(listaAlunniClasse)* 100) / 100).toFixed(2);//7.8548554545 ->7.85
 
                                         listaClassi.push({nome: nomeCl, proprieta:{alunni:nAlunni, femmine:nFemmine, media:media}, alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){

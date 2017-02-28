@@ -5,7 +5,6 @@
 var middleware = require('./middleware/middleware');
 var query = require('./../query/query.js');
 var alg = require("./algorithm.js");
-
 var dataInSettings = new Object();
 module.exports = function (app, passport) {
 
