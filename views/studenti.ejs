@@ -238,20 +238,57 @@
 //        })
 //;
 
+//
+//$('.ui.search')
+//        .search({
+//            apiSettings: {
+//                url: '/all-students?q={query}'
+//            },
+//            cache: false,
+//            searchFullText: false,
+//            onResults: function(response){
+//
+//                var html = '';
+//                if(response!== undefined) {
+//                    $.each(response, function(index, result) {
+//                        html  += '<a class="result"><div class="content">';
+//                        html += '<div class="title"><br>' + result.cognome + '</br></div>';
+//                        html += '<div class="title">' + result.nome + '</div>';
+//                        html  += '' + '</div></a>';
+//                        return index < 6;
+//                    });
+//                    $('.ui.search div.results').html(html);
+//                }
+//                return false;
+//            },
+//
+//
+//            onResultsAdd: function(html){
+//
+//                if($('div.results a').length==0){
+//                    return "default";
+//                }
+//                else return false;
+//            },
+//            onSelect: function(result, response) {
+//                alert(result.cognome);
+//            }
+//        });
 
-$('.ui.search')
+
+
+    $('.ui.search')
         .search({
             apiSettings: {
-                url: '/all-students?q={query}'
-            },
-            cache: false,
+               url: '/all-students?q={query}'
+               },
             searchFullText: false,
             onResults: function(response){
 
                 var html = '';
                 if(response!== undefined) {
                     $.each(response, function(index, result) {
-                        html  += '<a class="result"><div class="content">';
+                        html  += '<a onclick="azione(this.id)" id="'+ result.cf +'" class="result"><div class="content">';
                         html += '<div class="title"><br>' + result.cognome + '</br></div>';
                         html += '<div class="title">' + result.nome + '</div>';
                         html  += '' + '</div></a>';
@@ -260,20 +297,13 @@ $('.ui.search')
                     $('.ui.search div.results').html(html);
                 }
                 return false;
-            },
-
-
-            onResultsAdd: function(html){
-
-                if($('div.results a').length==0){
-                    return "default";
-                }
-                else return false;
-            },
-            onSelect: function(result, response) {
-                alert(result.cognome);
             }
         });
+
+
+    function azione(id) {
+        console.log(id);
+    }
 </script>
 
 <!--close html tag-->

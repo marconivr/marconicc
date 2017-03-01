@@ -143,7 +143,7 @@ module.exports = function (app, passport, upload) {
                                         }
                                     }
                                 });
-                                counter++
+                                counter++;
                             }
                         }
                     });
