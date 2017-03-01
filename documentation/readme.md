@@ -41,3 +41,5 @@ Elenco passi da eseguire per lanciare il progetto:
 - Creazione database
 - Creazione interfaccia signup
 - Implementazione algoritmo che genera casualmente classi
+- Pagina 'Elenco alunni' con possibilità di ricerca
+- Aggiunta proprietà principali di ogni classe (numero Alunni, femmine, media, bocciati)

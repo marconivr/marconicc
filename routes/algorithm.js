@@ -60,6 +60,11 @@ module.exports = {
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
+                            },
+                            function (callback) {
+                                module.exports.riordinaClassi(function () {
+                                    callback();
+                                });
                             }
                         ],
                         function (err, succes) {
@@ -143,6 +148,46 @@ module.exports = {
             listaNomi.push(listaClassi[k].nome);
         }
         return listaNomi;
+    },
+
+    /**
+     * riordinaClassi sistema le classi in base alle impostazioni e alle priorità
+     */
+    riordinaClassi: function (callback) {
+        for (var k = 0; k < listaClassi.length; k++) {
+            for (var i = 0; i < priority.length; i++) {
+                switch (priority[i]) {
+                    case "alunni":
+                        if (module.exports.countAlunni(listaClassi[k]) == settings.min_al){
+                            for (var j = 0; j < listaClassi.length; j++){
+                                if (module.exports.countAlunni(listaClassi[j]) >= settings.min_al + 2){
+                                    var indice = Math.floor(Math.random() * listaAlunni.length);
+                                    var studente = listaClassi[j].alunni[indice];
+                                    delete listaClassi[j].alunni[indice];
+                                    listaClassi[k].push(studente);
+                                }
+                            }
+                        }
+                        break;
+                    case "femmine":
+
+                        break;
+                    case "stranieri":
+
+                        break;
+                    case "bocciati":
+
+                        break;
+                    case "stessa_provenienza":
+
+                        break;
+                    case "media":
+
+                        break;
+                }
+            }
+        }
+        callback();
     },
 
     //##################################################################################################################
@@ -349,26 +394,5 @@ module.exports = {
 
 /*var findPriority = function (classe) {
 
- for (i = 0; i < priority.length; i++) {
- switch (priority[i]) {
- case "alunni":
- countAlunni(classe);
- break;
- case "femmine":
- countFemmine(classe);
- break;
- case "stranieri":
- countStranieri(classe);
- break;
- case "bocciati":
- countBocciati(classe);
- break;
- case "stessa_provenienza":
- countStessaProv(classe);
- break;
- case "media":
- mediaClasse(classe);
- break;
- }
- }
+
  }*/
