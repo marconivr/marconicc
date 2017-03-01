@@ -106,7 +106,7 @@ module.exports = function (app, passport, upload) {
             else {
                 nAlunniCompCl = results[0].result;
                 if (nAlunniCompCl == 0) {
-                    alg.loadListAlunni("prima", function (err, results) {
+                    alg.main("prima", function (err, results) {
                         if (err)
                             console.log(err);
                         else {
@@ -137,13 +137,8 @@ module.exports = function (app, passport, upload) {
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
-                                        var nAlunni = alg.countAlunni(listaAlunniClasse);
-                                        var nFemmine = alg.countFemmine(listaAlunniClasse);
-                                        var media = parseFloat(Math.round(alg.mediaClasse(listaAlunniClasse)* 100) / 100).toFixed(2);//7.8548554545 ->7.85
-
-                                        listaClassi.push({nome: nomeCl, proprieta:{alunni:nAlunni, femmine:nFemmine, media:media}, alunni: listaAlunniClasse});
+                                        listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse), alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
-                                            console.log(listaClassi);
                                             res.send(listaClassi);
                                         }
                                     }
