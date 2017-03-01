@@ -7,6 +7,7 @@
 <div class="ui top attached tabular menu">
     <a class="item active" data-tab="first">Prime</a>
     <a class="item " data-tab="third">Terze</a>
+    <a class="item " data-tab="tags">Tags</a>
 </div>
 <div class="ui bottom attached tab active  segment" data-tab="first">
 
@@ -29,7 +30,7 @@
                     <th>cod_cat</th>
                     <th>media_voti</th>
                     <th>classe_futura</th>
-                    <th>tag</th>
+
                 </tr>
                 </thead>
 
@@ -50,14 +51,6 @@
                     <td><%= studentsData[i].media_voti %></td>
                     <td><%= studentsData[i].classe_futura %></td>
 
-                    <td>
-                        <select class="ui dropdown">
-                            <option value="0">None</option>
-                            <option value="1">Dsa</option>
-                            <option value="2">Dcd</option>
-                        </select>
-                    </td>
-
                 </tr>
                 <% } %>
 
@@ -77,7 +70,7 @@
                     <th>cod_cat</th>
                     <th>media_voti</th>
                     <th>classe_futura</th>
-                    <th>tag</th>
+
                 </tr>
                 </tfoot>
             </table>
@@ -91,6 +84,26 @@
 <div class="ui bottom attached tab segment" data-tab="third">
     Third
 </div>
+
+<!--tags and insert-->
+<div class="ui bottom attached tab segment" data-tab="tags">
+    <div class="ui raised very padded text container segment">
+    <h1 class="ui header">
+        Inserimento tag
+        <div class="sub header">Ricerca studente</div>
+    </h1>
+        <!--search-->
+    <div class="ui category search">
+        <div class="ui icon input">
+            <input class="prompt" type="text" placeholder="Scrivi il nome...">
+            <i class="search icon"></i>
+        </div>
+        <div class="results"></div>
+    </div>
+</div>
+</div>
+
+
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
 <script>
@@ -118,13 +131,149 @@
                 {"data": "anno"},
                 {"data": "cod_cat"},
                 {"data": "media_voti"},
-                {"data": "classe_futura"},
-                {"data": "tag"}
+                {"data": "classe_futura"}
+
             ]
         });
         table.buttons().container()
                 .appendTo($('div.eight.column:eq(0)', table.table().container()));
     });
+</script>
+
+<!--search-->
+<script>
+
+//$('.ui.search')
+//        .search({
+//            apiSettings: {
+//                url: '/all-students'
+//            },
+//            searchFields   : [
+//                'cognome'
+//            ],
+//            cache: false,
+//            searchFullText: false,
+//            onResults: function(response){
+//                var html = '';
+//                if(response!== undefined) {
+//                    $.each(response, function(index, result) {
+//                        html  += '<a class="result"><div class="content">';
+//                        html += '<div class="title"><br>' + result.cognome + '<br></div>';
+//                        html += '<div class="sub-title">' + result.nome + '</div>';
+//                        html  += '' + '</div></a>';
+//                        return index < 6;
+//                    });
+//                    $('.ui.search div.results').html(html);
+//                }
+//                return false;
+//            },
+//            onResultsAdd: function(html){
+//
+//                if($('div.results a').length==0){
+//                    return "default";
+//                }
+//                else return false;
+//            }
+//        });
+
+//
+//$(".ui.search").search({
+//    type: 'category',
+//    minCharacters: 3,
+//    apiSettings: {
+//        onResponse: function(serverResponse) {
+//            var
+//                    response = {
+//                        results: {}
+//                    }
+//                    ;
+//            //translate Server API response to work with search
+//            $.each(serverResponse.subtopics, function(index, subtopic) {
+//                var
+//                        topic = subtopic.cognome || 'Unknown',
+//                        maxResults = 8
+//                        ;
+//                if(response.results[topic] === undefined) {
+//                    response.results[topic] = {
+//                        name: topic,
+//                        results: []
+//                    };
+//                }
+//                //add result to category
+//                response.results[topic].results.push({
+//                    title: subtopic.name
+//                });
+//            });
+//            return response;
+//        },
+//        url: "/all-students"
+//    }
+//})
+//;
+
+//
+//$('.ui.search')
+//        .search({
+//            apiSettings: {
+//                url: '/all-students?q={query}'
+//            },
+////            searchFields: [
+////                'cognome',
+////                    'nome'
+////            ],
+//            fields: {
+//                results : 'cognome',
+//                title   : 'nome'
+//            },
+//            minCharacters : 2,
+//            searchFullText : true,
+//            onResponse: function(response) {
+//                console.log("r" + response);
+//                alert(response);
+//                var
+//                        response = {
+//                            results: {}
+//                        }
+//            }
+//        })
+//;
+
+
+$('.ui.search')
+        .search({
+            apiSettings: {
+                url: '/all-students?q={query}'
+            },
+            cache: false,
+            searchFullText: false,
+            onResults: function(response){
+
+                var html = '';
+                if(response!== undefined) {
+                    $.each(response, function(index, result) {
+                        html  += '<a class="result"><div class="content">';
+                        html += '<div class="title"><br>' + result.cognome + '</br></div>';
+                        html += '<div class="title">' + result.nome + '</div>';
+                        html  += '' + '</div></a>';
+                        return index < 6;
+                    });
+                    $('.ui.search div.results').html(html);
+                }
+                return false;
+            },
+
+
+            onResultsAdd: function(html){
+
+                if($('div.results a').length==0){
+                    return "default";
+                }
+                else return false;
+            },
+            onSelect: function(result, response) {
+                alert(result.cognome);
+            }
+        });
 </script>
 
 <!--close html tag-->

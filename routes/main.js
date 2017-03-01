@@ -85,6 +85,15 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.get('/all-students', function (req, res) {
+        query.getAllStudents(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        },req.query.q);
+    });
+
     app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('panoramica-classi.ejs',{
             pageTitle: "Panoramica classi"

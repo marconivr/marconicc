@@ -202,5 +202,16 @@ module.exports = {
                 callback(err, rows);
             }
         });
+    },
+
+    getAllStudents: function (callback,identifier) {
+
+        connection.query("SELECT * FROM alunni WHERE cognome LIKE '" + identifier + "%'", function (err, rows) {
+            if (err) {
+                throw err;
+            } else {
+                callback(err, rows);
+            }
+        });
     }
 };
