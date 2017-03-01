@@ -88,21 +88,70 @@
 <!--tags and insert-->
 <div class="ui bottom attached tab segment" data-tab="tags">
     <div class="ui raised very padded text container segment">
-    <h1 class="ui header">
-        Inserimento tag
-        <div class="sub header">Ricerca studente</div>
-    </h1>
+        <h1 class="ui header">
+            Inserimento tag
+            <div class="sub header">Ricerca studente</div>
+        </h1>
         <!--search-->
-    <div class="ui category search">
-        <div class="ui icon input">
-            <input class="prompt" type="text" placeholder="Scrivi il nome...">
-            <i class="search icon"></i>
+        <div class="ui category search">
+            <div class="ui icon input">
+                <input class="prompt" type="text" placeholder="Scrivi il nome...">
+                <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
         </div>
-        <div class="results"></div>
     </div>
-</div>
-</div>
 
+
+    <!--modal response -->
+
+    <div class="ui modal">
+        <i class="close icon"></i>
+        <div class="header">
+            <span id="cognome"></span>
+            <span id="nome"></span>
+        </div>
+        <div class="image content">
+            <!--<div class="ui medium image">-->
+                <!--<img src="/images/avatar/large/chris.jpg">-->
+            <!--</div>-->
+
+            <div class="ui grid">
+                <div class="four column row">
+                    <div class="left floated column">
+
+                    </div>
+                    <div class="right floated column">
+
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="description">
+                <ul>
+                    <li>Media voti :  <span id ="media-voti">8.8</span></li>
+                    <li>Codice catastale : <span id="codice-catastale">52521</span> </li>
+                    <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
+                    <li>Anno scolastico  <span id="anno-scolastisco"></span></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">
+                Chiudi
+            </div>
+            <div class="ui positive right labeled icon button">
+                OK,fatto
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
 
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
@@ -112,6 +161,7 @@
     ;
 </script>
 
+<!--first class table-->
 <script>
     $(document).ready(function () {
         var table = $('#studenti').DataTable({
@@ -143,167 +193,63 @@
 <!--search-->
 <script>
 
-//$('.ui.search')
-//        .search({
-//            apiSettings: {
-//                url: '/all-students'
-//            },
-//            searchFields   : [
-//                'cognome'
-//            ],
-//            cache: false,
-//            searchFullText: false,
-//            onResults: function(response){
-//                var html = '';
-//                if(response!== undefined) {
-//                    $.each(response, function(index, result) {
-//                        html  += '<a class="result"><div class="content">';
-//                        html += '<div class="title"><br>' + result.cognome + '<br></div>';
-//                        html += '<div class="sub-title">' + result.nome + '</div>';
-//                        html  += '' + '</div></a>';
-//                        return index < 6;
-//                    });
-//                    $('.ui.search div.results').html(html);
-//                }
-//                return false;
-//            },
-//            onResultsAdd: function(html){
-//
-//                if($('div.results a').length==0){
-//                    return "default";
-//                }
-//                else return false;
-//            }
-//        });
-
-//
-//$(".ui.search").search({
-//    type: 'category',
-//    minCharacters: 3,
-//    apiSettings: {
-//        onResponse: function(serverResponse) {
-//            var
-//                    response = {
-//                        results: {}
-//                    }
-//                    ;
-//            //translate Server API response to work with search
-//            $.each(serverResponse.subtopics, function(index, subtopic) {
-//                var
-//                        topic = subtopic.cognome || 'Unknown',
-//                        maxResults = 8
-//                        ;
-//                if(response.results[topic] === undefined) {
-//                    response.results[topic] = {
-//                        name: topic,
-//                        results: []
-//                    };
-//                }
-//                //add result to category
-//                response.results[topic].results.push({
-//                    title: subtopic.name
-//                });
-//            });
-//            return response;
-//        },
-//        url: "/all-students"
-//    }
-//})
-//;
-
-//
-//$('.ui.search')
-//        .search({
-//            apiSettings: {
-//                url: '/all-students?q={query}'
-//            },
-////            searchFields: [
-////                'cognome',
-////                    'nome'
-////            ],
-//            fields: {
-//                results : 'cognome',
-//                title   : 'nome'
-//            },
-//            minCharacters : 2,
-//            searchFullText : true,
-//            onResponse: function(response) {
-//                console.log("r" + response);
-//                alert(response);
-//                var
-//                        response = {
-//                            results: {}
-//                        }
-//            }
-//        })
-//;
-
-//
-//$('.ui.search')
-//        .search({
-//            apiSettings: {
-//                url: '/all-students?q={query}'
-//            },
-//            cache: false,
-//            searchFullText: false,
-//            onResults: function(response){
-//
-//                var html = '';
-//                if(response!== undefined) {
-//                    $.each(response, function(index, result) {
-//                        html  += '<a class="result"><div class="content">';
-//                        html += '<div class="title"><br>' + result.cognome + '</br></div>';
-//                        html += '<div class="title">' + result.nome + '</div>';
-//                        html  += '' + '</div></a>';
-//                        return index < 6;
-//                    });
-//                    $('.ui.search div.results').html(html);
-//                }
-//                return false;
-//            },
-//
-//
-//            onResultsAdd: function(html){
-//
-//                if($('div.results a').length==0){
-//                    return "default";
-//                }
-//                else return false;
-//            },
-//            onSelect: function(result, response) {
-//                alert(result.cognome);
-//            }
-//        });
-
-
-
     $('.ui.search')
-        .search({
-            apiSettings: {
-               url: '/all-students?q={query}'
-               },
-            searchFullText: false,
-            onResults: function(response){
+            .search({
+                apiSettings: {
+                    url: '/all-students?q={query}'
+                },
+                searchFullText: false,
+                silent: true, // no error in console
+                onResults: function (response) {
 
-                var html = '';
-                if(response!== undefined) {
-                    $.each(response, function(index, result) {
-                        html  += '<a onclick="azione(this.id)" id="'+ result.cf +'" class="result"><div class="content">';
-                        html += '<div class="title"><br>' + result.cognome + '</br></div>';
-                        html += '<div class="title">' + result.nome + '</div>';
-                        html  += '' + '</div></a>';
-                        return index < 6;
-                    });
-                    $('.ui.search div.results').html(html);
+                    var html = '';
+                    if (response !== undefined) {
+                        $.each(response, function (index, result) {
+                            html  += '<a onclick="setStudentData(this.id)" id="'+ result.cf +'" class="result"><div class="content">';
+                            html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
+                            html += '<i> Media voti: ' + result.media_voti + '</i>';
+
+                            html += '' + '</div></a>';
+                            return index < 6;
+                        });
+                        $('.ui.search div.results').html(html);
+                    }
+                    return false;
                 }
-                return false;
-            }
+            });
+
+    //set card with student data
+    function setStudentData(cf) {
+        console.log(cf)
+        $.ajax({
+            url: '/student-by-cf',
+            data: {"cf":  cf },
+            type: 'get',
+            success: function (data) {
+                var ret = jQuery.parseJSON(data);
+                $('#cognome').text(ret[0].cognome);
+                $('#nome').text(ret[0].nome);
+                $('#codice-catastale').text(ret[0].cod_cat);
+                $('#media-voti').text(ret[0].media_voti);
+                $('#anno-scolastisco').text(ret[0].anno_scolastisco);
+
+                $('.ui.modal').modal('show');
+
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ' + error.message);
+                $('#lblResponse').html('Error connecting to the server.');
+            },
         });
-
-
-    function azione(id) {
-        console.log(id);
     }
+
+    function azione() {
+
+    }
+
+//    $(document).ready(function () {
+//        $('#student-data').hide();
+//    });
 </script>
 
 <!--close html tag-->

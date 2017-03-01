@@ -94,6 +94,15 @@ module.exports = function (app, passport) {
         },req.query.q);
     });
 
+    app.get('/student-by-cf', function (req, res) {
+        query.getStudentByCf(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        },req.query.cf);
+    });
+
     app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('panoramica-classi.ejs',{
             pageTitle: "Panoramica classi"
