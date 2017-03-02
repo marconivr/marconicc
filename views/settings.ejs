@@ -127,6 +127,19 @@
 
                         </div>
 
+                        <!--sematic checkbox-->
+                        <div class="inline field">
+                            <label>Proprietà alunni</label>
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden">
+                                <label>Dsa</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" tabindex="0" class="hidden">
+                                <label>Dcg</label>
+                            </div>
+                        </div>
+
                         <!--sematic button-->
                         <div class="ui button" tabindex="0">Send</div>
                     </form>
@@ -236,6 +249,10 @@
 
         }
     }
+
+    $('.ui.checkbox')
+        .checkbox()
+    ;
 </script>
 
 
