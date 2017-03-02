@@ -17,28 +17,47 @@ CREATE DATABASE IF NOT EXISTS `composizione_classi` DEFAULT CHARACTER SET latin1
 USE `composizione_classi`;
 
 -- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tag` (
+  `tag` varchar(25) NOT NULL,
+  `descrizione` text,
+  `peso` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tag`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tag`
+--
+
+INSERT INTO `tag` (`tag`, `descrizione`, `peso`) VALUES
+('DSA', 'non so', 1),
+('dbms', 'non so', 2),
+('DCD', 'non so', 3);
+
+
 
 --
 -- Struttura della tabella `alunni`
 --
 
 DROP TABLE IF EXISTS `alunni`;
-CREATE TABLE `alunni` (
-  `cognome` varchar(255) NOT NULL,
-  `nome` varchar(255) NOT NULL,
-  `cf` char(16) NOT NULL,
-  `sesso` char(1) NOT NULL,
-  `data_di_nascita` date NOT NULL,
-  `stato` varchar(20) NOT NULL,
-  `cap_provenienza` int(5) NOT NULL,
-  `scelta_indirizzo` varchar(50) NOT NULL,
-  `anno_scolastico` varchar(15) NOT NULL,
-  `anno` varchar(4) NOT NULL,
-  `cod_cat` varchar(10) NOT NULL,
-  `media_voti` double NOT NULL,
-  `classe_futura` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE  `alunni` (
 
+ `cognome` VARCHAR( 255 ) NOT NULL ,
+ `nome` VARCHAR( 255 ) NOT NULL ,
+ `cf` CHAR( 16 ) NOT NULL ,
+ `sesso` CHAR( 1 ) NOT NULL ,
+ `data_di_nascita` DATE NOT NULL ,
+ `stato` VARCHAR( 20 ) NOT NULL ,
+ `cap_provenienza` INT( 5 ) NOT NULL ,
+ `scelta_indirizzo` VARCHAR( 50 ) NOT NULL ,
+ `anno_scolastico` VARCHAR( 15 ) NOT NULL ,
+ `anno` VARCHAR( 4 ) NOT NULL ,
+ `cod_cat` VARCHAR( 10 ) NOT NULL ,
+ `media_voti` DOUBLE NOT NULL ,
+ `classe_futura` VARCHAR( 50 ) NOT NULL ,
+ `tag` VARCHAR( 25 ) ,
+FOREIGN KEY (  `tag` ) REFERENCES tag_2(  `tag` )
+);
 -- --------------------------------------------------------
 
 --
@@ -214,6 +233,5 @@ primary key(nome_classe, cf_alunno),
 foreign key (nome_classe) references classi(nome),
 foreign key (cf_alunno) references alunni(cf)
 );
-
 
 

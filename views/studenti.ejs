@@ -115,27 +115,52 @@
             <!--<div class="ui medium image">-->
                 <!--<img src="/images/avatar/large/chris.jpg">-->
             <!--</div>-->
-
+            <div class="description">
             <div class="ui grid">
-                <div class="four column row">
+                <div class="two column row">
                     <div class="left floated column">
-
+                        <ul>
+                            <li>Media voti :  <span id ="media-voti">8.8</span></li>
+                            <li>Codice catastale : <span id="codice-catastale">52521</span> </li>
+                            <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
+                            <li>Anno scolastico  <span id="anno-scolastisco"></span></li>
+                        </ul>
                     </div>
                     <div class="right floated column">
-
+                        <div class="ui selection dropdown">
+                            <input type="hidden" name="gender">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Gender</div>
+                            <div class="menu">
+                                <div class="item" data-value="1">Male</div>
+                                <div class="item" data-value="0">Female</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <hr>
-            <div class="description">
-                <ul>
-                    <li>Media voti :  <span id ="media-voti">8.8</span></li>
-                    <li>Codice catastale : <span id="codice-catastale">52521</span> </li>
-                    <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
-                    <li>Anno scolastico  <span id="anno-scolastisco"></span></li>
-                </ul>
             </div>
+            <hr>
+
+            <!--</div><div class="description">-->
+                <!--<ul>-->
+                    <!--<li>Media voti :  <span id ="media-voti">8.8</span></li>-->
+                    <!--<li>Codice catastale : <span id="codice-catastale">52521</span> </li>-->
+                    <!--<li>Codice fiscale <span id="cf">dgsadgasdg</span></li>-->
+                    <!--<li>Anno scolastico  <span id="anno-scolastisco"></span></li>-->
+                <!--</ul>-->
+
+                <!--<div>-->
+                    <!--<div class="ui selection dropdown">-->
+                        <!--<input type="hidden" name="gender">-->
+                        <!--<i class="dropdown icon"></i>-->
+                        <!--<div class="default text">Gender</div>-->
+                        <!--<div class="menu">-->
+                            <!--<div class="item" data-value="1">Male</div>-->
+                            <!--<div class="item" data-value="0">Female</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
 
         </div>
         <div class="actions">
@@ -156,9 +181,8 @@
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
 <script>
-    $('.menu .item')
-            .tab()
-    ;
+    $('.menu .item').tab();
+    $('.ui.dropdown').dropdown();
 </script>
 
 <!--first class table-->
@@ -231,7 +255,7 @@
                 $('#nome').text(ret[0].nome);
                 $('#codice-catastale').text(ret[0].cod_cat);
                 $('#media-voti').text(ret[0].media_voti);
-                $('#anno-scolastisco').text(ret[0].anno_scolastisco);
+                $('#anno-scolastisco').text(ret[0].anno_scolastico);
 
                 $('.ui.modal').modal('show');
 
