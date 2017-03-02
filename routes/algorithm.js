@@ -136,7 +136,7 @@ module.exports = {
         var bocciati = module.exports.countBocciati(listaAlunniClasse);
         var iniziale = module.exports.countInizialeCognome(listaAlunniClasse);
         return {alunni:nAlunni, femmine:nFemmine, media:media.toFixed(2), residenza:residenza, bocciati:bocciati, iniziale:iniziale};
-        problemiClasse(listaAlunniClasse);
+        module.exports.problemiClasse(listaAlunniClasse);
     },
 
     /**
@@ -160,9 +160,7 @@ module.exports = {
             for (var i = 0; i < priority.length; i++) {
                 switch (priority[i]) {
                     case "alunni":
-                        while (listaClassi[k].alunni.length > settings.min_al){
 
-                        }
                         break;
                     case "femmine":
 
@@ -340,24 +338,29 @@ module.exports = {
                         ris["femmine"] = proprieta.femmine;
                     }
                     break;
-                case "stranieri":
+                /*case "stranieri":
                     if (proprieta.nazionalita < settings.nazionalita){
                         ris["nazionalita"] = proprieta.nazionalita;
                     }
-                    break;
+                    break;*/
                 case "bocciati":
-                    if (proprieta.nazionalita < settings.nazionalita){
-                        ris["nazionalita"] = proprieta.nazionalita;
+                    if (proprieta.bocciati > settings.boc){
+                        ris["bocciati"] = proprieta.bocciati;
                     }
                     break;
-                case "stessa_provenienza":
-
+                case "residenza":
+                    for(var k=0; k < proprieta.prop.length; k++){
+                        if (proprieta.residenza > settings.stessa_pr){
+                            ris["residenza"] = proprieta.residenza;
+                        }
+                    }
                     break;
                 case "media":
 
                     break;
             }
         }
+        console.log(ris);
     },
 
 
