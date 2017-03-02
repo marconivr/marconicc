@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
---
--- Host: 127.0.0.1
--- Creato il: Feb 18, 2017 alle 19:22
--- Versione del server: 10.1.13-MariaDB
--- Versione PHP: 7.0.5
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -17,22 +8,48 @@ CREATE DATABASE IF NOT EXISTS `composizione_classi` DEFAULT CHARACTER SET latin1
 USE `composizione_classi`;
 
 -- --------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tag` (
-  `tag` varchar(25) NOT NULL,
-  `descrizione` text,
-  `peso` int(11) DEFAULT NULL,
-  PRIMARY KEY (`tag`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+-- phpMyAdmin SQL Dump
+-- version 4.5.1
+-- http://www.phpmyadmin.net
+--
+-- Host: 127.0.0.1
+-- Creato il: Mar 02, 2017 alle 20:16
+-- Versione del server: 10.1.13-MariaDB
+-- Versione PHP: 7.0.5
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Dumping data for table `tag`
+-- Database: `composizione_classi`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `tag`
+--
+
+CREATE TABLE `tag` (
+  `tag` varchar(25) PRIMARY KEY,
+  `descrizione` text,
+  `peso` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dump dei dati per la tabella `tag`
 --
 
 INSERT INTO `tag` (`tag`, `descrizione`, `peso`) VALUES
 ('DSA', 'non so', 1),
 ('dbms', 'non so', 2),
 ('DCD', 'non so', 3);
-
 
 
 --
@@ -56,7 +73,7 @@ CREATE TABLE  `alunni` (
  `media_voti` DOUBLE NOT NULL ,
  `classe_futura` VARCHAR( 50 ) NOT NULL ,
  `tag` VARCHAR( 25 ) ,
-FOREIGN KEY (  `tag` ) REFERENCES tag_2(  `tag` )
+FOREIGN KEY (`tag`) REFERENCES tag(`tag`)
 );
 -- --------------------------------------------------------
 
