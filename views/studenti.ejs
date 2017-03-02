@@ -113,54 +113,35 @@
         </div>
         <div class="image content">
             <!--<div class="ui medium image">-->
-                <!--<img src="/images/avatar/large/chris.jpg">-->
+            <!--<img src="/images/avatar/large/chris.jpg">-->
             <!--</div>-->
             <div class="description">
-            <div class="ui grid">
-                <div class="two column row">
-                    <div class="left floated column">
-                        <ul>
-                            <li>Media voti :  <span id ="media-voti">8.8</span></li>
-                            <li>Codice catastale : <span id="codice-catastale">52521</span> </li>
-                            <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
-                            <li>Anno scolastico  <span id="anno-scolastisco"></span></li>
-                        </ul>
-                    </div>
-                    <div class="right floated column">
-                        <div class="ui selection dropdown">
-                            <input type="hidden" name="gender">
-                            <i class="dropdown icon"></i>
-                            <div class="default text">Gender</div>
-                            <div class="menu">
-                                <div class="item" data-value="1">Male</div>
-                                <div class="item" data-value="0">Female</div>
-                            </div>
+                <div class="ui grid">
+                    <div class="two column row">
+                        <div class="left floated column">
+                            <ul>
+                                <li>Media voti : <span id="media-voti">8.8</span></li>
+                                <li>Codice catastale : <span id="codice-catastale">52521</span></li>
+                                <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
+                                <li>Anno scolastico <span id="anno-scolastisco"></span></li>
+                            </ul>
+                        </div>
+                        <div class="right floated column" id="dropdown-container">
+                            <!--<div class="ui selection dropdown">-->
+                                <!--<input type="hidden" name="gender">-->
+                                <!--<i class="dropdown icon"></i>-->
+                                <!--<div class="default text">Gender</div>-->
+                                <!--<div class="menu">-->
+                                    <!--<div class="item" data-value="1">Male</div>-->
+                                    <!--<div class="item" data-value="0">Female</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
             <hr>
 
-            <!--</div><div class="description">-->
-                <!--<ul>-->
-                    <!--<li>Media voti :  <span id ="media-voti">8.8</span></li>-->
-                    <!--<li>Codice catastale : <span id="codice-catastale">52521</span> </li>-->
-                    <!--<li>Codice fiscale <span id="cf">dgsadgasdg</span></li>-->
-                    <!--<li>Anno scolastico  <span id="anno-scolastisco"></span></li>-->
-                <!--</ul>-->
-
-                <!--<div>-->
-                    <!--<div class="ui selection dropdown">-->
-                        <!--<input type="hidden" name="gender">-->
-                        <!--<i class="dropdown icon"></i>-->
-                        <!--<div class="default text">Gender</div>-->
-                        <!--<div class="menu">-->
-                            <!--<div class="item" data-value="1">Male</div>-->
-                            <!--<div class="item" data-value="0">Female</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
 
         </div>
         <div class="actions">
@@ -175,14 +156,13 @@
     </div>
 
 
-
 </div>
 
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
 <script>
     $('.menu .item').tab();
-    $('.ui.dropdown').dropdown();
+
 </script>
 
 <!--first class table-->
@@ -210,7 +190,7 @@
             ]
         });
         table.buttons().container()
-                .appendTo($('div.eight.column:eq(0)', table.table().container()));
+            .appendTo($('div.eight.column:eq(0)', table.table().container()));
     });
 </script>
 
@@ -218,36 +198,37 @@
 <script>
 
     $('.ui.search')
-            .search({
-                apiSettings: {
-                    url: '/all-students?q={query}'
-                },
-                searchFullText: false,
-                silent: true, // no error in console
-                onResults: function (response) {
+        .search({
+            apiSettings: {
+                url: '/all-students?q={query}'
+            },
+            searchFullText: false,
+            silent: true, // no error in console
+            onResults: function (response) {
 
-                    var html = '';
-                    if (response !== undefined) {
-                        $.each(response, function (index, result) {
-                            html  += '<a onclick="setStudentData(this.id)" id="'+ result.cf +'" class="result"><div class="content">';
-                            html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
-                            html += '<i> Media voti: ' + result.media_voti + '</i>';
+                var html = '';
+                if (response !== undefined) {
+                    $.each(response, function (index, result) {
+                        html += '<a onclick="setStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
+                        html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
+                        html += '<i> Media voti: ' + result.media_voti + '</i>';
 
-                            html += '' + '</div></a>';
-                            return index < 6;
-                        });
-                        $('.ui.search div.results').html(html);
-                    }
-                    return false;
+                        html += '' + '</div></a>';
+                        return index < 6;
+                    });
+                    $('.ui.search div.results').html(html);
                 }
-            });
+                return false;
+            }
+        });
+
 
     //set card with student data
     function setStudentData(cf) {
         console.log(cf)
         $.ajax({
             url: '/student-by-cf',
-            data: {"cf":  cf },
+            data: {"cf": cf},
             type: 'get',
             success: function (data) {
                 var ret = jQuery.parseJSON(data);
@@ -262,18 +243,71 @@
             },
             error: function (xhr, status, error) {
                 console.log('Error: ' + error.message);
-                $('#lblResponse').html('Error connecting to the server.');
+
             },
         });
     }
 
-    function azione() {
+    //SET DROPWDOWN DATA
+    $(document).ready(function () {
+        $.ajax({
+            url: '/all-tag',
+            type: 'get',
+            success: function (data) {
+                var TAG = jQuery.parseJSON(data);
 
-    }
+//                <div class="ui selection dropdown">
+//                    <input type="hidden" name="gender">
+//                    <i class="dropdown icon"></i>
+//                    <div class="default text">Gender</div>
+//                        <div class="menu">
+        //                    <div class="item" data-value="1">Male</div>
+//                             <div class="item" data-value="0">Female</div>
+//                        </div>
+//                </div>
 
-//    $(document).ready(function () {
-//        $('#student-data').hide();
-//    });
+
+                $('<div/>', {
+                    'class':'ui selection dropdown',
+                    'id':'dropdown-data'
+                }).appendTo($('#dropdown-container'));
+
+                $('<input/>', {
+                    'type':'hidden',
+                    'name':'Nessuno'
+                }).appendTo($('#dropdown-data'));
+
+                $('<i/>', {
+                    'class':'dropdown icon',
+                }).appendTo($('#dropdown-data'));
+
+                $('<div/>', {
+                    'class':'default text',
+                    'text':'nessuno'
+                }).appendTo($('#dropdown-data'));
+
+                $('<div/>', {
+                    'class':'menu',
+                    'id':'tag'
+                }).appendTo($('#dropdown-data'));
+                $('.ui.dropdown').dropdown();
+                //tag
+                for( var i = 0 ; i < TAG.length ; i++)
+                {
+                    $('<div/>', {
+                        'class':'item',
+                        'data-value':TAG[i].tag,
+                        'text':TAG[i].tag
+                    }).appendTo($('#tag'));
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    });
 </script>
 
 <!--close html tag-->
