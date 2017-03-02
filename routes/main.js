@@ -5,7 +5,6 @@
 var middleware = require('./middleware/middleware');
 var query = require('./../query/query.js');
 var alg = require("./algorithm.js");
-
 var dataInSettings = new Object();
 module.exports = function (app, passport) {
 
@@ -86,20 +85,40 @@ module.exports = function (app, passport) {
         });
     });
 
-    app.get('/example-page', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        var classi;
-        alg.loadListAlunni("prima",function (err, results) {
+    app.get('/all-students', function (req, res) {
+        query.getAllStudents(function (err, results) {
             if (err)
-                console.log(err);
-            else {
-                res.send(results);
-            }
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        },req.query.q);
+    });
 
-        });
-    console.log(classi)
-        // alg.numberOfClassi("prima");
-        // alg.createListClassi("prima");
-        
+    app.get('/student-by-cf', function (req, res) {
+        query.getStudentByCf(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        },req.query.cf);
+    });
+
+    app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('panoramica-classi.ejs',{
+            pageTitle: "Panoramica classi"
+        })
+    });
+
+    app.get('/panoramica-classi-v2', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('panoramica-classi-v2.ejs',{
+            pageTitle: "Panoramica classi-v2"
+        })
+    });
+
+    app.get('/panoramica-classi-v3', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('panoramica-classi-v3.ejs',{
+            pageTitle: "Panoramica classi-v3"
+        })
     });
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
@@ -108,7 +127,6 @@ module.exports = function (app, passport) {
                 throw err;
             else
                 setValueOfArrayForSettings(results,"numberOfStudentiPrima");
-
         });
 
         query.getNumerOfStudentiTerza(function (err, results) {
@@ -154,16 +172,7 @@ module.exports = function (app, passport) {
         });
     });
 
-/*    app.get('/test', middleware.isLoggedIn, function (req, res) {
-<<<<<<< Updated upstream
-
-=======
-        alg.numberOfClassi("prima");
->>>>>>> Stashed changes
-    }); */
-
-
-      function setValueOfArrayForSettings(rows,key) {
-          dataInSettings[key]= rows[0].result;
+    function setValueOfArrayForSettings(rows, key) {
+        dataInSettings[key] = rows[0].result;
     }
 };

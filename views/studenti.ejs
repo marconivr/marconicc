@@ -1,101 +1,256 @@
 <% include header %>
 
-<body >
+<body>
 <% include sidebar-start.ejs %>
 
+<!--tabs-->
+<div class="ui top attached tabular menu">
+    <a class="item active" data-tab="first">Prime</a>
+    <a class="item " data-tab="third">Terze</a>
+    <a class="item " data-tab="tags">Tags</a>
+</div>
+<div class="ui bottom attached tab active  segment" data-tab="first">
 
-<div class="ui two column centered grid">
-    <div class="column">
+    <div class="ui two column centered grid">
+        <div class="column">
 
-<table id="studenti" class="ui celled table" cellspacing="0" width="100%">
-    <thead>
-    <tr>
-        <th>cognome</th>
-        <th>nome</th>
-        <th>cf</th>
-        <th>sesso</th>
-        <th>data_di_nascita</th>
-        <th>stato</th>
-        <th>cap_provenienza</th>
-        <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
-        <th>anno_scolastico</th>
-        <th>anno</th>
-        <th>cod_cat</th>
-        <th>media_voti</th>
-        <th>classe_futura</th>
-    </tr>
-    </thead>
+            <table id="studenti" class="ui celled table" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>cognome</th>
+                    <th>nome</th>
+                    <th>cf</th>
+                    <th>sesso</th>
+                    <th>data_di_nascita</th>
+                    <th>stato</th>
+                    <th>cap_provenienza</th>
+                    <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
+                    <th>anno_scolastico</th>
+                    <th>anno</th>
+                    <th>cod_cat</th>
+                    <th>media_voti</th>
+                    <th>classe_futura</th>
 
-    <tbody>
-    <%for(var i=0; i<studentsData.length; i++){ %>
-    <tr>
-        <td><%= studentsData[i].cognome %></td>
-        <td><%= studentsData[i].nome %></td>
-        <td><%= studentsData[i].cf %></td>
-        <td><%= studentsData[i].sesso %></td>
-        <td><%= studentsData[i].data_di_nascita %></td>
-        <td><%= studentsData[i].stato %></td>
-        <td><%= studentsData[i].cap_provenienza %></td>
-        <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
-        <td><%= studentsData[i].anno_scolastico %></td>
-        <td><%= studentsData[i].anno %></td>
-        <td><%= studentsData[i].cod_cat %></td>
-        <td><%= studentsData[i].media_voti %></td>
-        <td><%= studentsData[i].classe_futura %></td>
-    </tr>
-    <%}%>
+                </tr>
+                </thead>
 
-    </tbody>
-    <tfoot>
-    <tr>
-        <th>cognome</th>
-        <th>nome</th>
-        <th>cf</th>
-        <th>sesso</th>
-        <th>data_di_nascita</th>
-        <th>stato</th>
-        <th>cap_provenienza</th>
-       <!-- <th>scelta_indirizzo</th> ho commentato perchè troppo largo e rompe layout tabella -->
-        <th>anno_scolastico</th>
-        <th>anno</th>
-        <th>cod_cat</th>
-        <th>media_voti</th>
-        <th>classe_futura</th>
+                <tbody>
+                <% for(var i = 0; i < studentsData.length; i++){ %>
+                <tr>
+                    <td><%= studentsData[i].cognome %></td>
+                    <td><%= studentsData[i].nome %></td>
+                    <td><%= studentsData[i].cf %></td>
+                    <td><%= studentsData[i].sesso %></td>
+                    <td><%= studentsData[i].data_di_nascita %></td>
+                    <td><%= studentsData[i].stato %></td>
+                    <td><%= studentsData[i].cap_provenienza %></td>
+                    <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
+                    <td><%= studentsData[i].anno_scolastico %></td>
+                    <td><%= studentsData[i].anno %></td>
+                    <td><%= studentsData[i].cod_cat %></td>
+                    <td><%= studentsData[i].media_voti %></td>
+                    <td><%= studentsData[i].classe_futura %></td>
 
-    </tr>
-    </tfoot>
-</table>
+                </tr>
+                <% } %>
 
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>cognome</th>
+                    <th>nome</th>
+                    <th>cf</th>
+                    <th>sesso</th>
+                    <th>data_di_nascita</th>
+                    <th>stato</th>
+                    <th>cap_provenienza</th>
+                    <!-- <th>scelta_indirizzo</th> ho commentato perchè troppo largo e rompe layout tabella -->
+                    <th>anno_scolastico</th>
+                    <th>anno</th>
+                    <th>cod_cat</th>
+                    <th>media_voti</th>
+                    <th>classe_futura</th>
+
+                </tr>
+                </tfoot>
+            </table>
+
+        </div>
     </div>
+    <!--close first tabs-->
 </div>
 
-<% include sidebar-stop.ejs%>
+<!--third tabs-->
+<div class="ui bottom attached tab segment" data-tab="third">
+    Third
+</div>
+
+<!--tags and insert-->
+<div class="ui bottom attached tab segment" data-tab="tags">
+    <div class="ui raised very padded text container segment">
+        <h1 class="ui header">
+            Inserimento tag
+            <div class="sub header">Ricerca studente</div>
+        </h1>
+        <!--search-->
+        <div class="ui category search">
+            <div class="ui icon input">
+                <input class="prompt" type="text" placeholder="Scrivi il nome...">
+                <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+        </div>
+    </div>
+
+
+    <!--modal response -->
+
+    <div class="ui modal">
+        <i class="close icon"></i>
+        <div class="header">
+            <span id="cognome"></span>
+            <span id="nome"></span>
+        </div>
+        <div class="image content">
+            <!--<div class="ui medium image">-->
+                <!--<img src="/images/avatar/large/chris.jpg">-->
+            <!--</div>-->
+
+            <div class="ui grid">
+                <div class="four column row">
+                    <div class="left floated column">
+
+                    </div>
+                    <div class="right floated column">
+
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="description">
+                <ul>
+                    <li>Media voti :  <span id ="media-voti">8.8</span></li>
+                    <li>Codice catastale : <span id="codice-catastale">52521</span> </li>
+                    <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
+                    <li>Anno scolastico  <span id="anno-scolastisco"></span></li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">
+                Chiudi
+            </div>
+            <div class="ui positive right labeled icon button">
+                OK,fatto
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
 <script>
-    $(document).ready(function() {
-        var table = $('#studenti').DataTable( {
-            processing:true,
+    $('.menu .item')
+            .tab()
+    ;
+</script>
+
+<!--first class table-->
+<script>
+    $(document).ready(function () {
+        var table = $('#studenti').DataTable({
+            processing: true,
             lengthChange: false,
             buttons: ['excel'],
             "columns": [
-                { "data": "cognome" },
-                { "data": "nome" },
-                { "data": "cf" },
-                { "data": "sesso" },
-                { "data": "data_di_nascita" },
-                { "data": "stato" },
-                { "data": "cap_provenienza" },
+                {"data": "cognome"},
+                {"data": "nome"},
+                {"data": "cf"},
+                {"data": "sesso"},
+                {"data": "data_di_nascita"},
+                {"data": "stato"},
+                {"data": "cap_provenienza"},
                 //{ "data": "scelta_indirizzo" },
-                { "data": "anno_scolastico" },
-                { "data": "anno" },
-                { "data": "cod_cat" },
-                { "data": "media_voti" },
-                { "data": "classe_futura" }
+                {"data": "anno_scolastico"},
+                {"data": "anno"},
+                {"data": "cod_cat"},
+                {"data": "media_voti"},
+                {"data": "classe_futura"}
+
             ]
-        } );
+        });
         table.buttons().container()
-            .appendTo( $('div.eight.column:eq(0)', table.table().container()) );
-    } );
+                .appendTo($('div.eight.column:eq(0)', table.table().container()));
+    });
 </script>
+
+<!--search-->
+<script>
+
+    $('.ui.search')
+            .search({
+                apiSettings: {
+                    url: '/all-students?q={query}'
+                },
+                searchFullText: false,
+                silent: true, // no error in console
+                onResults: function (response) {
+
+                    var html = '';
+                    if (response !== undefined) {
+                        $.each(response, function (index, result) {
+                            html  += '<a onclick="setStudentData(this.id)" id="'+ result.cf +'" class="result"><div class="content">';
+                            html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
+                            html += '<i> Media voti: ' + result.media_voti + '</i>';
+
+                            html += '' + '</div></a>';
+                            return index < 6;
+                        });
+                        $('.ui.search div.results').html(html);
+                    }
+                    return false;
+                }
+            });
+
+    //set card with student data
+    function setStudentData(cf) {
+        console.log(cf)
+        $.ajax({
+            url: '/student-by-cf',
+            data: {"cf":  cf },
+            type: 'get',
+            success: function (data) {
+                var ret = jQuery.parseJSON(data);
+                $('#cognome').text(ret[0].cognome);
+                $('#nome').text(ret[0].nome);
+                $('#codice-catastale').text(ret[0].cod_cat);
+                $('#media-voti').text(ret[0].media_voti);
+                $('#anno-scolastisco').text(ret[0].anno_scolastisco);
+
+                $('.ui.modal').modal('show');
+
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ' + error.message);
+                $('#lblResponse').html('Error connecting to the server.');
+            },
+        });
+    }
+
+    function azione() {
+
+    }
+
+//    $(document).ready(function () {
+//        $('#student-data').hide();
+//    });
+</script>
+
 <!--close html tag-->
-<% include tag-close.ejs%>
+<% include tag-close.ejs %>

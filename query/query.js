@@ -1,4 +1,3 @@
-
 /**
  * Created by mattiacorradi on 11/02/2017.
  */
@@ -22,10 +21,7 @@ module.exports = {
     /*
      * Function for insert students into db having an array of data
      */
-    insertRecordFromCSV:function (arrayRow) {
-
-        var tableName = 'alunni';
-
+    insertRecordFromCSV: function (arrayRow) {
         var cognome = arrayRow[0];
         var nome = arrayRow[1];
         var cf = arrayRow[2];
@@ -40,109 +36,193 @@ module.exports = {
         var media_voto = arrayRow[11];
         var classe_futura = arrayRow[12];
 
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",[cognome,nome,cf,sesso,dataDiNascita,statoRichiesta,cap,indirizzo,annoScolastico,anno,codice_cat,media_voto,classe_futura],function (err, row) {
-            if (err){
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?)", [cognome, nome, cf, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, indirizzo, annoScolastico, anno, codice_cat, media_voto, classe_futura], function (err, row) {
+            if (err) {
                 console.log(err);
-            }else {
-                console.log("INSERITO CORRETTAMENTE");
             }
         });
     },
 
-    //insertSettings:function
+    /*
+     * Function for insert classi into db having an array of data
+     */
+    insertClassi: function (listaNomiClassi) {
+        for (var k = 0; k < listaNomiClassi.length; k++) {
+            connection.query("INSERT INTO classi VALUES (?)", [listaNomiClassi[k]], function (err, row) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
+    },
 
-    getStudentiPrima:function (callback) {
+    insertAlunnoInClass: function (classe, cf) {
+        connection.query("INSERT INTO comp_classi VALUES (?, ?)", [classe, cf], function (err, row) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    },
 
-        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")",function (err, rows) {
-            if (err){
+    getClassi: function (callback) {
+        connection.query("SELECT * from classi", function (err, rows) {
+            if (err) {
+                console.log(err);
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getAlunniFromClass: function(classe, callback){
+        connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "'", function (err, rows) {
+            if (err) {
+                console.log(err);
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getAlunniFromClassSync: function(classe, count, callback) {
+        connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "' ORDER BY alunni.cognome, alunni.nome", function (err, rows) {
+            if (err) {
+                console.log(err);
+            } else {
+                callback(err, rows, classe, count);
+            }
+        });
+    },
+
+    getNumberAlunniClassi: function (classe, callback) {
+        var ncl = 1;
+        if (classe.toLowerCase() == "prima"){
+            ncl = 1;
+        } else if(classe.toLowerCase() == "terza"){
+            ncl = 3;
+        }
+
+        connection.query("SELECT count(*) as result from comp_classi WHERE nome_classe LIKE '" + ncl + "%'", function (err, rows) {
+            if (err) {
+                console.log(err);
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getStudentiPrima: function (callback) {
+
+        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+            if (err) {
                 console.log('error');
-            }else {
-               callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
     },
 
     getNumberGirl: function (callback, classe) {
 
-        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND anno_scolastico = (" + anno_sc + ")",function (err, rows) {
-            if (err){
+        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+            if (err) {
                 console.log('MySQL error');
-            }else {
-                callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
-    }
+    },
 
-    ,
-
-    getNumberSameResidence: function (callback, classe, cap, catasto){
+    getNumberSameResidence: function (callback, classe, cap, catasto) {
         var qry = "SELECT count(*) residences from alunni WHERE classe_futura = '" + classe + "' AND cap_provenienza = " + cap;
 
         if (catasto != "*") {
-            qry += " AND catasto = '" + catasto +"'";
+            qry += " AND catasto = '" + catasto + "'";
         }
-        qry +=  " AND anno_scolastico = (" + anno_sc + ")"
+        qry += " AND anno_scolastico = (" + anno_sc + ")"
         connection.query(qry, function (err, rows) {
-            if (err){
+            if (err) {
                 console.log('MySQL error');
-            }else {
-                callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
     },
 
-    getNumerOfStudentiPrima:function (callback) {
+    getNumerOfStudentiPrima: function (callback) {
 
-        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'PRIMA'",function (err, rows) {
-            if (err){
+        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'PRIMA'", function (err, rows) {
+            if (err) {
                 console.log('error');
-            }else {
-                callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
     },
 
-    getNumerOfStudentiTerza:function (callback) {
+    getNumerOfStudentiTerza: function (callback) {
 
-        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'TERZA'",function (err, rows) {
-            if (err){
+        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'TERZA'", function (err, rows) {
+            if (err) {
                 console.log('error');
-            }else {
-                callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
     },
-    //
-    getAVGOfStudentiPrima:function (callback) {
 
-        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'PRIMA' ",function (err, rows) {
-            if (err){
+    getAVGOfStudentiPrima: function (callback) {
+
+        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'PRIMA' ", function (err, rows) {
+            if (err) {
                 console.log('error');
-            }else {
-                callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
     },
 
-    getNumberOfGirlTerza:function (callback) {
+    getNumberOfGirlTerza: function (callback) {
 
-        connection.query("SELECT COUNT(classe_futura) as result from alunni where classe_futura = 'TERZA' and sesso = 'F' ",function (err, rows) {
-            if (err){
+        connection.query("SELECT COUNT(classe_futura) as result from alunni where classe_futura = 'TERZA' and sesso = 'F' ", function (err, rows) {
+            if (err) {
                 console.log('error');
-            }else {
-                callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
     },
 
-    getAVGOfStudentiTerza:function (callback) {
+    getAVGOfStudentiTerza: function (callback) {
 
-        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'TERZA' ",function (err, rows) {
-            if (err){
+        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'TERZA' ", function (err, rows) {
+            if (err) {
                 console.log('error');
-            }else {
-                callback(err,rows);
+            } else {
+                callback(err, rows);
             }
         });
     },
+
+    getAllStudents: function (callback,identifier) {
+
+        connection.query("SELECT * FROM alunni WHERE cognome LIKE '" + identifier + "%' OR nome LIKE '" + identifier + "%'", function (err, rows) {
+            if (err) {
+                throw err;
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getStudentByCf: function (callback,cf) {
+
+        connection.query("SELECT * FROM alunni WHERE cf = '" + cf + "'", function (err, rows) {
+            if (err) {
+                throw err;
+            } else {
+                callback(err, rows);
+            }
+        });
+    }
 };

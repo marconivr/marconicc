@@ -39,7 +39,6 @@ CREATE TABLE `alunni` (
   `classe_futura` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 -- --------------------------------------------------------
 
 --
@@ -97,7 +96,6 @@ INSERT INTO `priorita_scelta` (`id`, `scelta`) VALUES
 (4, 'alunni'),
 (5, 'stessa_nazionalita'),
 (6, 'media');
-(7, 'amici');
 
 -- --------------------------------------------------------
 
@@ -174,4 +172,48 @@ ALTER TABLE `priorita_scelta`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+-- phpMyAdmin SQL Dump
+-- version 3.2.4
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Feb 25, 2017 at 12:34
+-- Server version: 5.1.41
+-- PHP Version: 5.3.1
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+
+CREATE TABLE IF NOT EXISTS `richiesta_amico` (
+  `id` int(11) NOT NULL,
+  `alunno` char(16) DEFAULT NULL,
+  `amico` char(16) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `alunno` (`alunno`),
+  KEY `amico` (`amico`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `richiesta_amico`
+--
+
+INSERT INTO `richiesta_amico` (`id`, `alunno`, `amico`) VALUES
+(1, 'BCCMHL02M16F861K', 'BRTRCR02D03L781T'),
+(2, 'BNTDGI03A09I775U', 'ZTTMTT03D16F861C');
+
+
+CREATE TABLE `classi` (
+nome varchar(5) primary key
+);
+
+CREATE TABLE comp_classi(
+nome_classe varchar(5),
+cf_alunno char(16),
+primary key(nome_classe, cf_alunno),
+foreign key (nome_classe) references classi(nome),
+foreign key (cf_alunno) references alunni(cf)
+);
+
+
 

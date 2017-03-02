@@ -1,0 +1,210 @@
+<% include header %>
+
+<style>
+    .contenitoreClasse{
+        list-style-type: none;
+    }
+
+    .contenitoreClasse li{
+        margin: 0 5px 5px 5px;
+        padding: 5px;
+        width: 120px;
+    }
+
+    .studenteItem{
+        width: 120px;
+    }
+
+    .wrapperClasse{
+        border: 1px solid #eee;
+        display:table-cell;
+    }
+
+    #wrapper {
+        overflow-x: scroll;
+        white-space:no-wrap;
+    }
+
+    .table {
+        display:table;
+    }
+
+    .tr {
+        display:table-row;
+    }
+</style>
+
+<script>
+    $( function() {
+        $(".contenitoreClasse").sortable({
+            connectWith: ".contenitoreClasse"
+        }).disableSelection();
+    } );
+
+</script>
+
+<% include sidebar-start.ejs %>
+
+<div id="selezioneClassi" class="ui labeled icon menu">
+
+    <div id="contenitoreCheckBox" class="item">
+        <div id="checkBox" class="ui toggle checkbox">
+            <input type="checkbox" name="public">
+            <label>Mostra tutte</label>
+        </div>
+    </div>
+</div>
+
+
+<div id="wrapper">
+    <div class="table">
+        <div id="rowForInsertClasses" class="tr">
+
+
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    /**
+     * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
+     */
+
+    $.ajax({
+        url: '/get-classi-composte',
+        data: {
+            format: 'json'
+        },
+        error: function() {
+            alert('Errore di scaricamento dei dati /get-classi-composte');
+        },
+        dataType: 'json',
+
+        success: function(listaClassi) {
+
+            for (var i=0 ; i<listaClassi.length ; i++){
+
+                var nomeClasse = listaClassi[i].nome;
+                var proprieta = listaClassi[i].proprieta;
+                var arrayStudenti = listaClassi[i].alunni;
+
+                var wrapperClasse = $('<div/>', {
+                    'id': nomeClasse,
+                    'class':'wrapperClasse',
+                }).appendTo('#rowForInsertClasses').hide();
+
+                $('<h3/>').text(nomeClasse).appendTo(wrapperClasse);
+
+                var ulClasse = $('<div/>',{
+                    'class':'ui vertical menu'
+                }).appendTo(wrapperClasse);
+
+
+                $('<a/>',{
+                    'class':'item',
+                    'text' : nomeClasse
+                }).appendTo($('#selezioneClassi'));
+
+
+                for (var prop in proprieta) {
+                    if (prop != "residenza" && prop != "iniziale") {
+                        var li = $('<div/>')
+                            .addClass("ui info message")
+                            .text(prop + ": " + proprieta[prop])
+                            .appendTo(ulClasse);
+                    }
+                }
+
+                var div = $('<ul/>',{
+                    'class':'contenitoreClasse'
+                }).appendTo(wrapperClasse);
+
+                for (var j=0; j < arrayStudenti.length ; j++) {
+                    if (arrayStudenti[j] !== undefined) {
+                        var cognomeStudente = arrayStudenti[j].cognome;
+                        var nomeStudente = arrayStudenti[j].nome;
+
+                        var a = $('<a/>').addClass("ui label studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente)
+
+                        var li = $('<li/>')
+                            .html(a)
+                            .appendTo(div);
+                    }
+                }
+            }
+        },
+        type: 'GET'
+    });
+</script>
+
+<% include sidebar-stop.ejs%>
+<!--personal script for specific page -->
+
+<script>
+
+
+
+    /**
+     * Osservatore per gestire la visualizzazione delle classi
+     */
+    $('#selezioneClassi')
+        .on('click', '.item', function() {
+
+            if ($(this)[0].id != "contenitoreCheckBox"){ //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
+                if($(this).hasClass('active')) {
+                    $(this).removeClass('active');
+
+                    var classe = $(this).text();
+
+                    //nascondo l'elemento
+
+
+                    //bisogna fare il controllo per quando si preme tante volte
+                    $('#' + classe).hide();
+
+                }else{
+                    $(this).addClass('active');
+                    var classe = $(this).text();
+
+                    //visualizzo l'elemento
+                    $('#' + classe).show();
+                }
+                //attivo il doppio scroll che non funziona bisognerà indagare
+                //$('#wrapper').doubleScroll();
+            }
+        });
+
+    /**
+     * Osservatore per gestire il visualizzza tutto
+     */
+    $('#checkBox').checkbox({
+        onChecked: function () {
+            //visualizzo tutto lasciando in selezione gli altri item
+            $('.wrapperClasse').show();
+        },
+        onUnchecked: function () {
+            //prima di pulire tutto controllo gli item già attivi per portare alla situazione precendente le visualizzazioni
+            $('#selezioneClassi > .item').each(function (i, obj) {
+                if (!$(this).hasClass('active')) {
+                    try{
+                        var id = $(this).text();
+                        $('#' + id).hide();
+                    }catch (e){
+                        //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe
+                    }
+
+                }
+
+            });
+        }
+
+    });
+
+</script>
+
+
+<!--close html tag-->
+<% include tag-close.ejs%>

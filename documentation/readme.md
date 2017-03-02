@@ -19,6 +19,7 @@ Elenco passi da eseguire per lanciare il progetto:
 
 ##Progettazione
 
+###Spina di pesce
 ###WBS
 ###GANTT
 ###Matrice responsabilità
@@ -26,6 +27,12 @@ Elenco passi da eseguire per lanciare il progetto:
 ###Unità organizzative
 ![](img\unita_organizzative.png)
 ###Strumenti utilizzati
+- WebStorm
+- NodeJs
+- Trello
+- Visio
+
+
 
 
 ##Sprint
@@ -34,3 +41,5 @@ Elenco passi da eseguire per lanciare il progetto:
 - Creazione database
 - Creazione interfaccia signup
 - Implementazione algoritmo che genera casualmente classi
+- Pagina 'Elenco alunni' con possibilità di ricerca
+- Aggiunta proprietà principali di ogni classe (numero Alunni, femmine, media, bocciati)

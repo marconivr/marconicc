@@ -20,6 +20,7 @@
     "dragular": "^4.3.1",
     "angular": "1.6.1",
     "semantic": "semantic-ui#^2.2.6",
-    "angular-datatables": "^2.1.0"
+    "angular-datatables": "^2.1.0",
+    "angular-ui-sortable": "^0.16.1"
   }
 }
