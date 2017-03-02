@@ -363,7 +363,27 @@ module.exports = {
         console.log(ris);
     },
 
+    fixFemmine: function(nomeClasse) {
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].nome != nomeClasse){
+                if (listaClassi[i].alunni.countFemmine() > settings.max_fem){
+                    var objfem = searchAlunno("sesso", "F", listaClassi[i]);
+                    listaClassi[i].splice(objfem, 1);
+                    (findClasseFromString(nomeClasse)).push(objfem);
+                    console.log("Cambio femmina");
+                }
+            }
+        }
+    },
 
+    searchAlunno: function(attr, valore, listaAlunniClasse) {
+        for (var i = 0; i < listaAlunniClassi.length; i++){
+            if (listaAlunniClassi[i].attr == valore){
+                return listaAlunniClassi[i];
+            }
+        }
+        return null;
+    },
 
     //##################################################################################################################
     /**--------------------------------------FINE FUNZIONI PER COMPORRE CLASSI----------------------------------------*/
