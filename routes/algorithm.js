@@ -343,6 +343,16 @@ module.exports = {
         return ris;
     },
 
+    fixFemmine: function(nomeClasse) {
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].nome != nomeClasse){
+                if (listaClassi[i].alunni.countFemmine() > settings.max_fem){
+                    var fe
+                }
+            }
+        }
+    },
+
     //##################################################################################################################
     /**--------------------------------------FINE FUNZIONI PER COMPORRE CLASSI----------------------------------------*/
     //##################################################################################################################
