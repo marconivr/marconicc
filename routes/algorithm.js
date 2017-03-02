@@ -10,7 +10,7 @@ var async = require('async');
 var settings = {
     max_al: 28,
     min_al: 25,
-    max_fem: 3,
+    fem: 3,
     max_str: 5,
     iniziale:3,
     stessa_pr: 4,
@@ -62,7 +62,7 @@ module.exports = {
                                 });
                             },
                             function (callback) {
-                                module.exports.riordinaClassi(function () {
+                                module.exports.fixClassi(function () {
                                     callback();
                                 });
                             }
@@ -129,13 +129,14 @@ module.exports = {
      * @returns {{alunni: *, femmine: (*|Number), media: *, residenza: (*|Array), bocciati: (*|number), iniziale: *}}
      */
     createProprietaClasse: function (listaAlunniClasse) {
-        var nAlunni = module.exports.countAlunni(listaAlunniClasse);
+        var nAlunni = listaAlunniClasse.length;
         var nFemmine = module.exports.countFemmine(listaAlunniClasse);
         var media = module.exports.mediaClasse(listaAlunniClasse);
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
         var bocciati = module.exports.countBocciati(listaAlunniClasse);
         var iniziale = module.exports.countInizialeCognome(listaAlunniClasse);
         return {alunni:nAlunni, femmine:nFemmine, media:media.toFixed(2), residenza:residenza, bocciati:bocciati, iniziale:iniziale};
+        problemiClasse(listaAlunniClasse);
     },
 
     /**
@@ -151,22 +152,16 @@ module.exports = {
     },
 
     /**
-     * riordinaClassi sistema le classi in base alle impostazioni e alle priorità
+     * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
-    riordinaClassi: function (callback) {
+    fixClassi: function (callback) {
         for (var k = 0; k < listaClassi.length; k++) {
+
             for (var i = 0; i < priority.length; i++) {
                 switch (priority[i]) {
                     case "alunni":
-                        if (module.exports.countAlunni(listaClassi[k]) == settings.min_al){
-                            for (var j = 0; j < listaClassi.length; j++){
-                                if (module.exports.countAlunni(listaClassi[j]) >= settings.min_al + 2){
-                                    var indice = Math.floor(Math.random() * listaAlunni.length);
-                                    var studente = listaClassi[j].alunni[indice];
-                                    delete listaClassi[j].alunni[indice];
-                                    listaClassi[k].push(studente);
-                                }
-                            }
+                        while (listaClassi[k].alunni.length > settings.min_al){
+
                         }
                         break;
                     case "femmine":
@@ -193,14 +188,6 @@ module.exports = {
     //##################################################################################################################
     /**--------------------------------------FUNZIONI PER COMPORRE CLASSI---------------------------------------------*/
     //##################################################################################################################
-
-    /**
-     * countAlunni ritorna il numero di alunni per classe
-     * @param listaAlunniClasse
-     */
-    countAlunni : function (listaAlunniClasse) {
-        return listaAlunniClasse.length;
-    },
 
     /**
      * countFemmine Data la classe ritorna il numero di femmine
@@ -343,12 +330,32 @@ module.exports = {
         return ris;
     },
 
-    fixFemmine: function(nomeClasse) {
-        for (var i = 0; i < listaClassi.length; i++){
-            if (listaClassi[i].nome != nomeClasse){
-                if (listaClassi[i].alunni.countFemmine() > settings.max_fem){
-                    var fe
-                }
+    problemiClasse: function(listaAlunniClasse){
+        var ris = {}
+        var proprieta = module.exports.createProprietaClasse(listaAlunniClasse);
+        for (var prop in proprieta){
+            switch (prop) {
+                case "femmine":
+                    if (proprieta.femmine != 0 && proprieta.femmine < settings.fem){
+                        ris["femmine"] = proprieta.femmine;
+                    }
+                    break;
+                case "stranieri":
+                    if (proprieta.nazionalita < settings.nazionalita){
+                        ris["nazionalita"] = proprieta.nazionalita;
+                    }
+                    break;
+                case "bocciati":
+                    if (proprieta.nazionalita < settings.nazionalita){
+                        ris["nazionalita"] = proprieta.nazionalita;
+                    }
+                    break;
+                case "stessa_provenienza":
+
+                    break;
+                case "media":
+
+                    break;
             }
         }
     },
@@ -401,8 +408,3 @@ module.exports = {
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
     //##################################################################################################################
 }
-
-/*var findPriority = function (classe) {
-
-
- }*/
