@@ -122,21 +122,11 @@
                             <ul>
                                 <li>Media voti : <span id="media-voti">8.8</span></li>
                                 <li>Codice catastale : <span id="codice-catastale">52521</span></li>
-                                <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
+                                <li>Codice fiscale <span id="cf"></span></li>
                                 <li>Anno scolastico <span id="anno-scolastico"></span></li>
                             </ul>
                         </div>
-                        <div class="right floated column" id="dropdown-container">
-                            <!--<div class="ui selection dropdown">-->
-                                <!--<input type="hidden" name="gender">-->
-                                <!--<i class="dropdown icon"></i>-->
-                                <!--<div class="default text">Gender</div>-->
-                                <!--<div class="menu">-->
-                                    <!--<div class="item" data-value="1">Male</div>-->
-                                    <!--<div class="item" data-value="0">Female</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        </div>
+                        <div class="right floated column" id="dropdown-container"></div>
                     </div>
                 </div>
             </div>
@@ -155,7 +145,23 @@
         </div>
     </div>
 
-
+    <!--positive-->
+    <div class="ui  positive  message transition  hidden" id="response">
+        <i class="close icon"></i>
+        <div class="header">
+            Fatto!
+        </div>
+        <p>Il tag è stato aggiunto</p>
+    </div>
+    <!--negative-->
+    <div class="ui negative message hidden" id="negative">
+        <i class="close icon"></i>
+        <div class="header">
+            Oops!
+        </div>
+        <p>Ci deve esser stato un problema
+        </p></div>
+<!--thirds tabs-->
 </div>
 
 <% include sidebar-stop.ejs %>
@@ -197,6 +203,8 @@
 <!--search-->
 <script>
  var cf_code ;
+ var existing_tag;
+
     $('.ui.search')
         .search({
             apiSettings: {
@@ -238,11 +246,18 @@
                 $('#codice-catastale').text(ret[0].cod_cat);
                 $('#media-voti').text(ret[0].media_voti);
                 $('#anno-scolastico').text(ret[0].anno_scolastico);
+                $('#cf').text(ret[0].cf);
+                existing_tag = ret[0].tag;
+
+                setDropdownData();
+
 
                 //save to db if the dropdown has change
                 $('.ui.modal').modal({
                     onApprove: function() {
                         saveChangeToDB();
+                        jQuery('#dropdown-container').empty();
+
                     }
                 }).modal('show');
 
@@ -255,31 +270,47 @@
     }
 
     //SET DROPWDOWN DATA
-    $(document).ready(function () {
+   function setDropdownData() {
+
         $.ajax({
             url: '/all-tag',
             type: 'get',
             success: function (data) {
                 var TAG = jQuery.parseJSON(data);
 
+
                 $('<div/>', {
                     'class':'ui selection dropdown',
                     'id':'dropdown-data'
                 }).appendTo($('#dropdown-container'));
 
+
+
                 $('<input/>', {
-                    'type':'hidden',
-                    'name':'Nessuno'
-                }).appendTo($('#dropdown-data'));
+                        'type':'hidden',
+                        'name':''
+                    }).appendTo($('#dropdown-data'));
+
 
                 $('<i/>', {
                     'class':'dropdown icon',
                 }).appendTo($('#dropdown-data'));
 
-                $('<div/>', {
-                    'class':'default text',
-                    'text':'nessuno'
-                }).appendTo($('#dropdown-data'));
+                if(existing_tag != null)
+                {
+                    $('<div/>', {
+                        'class':'default text',
+                        'text':existing_tag
+                    }).appendTo($('#dropdown-data'));
+                }
+                else
+                {
+                    $('<div/>', {
+                        'class':'default text',
+                        'text':'nessuno'
+                    }).appendTo($('#dropdown-data'));
+                }
+
 
                 $('<div/>', {
                     'class':'menu',
@@ -296,14 +327,33 @@
                     }).appendTo($('#tag'));
                 }
 
+                if(existing_tag != null)
+                {
+                    $('<div/>', {
+                        'class':'item',
+                        'data-value':null,
+                        'text':'Nessuno'
+                    }).appendTo($('#tag'));
+
+                }
+
             },
             error: function (xhr, status, error) {
                 console.log('Error: ' + error.message);
 
             },
         });
-    });
+   }
 
+
+ $('.message .close')
+     .on('click', function() {
+         $(this)
+             .closest('.message')
+             .transition('fade')
+         ;
+     })
+ ;
 
 </script>
 
@@ -323,10 +373,11 @@
                 },
                 type: 'get',
                 success: function (data) {
-                    alert("update")
+                    $("#response").removeClass('hidden').addClass('visible');
                 },
                 error: function (xhr, status, error) {
                     console.log('Error: ' + error.message);
+                    $('#negative').removeClass('hidden').addClass('visible');
 
                 },
             });

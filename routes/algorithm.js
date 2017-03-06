@@ -183,14 +183,13 @@ module.exports = {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
             for (var prop in objproblem){
-                console.log(prop);
                 switch (prop) {
                     case "alunni":
 
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
-                        console.log(listaClassi[k].alunni);
+                        console.log(listaClassi[k].proprieta);
                         break;
                     case "stranieri":
 
@@ -390,29 +389,35 @@ module.exports = {
                     break;
             }
         }
-        console.log(ris);
+        return ris;
     },
 
     fixFemmine: function(nomeClasse) {
+        classe = module.exports.findClasseFromString(nomeClasse);
         for (var i = 0; i < listaClassi.length; i++){
             if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(listaClassi[i].alunni) > settings.max_fem){
-                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i]);
-                    listaClassi[i].splice(objfem, 1);
-                    (module.exports.findClasseFromString(nomeClasse)).push(objfem);
-                    console.log("Cambio femmina");
+                if (module.exports.countFemmine(module.exports.removeNullDaArray(listaClassi[i].alunni)) > module.exports.countFemmine(classe.alunni)){
+                    var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
+                    classe.alunni.splice(objfem, 1);
+                    (listaClassi[i].alunni).push(objfem);
+                    console.log("Cambio femmina" + listaClassi[i].nome);
                 }
             }
         }
     },
 
     searchAlunno: function(attr, valore, listaAlunniClasse) {
-        for (var i = 0; i < listaAlunniClassi.length; i++){
-            if (listaAlunniClassi[i].attr == valore){
-                return listaAlunniClassi[i];
+        for (var i = 0; i < listaAlunniClasse.length; i++){
+            console.log(listaAlunniClasse[i]);
+            if (listaAlunniClasse[i].attr == valore){
+                return listaAlunniClasse[i];
             }
         }
         return null;
+    },
+
+    setListaClassi: function (lC){
+        listaClassi = lC;
     },
 
     //##################################################################################################################
@@ -458,6 +463,14 @@ module.exports = {
      */
     removeUndefinedDaArray: function(array){
         return array.filter(function(n){ return n != undefined });
+    },
+
+    /**
+     * removeNullDaArray rimuove un undefined da un array
+     * @param array
+     */
+    removeNullDaArray: function(array){
+        return array.filter(function(n){ return n != null });
     }
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
