@@ -16,7 +16,7 @@
     }
 
     .wrapperClasse{
-        border: 1px solid #eee;
+        //border: 1px solid #eee;
         display:table-cell;
         //padding-right:45px;
     }
@@ -119,19 +119,13 @@
                     'class':'wrapperClasse',
                 }).appendTo('#rowForInsertClasses').hide();
 
+                $('<a/>',{
+                    'class':'item',
+                    'text' : nomeClasse
+                }).appendTo($('#selezioneClassi'));
 
 
-//                var ulClasse = $('<div/>',{
-//                    'class':'ui vertical menu'
-//                }).appendTo(wrapperClasse);
 
-//            <div class="ui raised segment">
-//                    <a class="ui red ribbon label">Overview</a>
-//                    <span>Account Details</span>
-//                <p></p>
-//                <a class="ui blue ribbon label">Community</a> User Reviews
-//                <p></p>
-//                </div>
 
                 var settingClasse = $('<div/>',{
                     'class': 'ui raised segment wrapperSettingClasse',
@@ -149,8 +143,9 @@
                 }
 
                 var div = $('<ul/>',{
-                    'class':'contenitoreClasse'
+                    'class':'contenitoreClasse ui vertical menu'
                 }).appendTo(wrapperClasse);
+
 
                 for (var j=0; j < arrayStudenti.length ; j++) {
                     if (arrayStudenti[j] !== undefined) {
@@ -204,7 +199,7 @@
                         $('#' + classe).show();
                     }
                     //attivo il doppio scroll che non funziona bisognerà indagare
-                    //$('#wrapper').doubleScroll();
+                    $('#wrapper').doubleScroll();
                 }
             });
 
