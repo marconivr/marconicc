@@ -196,7 +196,7 @@
 
 <!--search-->
 <script>
-
+ var cf_code ;
     $('.ui.search')
         .search({
             apiSettings: {
@@ -225,6 +225,7 @@
 
     //set card with student data
     function setStudentData(cf) {
+        cf_code = cf;
         console.log(cf)
         $.ajax({
             url: '/student-by-cf',
@@ -238,7 +239,12 @@
                 $('#media-voti').text(ret[0].media_voti);
                 $('#anno-scolastico').text(ret[0].anno_scolastico);
 
-                $('.ui.modal').modal('show');
+                //save to db if the dropdown has change
+                $('.ui.modal').modal({
+                    onApprove: function() {
+                        saveChangeToDB();
+                    }
+                }).modal('show');
 
             },
             error: function (xhr, status, error) {
@@ -255,17 +261,6 @@
             type: 'get',
             success: function (data) {
                 var TAG = jQuery.parseJSON(data);
-
-//                <div class="ui selection dropdown">
-//                    <input type="hidden" name="gender">
-//                    <i class="dropdown icon"></i>
-//                    <div class="default text">Gender</div>
-//                        <div class="menu">
-        //                    <div class="item" data-value="1">Male</div>
-//                             <div class="item" data-value="0">Female</div>
-//                        </div>
-//                </div>
-
 
                 $('<div/>', {
                     'class':'ui selection dropdown',
@@ -308,6 +303,35 @@
             },
         });
     });
+
+
+</script>
+
+<script>
+    function saveChangeToDB()
+    {
+        var tag = $('#dropdown-data').dropdown('get value');
+
+        //tag default has change, so i save it to db
+        if (tag != 'Nessuno')
+        {
+            $.ajax({
+                url: '/update-tag',
+                data: {
+                    "tag": tag,
+                    "cf" : cf_code
+                },
+                type: 'get',
+                success: function (data) {
+                    alert("update")
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error.message);
+
+                },
+            });
+        }
+    }
 </script>
 
 <!--close html tag-->

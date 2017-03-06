@@ -235,5 +235,16 @@ module.exports = {
                 callback(err, rows);
             }
         });
-    }
+    },
+
+    updateTagFromCF: function (callback, tag, cf) {
+
+        connection.query("UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'", function (err, rows) {
+            if (err) {
+                throw err;
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
 };
