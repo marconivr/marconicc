@@ -224,5 +224,16 @@ module.exports = {
                 callback(err, rows);
             }
         });
+    },
+
+    getAllTag: function (callback,cf) {
+
+        connection.query("SELECT * FROM tag", function (err, rows) {
+            if (err) {
+                throw err;
+            } else {
+                callback(err, rows);
+            }
+        });
     }
 };

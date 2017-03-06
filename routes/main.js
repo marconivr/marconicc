@@ -85,6 +85,15 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.get('/all-tag', function (req, res) {
+        query.getAllTag(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        });
+    });
+
     app.get('/all-students', function (req, res) {
         query.getAllStudents(function (err, results) {
             if (err)
@@ -93,6 +102,7 @@ module.exports = function (app, passport) {
                 res.send(JSON.stringify(results));
         },req.query.q);
     });
+
 
     app.get('/student-by-cf', function (req, res) {
         query.getStudentByCf(function (err, results) {
