@@ -183,14 +183,13 @@ module.exports = {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
             for (var prop in objproblem){
-                console.log(prop);
                 switch (prop) {
                     case "alunni":
 
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
-                        console.log(listaClassi[k].alunni);
+                        console.log(listaClassi[k].proprieta);
                         break;
                     case "stranieri":
 
@@ -390,7 +389,7 @@ module.exports = {
                     break;
             }
         }
-        console.log(ris);
+        return ris;
     },
 
     fixFemmine: function(nomeClasse) {
@@ -413,6 +412,10 @@ module.exports = {
             }
         }
         return null;
+    },
+
+    setListaClassi: function (lC){
+        listaClassi = lC;
     },
 
     //##################################################################################################################
@@ -458,6 +461,14 @@ module.exports = {
      */
     removeUndefinedDaArray: function(array){
         return array.filter(function(n){ return n != undefined });
+    }
+
+    /**
+     * removeNullDaArray rimuove un undefined da un array
+     * @param array
+     */
+    removeNullDaArray: function(array){
+        return array.filter(function(n){ return n != null });
     }
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
