@@ -25,6 +25,10 @@
 .column {
     max-width: 60%;
 }
+.columnLogSign {
+    max-width: 20%;
+    padding-top: 30%;
+}
 
  body > .grid {
     height: 100%;
