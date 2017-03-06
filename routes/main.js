@@ -94,6 +94,17 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.get('/update-tag', function (req, res) {
+        query.updateTagFromCF(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        },req.query.tag, req.query.cf);
+    });
+
+
+
     app.get('/all-students', function (req, res) {
         query.getAllStudents(function (err, results) {
             if (err)
