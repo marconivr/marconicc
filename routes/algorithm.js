@@ -393,22 +393,24 @@ module.exports = {
     },
 
     fixFemmine: function(nomeClasse) {
+        classe = module.exports.findClasseFromString(nomeClasse);
         for (var i = 0; i < listaClassi.length; i++){
             if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(listaClassi[i].alunni) > settings.max_fem){
-                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i]);
-                    listaClassi[i].splice(objfem, 1);
-                    (module.exports.findClasseFromString(nomeClasse)).push(objfem);
-                    console.log("Cambio femmina");
+                if (module.exports.countFemmine(module.exports.removeNullDaArray(listaClassi[i].alunni)) > module.exports.countFemmine(classe.alunni)){
+                    var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
+                    classe.alunni.splice(objfem, 1);
+                    (listaClassi[i].alunni).push(objfem);
+                    console.log("Cambio femmina" + listaClassi[i].nome);
                 }
             }
         }
     },
 
     searchAlunno: function(attr, valore, listaAlunniClasse) {
-        for (var i = 0; i < listaAlunniClassi.length; i++){
-            if (listaAlunniClassi[i].attr == valore){
-                return listaAlunniClassi[i];
+        for (var i = 0; i < listaAlunniClasse.length; i++){
+            console.log(listaAlunniClasse[i]);
+            if (listaAlunniClasse[i].attr == valore){
+                return listaAlunniClasse[i];
             }
         }
         return null;
