@@ -122,7 +122,7 @@
                             <ul>
                                 <li>Media voti : <span id="media-voti">8.8</span></li>
                                 <li>Codice catastale : <span id="codice-catastale">52521</span></li>
-                                <li>Codice fiscale <span id="cf">dgsadgasdg</span></li>
+                                <li>Codice fiscale <span id="cf"></span></li>
                                 <li>Anno scolastico <span id="anno-scolastico"></span></li>
                             </ul>
                         </div>
@@ -246,6 +246,7 @@
                 $('#codice-catastale').text(ret[0].cod_cat);
                 $('#media-voti').text(ret[0].media_voti);
                 $('#anno-scolastico').text(ret[0].anno_scolastico);
+                $('#cf').text(ret[0].cf);
                 existing_tag = ret[0].tag;
 
                 setDropdownData();
