@@ -95,6 +95,7 @@ module.exports = function (app, passport) {
     });
 
     app.get('/update-tag', function (req, res) {
+        
         query.updateTagFromCF(function (err, results) {
             if (err)
                 throw err;

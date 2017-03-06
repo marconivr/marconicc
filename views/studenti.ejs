@@ -288,7 +288,7 @@
 
                 $('<input/>', {
                         'type':'hidden',
-                        'name':''
+                        'name':'nessun tag'
                     }).appendTo($('#dropdown-data'));
 
 
@@ -327,12 +327,14 @@
                     }).appendTo($('#tag'));
                 }
 
+                //il tag nessuno non è messo di default
+                //quindi lo aggiungo
                 if(existing_tag != null)
                 {
                     $('<div/>', {
                         'class':'item',
-                        'data-value':null,
-                        'text':'Nessuno'
+                        'data-value':'nessuno',
+                        'text':'nessuno'
                     }).appendTo($('#tag'));
 
                 }
@@ -363,8 +365,9 @@
         var tag = $('#dropdown-data').dropdown('get value');
 
         //tag default has change, so i save it to db
-        if (tag != 'Nessuno')
-        {
+        if (tag == 'nessuno') tag = 'none';
+
+
             $.ajax({
                 url: '/update-tag',
                 data: {
@@ -377,11 +380,12 @@
                 },
                 error: function (xhr, status, error) {
                     console.log('Error: ' + error.message);
+                    $("#response").removeClass('visible').addClass('hidden');
                     $('#negative').removeClass('hidden').addClass('visible');
 
                 },
             });
-        }
+
     }
 </script>
 
