@@ -349,9 +349,11 @@ module.exports = {
                     }
                     break;
                 case "residenza":
-                    for(var k=0; k < proprieta.prop.length; k++){
-                        if (proprieta.residenza > settings.stessa_pr){
-                            ris["residenza"] = proprieta.residenza;
+                    if(proprieta.prop !== undefined) {
+                        for (var k = 0; k < proprieta.prop.length; k++) {
+                            if (proprieta.residenza > settings.stessa_pr) {
+                                ris["residenza"] = proprieta.residenza;
+                            }
                         }
                     }
                     break;
