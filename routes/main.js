@@ -126,7 +126,7 @@ module.exports = function (app, passport) {
 
     app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('panoramica-classi.ejs',{
-            pageTitle: "Panoramica classi"
+            pageTitle: "Panoramica classi   "
         })
     });
 
