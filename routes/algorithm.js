@@ -461,7 +461,7 @@ module.exports = {
      */
     removeUndefinedDaArray: function(array){
         return array.filter(function(n){ return n != undefined });
-    }
+    },
 
     /**
      * removeNullDaArray rimuove un undefined da un array
