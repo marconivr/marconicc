@@ -2,6 +2,12 @@
 
 
 ##Installazione e lancio
+###Database
+Nome: composizione_classi
+Utente: composizioneclassi
+Password: 5BFF9B615FBEDCD197BFB9371BB5A7D1
+
+###Installazione
 Elenco passi da eseguire per installare il progetto:
 
 
@@ -9,6 +15,8 @@ Elenco passi da eseguire per installare il progetto:
 - npm install
 - cd public
 - bower install
+
+###Lancio
 
 Elenco passi da eseguire per lanciare il progetto:
 
