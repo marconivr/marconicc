@@ -104,7 +104,6 @@
 
 
     <!--modal response -->
-
     <div class="ui modal">
         <i class="close icon"></i>
         <div class="header">
@@ -112,29 +111,20 @@
             <span id="nome"></span>
         </div>
         <div class="image content">
-            <!--<div class="ui medium image">-->
-            <!--<img src="/images/avatar/large/chris.jpg">-->
-            <!--</div>-->
-            <div class="description">
-                <div class="ui grid">
-                    <div class="two column row">
-                        <div class="left floated column">
-                            <ul>
-                                <li>Media voti : <span id="media-voti">8.8</span></li>
-                                <li>Codice catastale : <span id="codice-catastale">52521</span></li>
-                                <li>Codice fiscale <span id="cf"></span></li>
-                                <li>Anno scolastico <span id="anno-scolastico"></span></li>
-                            </ul>
-                        </div>
-                        <div class="right floated column" id="dropdown-container"></div>
-                    </div>
-                </div>
+            <div class="ui medium image">
+                <div class="map" id="map"></div>
             </div>
-            <hr>
+            <div class="description">
+                <div class="ui header">Dati</div>
+                <ul>
+                    <li>Media voti : <span id="media-voti">8.8</span></li>
+                    <li>Codice catastale : <span id="codice-catastale">52521</span></li>
+                    <li>Codice fiscale <span id="cf"></span></li>
+                    <li>Anno scolastico <span id="anno-scolastico"></span></li>
 
-
-
-
+                </ul>
+                <div class="right floated column" id="dropdown-container"></div>
+            </div>
         </div>
         <div class="actions">
             <div class="ui black deny button">
@@ -146,6 +136,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!--positive-->
     <div class="ui  positive  message transition  hidden" id="response">
@@ -202,11 +194,49 @@
     });
 </script>
 
-<!--search-->
+                                                                <!--MAPS SECTION-->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5HB8-mASDryN1tfLaJUvLVzd3ibJ5VUQ"></script>
+<script>
+
+    /**
+     * param <cp> postal code -> es : 37030
+     * this method init the maps
+     * inside this, i call a api which return me the latitude and longitude by passing the postal code
+     */
+    function initMap(cp) {
+        $.getJSON( {
+            url  : 'http://maps.googleapis.com/maps/api/geocode/json',
+            data : {
+                sensor  : false,
+                address : 'veneto',
+                components : 'postal_code:' + cp
+            },
+            success : function( data, textStatus ) {
+               var location  = {
+                    'lat' : data.results[0].geometry.location.lat,
+                    'lng' : data.results[0].geometry.location.lng
+                }
+
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 12,
+                    center: location
+                });
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+
+            }
+        } );
+    }
+</script>
+
+                                                                <!--SEARCH SECTION-->
 <script>
  var cf_code ;
  var existing_tag;
 
+    //this section is execute when user type in the search field
     $('.ui.search')
         .search({
             apiSettings: {
@@ -219,12 +249,23 @@
                 var html = '';
                 if (response !== undefined) {
                     $.each(response, function (index, result) {
-                        html += '<a onclick="setStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
-                        html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
-                        html += '<i> Media voti: ' + result.media_voti + '</i>';
+                        //TODO:FIX  NO RESULT
+                        if(result.cf != '')
+                        {
+                            html += '<a onclick="setStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
+                            html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
+                            html += '<i> Media voti: ' + result.media_voti + '</i>';
 
-                        html += '' + '</div></a>';
-                        return index < 6;
+                            html += '' + '</div></a>';
+                            return index < 6;
+                        }
+                        else
+                        {
+                            html += '<div class="title"<b>Oops, nessun risultato' + '</div>';
+                            return index<1;
+
+                        }
+
                     });
                     $('.ui.search div.results').html(html);
                 }
@@ -233,7 +274,7 @@
         });
 
 
-    //set card with student data
+                                                                //set card with student data
     function setStudentData(cf) {
         cf_code = cf;
         console.log(cf)
@@ -250,16 +291,22 @@
                 $('#anno-scolastico').text(ret[0].anno_scolastico);
                 $('#cf').text(ret[0].cf);
                 existing_tag = ret[0].tag;
-
+                var postal_code = ret[0].cap_provenienza
                 setDropdownData();
-
 
                 //save to db if the dropdown has change
                 $('.ui.modal').modal({
+                    onHide: function(){
+                        jQuery('#dropdown-container').empty();
+                    },
                     onApprove: function() {
                         saveChangeToDB();
                         jQuery('#dropdown-container').empty();
 
+                    },
+                    onShow : function () {
+                        initMap(postal_code);
+                        console.log(postal_code);
                     }
                 }).modal('show');
 
@@ -271,7 +318,7 @@
         });
     }
 
-    //SET DROPWDOWN DATA
+                                                    //SET DROPWDOWN DATA//
    function setDropdownData() {
 
         $.ajax({
@@ -349,18 +396,14 @@
         });
    }
 
-
- $('.message .close')
-     .on('click', function() {
+                                                    //x close on the response div//
+ $('.message .close').on('click', function() {
          $(this)
              .closest('.message')
-             .transition('fade')
-         ;
-     })
- ;
-
+             .transition('fade');
+     });
 </script>
-
+                                                   <!--SAVE TAG TO DB-->
 <script>
     function saveChangeToDB()
     {
@@ -387,10 +430,9 @@
 
                 },
             });
-
-
     }
 </script>
+
 
 <!--close html tag-->
 <% include tag-close.ejs %>

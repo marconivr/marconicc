@@ -6,6 +6,10 @@
     background-size: cover;
 
 }
+.map {
+    height: 100%;
+    width: 100%;
+}
 .signupBackground{
     background-image: url("../img/Classe.jpg");
 }
