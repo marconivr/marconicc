@@ -42,7 +42,8 @@
 </style>
 
 <script>
-    $( function() {
+
+    $( document ).ready(function() {
         $(".contenitoreClasse").sortable({
             connectWith: ".contenitoreClasse",
             update: function(event, ui) {
@@ -55,14 +56,12 @@
             receive: function(event, ui) {
                 console.log( $(event.target).parent().attr('id'));
 
-            },
+            }
+        }).disableSelection();
+    });
 
 
-        }).disableSelection()
 
-
-        ;
-    } );
 
 </script>
 

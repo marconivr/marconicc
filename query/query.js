@@ -249,8 +249,11 @@ module.exports = {
     },
 
     updateTagFromCF: function (callback, tag, cf) {
+        var query;
+        if(tag == 'none')  query = "UPDATE alunni set tag = NULL WHERE cf = '" + cf + "'";
+        else  query = "UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'";
 
-        connection.query("UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'", function (err, rows) {
+        connection.query(query, function (err, rows) {
             if (err) {
                 throw err;
             } else {

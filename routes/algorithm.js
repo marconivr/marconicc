@@ -136,6 +136,7 @@ module.exports = {
         var bocciati = module.exports.countBocciati(listaAlunniClasse);
         var iniziale = module.exports.countInizialeCognome(listaAlunniClasse);
         return {alunni:nAlunni, femmine:nFemmine, media:media.toFixed(2), residenza:residenza, bocciati:bocciati, iniziale:iniziale};
+        module.exports.problemiClasse(listaAlunniClasse);
     },
 
     /**
@@ -150,46 +151,19 @@ module.exports = {
         return listaNomi;
     },
 
-    /*
-    * for (var i = 0; i < priority.length; i++) {
-     switch (priority[i]) {
-     case "alunni":
-
-     break;
-     case "femmine":
-
-     break;
-     case "stranieri":
-
-     break;
-     case "bocciati":
-
-     break;
-     case "stessa_provenienza":
-
-     break;
-     case "media":
-
-     break;
-     }
-     }
-    */
-
-
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
     fixClassi: function (callback) {
         for (var k = 0; k < listaClassi.length; k++) {
-            var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            for (var prop in objproblem){
-                switch (prop) {
+
+            for (var i = 0; i < priority.length; i++) {
+                switch (priority[i]) {
                     case "alunni":
 
                         break;
                     case "femmine":
-                        module.exports.fixFemmine(listaClassi[k].nome);
-                        console.log(listaClassi[k].proprieta);
+
                         break;
                     case "stranieri":
 
@@ -364,23 +338,20 @@ module.exports = {
                         ris["femmine"] = proprieta.femmine;
                     }
                     break;
-                case "stranieri":
+                /*case "stranieri":
                     if (proprieta.nazionalita < settings.nazionalita){
                         ris["nazionalita"] = proprieta.nazionalita;
                     }
-                    break;
+                    break;*/
                 case "bocciati":
                     if (proprieta.bocciati > settings.boc){
                         ris["bocciati"] = proprieta.bocciati;
                     }
                     break;
                 case "residenza":
-                    if(proprieta.prop !== undefined) {
-                        for (var k = 0; k < proprieta.prop.length; k++) {
-                            if (proprieta.residenza > settings.stessa_pr) {
-                                console.log()
-                                ris["residenza"] = proprieta.residenza;
-                            }
+                    for(var k=0; k < proprieta.prop.length; k++){
+                        if (proprieta.residenza > settings.stessa_pr){
+                            ris["residenza"] = proprieta.residenza;
                         }
                     }
                     break;
@@ -389,20 +360,7 @@ module.exports = {
                     break;
             }
         }
-        return ris;
-    },
-
-    fixFemmine: function(nomeClasse) {
-        for (var i = 0; i < listaClassi.length; i++){
-            if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(listaClassi[i].alunni) > settings.max_fem){
-                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i]);
-                    listaClassi[i].splice(objfem, 1);
-                    (module.exports.findClasseFromString(nomeClasse)).push(objfem);
-                    console.log("Cambio femmina");
-                }
-            }
-        }
+        console.log(ris);
     },
 
     searchAlunno: function(attr, valore, listaAlunniClasse) {
@@ -412,10 +370,6 @@ module.exports = {
             }
         }
         return null;
-    },
-
-    setListaClassi: function (lC){
-        listaClassi = lC;
     },
 
     //##################################################################################################################
