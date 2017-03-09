@@ -186,11 +186,10 @@ module.exports = {
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
     fixClassi: function () {
-        console.log("fixClassi" + listaClassi.length);
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
+            console.log(objproblem);
             for (var prop in objproblem){
-                console.log(prop);
                 switch (prop) {
                     case "alunni":
 
@@ -402,14 +401,20 @@ module.exports = {
     },
 
     fixFemmine: function(nomeClasse) {
+        classe = module.exports.findClasseFromString(nomeClasse);
         for (var i = 0; i < listaClassi.length; i++){
             if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(listaClassi[i].alunni) > settings.max_fem){
-                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i]);
-                    listaClassi[i].splice(objfem, 1);
-                    (module.exports.findClasseFromString(nomeClasse)).push(objfem);
+                if (module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni)
+                    && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
+                    var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
+                    (classe.alunni).splice(objfem, 1);
+                    (listaAlunni[i].alunni).push(objfem);
                     console.log("Cambio femmina");
                 }
+            }
+            //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
+            if (module.exports.countFemmine(classe.alunni) == 0){
+                i = listaClassi.length;
             }
         }
     },
