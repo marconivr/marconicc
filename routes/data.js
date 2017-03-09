@@ -137,9 +137,10 @@ module.exports = function (app, passport, upload) {
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
-                                        //alg.problemiClasse(listaAlunniClasse);
                                         listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse), alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
+                                            alg.setListaClassi(listaClassi);
+                                            alg.fixClassi();
                                             res.send(listaClassi);
                                         }
                                     }

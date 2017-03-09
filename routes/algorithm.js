@@ -57,15 +57,20 @@ module.exports = {
                                 });
                             },
                             function (callback) {
+
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
-                            },
+                            }
+                            /*
+                            ,
                             function (callback) {
+
                                 module.exports.fixClassi(function () {
                                     callback();
                                 });
                             }
+                            */
                         ],
                         function (err, succes) {
                             if (err) {
@@ -117,6 +122,7 @@ module.exports = {
                     }
                     listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
                     listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
+                    console.log("Popola");
                 }
             }
             callback();
@@ -179,16 +185,18 @@ module.exports = {
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
-    fixClassi: function (callback) {
+    fixClassi: function () {
+        console.log("fixClassi" + listaClassi.length);
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
             for (var prop in objproblem){
+                console.log(prop);
                 switch (prop) {
                     case "alunni":
 
                         break;
                     case "femmine":
-                        module.exports.fixFemmine(listaClassi[k].nome);
+                        //module.exports.fixFemmine(listaClassi[k].nome);
                         console.log(listaClassi[k].proprieta);
                         break;
                     case "stranieri":
@@ -206,7 +214,7 @@ module.exports = {
                 }
             }
         }
-        callback();
+        //callback();
     },
 
     //##################################################################################################################
@@ -355,7 +363,7 @@ module.exports = {
     },
 
     problemiClasse: function(listaAlunniClasse){
-        var ris = {}
+        var ris = {};
         var proprieta = module.exports.createProprietaClasse(listaAlunniClasse);
         for (var prop in proprieta){
             switch (prop) {
@@ -474,8 +482,4 @@ module.exports = {
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
     //##################################################################################################################
-
-
-    //algorithm
-    //vprova
 }
