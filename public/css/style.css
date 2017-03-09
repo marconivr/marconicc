@@ -26,6 +26,12 @@
     max-width: 60%;
 }
 
+.columnLogSign {
+    max-width: 22%;
+    min-width: 22%;
+    padding-top: 12%;
+}
+
  body > .grid {
     height: 100%;
 }
