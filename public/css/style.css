@@ -6,6 +6,10 @@
     background-size: cover;
 
 }
+.map {
+    height: 100%;
+    width: 100%;
+}
 .signupBackground{
     background-image: url("../img/Classe.jpg");
 }
@@ -24,6 +28,12 @@
 
 .column {
     max-width: 60%;
+}
+
+.columnLogSign {
+    max-width: 22%;
+    min-width: 22%;
+    padding-top: 12%;
 }
 
  body > .grid {

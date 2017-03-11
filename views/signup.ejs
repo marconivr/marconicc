@@ -1,11 +1,9 @@
 <% include header %>
 <body class="signupBackground">
 <div class="ui middle aligned center aligned grid ">
-	<div class="column">
+	<div class="columnLogSign">
 		<!-- show any messages that come back with authentication -->
-        <% if (message.length > 0) { %>
-		<div class="alert alert-danger"><%= message %></div>
-        <% } %>
+
 		<form class="ui large form" action="/signup" method="post" >
 			<div class="ui stacked segment">
 				<h2 class="ui teal image header">
@@ -13,13 +11,13 @@
 						Signup
 					</div>
 				</h2>
-				<div class="field">
+				<div class="field" id="field_user">
 					<div class="ui left icon input">
 						<i class="user icon"></i>
 						<input type="text" name="username" placeholder="username">
 					</div>
 				</div>
-				<div class="field">
+				<div class="field" id="field_password">
 					<div class="ui left icon input">
 						<i class="lock icon"></i>
 						<input type="password" name="password" placeholder="Password">
@@ -33,6 +31,10 @@
 		<div class="ui message">
 			Already have an account? <a href="/login">Login</a>
 		</div>
+
+        <% if (message.length > 0) { %>
+		<div class="ui negative message visible" id="negative"><%= message %></div>
+        <% } %>
 	</div>
 </div>
 
