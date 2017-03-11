@@ -116,13 +116,65 @@
             </div>
             <div class="description">
                 <div class="ui header">Dati</div>
-                <ul>
-                    <li>Media voti : <span id="media-voti">8.8</span></li>
-                    <li>Codice catastale : <span id="codice-catastale">52521</span></li>
-                    <li>Codice fiscale <span id="cf"></span></li>
-                    <li>Anno scolastico <span id="anno-scolastico"></span></li>
 
-                </ul>
+                <!--table-->
+                <table class="ui very basic collapsing celled table">
+                    <thead>
+                    <tr><th>Tipo</th>
+                        <th>Dato</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Media voti </b>
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="media-voti"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Codice catastale </b>
+
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="codice-catastale"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Codice fiscale </b>
+
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="cf"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Anno scolastico </b>
+
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="anno-scolastico"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!--contains the dropdown. It's generate automatically-->
                 <div class="right floated column" id="dropdown-container"></div>
             </div>
         </div>
