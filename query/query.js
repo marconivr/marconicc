@@ -204,9 +204,15 @@ module.exports = {
         });
     },
 
+    /**
+     * return students from the search service
+     * @param callback
+     * @param identifier
+     */
     getAllStudents: function (callback,identifier) {
 
-        connection.query("SELECT * FROM alunni WHERE cognome LIKE '" + identifier + "%' OR nome LIKE '" + identifier + "%'", function (err, rows) {
+        connection.query(
+            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? ",[ "%" + identifier + "%", "%" +  identifier + "%" ], function (err, rows) {
             if (err) {
                 throw err;
             } else {
