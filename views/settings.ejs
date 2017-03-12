@@ -102,6 +102,18 @@
                             <label>Bocciati</label>
                             <input name="settings[bocciati]" placeholder="Bocciati" type="text">
                         </div>
+                        <label><b>Proprietà alunni</b></label>
+                        <div class="three fields">
+                            <div class="field">
+                                <input placeholder="Nome" type="text" id="nome-tag">
+                            </div>
+                            <div class="field">
+                                <input placeholder="Descrizione" type="text" id="descrizione-tag">
+                            </div>
+                            <div class="field">
+                                <div class="medium ui button" tabindex="0" onclick="addTag()">Aggiungi</div>
+                            </div>
+                        </div>
 
                         <div class="field">
                             <label>Priorità delle impostazioni</label>
@@ -235,6 +247,12 @@
             $("#classe-realtime").html(Math.floor(alunniPrima / maxNumberOfAlunni))
 
         }
+    }
+
+    function addTag() {
+        var tag = $("#nome-tag").val();
+        var descrizione = $("#descrizione-tag").val();
+        query.insertTag(tag, descrizione);
     }
 
 </script>
