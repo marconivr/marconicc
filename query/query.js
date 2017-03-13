@@ -64,6 +64,14 @@ module.exports = {
         });
     },
 
+    insertTag: function (tag, descrizione) {
+        connection.query("INSERT INTO tag VALUES (?, ?)", [tag, descrizione], function (err, row) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    },
+
     getClassi: function (callback) {
         connection.query("SELECT * from classi", function (err, rows) {
             if (err) {

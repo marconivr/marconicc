@@ -1,6 +1,6 @@
 <% include header %>
 
-<body>
+<body xmlns="http://www.w3.org/1999/html">
 
 <style>
     #sortable1, #sortable2, #sortable3, #sortable4, #sortable5, #sortable6, #sortable7, #sortable8 {
@@ -102,6 +102,18 @@
                             <label>Bocciati</label>
                             <input name="settings[bocciati]" placeholder="Bocciati" type="text">
                         </div>
+                        <label><b>Proprietà alunni</b></label>
+                        <div class="three fields">
+                            <div class="field">
+                                <input placeholder="Nome" type="text" id="nome-tag">
+                            </div>
+                            <div class="field">
+                                <input placeholder="Descrizione" type="text" id="descrizione-tag">
+                            </div>
+                            <div class="field">
+                                <div class="medium ui button" tabindex="0" onclick="addTag()">Aggiungi</div>
+                            </div>
+                        </div>
 
                         <div class="field">
                             <label>Priorità delle impostazioni</label>
@@ -126,18 +138,6 @@
                             </div>
 
                         </div>
-
-                        <b><label>Proprietà alunni</label></b>
-                        <br class="ui action input">
-                            <input type="text" placeholder="Search...">
-                            <select class="ui compact selection dropdown">
-                                <option value="uno">1</option>
-                                <option selected="" value="due">2</option>
-                                <option value="tre">3</option>
-                                <option value="quattro">4</option>
-                                <option value="cinque">5</option>
-                            </select>
-                            <div type="submit" class="medium ui button">Aggiungi</div></br></br>
 
                         <!--sematic button-->
                         <div class="large ui button" tabindex="0">Send</div>
@@ -247,6 +247,12 @@
             $("#classe-realtime").html(Math.floor(alunniPrima / maxNumberOfAlunni))
 
         }
+    }
+
+    function addTag() {
+        var tag = $("#nome-tag").val();
+        var descrizione = $("#descrizione-tag").val();
+        query.insertTag(tag, descrizione);
     }
 
 </script>
