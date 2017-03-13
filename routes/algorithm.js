@@ -403,22 +403,26 @@ module.exports = {
 
         return ris;
     },
-
+    /**
+     * fixFemmine inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
+     * @param nomeClasse
+     */
     fixFemmine: function(nomeClasse) {
-        var classe = module.exports.findClasseFromString(nomeClasse);
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
         for (var i = 0; i < listaClassi.length; i++){
             if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni)
+                if (module.exports.countFemmine(classe.alunni) > module.exports.countFemmine(listaClassi[i].alunni) &&  module.exports.countFemmine(listaClassi[i].alunni) != 0
                     && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
-                    var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
+                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
                     if (objfem != null) {
-                        classe.alunni.splice(objfem, 1);
-                        listaClassi[i].alunni.push(objfem);
+                        listaClassi[i].alunni.splice(objfem, 1);
+                        classe.alunni.push(objfem);
+                        console.log("Cambio femmina: " + objfem.nome + " da classe: " + listaClassi[i].nome + " in classe: " + nomeClasse + " con indice: " + i);
                     }
                 }
             }
             //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
-            if (module.exports.countFemmine(classe.alunni) == 0){
+            if (module.exports.countFemmine(classe.alunni) == settings.fem){
                 i = listaClassi.length;
             }
         }
