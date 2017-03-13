@@ -122,7 +122,6 @@ module.exports = {
                     }
                     listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
                     listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
-                    console.log("Popola");
                 }
             }
             callback();
@@ -188,7 +187,6 @@ module.exports = {
     fixClassi: function () {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            console.log(objproblem);
             for (var prop in objproblem){
                 switch (prop) {
                     case "alunni":
@@ -196,7 +194,6 @@ module.exports = {
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
-                        console.log(listaClassi[k].proprieta);
                         break;
                     case "stranieri":
 
@@ -213,7 +210,14 @@ module.exports = {
                 }
             }
         }
+        module.exports.printProprieta();
         //callback();
+    },
+
+    printProprieta: function (){
+        for(var k=0; k < listaClassi.length;k++){
+            console.log(listaClassi[k].proprieta);
+        }
     },
 
     //##################################################################################################################
@@ -407,9 +411,10 @@ module.exports = {
                 if (module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni)
                     && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
                     var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
-                    (classe.alunni).splice(objfem, 1);
-                    (listaClassi[i].alunni).push(objfem);
-                    console.log("Cambio femmina");
+                    if (objfem != null) {
+                        classe.alunni.splice(objfem, 1);
+                        listaClassi[i].alunni.push(objfem);
+                    }
                 }
             }
             //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
@@ -421,7 +426,7 @@ module.exports = {
 
     searchAlunno: function(attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++){
-            if (listaAlunniClasse[i].attr == valore){
+            if (listaAlunniClasse[i][attr] == valore){
                 return listaAlunniClasse[i];
             }
         }
