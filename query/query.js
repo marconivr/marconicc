@@ -64,10 +64,12 @@ module.exports = {
         });
     },
 
-    insertTag: function (tag, descrizione) {
+    insertTag: function (callback, tag, descrizione) {
         connection.query("INSERT INTO tag VALUES (?, ?)", [tag, descrizione], function (err, row) {
             if (err) {
                 console.log(err);
+            }else {
+                callback(err, row, tag, descrizione);
             }
         });
     },
