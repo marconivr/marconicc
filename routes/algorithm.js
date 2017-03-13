@@ -63,14 +63,14 @@ module.exports = {
                                 });
                             }
                             /*
-                            ,
-                            function (callback) {
+                             ,
+                             function (callback) {
 
-                                module.exports.fixClassi(function () {
-                                    callback();
-                                });
-                            }
-                            */
+                             module.exports.fixClassi(function () {
+                             callback();
+                             });
+                             }
+                             */
                         ],
                         function (err, succes) {
                             if (err) {
@@ -122,7 +122,6 @@ module.exports = {
                     }
                     listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
                     listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
-                    console.log("Popola");
                 }
             }
             callback();
@@ -188,15 +187,13 @@ module.exports = {
     fixClassi: function () {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            console.log(objproblem);
             for (var prop in objproblem){
                 switch (prop) {
                     case "alunni":
 
                         break;
                     case "femmine":
-                        //module.exports.fixFemmine(listaClassi[k].nome);
-                        console.log(listaClassi[k].proprieta);
+                        module.exports.fixFemmine(listaClassi[k].nome);
                         break;
                     case "stranieri":
 
@@ -213,7 +210,14 @@ module.exports = {
                 }
             }
         }
+        module.exports.printProprieta();
         //callback();
+    },
+
+    printProprieta: function (){
+        for(var k=0; k < listaClassi.length;k++){
+            console.log(listaClassi[k].proprieta);
+        }
     },
 
     //##################################################################################################################
@@ -401,15 +405,16 @@ module.exports = {
     },
 
     fixFemmine: function(nomeClasse) {
-        classe = module.exports.findClasseFromString(nomeClasse);
+        var classe = module.exports.findClasseFromString(nomeClasse);
         for (var i = 0; i < listaClassi.length; i++){
             if (listaClassi[i].nome != nomeClasse){
                 if (module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni)
                     && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
                     var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
-                    (classe.alunni).splice(objfem, 1);
-                    (listaAlunni[i].alunni).push(objfem);
-                    console.log("Cambio femmina");
+                    if (objfem != null) {
+                        classe.alunni.splice(objfem, 1);
+                        listaClassi[i].alunni.push(objfem);
+                    }
                 }
             }
             //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
@@ -420,9 +425,9 @@ module.exports = {
     },
 
     searchAlunno: function(attr, valore, listaAlunniClasse) {
-        for (var i = 0; i < listaAlunniClassi.length; i++){
-            if (listaAlunniClassi[i].attr == valore){
-                return listaAlunniClassi[i];
+        for (var i = 0; i < listaAlunniClasse.length; i++){
+            if (listaAlunniClasse[i][attr] == valore){
+                return listaAlunniClasse[i];
             }
         }
         return null;
@@ -478,11 +483,17 @@ module.exports = {
     },
 
     /**
-     * removeNullDaArray rimuove un undefined da un array
+     * removeNullFromArray rimuove un undefined da un array
      * @param array
      */
-    removeNullDaArray: function(array){
+    removeNullFromArray: function(array){
         return array.filter(function(n){ return n != null });
+    },
+
+    removeNullFromListaClassi: function(){
+        for (var i = 0; i < listaClassi; i++){
+            listaClassi[i] = module.exports.removeNullFromArray(listaClassi[i]);
+        }
     }
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
