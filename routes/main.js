@@ -95,7 +95,7 @@ module.exports = function (app, passport) {
     });
 
     app.get('/update-tag', function (req, res) {
-        
+
         query.updateTagFromCF(function (err, results) {
             if (err)
                 throw err;
@@ -192,6 +192,18 @@ module.exports = function (app, passport) {
             pageTitle: " settings ",
             data:JSON.stringify(dataInSettings)
         });
+    });
+
+    /**
+     * inserisce il tag
+     */
+    app.get('/insert-tag', function (req, res) {
+        query.insertTag(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        },req.query.tag, req.query.descrizione);
     });
 
     function setValueOfArrayForSettings(rows, key) {

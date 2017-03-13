@@ -252,7 +252,23 @@
     function addTag() {
         var tag = $("#nome-tag").val();
         var descrizione = $("#descrizione-tag").val();
-        query.insertTag(tag, descrizione);
+
+        $.ajax({
+            url: '/insert-tag',
+            data: {
+                "tag": tag,
+                "descrizione" : descrizione
+            },
+            type: 'get',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+                console.log('Error: ' + error.message);
+
+            },
+        });
     }
 
 </script>
