@@ -41,7 +41,9 @@
                     <td><%= studentsData[i].nome %></td>
                     <td><%= studentsData[i].cf %></td>
                     <td><%= studentsData[i].sesso %></td>
+
                     <td><%= studentsData[i].data_di_nascita %></td>
+
                     <td><%= studentsData[i].stato %></td>
                     <td><%= studentsData[i].cap_provenienza %></td>
                     <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
@@ -257,11 +259,10 @@
      */
     function initMap(cp) {
         $.getJSON( {
+            //https://maps.googleapis.com/maps/api/geocode/json?&address=37014%20veneto
             url  : 'http://maps.googleapis.com/maps/api/geocode/json',
             data : {
-                sensor  : false,
-                address : 'veneto',
-                components : 'postal_code:' + cp
+                address :  cp + 'veneto'
             },
             success : function( data, textStatus ) {
                var location  = {
