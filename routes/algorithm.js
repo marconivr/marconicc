@@ -415,9 +415,8 @@ module.exports = {
                     && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
                     var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
                     if (objfem != null) {
-                        listaClassi[i].alunni.splice(objfem, 1);
-                        classe.alunni.push(objfem);
-                        console.log("Cambio femmina: " + objfem.nome + " da classe: " + listaClassi[i].nome + " in classe: " + nomeClasse + " con indice: " + i);
+                        module.exports.addStundentInClss(objfem, listaClassi[i], classe, false);
+                        console.log(objfem.nome + ", classe prov " + listaClassi[i].nome + ", classe fin " + classe.nome);
                     }
                 }
             }
@@ -439,6 +438,28 @@ module.exports = {
 
     setListaClassi: function (lC){
         listaClassi = lC;
+    },
+
+    /**
+     *
+     * @param objAl
+     * @param veccCl
+     * @param nuovaCl
+     * @param salvoDB flag che salva sul DB
+     */
+    addStundentInClss: function (objAl, veccCl, nuovaCl, salvoDB){
+        veccCl = module.exports.classeIsObj(veccCl);
+        nuovaCl = module.exports.classeIsObj(nuovaCl);
+        veccCl.alunni.splice(veccCl.alunni.indexOf(objAl, 0), 1);
+        nuovaCl.alunni.push(objAl);
+
+        veccFem = module.exports.countFemmine(veccCl.alunni);
+        nuovFem = module.exports.countFemmine(nuovaCl.alunni);
+
+        if (salvoDB){
+            query.removeAlunnoInClass(veccCl.nome, objAl.cf);
+            query.insertAlunnoInClass(nuovaCl.nome, objAl.cf);
+        }
     },
 
     //##################################################################################################################
