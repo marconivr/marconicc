@@ -129,7 +129,8 @@
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf
 
-                        var a = $('<a/>').addClass("ui label studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+                        if(arrayStudenti[j].sesso == "M")var a = $('<a/>').addClass("ui label blue studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+                        else var a = $('<a/>').addClass("ui label girl studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
 
                         var li = $('<li/>')
                             .html(a)
