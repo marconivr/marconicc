@@ -41,29 +41,6 @@
 
 </style>
 
-<script>
-
-    $( document ).ready(function() {
-        $(".contenitoreClasse").sortable({
-            connectWith: ".contenitoreClasse",
-            update: function(event, ui) {
-                if (this === ui.item.parent()[0]) {  //this control is because is called twice
-                    console.log( $(event.target).parent().attr('id'));
-                }
-
-
-            },
-            receive: function(event, ui) {
-                console.log( $(event.target).parent().attr('id'));
-
-            }
-        }).disableSelection();
-    });
-
-
-
-
-</script>
 
 <% include sidebar-start.ejs %>
 
@@ -152,7 +129,8 @@
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf
 
-                        var a = $('<a/>').addClass("ui label studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+                        if(arrayStudenti[j].sesso == "M")var a = $('<a/>').addClass("ui label blue studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+                        else var a = $('<a/>').addClass("ui label girl studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
 
                         var li = $('<li/>')
                             .html(a)
@@ -160,6 +138,20 @@
                     }
                 }
             }
+            $(".contenitoreClasse").sortable({
+                connectWith: ".contenitoreClasse",
+                update: function(event, ui) {
+                    if (this === ui.item.parent()[0]) {  //this control is because is called twice
+                        console.log( $(event.target).parent().attr('id'));
+                    }
+
+
+                },
+                receive: function(event, ui) {
+                    console.log( $(event.target).parent().attr('id'));
+
+                }
+            }).disableSelection();
         },
         type: 'GET'
     });
@@ -228,13 +220,7 @@
 
     });
 
-
-    $( ".studenteItem" )
-        .on( "dragstart", function( event, ui ) {alert('start')})
-        .on( "dragstop", function( event, ui ) {alert('stop')});
-
 </script>
 
-
-<!--close html tag-->
+    <!--close html tag-->
 <% include tag-close.ejs%>

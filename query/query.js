@@ -232,7 +232,9 @@ module.exports = {
     getAllStudents: function (callback,identifier) {
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? ",[ "%" + identifier + "%", "%" +  identifier + "%" ], function (err, rows) {
+            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? ",
+            [ "%" + identifier + "%", "%" +  identifier + "%" ],
+            function (err, rows) {
             if (err) {
                 throw err;
             } else {
