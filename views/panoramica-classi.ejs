@@ -41,29 +41,6 @@
 
 </style>
 
-<script>
-
-    $( document ).ready(function() {
-        $(".contenitoreClasse").sortable({
-            connectWith: ".contenitoreClasse",
-            update: function(event, ui) {
-                if (this === ui.item.parent()[0]) {  //this control is because is called twice
-                    console.log( $(event.target).parent().attr('id'));
-                }
-
-
-            },
-            receive: function(event, ui) {
-                console.log( $(event.target).parent().attr('id'));
-
-            }
-        }).disableSelection();
-    });
-
-
-
-
-</script>
 
 <% include sidebar-start.ejs %>
 
@@ -160,6 +137,20 @@
                     }
                 }
             }
+            $(".contenitoreClasse").sortable({
+                connectWith: ".contenitoreClasse",
+                update: function(event, ui) {
+                    if (this === ui.item.parent()[0]) {  //this control is because is called twice
+                        console.log( $(event.target).parent().attr('id'));
+                    }
+
+
+                },
+                receive: function(event, ui) {
+                    console.log( $(event.target).parent().attr('id'));
+
+                }
+            }).disableSelection();
         },
         type: 'GET'
     });
@@ -228,13 +219,7 @@
 
     });
 
-
-    $( ".studenteItem" )
-        .on( "dragstart", function( event, ui ) {alert('start')})
-        .on( "dragstop", function( event, ui ) {alert('stop')});
-
 </script>
 
-
-<!--close html tag-->
+    <!--close html tag-->
 <% include tag-close.ejs%>
