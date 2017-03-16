@@ -206,6 +206,18 @@ module.exports = function (app, passport) {
         },req.query.tag, req.query.descrizione);
     });
 
+    /**
+     * inserisce il tag
+     */
+    app.get('/insert-settings', function (req, res) {
+        query.insertSettings(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
+    });
+
     function setValueOfArrayForSettings(rows, key) {
         dataInSettings[key] = rows[0].result;
     }
