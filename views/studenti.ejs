@@ -41,7 +41,9 @@
                     <td><%= studentsData[i].nome %></td>
                     <td><%= studentsData[i].cf %></td>
                     <td><%= studentsData[i].sesso %></td>
+
                     <td><%= studentsData[i].data_di_nascita %></td>
+
                     <td><%= studentsData[i].stato %></td>
                     <td><%= studentsData[i].cap_provenienza %></td>
                     <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
@@ -104,7 +106,6 @@
 
 
     <!--modal response -->
-
     <div class="ui modal">
         <i class="close icon"></i>
         <div class="header">
@@ -112,260 +113,357 @@
             <span id="nome"></span>
         </div>
         <div class="image content">
-            <!--<div class="ui medium image">-->
-            <!--<img src="/images/avatar/large/chris.jpg">-->
-            <!--</div>-->
+            <div class="ui medium image">
+                <div class="map" id="map"></div>
+            </div>
             <div class="description">
-                <div class="ui grid">
-                    <div class="left floated five wide column">
-                        <ul>
-                            <li>Media voti : <span id="media-voti">8.8</span></li>
-                            <li>Codice catastale : <span id="codice-catastale">52521</span></li>
-                            <li>Codice fiscale <span id="cf"></span></li>
-                            <li>Anno scolastico <span id="anno-scolastico"></span></li>
-                        </ul>
-                    </div>
+                <div class="ui header">Dati</div>
 
-                    <div class="right floated column" id="dropdown-container"></div>
+                <!--table-->
+                <table class="ui very basic collapsing celled table">
+                    <thead>
+                    <tr><th>Tipo</th>
+                        <th>Dato</th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Media voti </b>
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="media-voti"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Codice catastale </b>
 
-                </div>
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="codice-catastale"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Codice fiscale </b>
 
-                <hr>
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="cf"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="ui image header">
+                                <div class="content">
+                                    <b>Anno scolastico </b>
 
+                                </div>
+                            </h4></td>
+                        <td>
+                            <span id="anno-scolastico"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
-            </div>
-            <div class="actions">
-                <div class="ui black deny button">
-                    Chiudi
-                </div>
-                <div class="ui positive right labeled icon button">
-                    OK,fatto
-                    <i class="checkmark icon"></i>
-                </div>
+                <!--contains the dropdown. It's generate automatically-->
+                <div class="right floated column" id="dropdown-container"></div>
             </div>
         </div>
-
-        <!--positive-->
-        <div class="ui  positive  message transition  hidden" id="response">
-            <i class="close icon"></i>
-            <div class="header">
-                Fatto!
+        <div class="actions">
+            <div class="ui black deny button">
+                Chiudi
             </div>
-            <p>Il tag è stato aggiunto</p>
+            <div class="ui positive right labeled icon button">
+                OK,fatto
+                <i class="checkmark icon"></i>
+            </div>
         </div>
-        <!--negative-->
-        <div class="ui negative message hidden" id="negative">
-            <i class="close icon"></i>
-            <div class="header">
-                Oops!
-            </div>
-            <p>Ci deve esser stato un problema
-            </p></div>
-        <!--thirds tabs-->
     </div>
 
-    <% include sidebar-stop.ejs %>
-    <!--personal script for specific page -->
-    <script>
-        $('.menu .item').tab();
 
-    </script>
 
-    <!--first class table-->
-    <script>
-        $(document).ready(function () {
-            var table = $('#studenti').DataTable({
-                processing: true,
-                lengthChange: false,
-                buttons: ['excel'],
-                "columns": [
-                    {"data": "cognome"},
-                    {"data": "nome"},
-                    {"data": "cf"},
-                    {"data": "sesso"},
-                    {"data": "data_di_nascita"},
-                    {"data": "stato"},
-                    {"data": "cap_provenienza"},
-                    //{ "data": "scelta_indirizzo" },
-                    {"data": "anno_scolastico"},
-                    {"data": "anno"},
-                    {"data": "cod_cat"},
-                    {"data": "media_voti"},
-                    {"data": "classe_futura"}
+    <!--positive-->
+    <div class="ui  positive  message transition  hidden" id="response">
+        <i class="close icon"></i>
+        <div class="header">
+            Fatto!
+        </div>
+        <p>Il tag è stato aggiunto</p>
+    </div>
+    <!--negative-->
+    <div class="ui negative message hidden" id="negative">
+        <i class="close icon"></i>
+        <div class="header">
+            Oops!
+        </div>
+        <p>Ci deve esser stato un problema
+        </p></div>
+<!--thirds tabs-->
+</div>
 
-                ]
-            });
-            table.buttons().container()
-                .appendTo($('div.eight.column:eq(0)', table.table().container()));
+<% include sidebar-stop.ejs %>
+<!--personal script for specific page -->
+<script>
+    $('.menu .item').tab();
+
+</script>
+
+<!--first class table-->
+<script>
+    $(document).ready(function () {
+        var table = $('#studenti').DataTable({
+            processing: true,
+            lengthChange: false,
+            buttons: ['excel'],
+            "columns": [
+                {"data": "cognome"},
+                {"data": "nome"},
+                {"data": "cf"},
+                {"data": "sesso"},
+                {"data": "data_di_nascita"},
+                {"data": "stato"},
+                {"data": "cap_provenienza"},
+                //{ "data": "scelta_indirizzo" },
+                {"data": "anno_scolastico"},
+                {"data": "anno"},
+                {"data": "cod_cat"},
+                {"data": "media_voti"},
+                {"data": "classe_futura"}
+
+            ]
         });
-    </script>
+        table.buttons().container()
+            .appendTo($('div.eight.column:eq(0)', table.table().container()));
+    });
+</script>
 
-    <!--search-->
-    <script>
-        var cf_code ;
-        var existing_tag;
+                                                                <!--MAPS SECTION-->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5HB8-mASDryN1tfLaJUvLVzd3ibJ5VUQ"></script>
+<script>
 
-        $('.ui.search')
-            .search({
-                apiSettings: {
-                    url: '/all-students?q={query}'
-                },
-                searchFullText: false,
-                silent: true, // no error in console
-                onResults: function (response) {
+    /**
+     * param <cp> postal code -> es : 37030
+     * this method init the maps
+     * inside this, i call a api which return me the latitude and longitude by passing the postal code
+     */
+    function initMap(cp) {
+        $.getJSON( {
+            //https://maps.googleapis.com/maps/api/geocode/json?&address=37014%20veneto
+            url  : 'http://maps.googleapis.com/maps/api/geocode/json',
+            data : {
+                address :  cp + 'veneto'
+            },
+            success : function( data, textStatus ) {
+               var location  = {
+                    'lat' : data.results[0].geometry.location.lat,
+                    'lng' : data.results[0].geometry.location.lng
+                }
 
-                    var html = '';
-                    if (response !== undefined) {
-                        $.each(response, function (index, result) {
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 12,
+                    center: location
+                });
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+
+            }
+        } );
+    }
+</script>
+
+                                                                <!--SEARCH SECTION-->
+<script>
+ var cf_code ;
+ var existing_tag;
+
+    //this section is execute when user type in the search field
+    $('.ui.search')
+        .search({
+            apiSettings: {
+                url: '/all-students?q={query}'
+            },
+            searchFullText: false,
+            silent: true, // no error in console
+            onResults: function (response) {
+
+                var html = '';
+                if (response !== undefined) {
+                    $.each(response, function (index, result) {
+                        //TODO:FIX  NO RESULT
+                        if(result.cf != '')
+                        {
                             html += '<a onclick="setStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
                             html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
                             html += '<i> Media voti: ' + result.media_voti + '</i>';
 
                             html += '' + '</div></a>';
                             return index < 6;
-                        });
-                        $('.ui.search div.results').html(html);
-                    }
-                    return false;
-                }
-            });
-
-
-        //set card with student data
-        function setStudentData(cf) {
-            cf_code = cf;
-            console.log(cf)
-            $.ajax({
-                url: '/student-by-cf',
-                data: {"cf": cf},
-                type: 'get',
-                success: function (data) {
-                    var ret = jQuery.parseJSON(data);
-                    $('#cognome').text(ret[0].cognome);
-                    $('#nome').text(ret[0].nome);
-                    $('#codice-catastale').text(ret[0].cod_cat);
-                    $('#media-voti').text(ret[0].media_voti);
-                    $('#anno-scolastico').text(ret[0].anno_scolastico);
-                    $('#cf').text(ret[0].cf);
-                    existing_tag = ret[0].tag;
-
-                    setDropdownData();
-
-
-                    //save to db if the dropdown has change
-                    $('.ui.modal').modal({
-                        onApprove: function() {
-                            saveChangeToDB();
-                            jQuery('#dropdown-container').empty();
+                        }
+                        else
+                        {
+                            html += '<div class="title"<b>Oops, nessun risultato' + '</div>';
+                            return index<1;
 
                         }
-                    }).modal('show');
 
-                },
-                error: function (xhr, status, error) {
-                    console.log('Error: ' + error.message);
-
-                },
-            });
-        }
-
-        //SET DROPWDOWN DATA
-        function setDropdownData() {
-
-            $.ajax({
-                url: '/all-tag',
-                type: 'get',
-                success: function (data) {
-                    var TAG = jQuery.parseJSON(data);
+                    });
+                    $('.ui.search div.results').html(html);
+                }
+                return false;
+            }
+        });
 
 
-                    $('<div/>', {
-                        'class':'ui selection dropdown',
-                        'id':'dropdown-data'
-                    }).appendTo($('#dropdown-container'));
+                                                                //set card with student data
+    function setStudentData(cf) {
+        cf_code = cf;
+        console.log(cf)
+        $.ajax({
+            url: '/student-by-cf',
+            data: {"cf": cf},
+            type: 'get',
+            success: function (data) {
+                var ret = jQuery.parseJSON(data);
+                $('#cognome').text(ret[0].cognome);
+                $('#nome').text(ret[0].nome);
+                $('#codice-catastale').text(ret[0].cod_cat);
+                $('#media-voti').text(ret[0].media_voti);
+                $('#anno-scolastico').text(ret[0].anno_scolastico);
+                $('#cf').text(ret[0].cf);
+                existing_tag = ret[0].tag;
+                var postal_code = ret[0].cap_provenienza
+                setDropdownData();
+
+                //save to db if the dropdown has change
+                $('.ui.modal').modal({
+                    onHide: function(){
+                        jQuery('#dropdown-container').empty();
+                    },
+                    onApprove: function() {
+                        saveChangeToDB();
+                        jQuery('#dropdown-container').empty();
+
+                    },
+                    onShow : function () {
+                        initMap(postal_code);
+                        console.log(postal_code);
+                    }
+                }).modal('show');
+
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    }
+
+                                                    //SET DROPWDOWN DATA//
+   function setDropdownData() {
+
+        $.ajax({
+            url: '/all-tag',
+            type: 'get',
+            success: function (data) {
+                var TAG = jQuery.parseJSON(data);
+
+
+                $('<div/>', {
+                    'class':'ui selection dropdown',
+                    'id':'dropdown-data'
+                }).appendTo($('#dropdown-container'));
 
 
 
-                    $('<input/>', {
+                $('<input/>', {
                         'type':'hidden',
                         'name':'nessun tag'
                     }).appendTo($('#dropdown-data'));
 
 
-                    $('<i/>', {
-                        'class':'dropdown icon',
-                    }).appendTo($('#dropdown-data'));
+                $('<i/>', {
+                    'class':'dropdown icon',
+                }).appendTo($('#dropdown-data'));
 
-                    if(existing_tag != null)
-                    {
-                        $('<div/>', {
-                            'class':'default text',
-                            'text':existing_tag
-                        }).appendTo($('#dropdown-data'));
-                    }
-                    else
-                    {
-                        $('<div/>', {
-                            'class':'default text',
-                            'text':'nessuno'
-                        }).appendTo($('#dropdown-data'));
-                    }
-
-
+                if(existing_tag != null)
+                {
                     $('<div/>', {
-                        'class':'menu',
-                        'id':'tag'
+                        'class':'default text',
+                        'text':existing_tag
                     }).appendTo($('#dropdown-data'));
-                    $('.ui.dropdown').dropdown();
-                    //tag
-                    for( var i = 0 ; i < TAG.length ; i++)
-                    {
-                        $('<div/>', {
-                            'class':'item',
-                            'data-value':TAG[i].tag,
-                            'text':TAG[i].tag
-                        }).appendTo($('#tag'));
-                    }
-
-                    //il tag nessuno non è messo di default
-                    //quindi lo aggiungo
-                    if(existing_tag != null)
-                    {
-                        $('<div/>', {
-                            'class':'item',
-                            'data-value':'nessuno',
-                            'text':'nessuno'
-                        }).appendTo($('#tag'));
-
-                    }
-
-                },
-                error: function (xhr, status, error) {
-                    console.log('Error: ' + error.message);
-
-                },
-            });
-        }
+                }
+                else
+                {
+                    $('<div/>', {
+                        'class':'default text',
+                        'text':'nessuno'
+                    }).appendTo($('#dropdown-data'));
+                }
 
 
-        $('.message .close')
-            .on('click', function() {
-                $(this)
-                    .closest('.message')
-                    .transition('fade')
-                ;
-            })
-        ;
+                $('<div/>', {
+                    'class':'menu',
+                    'id':'tag'
+                }).appendTo($('#dropdown-data'));
+                $('.ui.dropdown').dropdown();
+                //tag
+                for( var i = 0 ; i < TAG.length ; i++)
+                {
+                    $('<div/>', {
+                        'class':'item',
+                        'data-value':TAG[i].tag,
+                        'text':TAG[i].tag
+                    }).appendTo($('#tag'));
+                }
 
-    </script>
+                //il tag nessuno non è messo di default
+                //quindi lo aggiungo
+                if(existing_tag != null)
+                {
+                    $('<div/>', {
+                        'class':'item',
+                        'data-value':'nessuno',
+                        'text':'nessuno'
+                    }).appendTo($('#tag'));
 
-    <script>
-        function saveChangeToDB()
-        {
-            var tag = $('#dropdown-data').dropdown('get value');
+                }
 
-            //tag default has change, so i save it to db
-            if (tag == 'nessuno') tag = 'none';
+            },
+            error: function (xhr, status, error) {
+                console.log('Error: ' + error.message);
+
+            },
+        });
+   }
+
+                                                    //x close on the response div//
+ $('.message .close').on('click', function() {
+         $(this)
+             .closest('.message')
+             .transition('fade');
+     });
+</script>
+                                                   <!--SAVE TAG TO DB-->
+<script>
+    function saveChangeToDB()
+    {
+        var tag = $('#dropdown-data').dropdown('get value');
+
+        //tag default has change, so i save it to db
+        if (tag == 'nessuno') tag = 'none';
 
 
             $.ajax({
@@ -385,9 +483,9 @@
 
                 },
             });
+    }
+</script>
 
-        }
-    </script>
 
-    <!--close html tag-->
+<!--close html tag-->
 <% include tag-close.ejs %>
