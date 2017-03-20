@@ -39,6 +39,45 @@
 
     }
 
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 1s;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
 </style>
 
 
@@ -144,14 +183,14 @@
                         {
                             //var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
                             var container = $('<div/>')
-                                    .addClass('ui segment guys')
+                                    .addClass('ui segment tooltip guys')
                                     .attr('id', cf)
                                     .html(cognomeStudente  + " " +  nomeStudente)
                         }
                         else
                         {
                             var container = $('<div/>')
-                                    .addClass('ui segment girl')
+                                    .addClass('ui segment tooltip girl')
                                     .attr('id', cf)
                                     .html(cognomeStudente  + " " +  nomeStudente)
                         }
@@ -162,6 +201,11 @@
                                     .html(arrayStudenti[j].tag)
                                     .appendTo(container)
                         }
+                        //tooltip
+                        var tooltip = $('<span/>')
+                                .addClass('tooltiptext')
+                                .html('Media : ' + arrayStudenti[j].media_voti)
+                                .appendTo(container)
 
 
 //                    <div class="ui segment">
