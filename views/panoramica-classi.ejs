@@ -134,14 +134,7 @@
 
 
                         var tag;
-                        if(arrayStudenti[j].tag != null)
-                        {
-                            //contiene il tag studente
-                            tag = $('<div/>')
-                                    .addClass('floating ui grey  label')
-                                    .html(arrayStudenti[j].tag)
-                                    .appendTo(container)
-                        }
+
                         if(arrayStudenti[j].sesso == "M")
                         {
                             //var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
@@ -156,6 +149,13 @@
                                     .addClass('ui segment girl')
                                     .attr('id', cf)
                                     .html(cognomeStudente  + " " +  nomeStudente)
+                        }
+                        if (arrayStudenti[j].tag != null) {
+                            //contiene il tag studente
+                            tag = $('<div/>')
+                                    .addClass('floating ui grey  label')
+                                    .html(arrayStudenti[j].tag)
+                                    .appendTo(container)
                         }
 
 
