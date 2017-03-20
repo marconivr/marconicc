@@ -129,11 +129,41 @@
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf
 
-                        if(arrayStudenti[j].sesso == "M")var a = $('<a/>').addClass("ui label blue studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
-                        else var a = $('<a/>').addClass("ui label girl studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+//                        if(arrayStudenti[j].sesso == "M")var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+//                        else var a = $('<a/>').addClass("ui label girl studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+
+
+                        var tag;
+                        if(arrayStudenti[j].tag != null)
+                        {
+                            //contiene il tag studente
+                            tag = $('<div/>')
+                                    .addClass('floating ui grey  label')
+                                    .html(arrayStudenti[j].tag)
+                                    .appendTo(container)
+                        }
+                        if(arrayStudenti[j].sesso == "M")
+                        {
+                            //var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+                            var container = $('<div/>')
+                                    .addClass('ui segment guys')
+                                    .html(cognomeStudente  + " " +  nomeStudente)
+                        }
+                        else
+                        {
+                            var container = $('<div/>')
+                                    .addClass('ui segment girl')
+                                    .html(cognomeStudente  + " " +  nomeStudente)
+                        }
+
+
+//                    <div class="ui segment">
+//                                <div class="ui bottom right attached label">Admin View</div>
+//                        <img class="ui wireframe image" src="/images/wireframe/paragraph.png">
+//                                </div>
 
                         var li = $('<li/>')
-                            .html(a)
+                            .html(container)
                             .appendTo(div);
                     }
                 }
