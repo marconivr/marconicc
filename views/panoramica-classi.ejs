@@ -41,47 +41,17 @@
 
 </style>
 
-<script>
-
-    $( document ).ready(function() {
-        $(".contenitoreClasse").sortable({
-            connectWith: ".contenitoreClasse",
-            update: function(event, ui) {
-                if (this === ui.item.parent()[0]) {  //this control is because is called twice
-                    console.log( $(event.target).parent().attr('id'));
-                }
-
-
-            },
-            receive: function(event, ui) {
-                console.log( $(event.target).parent().attr('id'));
-
-            }
-        }).disableSelection();
-    });
-
-
-
-
-</script>
 
 <% include sidebar-start.ejs %>
 
-<!--contenitoreMenuNonCliccable è un div logico in cui si possono inserire elementi la cui area non possa venire cliccata-->
 <div id="selezioneClassi" class="ui labeled icon menu">
 
-    <div id="contenitoreMenuNonCliccable" class="item">
+    <div id="contenitoreCheckBox" class="item">
         <div id="checkBox" class="ui toggle checkbox">
             <input type="checkbox" name="public">
             <label>Mostra tutte</label>
         </div>
     </div>
-
-
-    <div id="contenitoreMenuNonCliccable" class="item">
-        <div class="ui primary button">Pulisci</div>
-    </div>
-
 </div>
 
 
@@ -159,20 +129,67 @@
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf
 
-                        var a = $('<a/>').addClass("ui label studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+//                        if(arrayStudenti[j].sesso == "M")var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+//                        else var a = $('<a/>').addClass("ui label girl studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+
+
+                        var tag;
+
+                        if(arrayStudenti[j].sesso == "M")
+                        {
+                            //var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+                            var container = $('<div/>')
+                                    .addClass('ui segment guys')
+                                    .attr('id', cf)
+                                    .html(cognomeStudente  + " " +  nomeStudente)
+                        }
+                        else
+                        {
+                            var container = $('<div/>')
+                                    .addClass('ui segment girl')
+                                    .attr('id', cf)
+                                    .html(cognomeStudente  + " " +  nomeStudente)
+                        }
+                        if (arrayStudenti[j].tag != null) {
+                            //contiene il tag studente
+                            tag = $('<div/>')
+                                    .addClass('floating ui grey  label')
+                                    .html(arrayStudenti[j].tag)
+                                    .appendTo(container)
+                        }
+
+
+//                    <div class="ui segment">
+//                                <div class="ui bottom right attached label">Admin View</div>
+//                        <img class="ui wireframe image" src="/images/wireframe/paragraph.png">
+//                                </div>
 
                         var li = $('<li/>')
-                            .html(a)
+                            .html(container)
                             .appendTo(div);
                     }
                 }
             }
+            $(".contenitoreClasse").sortable({
+                connectWith: ".contenitoreClasse",
+                update: function(event, ui) {
+                    if (this === ui.item.parent()[0]) {  //this control is because is called twice
+                        console.log( $(event.target).parent().attr('id'));
+                    }
+
+
+                },
+                receive: function(event, ui) {
+                    console.log( $(event.target).parent().attr('id'));
+
+                }
+            }).disableSelection();
         },
         type: 'GET'
     });
 </script>
 
-
+<% include sidebar-stop.ejs%>
 <!--personal script for specific page -->
 
 <script>
@@ -180,43 +197,32 @@
 
 
     /**
-     * Osservatore per gestire la visualizzazione delle classi singole
+     * Osservatore per gestire la visualizzazione delle classi
      */
         $('#selezioneClassi')
             .on('click', '.item', function() {
 
-                if ($(this)[0].id != "contenitoreMenuNonCliccable"){ //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
-                    if($('#checkBox').hasClass('checked')) {
-                        if($(this).hasClass('active')) {
-                            $(this).removeClass('active');
-                        }else{
-                            $(this).addClass('active');
-                        }
+                if ($(this)[0].id != "contenitoreCheckBox"){ //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
+                    if($(this).hasClass('active')) {
+                        $(this).removeClass('active');
+
+                        var classe = $(this).text();
+
+                        //nascondo l'elemento
+
+
+                        //bisogna fare il controllo per quando si preme tante volte
+                        $('#' + classe).hide();
+
                     }else{
-                        if($(this).hasClass('active')) {
-                            $(this).removeClass('active');
+                        $(this).addClass('active');
+                        var classe = $(this).text();
 
-                            var classe = $(this).text();
-
-                            //nascondo l'elemento
-
-
-                            //bisogna fare il controllo per quando si preme tante volte
-
-                            $('#' + classe).hide();
-
-                        }else{
-                            $(this).addClass('active');
-                            var classe = $(this).text();
-
-                            //visualizzo l'elemento
-                            $('#' + classe).show();
-                        }
-                        //attivo il doppio scroll che non funziona bisognerà indagare
-                        //$('#wrapper').doubleScroll();
+                        //visualizzo l'elemento
+                        $('#' + classe).show();
                     }
-
-
+                    //attivo il doppio scroll che non funziona bisognerà indagare
+                    $('#wrapper').doubleScroll();
                 }
             });
 
@@ -246,11 +252,7 @@
 
     });
 
-    
-
 </script>
 
-
-<!--close html tag-->
+    <!--close html tag-->
 <% include tag-close.ejs%>
-<% include sidebar-stop.ejs%>
