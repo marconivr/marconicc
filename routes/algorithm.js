@@ -411,11 +411,11 @@ module.exports = {
         var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
         for (var i = 0; i < listaClassi.length; i++){
             if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(classe.alunni) > module.exports.countFemmine(listaClassi[i].alunni) &&  module.exports.countFemmine(listaClassi[i].alunni) != 0
+                if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) &&  module.exports.countFemmine(listaClassi[i].alunni) != 0
                     && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
                     var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
                     if (objfem != null) {
-                        module.exports.addStundentInClss(objfem, listaClassi[i], classe, false);
+                        module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
                         console.log(objfem.nome + ", classe prov " + listaClassi[i].nome + ", classe fin " + classe.nome);
                     }
                 }
