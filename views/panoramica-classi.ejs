@@ -219,18 +219,19 @@
                     }
                 }
             }
+            var oldList, newList, item;
             $(".contenitoreClasse").sortable({
                 connectWith: ".contenitoreClasse",
-                update: function(event, ui) {
-                    if (this === ui.item.parent()[0]) {  //this control is because is called twice
-                        console.log( $(event.target).parent().attr('id'));
-                    }
-
-
+                start: function(event, ui) {
+                    item = ui.item;
+                    newList = oldList = ui.item.parent().parent();
                 },
-                receive: function(event, ui) {
-                    console.log( $(event.target).parent().attr('id'));
-
+                stop: function(event, ui) {
+                    var cf_studente_spostato = item[0].childNodes[0].id;
+                    console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
+                },
+                change: function(event, ui) {
+                    if(ui.sender) newList = ui.placeholder.parent().parent();
                 }
             }).disableSelection();
         },
