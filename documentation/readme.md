@@ -1,6 +1,9 @@
 # Composizione classi
 
-## Installazione e lancio<a id="installazione"></a>
+## Requisiti
+- Mysql
+- NodeJS
+## Installazione e lancio
 ### Database
 Nome: composizione_classi
 Utente: composizioneclassi
@@ -40,19 +43,25 @@ Elenco passi da eseguire per lanciare il progetto:
 - Visio
 
 ## Architettura
-
 ### Ruoli
 - User
 - Root
-
 ### Hardware
+- 2 GB di RAM
+- CPU Quadcore
 ### Software
-
+- WebStorm
+- NodeJs
+- Trello
+- Visio
+- Git
+- Bitbucket
 ## Obiettivi sprint
 ### Sprint 1
 
 - Creazione database
-- Creazione interfacce principali(signup, signin, elenco-studenti, panoramica-classi)
+- Creazione interfacce web principali
 - Implementazione algoritmo che genera casualmente classi
+- Pagina 'Elenco alunni' con possibilità di ricerca
 - Aggiunta proprietà principali di ogni classe (numero Alunni, femmine, media, bocciati)
-- Possibilità di inserire delle proprietà specifiche per ogni studente(dsa, dca)
+- Possibilità di aggiungere tag agli alunni(dsa...)
