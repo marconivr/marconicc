@@ -15,7 +15,7 @@ var settings = {
     iniziale:3,
     stessa_pr: 4,
     nazionalita:4,
-    media_min: 7.3,
+    media_min: 7.5,
     media_max: 8.0,
     boc: 2,
     an_scol: "2017-2018"
@@ -205,12 +205,12 @@ module.exports = {
 
                         break;
                     case "media":
-
+                        module.exports.fixMedia(listaClassi[k].nome);
                         break;
                 }
             }
         }
-        module.exports.printProprieta();
+        //module.exports.printProprieta();
         //callback();
     },
 
@@ -393,20 +393,22 @@ module.exports = {
                     if(proprieta.prop !== undefined) {
                         for (var k = 0; k < proprieta.prop.length; k++) {
                             if (proprieta.residenza > settings.stessa_pr) {
-                                console.log()
                                 ris["residenza"] = proprieta.residenza;
                             }
                         }
                     }
                     break;
                 case "media":
-
+                    if (proprieta.media < settings.media_min){
+                        ris["media"] = proprieta.media;
+                    }
                     break;
             }
         }
 
         return ris;
     },
+
     /**
      * fixFemmine inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
      * @param nomeClasse
@@ -424,8 +426,9 @@ module.exports = {
                     }
                 }
             }
+            //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
             if (module.exports.countFemmine(classe.alunni) == settings.fem){
-                i = listaClassi.length;
+                break;
             }
         }
     },
@@ -448,14 +451,53 @@ module.exports = {
                 }
             }
             if (classe.alunni.length == settings.min_al){
-                i = listaClassi.length;
+                break;
             }
         }
     },
 
+    fixMedia: function(nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].nome != nomeClasse){
+                var mCl = module.exports.mediaClasse(listaClassi[i].alunni);
+                if (mCl >= settings.media_max || (mCl < listaClassi[i].media_max && mCl > settings.media_min)) {
+                    var objal = module.exports.searchAlunno("media_voti", module.exports.determinaVoto(classe), listaClassi[i].alunni);
+                    if (objal != null) {
+                        console.log(objal.nome + ", " + objal.cognome);
+                        module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
+                    }
+                }
+            }
+            if (classe.alunni.media >= settings.media_min){
+                break;
+            }
+        }
+    },
+
+    /**
+     * determinaVoto determina il voto della media di un alunno necessario al raggiungimento della media in settings
+     * @param objclasse
+     * @returns {number}
+     */
+    determinaVoto: function(objclasse){
+        var eN = 0;
+        for (i = 0; i < objclasse.alunni.length; i++){
+            eN += objclasse.alunni[i].media_voti;
+        }
+        var voto = Math.round((settings.media_min * (objclasse.alunni.length + 1)) - eN);
+        if(voto > 10 ){
+            return 10;
+        }
+        return voto;
+    },
+
+
+
     searchAlunno: function(attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++){
             if (listaAlunniClasse[i][attr] == valore){
+                console.log("OK qui ci sono");
                 return listaAlunniClasse[i];
             }
         }
