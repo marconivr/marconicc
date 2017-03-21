@@ -190,7 +190,7 @@ module.exports = {
             for (var prop in objproblem){
                 switch (prop) {
                     case "alunni":
-
+                        module.exports.fixAlunni(listaClassi[k].nome);
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
@@ -370,6 +370,10 @@ module.exports = {
         var proprieta = module.exports.createProprietaClasse(listaAlunniClasse);
         for (var prop in proprieta){
             switch (prop) {
+                case "alunni":
+                    if (proprieta.alunni < settings.min_al || proprieta.alunni > settings.max_al){
+                        ris["alunni"] = proprieta.alunni;
+                    }
                 case "femmine":
                     if (proprieta.femmine != 0 && proprieta.femmine < settings.fem){
                         ris["femmine"] = proprieta.femmine;
@@ -420,8 +424,30 @@ module.exports = {
                     }
                 }
             }
-            //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
             if (module.exports.countFemmine(classe.alunni) == settings.fem){
+                i = listaClassi.length;
+            }
+        }
+    },
+
+    /**
+     * fixAlunni inserisce nella classe param gli alunni di altre classi che non rispettano i vincoli.
+     * @param nomeClasse
+     */
+    fixAlunni: function(nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].nome != nomeClasse){
+                if (classe.alunni.length < settings.min_al){
+                    if (listaClassi[i].alunni.length > settings.min_al){
+                        var objal = module.exports.searchAlunno("sesso", "M", listaClassi[i].alunni);
+                        if (objal != null) {
+                            module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
+                        }
+                    }
+                }
+            }
+            if (classe.alunni.length == settings.min_al){
                 i = listaClassi.length;
             }
         }
