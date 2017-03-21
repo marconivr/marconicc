@@ -15,7 +15,7 @@ var settings = {
     iniziale:3,
     stessa_pr: 4,
     nazionalita:4,
-    media_min: 7.3,
+    media_min: 7.5,
     media_max: 8.0,
     boc: 2,
     an_scol: "2017-2018"
@@ -57,15 +57,20 @@ module.exports = {
                                 });
                             },
                             function (callback) {
+
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
-                            },
-                            function (callback) {
-                                module.exports.fixClassi(function () {
-                                    callback();
-                                });
                             }
+                            /*
+                             ,
+                             function (callback) {
+
+                             module.exports.fixClassi(function () {
+                             callback();
+                             });
+                             }
+                             */
                         ],
                         function (err, succes) {
                             if (err) {
@@ -179,17 +184,16 @@ module.exports = {
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
-    fixClassi: function (callback) {
+    fixClassi: function () {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
             for (var prop in objproblem){
                 switch (prop) {
                     case "alunni":
-
+                        module.exports.fixAlunni(listaClassi[k].nome);
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
-                        console.log(listaClassi[k].proprieta);
                         break;
                     case "stranieri":
 
@@ -201,12 +205,19 @@ module.exports = {
 
                         break;
                     case "media":
-
+                        module.exports.fixMedia(listaClassi[k].nome);
                         break;
                 }
             }
         }
-        callback();
+        //module.exports.printProprieta();
+        //callback();
+    },
+
+    printProprieta: function (){
+        for(var k=0; k < listaClassi.length;k++){
+            console.log(listaClassi[k].proprieta);
+        }
     },
 
     //##################################################################################################################
@@ -355,10 +366,14 @@ module.exports = {
     },
 
     problemiClasse: function(listaAlunniClasse){
-        var ris = {}
+        var ris = {};
         var proprieta = module.exports.createProprietaClasse(listaAlunniClasse);
         for (var prop in proprieta){
             switch (prop) {
+                case "alunni":
+                    if (proprieta.alunni < settings.min_al || proprieta.alunni > settings.max_al){
+                        ris["alunni"] = proprieta.alunni;
+                    }
                 case "femmine":
                     if (proprieta.femmine != 0 && proprieta.femmine < settings.fem){
                         ris["femmine"] = proprieta.femmine;
@@ -378,14 +393,15 @@ module.exports = {
                     if(proprieta.prop !== undefined) {
                         for (var k = 0; k < proprieta.prop.length; k++) {
                             if (proprieta.residenza > settings.stessa_pr) {
-                                console.log()
                                 ris["residenza"] = proprieta.residenza;
                             }
                         }
                     }
                     break;
                 case "media":
-
+                    if (proprieta.media < settings.media_min){
+                        ris["media"] = proprieta.media;
+                    }
                     break;
             }
         }
@@ -393,23 +409,96 @@ module.exports = {
         return ris;
     },
 
+    /**
+     * fixFemmine inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
+     * @param nomeClasse
+     */
     fixFemmine: function(nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
         for (var i = 0; i < listaClassi.length; i++){
             if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(listaClassi[i].alunni) > settings.max_fem){
-                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i]);
-                    listaClassi[i].splice(objfem, 1);
-                    (module.exports.findClasseFromString(nomeClasse)).push(objfem);
-                    console.log("Cambio femmina");
+                if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) &&  module.exports.countFemmine(listaClassi[i].alunni) != 0
+                    && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
+                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
+                    if (objfem != null) {
+                        module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
+                        console.log(objfem.nome + ", classe prov " + listaClassi[i].nome + ", classe fin " + classe.nome);
+                    }
                 }
+            }
+            //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
+            if (module.exports.countFemmine(classe.alunni) == settings.fem){
+                break;
             }
         }
     },
 
+    /**
+     * fixAlunni inserisce nella classe param gli alunni di altre classi che non rispettano i vincoli.
+     * @param nomeClasse
+     */
+    fixAlunni: function(nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].nome != nomeClasse){
+                if (classe.alunni.length < settings.min_al){
+                    if (listaClassi[i].alunni.length > settings.min_al){
+                        var objal = module.exports.searchAlunno("sesso", "M", listaClassi[i].alunni);
+                        if (objal != null) {
+                            module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
+                        }
+                    }
+                }
+            }
+            if (classe.alunni.length == settings.min_al){
+                break;
+            }
+        }
+    },
+
+    fixMedia: function(nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].nome != nomeClasse){
+                var mCl = module.exports.mediaClasse(listaClassi[i].alunni);
+                if (mCl >= settings.media_max || (mCl < listaClassi[i].media_max && mCl > settings.media_min)) {
+                    var objal = module.exports.searchAlunno("media_voti", module.exports.determinaVoto(classe), listaClassi[i].alunni);
+                    if (objal != null) {
+                        console.log(objal.nome + ", " + objal.cognome);
+                        module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
+                    }
+                }
+            }
+            if (classe.alunni.media >= settings.media_min){
+                break;
+            }
+        }
+    },
+
+    /**
+     * determinaVoto determina il voto della media di un alunno necessario al raggiungimento della media in settings
+     * @param objclasse
+     * @returns {number}
+     */
+    determinaVoto: function(objclasse){
+        var eN = 0;
+        for (i = 0; i < objclasse.alunni.length; i++){
+            eN += objclasse.alunni[i].media_voti;
+        }
+        var voto = Math.round((settings.media_min * (objclasse.alunni.length + 1)) - eN);
+        if(voto > 10 ){
+            return 10;
+        }
+        return voto;
+    },
+
+
+
     searchAlunno: function(attr, valore, listaAlunniClasse) {
-        for (var i = 0; i < listaAlunniClassi.length; i++){
-            if (listaAlunniClassi[i].attr == valore){
-                return listaAlunniClassi[i];
+        for (var i = 0; i < listaAlunniClasse.length; i++){
+            if (listaAlunniClasse[i][attr] == valore){
+                console.log("OK qui ci sono");
+                return listaAlunniClasse[i];
             }
         }
         return null;
@@ -417,6 +506,28 @@ module.exports = {
 
     setListaClassi: function (lC){
         listaClassi = lC;
+    },
+
+    /**
+     *
+     * @param objAl
+     * @param veccCl
+     * @param nuovaCl
+     * @param salvoDB flag che salva sul DB
+     */
+    addStundentInClss: function (objAl, veccCl, nuovaCl, salvoDB){
+        veccCl = module.exports.classeIsObj(veccCl);
+        nuovaCl = module.exports.classeIsObj(nuovaCl);
+        veccCl.alunni.splice(veccCl.alunni.indexOf(objAl, 0), 1);
+        nuovaCl.alunni.push(objAl);
+
+        veccFem = module.exports.countFemmine(veccCl.alunni);
+        nuovFem = module.exports.countFemmine(nuovaCl.alunni);
+
+        if (salvoDB){
+            query.removeAlunnoInClass(veccCl.nome, objAl.cf);
+            query.insertAlunnoInClass(nuovaCl.nome, objAl.cf);
+        }
     },
 
     //##################################################################################################################
@@ -465,17 +576,19 @@ module.exports = {
     },
 
     /**
-     * removeNullDaArray rimuove un undefined da un array
+     * removeNullFromArray rimuove un undefined da un array
      * @param array
      */
-    removeNullDaArray: function(array){
+    removeNullFromArray: function(array){
         return array.filter(function(n){ return n != null });
+    },
+
+    removeNullFromListaClassi: function(){
+        for (var i = 0; i < listaClassi; i++){
+            listaClassi[i] = module.exports.removeNullFromArray(listaClassi[i]);
+        }
     }
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
     //##################################################################################################################
-
-
-    //algorithm
-    //vprova
 }
