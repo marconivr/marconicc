@@ -25,7 +25,6 @@ var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 module.exports = {
-
     /**
      * main dell'algoritmo
      * @param classe
@@ -76,6 +75,10 @@ module.exports = {
                             if (err) {
                                 console.log(err);
                             } else {
+                                /*
+                                * qui di potrebbe ordinare anche la prima volta che vengono generate random le classi;
+                                */
+
                                 callback(err, listaClassi);
                             }
                         }
@@ -208,7 +211,7 @@ module.exports = {
                         module.exports.fixMedia(listaClassi[k].nome);
                         break;
                     case "iniziale":
-
+                        break;
                 }
             }
         }
@@ -559,9 +562,6 @@ module.exports = {
         nuovaCl = module.exports.classeIsObj(nuovaCl);
         veccCl.alunni.splice(veccCl.alunni.indexOf(objAl, 0), 1);
         nuovaCl.alunni.push(objAl);
-
-        veccFem = module.exports.countFemmine(veccCl.alunni);
-        nuovFem = module.exports.countFemmine(nuovaCl.alunni);
 
         if (salvoDB){
             query.removeAlunnoInClass(veccCl.nome, objAl.cf);
