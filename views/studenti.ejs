@@ -35,23 +35,30 @@
                 </thead>
 
                 <tbody>
-                <% for(var i = 0; i < studentsData.length; i++){ %>
+                <% for(var i = 0; i < studentsPrima.length; i++){ %>
                 <tr>
-                    <td><%= studentsData[i].cognome %></td>
-                    <td><%= studentsData[i].nome %></td>
-                    <td><%= studentsData[i].cf %></td>
-                    <td><%= studentsData[i].sesso %></td>
+                    <td><%= studentsPrima[i].cognome %></td>
+                    <td><%= studentsPrima[i].nome %></td>
+                    <td><%= studentsPrima[i].cf %></td>
+                    <td><%= studentsPrima[i].sesso %></td>
 
-                    <td><%= studentsData[i].data_di_nascita %></td>
+                    <% var mySQLDate = studentsPrima[i].data_di_nascita + '' %>
 
-                    <td><%= studentsData[i].stato %></td>
-                    <td><%= studentsData[i].cap_provenienza %></td>
-                    <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
-                    <td><%= studentsData[i].anno_scolastico %></td>
-                    <td><%= studentsData[i].anno %></td>
-                    <td><%= studentsData[i].cod_cat %></td>
-                    <td><%= studentsData[i].media_voti %></td>
-                    <td><%= studentsData[i].classe_futura %></td>
+                    <% var date = new Date(Date.parse(mySQLDate.replace('-', '/', 'g'))); %>
+                    <% var day = date.getUTCDate() + 1 %>
+                    <% var month = date.getMonth() + 1 %>
+                    <% var year = date.getUTCFullYear() %>
+                    <% var finalDate = day + '/' + month + '/' + year %>
+                    <td><%= finalDate %></td>
+
+                    <td><%= studentsPrima[i].stato %></td>
+                    <td><%= studentsPrima[i].cap_provenienza %></td>
+                    <!--<td><%= studentsPrima[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
+                    <td><%= studentsPrima[i].anno_scolastico %></td>
+                    <td><%= studentsPrima[i].anno %></td>
+                    <td><%= studentsPrima[i].cod_cat %></td>
+                    <td><%= studentsPrima[i].media_voti %></td>
+                    <td><%= studentsPrima[i].classe_futura %></td>
 
                 </tr>
                 <% } %>
@@ -85,6 +92,9 @@
 <!--third tabs-->
 <div class="ui bottom attached tab segment" data-tab="third">
 
+
+    <div class="ui two column centered grid">
+        <div class="column">
     <table id="studenti-terza" class="ui celled table" cellspacing="0" width="100%">
         <thead>
         <tr>
@@ -106,23 +116,30 @@
         </thead>
 
         <tbody>
-        <% for(var i = 0; i < studentsData.length; i++){ %>
+        <% for(var i = 0; i < studentsTerza.length; i++){ %>
         <tr>
-            <td><%= studentsData[i].cognome %></td>
-            <td><%= studentsData[i].nome %></td>
-            <td><%= studentsData[i].cf %></td>
-            <td><%= studentsData[i].sesso %></td>
+            <td><%= studentsTerza[i].cognome %></td>
+            <td><%= studentsTerza[i].nome %></td>
+            <td><%= studentsTerza[i].cf %></td>
+            <td><%= studentsTerza[i].sesso %></td>
 
-            <td><%= studentsData[i].data_di_nascita %></td>
+            <% var mySQLDate = studentsTerza[i].data_di_nascita + '' %>
 
-            <td><%= studentsData[i].stato %></td>
-            <td><%= studentsData[i].cap_provenienza %></td>
-            <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
-            <td><%= studentsData[i].anno_scolastico %></td>
-            <td><%= studentsData[i].anno %></td>
-            <td><%= studentsData[i].cod_cat %></td>
-            <td><%= studentsData[i].media_voti %></td>
-            <td><%= studentsData[i].classe_futura %></td>
+            <% var date = new Date(Date.parse(mySQLDate.replace('-', '/', 'g'))); %>
+            <% var day = date.getUTCDate() + 1 %>
+            <% var month = date.getMonth() + 1 %>
+            <% var year = date.getUTCFullYear() %>
+            <% var finalDate = day + '/' + month + '/' + year %>
+            <td><%= finalDate %></td>
+
+            <td><%= studentsTerza[i].stato %></td>
+            <td><%= studentsTerza[i].cap_provenienza %></td>
+            <!--<td><%= studentsTerza[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
+            <td><%= studentsTerza[i].anno_scolastico %></td>
+            <td><%= studentsTerza[i].anno %></td>
+            <td><%= studentsTerza[i].cod_cat %></td>
+            <td><%= studentsTerza[i].media_voti %></td>
+            <td><%= studentsTerza[i].classe_futura %></td>
 
         </tr>
         <% } %>
@@ -147,6 +164,8 @@
         </tr>
         </tfoot>
     </table>
+        </div>
+    </div>
 
 </div>
 
@@ -254,8 +273,6 @@
         </div>
     </div>
 
-
-
     <!--positive-->
     <div class="ui  positive  message transition  hidden" id="response">
         <i class="close icon"></i>
@@ -308,6 +325,35 @@
         });
         table.buttons().container()
             .appendTo($('div.eight.column:eq(0)', table.table().container()));
+    });
+</script>
+
+<!--first class table-->
+<script>
+    $(document).ready(function () {
+        var table = $('#studenti-terza').DataTable({
+            processing: true,
+            lengthChange: false,
+            buttons: ['excel'],
+            "columns": [
+                {"data": "cognome"},
+                {"data": "nome"},
+                {"data": "cf"},
+                {"data": "sesso"},
+                {"data": "data_di_nascita"},
+                {"data": "stato"},
+                {"data": "cap_provenienza"},
+                //{ "data": "scelta_indirizzo" },
+                {"data": "anno_scolastico"},
+                {"data": "anno"},
+                {"data": "cod_cat"},
+                {"data": "media_voti"},
+                {"data": "classe_futura"}
+
+            ]
+        });
+        table.buttons().container()
+                .appendTo($('div.eight.column:eq(0)', table.table().container()));
     });
 </script>
 
