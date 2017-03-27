@@ -230,10 +230,13 @@ module.exports = {
      * @param identifier
      */
     getAllStudents: function (callback,identifier) {
+        var nome, cognome;
+        nome = identifier.split(" ")[1];
+        cognome = identifier.split(" ")[0];
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? ",
-            [ "%" + identifier + "%", "%" +  identifier + "%" ],
+            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?)",
+            ["%" + identifier + "%", "%" + identifier + "%", "%" + cognome + nome + "%"],
             function (err, rows) {
             if (err) {
                 throw err;

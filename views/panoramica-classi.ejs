@@ -39,6 +39,45 @@
 
     }
 
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 1s;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
 </style>
 
 
@@ -65,6 +104,11 @@
         </div>
     </div>
 </div>
+
+<br>
+<br>
+<br>
+<br>
 
 <script>
 
@@ -129,27 +173,65 @@
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf
 
-                        if(arrayStudenti[j].sesso == "M")var a = $('<a/>').addClass("ui label blue studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
-                        else var a = $('<a/>').addClass("ui label girl studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+//                        if(arrayStudenti[j].sesso == "M")var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+//                        else var a = $('<a/>').addClass("ui label girl studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+
+
+                        var tag;
+
+                        if(arrayStudenti[j].sesso == "M")
+                        {
+                            //var a = $('<a/>').addClass("ui label guys studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
+                            var container = $('<div/>')
+                                    .addClass('ui segment tooltip guys')
+                                    .attr('id', cf)
+                                    .html(cognomeStudente  + " " +  nomeStudente)
+                        }
+                        else
+                        {
+                            var container = $('<div/>')
+                                    .addClass('ui segment tooltip girl')
+                                    .attr('id', cf)
+                                    .html(cognomeStudente  + " " +  nomeStudente)
+                        }
+                        if (arrayStudenti[j].tag != null) {
+                            //contiene il tag studente
+                            tag = $('<div/>')
+                                    .addClass('floating ui grey  label')
+                                    .html(arrayStudenti[j].tag)
+                                    .appendTo(container)
+                        }
+                        //tooltip
+                        var tooltip = $('<span/>')
+                                .addClass('tooltiptext')
+                                .html('Media : ' + arrayStudenti[j].media_voti)
+                                .appendTo(container)
+
+
+//                    <div class="ui segment">
+//                                <div class="ui bottom right attached label">Admin View</div>
+//                        <img class="ui wireframe image" src="/images/wireframe/paragraph.png">
+//                                </div>
 
                         var li = $('<li/>')
-                            .html(a)
+                            .html(container)
                             .appendTo(div);
                     }
                 }
             }
+            var oldList, newList, item;
             $(".contenitoreClasse").sortable({
                 connectWith: ".contenitoreClasse",
-                update: function(event, ui) {
-                    if (this === ui.item.parent()[0]) {  //this control is because is called twice
-                        console.log( $(event.target).parent().attr('id'));
-                    }
-
-
+                start: function(event, ui) {
+                    item = ui.item;
+                    newList = oldList = ui.item.parent().parent();
                 },
-                receive: function(event, ui) {
-                    console.log( $(event.target).parent().attr('id'));
-
+                stop: function(event, ui) {
+                    var cf_studente_spostato = item[0].childNodes[0].id;
+                    console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
+                },
+                change: function(event, ui) {
+                    if(ui.sender) newList = ui.placeholder.parent().parent();
                 }
             }).disableSelection();
         },

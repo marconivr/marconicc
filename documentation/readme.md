@@ -1,13 +1,15 @@
-#Composizione classi
+# Composizione classi
 
-
-##Installazione e lancio
-###Database
+## Requisiti
+- Mysql
+- NodeJS
+## Installazione e lancio
+### Database
 Nome: composizione_classi
 Utente: composizioneclassi
 Password: 5BFF9B615FBEDCD197BFB9371BB5A7D1
 
-###Installazione
+### Installazione
 Elenco passi da eseguire per installare il progetto:
 
 
@@ -16,7 +18,7 @@ Elenco passi da eseguire per installare il progetto:
 - cd public
 - bower install
 
-###Lancio
+### Lancio
 
 Elenco passi da eseguire per lanciare il progetto:
 
@@ -25,29 +27,41 @@ Elenco passi da eseguire per lanciare il progetto:
 - node server.js  (nella directory composizione_classi)
 
 
-##Progettazione
+## Progettazione
 
-###Spina di pesce
-###WBS
-###GANTT
-###Matrice responsabilità
+### Spina di pesce
+### WBS
+### GANTT
+### Matrice responsabilità
 ![](img\matrice_responsabilita.png)
-###Unità organizzative
+### Unità organizzative
 ![](img\unita_organizzative.png)
-###Strumenti utilizzati
+### Strumenti utilizzati
 - WebStorm
 - NodeJs
 - Trello
 - Visio
 
-
-
-
-##Sprint
-###Sprint 1
+## Architettura
+### Ruoli
+- User
+- Root
+### Hardware
+- 2 GB di RAM
+- CPU Quadcore
+### Software
+- WebStorm
+- NodeJs
+- Trello
+- Visio
+- Git
+- Bitbucket
+## Obiettivi sprint
+### Sprint 1
 
 - Creazione database
-- Creazione interfaccia signup
+- Creazione interfacce web principali
 - Implementazione algoritmo che genera casualmente classi
 - Pagina 'Elenco alunni' con possibilità di ricerca
 - Aggiunta proprietà principali di ogni classe (numero Alunni, femmine, media, bocciati)
+- Possibilità di aggiungere tag agli alunni(dsa...)
