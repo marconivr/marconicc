@@ -60,12 +60,16 @@ module.exports = {
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
-                            },
+                            }
+                            /*
+                             ,
                              function (callback) {
-                                 module.exports.fixClassi(function () {
-                                 callback();
-                                 });
+
+                             module.exports.fixClassi(function () {
+                             callback();
+                             });
                              }
+                             */
                         ],
                         function (err, succes) {
                             if (err) {
@@ -415,6 +419,7 @@ module.exports = {
                     }
                     break;
                 case "iniziale":
+                    /*
                     if (proprieta.iniziale.length != 0) {
                         ris["iniziale"] = [];
                         for (var k = 0; k < proprieta.iniziale.length; k++) {
@@ -424,6 +429,7 @@ module.exports = {
                         }
                     }
                     break;
+                    */
 
             }
         }
