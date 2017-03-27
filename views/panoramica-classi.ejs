@@ -113,10 +113,10 @@
 
 <script>
 
+
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
-
     $.ajax({
         url: '/get-classi-composte',
         data: {
@@ -155,7 +155,7 @@
 
 
                 for (var prop in proprieta) {
-                    if (prop != "residenza" && prop != "iniziale") {
+                    if (prop != "residenza" && prop != "iniziale" && prop != "bocciati") {
                         var li = $('<div/>')
                             .addClass("ui info message")
                             .text(prop + ": " + proprieta[prop])
