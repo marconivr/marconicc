@@ -64,6 +64,14 @@ module.exports = {
         });
     },
 
+    removeAlunnoInClass: function (classe, cf) {
+        connection.query("DELETE FROM comp_classi WHERE nome_classe = '" + classe + "' AND cf_alunno = '" + cf +  "'", function (err, row) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    },
+
     insertTag: function (callback, tag, descrizione) {
         connection.query("INSERT INTO tag VALUES (?, ?)", [tag, descrizione], function (err, row) {
             if (err) {
@@ -291,5 +299,5 @@ module.exports = {
                 callback(err, rows);
             }
         });
-    },
+    }
 };
