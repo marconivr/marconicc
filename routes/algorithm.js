@@ -139,7 +139,7 @@ module.exports = {
         var media = module.exports.mediaClasse(listaAlunniClasse);
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
         var bocciati = module.exports.countBocciati(listaAlunniClasse);
-        var iniziale = module.exports.countInizialeCognome(listaAlunniClasse);
+        var iniziale = module.exports.countTutteInizialiCognome(listaAlunniClasse);
         return {alunni:nAlunni, femmine:nFemmine, media:media.toFixed(2), residenza:residenza, bocciati:bocciati, iniziale:iniziale};
     },
 
@@ -207,11 +207,12 @@ module.exports = {
                     case "media":
                         module.exports.fixMedia(listaClassi[k].nome);
                         break;
+                    case "iniziale":
+
                 }
             }
         }
-        //module.exports.printProprieta();
-        //callback();
+        module.exports.printProprieta();
     },
 
     printProprieta: function (){
@@ -343,7 +344,7 @@ module.exports = {
      * @param listaAlunniClasse
      * @returns {Array}
      */
-    countInizialeCognome: function (listaAlunniClasse) {
+    countTutteInizialiCognome: function (listaAlunniClasse) {
         var listaIniz = [];
         var count = 0;
         var ris = [];
@@ -360,6 +361,17 @@ module.exports = {
                     ris.push({lettera:listaIniz[i], num: count + 1});
                 }
                 count = 0;
+            }
+        }
+        return ris;
+    },
+
+    countStessaInizialeCognome:function (listaAlunniClasse, carattere) {
+        var count = 0;
+
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i].cognome[0] == carattere) {
+                count++;
             }
         }
         return ris;
@@ -390,7 +402,7 @@ module.exports = {
                     }
                     break;
                 case "residenza":
-                    if(proprieta.prop !== undefined) {
+                    if(proprieta.residenza.length != 0) {
                         for (var k = 0; k < proprieta.prop.length; k++) {
                             if (proprieta.residenza > settings.stessa_pr) {
                                 ris["residenza"] = proprieta.residenza;
@@ -403,6 +415,17 @@ module.exports = {
                         ris["media"] = proprieta.media;
                     }
                     break;
+                case "iniziale":
+                    if (proprieta.iniziale.length != 0) {
+                        ris["iniziale"] = [];
+                        for (var k = 0; k < proprieta.iniziale.length; k++) {
+                            if (proprieta.iniziale[k].num > settings.iniziale) {
+                                ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
+                            }
+                        }
+                    }
+                    break;
+
             }
         }
 
@@ -475,6 +498,23 @@ module.exports = {
         }
     },
 
+    fixIniziale: function(nomeClasse, caratteri){
+        var classe = module.exports.findClasseFromString(nomeClasse);
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].nome != nomeClasse){
+                for (var k = 0; k < caratteri.length; k++) {
+                    if (module.exports.countStessaInizialeCognome(classe.alunni, caratteri[k]) > settings.iniziale) {
+
+                    }
+                }
+
+            }
+            if (classe.alunni.media >= settings.media_min){
+                break;
+            }
+        }
+    },
+
     /**
      * determinaVoto determina il voto della media di un alunno necessario al raggiungimento della media in settings
      * @param objclasse
@@ -497,7 +537,6 @@ module.exports = {
     searchAlunno: function(attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++){
             if (listaAlunniClasse[i][attr] == valore){
-                console.log("OK qui ci sono");
                 return listaAlunniClasse[i];
             }
         }
