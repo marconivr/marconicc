@@ -60,16 +60,12 @@ module.exports = {
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
-                            }
-                            /*
-                             ,
+                            },
                              function (callback) {
-
-                             module.exports.fixClassi(function () {
-                             callback();
-                             });
+                                 module.exports.fixClassi(function () {
+                                 callback();
+                                 });
                              }
-                             */
                         ],
                         function (err, succes) {
                             if (err) {
