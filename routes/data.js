@@ -78,8 +78,9 @@ module.exports = function (app, passport, upload) {
     /**
      * Elenco studenti in tabella
      */
+    
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
-
+/** 
         async.parallel({
             studentiPrima:function (callback) {
                 query.getStudentiPrima(function (err, results) {
@@ -111,7 +112,7 @@ module.exports = function (app, passport, upload) {
             console.log(results.two);
             console.log(results.three);
         });
-
+*/
         // query.getStudentiPrima(function (err, results) {
         //     if (err)
         //         console.log(err);

@@ -1,0 +1,14 @@
+{
+  "name": "angular-datatables",
+  "homepage": "https://github.com/l-lin/angular-datatables",
+  "version": "2.1.0",
+  "_release": "2.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.1.0",
+    "commit": "5efe4b0e1630ac12b0a7a7b3314d6d946ff76849"
+  },
+  "_source": "https://github.com/l-lin/angular-datatables.git",
+  "_target": "^2.1.0",
+  "_originalSource": "angular-datatables"
+}
