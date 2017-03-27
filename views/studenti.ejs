@@ -84,7 +84,70 @@
 
 <!--third tabs-->
 <div class="ui bottom attached tab segment" data-tab="third">
-    Third
+
+    <table id="studenti-terza" class="ui celled table" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th>cognome</th>
+            <th>nome</th>
+            <th>cf</th>
+            <th>sesso</th>
+            <th>data_di_nascita</th>
+            <th>stato</th>
+            <th>cap_provenienza</th>
+            <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
+            <th>anno_scolastico</th>
+            <th>anno</th>
+            <th>cod_cat</th>
+            <th>media_voti</th>
+            <th>classe_futura</th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+        <% for(var i = 0; i < studentsData.length; i++){ %>
+        <tr>
+            <td><%= studentsData[i].cognome %></td>
+            <td><%= studentsData[i].nome %></td>
+            <td><%= studentsData[i].cf %></td>
+            <td><%= studentsData[i].sesso %></td>
+
+            <td><%= studentsData[i].data_di_nascita %></td>
+
+            <td><%= studentsData[i].stato %></td>
+            <td><%= studentsData[i].cap_provenienza %></td>
+            <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
+            <td><%= studentsData[i].anno_scolastico %></td>
+            <td><%= studentsData[i].anno %></td>
+            <td><%= studentsData[i].cod_cat %></td>
+            <td><%= studentsData[i].media_voti %></td>
+            <td><%= studentsData[i].classe_futura %></td>
+
+        </tr>
+        <% } %>
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>cognome</th>
+            <th>nome</th>
+            <th>cf</th>
+            <th>sesso</th>
+            <th>data_di_nascita</th>
+            <th>stato</th>
+            <th>cap_provenienza</th>
+            <!-- <th>scelta_indirizzo</th> ho commentato perchè troppo largo e rompe layout tabella -->
+            <th>anno_scolastico</th>
+            <th>anno</th>
+            <th>cod_cat</th>
+            <th>media_voti</th>
+            <th>classe_futura</th>
+
+        </tr>
+        </tfoot>
+    </table>
+
 </div>
 
 <!--tags and insert-->
