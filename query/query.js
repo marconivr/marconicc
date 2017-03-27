@@ -142,6 +142,17 @@ module.exports = {
         });
     },
 
+    getStudentiTerza: function (callback) {
+
+        connection.query("SELECT * from alunni WHERE classe_futura = 'TERZA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
     getNumberGirl: function (callback, classe) {
 
         connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
