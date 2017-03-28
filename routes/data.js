@@ -140,7 +140,14 @@ module.exports = function (app, passport, upload) {
                                         listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse), alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
                                             alg.setListaClassi(listaClassi);
-                                            alg.fixClassi();
+                                            alg.fixClassi(function (){
+                                                if (err){
+                                                    console.log(err);
+                                                }
+                                                else {
+
+                                                }
+                                            });
                                             res.send(listaClassi);
                                         }
                                     }

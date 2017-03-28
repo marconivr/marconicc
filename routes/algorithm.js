@@ -56,20 +56,16 @@ module.exports = {
                                 });
                             },
                             function (callback) {
-
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
                             }
-                            /*
                              ,
                              function (callback) {
-
-                             module.exports.fixClassi(function () {
-                             callback();
+                                 module.exports.fixClassi(function () {
+                                 callback();
                              });
                              }
-                             */
                         ],
                         function (err, succes) {
                             if (err) {
@@ -187,7 +183,7 @@ module.exports = {
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
-    fixClassi: function () {
+    fixClassi: function (callback) {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
             for (var prop in objproblem){
@@ -216,6 +212,7 @@ module.exports = {
             }
         }
         module.exports.printProprieta();
+        callback();
     },
 
     printProprieta: function (){
@@ -406,7 +403,7 @@ module.exports = {
                     break;
                 case "residenza":
                     if(proprieta.residenza.length != 0) {
-                        for (var k = 0; k < proprieta.prop.length; k++) {
+                        for (var k = 0; k < proprieta.residenza.length; k++) {
                             if (proprieta.residenza > settings.stessa_pr) {
                                 ris["residenza"] = proprieta.residenza;
                             }
