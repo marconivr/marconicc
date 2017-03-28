@@ -78,50 +78,48 @@ module.exports = function (app, passport, upload) {
     /**
      * Elenco studenti in tabella
      */
+    
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
 
         async.parallel({
-            studentiPrima:function (callback) {
+            studentiPrima: function (callback) {
                 query.getStudentiPrima(function (err, results) {
-                            if (err)
-                                console.log(err);
-                            else
-                                callback(null)//TODO:F
-                        });
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'prima': results})
+                });
             },
 
-            one: function(parallelCb) {
-                request('http://www.example1.com', function (err, res, body) {
-                    parallelCb(null, {err: err, res: res, body: body});
-                });
-            },
-            two: function(parallelCb) {
-                request('http://www.example2.com', function (err, res, body) {
-                    parallelCb(null, {err: err, res: res, body: body});
-                });
-            },
-            three: function(parallelCb) {
-                request('http://www.example3.com', function (err, res, body) {
-                    parallelCb(null, {err: err, res: res, body: body});
+            studentiTerza: function (callback) {
+                query.getStudentiTerza(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'terza': results})
                 });
             }
-        }, function(err, results) {
-            // results will have the results of all 3
-            console.log(results.one);
-            console.log(results.two);
-            console.log(results.three);
-        });
+        }, function (err, results) {
+            res.render('studenti.ejs', {
+                user: req.user,
+                pageTitle: " Studenti ",
+                studentsPrima: results.studentiPrima.prima,
+                studentsTerza: results.studentiTerza.terza
+            });
 
-        // query.getStudentiPrima(function (err, results) {
-        //     if (err)
+        });
+        //
+        // //TODO:ASYNC
+        //  query.getStudentiPrima(function (err, results) {
+        //      if (err)
         //         console.log(err);
-        //     else
-        //         res.render('studenti.ejs', {
-        //             user: req.user,
-        //             pageTitle: " Studenti ",
-        //             studentsData: results
-        //         });
-        // });
+        //      else
+        //          res.render('studenti.ejs', {
+        //              user: req.user,
+        //              pageTitle: " Studenti ",
+        //              studentsData: results
+        //          });
+        //  });
 
 
     });
@@ -172,9 +170,10 @@ module.exports = function (app, passport, upload) {
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
-                                        //alg.problemiClasse(listaAlunniClasse);
                                         listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse), alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
+                                            alg.setListaClassi(listaClassi);
+                                            alg.fixClassi();
                                             res.send(listaClassi);
                                         }
                                     }
