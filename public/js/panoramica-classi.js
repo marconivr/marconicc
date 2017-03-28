@@ -1,6 +1,12 @@
-$( document ).ready(function() {
-    var classi_json = null;
 
+function populate(listaClassi) {
+    console.log(listaClassi);
+
+}
+
+
+
+$( document ).ready(function() {
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
@@ -16,6 +22,7 @@ $( document ).ready(function() {
 
         success: function (listaClassi) {
 
+            populate(listaClassi);
             classi_json = listaClassi;
 
             for (var i = 0; i < listaClassi.length; i++) {
