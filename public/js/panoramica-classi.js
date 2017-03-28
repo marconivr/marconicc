@@ -1,3 +1,5 @@
+var debug = true;
+
 var arrayClassi = null;
 
 
@@ -29,15 +31,90 @@ function getMediaOfClass(nomeClasse){
     for (var i=0; i < studentiOfClass.length; i++){
         somma = somma + studentiOfClass[i].media_voti;
     }
-    return somma/studentiOfClass.length;
+    var result =  somma/studentiOfClass.length;
+    var approx = result.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+    return approx;
 }
 
 
 function getNumberOfDifferentNationalityOfClass(nomeClasse){
     var studentiOfClass = getStudentsOfClass(nomeClasse);
+    //todo manca nel db il campo nazionalità
+}
+
+
+function getNumberOfFemmineOfClass(nomeClasse) {
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
+    var count = 0;
+    for (var i=0; i < studentiOfClass.length; i++){
+        if (studentiOfClass[i].sesso == "F"){
+            count += 1;
+        }
+    }
+    return count;
+}
+
+function getStudentsNumber(nomeClasse) {
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
+    return studentiOfClass.length;
+}
+
+function updateStatistiche(classe){
+
+    $('#femmine'+classe).text("femmine: " + getNumberOfFemmineOfClass(classe));
+    $('#media'+classe).text("media: " + getMediaOfClass(classe));
+    $('#alunni'+classe).text("alunni: " + getStudentsNumber(classe));
 
 }
 
+/**
+ *
+ * @param cf
+ * @param fromClass
+ * @param toClass
+ */
+function moveStudent(cf,fromClass,toClass){
+
+    var removedStudent = null;
+
+    for (var i=0; i < arrayClassi.length; i++){
+        if (arrayClassi[i].nome == fromClass){
+            var alunni = arrayClassi[i].alunni;
+            for (var j=0; i < alunni.length; j++ ){
+                if (alunni[j].cf == cf){
+                    removedStudent = alunni.splice( alunni.indexOf(alunni[j]) , 1 )[0];
+
+                    if(debug){
+                        console.log(fromClass);
+                        console.log(getNumberOfFemmineOfClass(fromClass));
+                        console.log(arrayClassi[i].alunni);
+                    }
+
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    for (var i=0; i < arrayClassi.length; i++){
+        if (arrayClassi[i].nome == toClass){
+            arrayClassi[i].alunni.push(removedStudent);
+
+            if(debug) {
+                console.log(toClass);
+                console.log(getNumberOfFemmineOfClass(toClass));
+                console.log(arrayClassi[i].alunni);
+            }
+
+            break;
+        }
+    }
+
+    updateStatistiche(fromClass);
+    updateStatistiche(toClass);
+
+}
 
 $(document).ready(function() {
     /**
@@ -84,6 +161,7 @@ $(document).ready(function() {
                 for (var prop in proprieta) {
                     if (prop != "residenza" && prop != "iniziale" && prop != "bocciati") {
                         var li = $('<div/>')
+                            .attr('id',prop + nomeClasse)
                             .addClass("ui info message")
                             .text(prop + ": " + proprieta[prop])
                             .appendTo(settingClasse);
@@ -143,7 +221,11 @@ $(document).ready(function() {
                 },
                 stop: function (event, ui) {
                     var cf_studente_spostato = item[0].childNodes[0].id;
-                    console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
+                    var classFrom = oldList.attr('id');
+                    var classTo = newList.attr('id');
+
+                    moveStudent(cf_studente_spostato,classFrom,classTo);
+
                 },
                 change: function (event, ui) {
                     if (ui.sender) newList = ui.placeholder.parent().parent();
