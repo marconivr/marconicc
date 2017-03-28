@@ -1,12 +1,45 @@
+var arrayClassi = null;
+
 
 function populate(listaClassi) {
-    console.log(listaClassi);
+    arrayClassi = listaClassi;
+}
+
+/**
+ *
+ * @param nomeClasse
+ * @returns {Array|*} Studenti della classe
+ */
+function getStudentsOfClass(nomeClasse){
+    for (var i=0; i < arrayClassi.length; i++){
+        if(arrayClassi[i].nome == nomeClasse){
+            return arrayClassi[i].alunni;
+        }
+    }
+}
+
+/**
+ *
+ * @param nomeClasse
+ * @returns {number} Media voti della classe
+ */
+function getMediaOfClass(nomeClasse){
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
+    var somma = 0;
+    for (var i=0; i < studentiOfClass.length; i++){
+        somma = somma + studentiOfClass[i].media_voti;
+    }
+    return somma/studentiOfClass.length;
+}
+
+
+function getNumberOfDifferentNationalityOfClass(nomeClasse){
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
 
 }
 
 
-
-$( document ).ready(function() {
+$(document).ready(function() {
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
@@ -66,7 +99,7 @@ $( document ).ready(function() {
                     if (arrayStudenti[j] !== undefined) {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
-                        var cf = arrayStudenti[j].cf
+                        var cf = arrayStudenti[j].cf;
 
                         var tag;
 
@@ -93,7 +126,7 @@ $( document ).ready(function() {
                         var tooltip = $('<span/>')
                             .addClass('tooltiptext')
                             .html('Media : ' + arrayStudenti[j].media_voti)
-                            .appendTo(container)
+                            .appendTo(container);
 
                         var li = $('<li/>')
                             .html(container)
