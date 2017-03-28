@@ -39,3 +39,6 @@ studenti: [
 | Nazionalità   | Non max e min numero di alunni con stessa nazionalità per classe. Max numero di diverse nazionalità per classe                                                                                                                                                                                                                      | Sì        |
 | Ripetenti     | Del Marconi o di altre classe. Vanno distribuiti in base al numero di bocciati nelle prime. Poi si andrà ad intervenire a mano  per esigenze particolari del cdc. Gli studenti ripetenti delle medie non vengono considerati(per ragioni di probabilità perchè verranno inglobati probabilmente nel voto di uscita 6 dalle medie).  | -         |
 
+
+#Info
+- Chiedere a Girelli come funziona l'input su spaggiari

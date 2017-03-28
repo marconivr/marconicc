@@ -83,7 +83,6 @@ function moveStudent(cf,fromClass,toClass){
             for (var j=0; i < alunni.length; j++ ){
                 if (alunni[j].cf == cf){
                     removedStudent = alunni.splice( alunni.indexOf(alunni[j]) , 1 )[0];
-
                     if(debug){
                         console.log(fromClass);
                         console.log(getNumberOfFemmineOfClass(fromClass));
