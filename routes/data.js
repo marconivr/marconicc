@@ -122,7 +122,6 @@ module.exports = function (app, passport, upload) {
                             res.send(classi);
                         }
                     });
-
                 } else {
                     query.getClassi(function (err, results) {
                         if (err)
@@ -140,14 +139,7 @@ module.exports = function (app, passport, upload) {
                                         listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse), alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
                                             alg.setListaClassi(listaClassi);
-                                            alg.fixClassi(function (){
-                                                if (err){
-                                                    console.log(err);
-                                                }
-                                                else {
-
-                                                }
-                                            });
+                                            //alg.fixClassi();
                                             res.send(listaClassi);
                                         }
                                     }

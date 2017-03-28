@@ -10,11 +10,11 @@ var async = require('async');
 var settings = {
     max_al: 28,
     min_al: 25,
-    fem: 3,
+    fem: 4,
     max_str: 5,
-    iniziale:3,
+    iniziale: 3,
     stessa_pr: 4,
-    nazionalita:4,
+    nazionalita: 4,
     media_min: 7.5,
     media_max: 8.0,
     boc: 2,
@@ -59,21 +59,22 @@ module.exports = {
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
+                            },
+                            function (callback) {
+                                console.log("Qui ci entro");
+                                module.exports.fixClassiConCallback(function () {
+                                    callback();
+                                });
+                                console.log("Finisce il ci entro");
                             }
-                             ,
-                             function (callback) {
-                                 module.exports.fixClassi(function () {
-                                 callback();
-                             });
-                             }
                         ],
                         function (err, succes) {
                             if (err) {
                                 console.log(err);
                             } else {
                                 /*
-                                * qui di potrebbe ordinare anche la prima volta che vengono generate random le classi;
-                                */
+                                 * qui di potrebbe ordinare anche la prima volta che vengono generate random le classi;
+                                 */
 
                                 callback(err, listaClassi);
                             }
@@ -96,7 +97,7 @@ module.exports = {
             for (i = 0; i < num; i++) {
                 //assing class name
                 var classe = "1" + String.fromCharCode(65 + i);
-                listaClassi.push({nome: classe, proprieta:{}, alunni: []});
+                listaClassi.push({nome: classe, proprieta: {}, alunni: []});
             }
         }
         callback();
@@ -139,7 +140,14 @@ module.exports = {
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
         var bocciati = module.exports.countBocciati(listaAlunniClasse);
         var iniziale = module.exports.countTutteInizialiCognome(listaAlunniClasse);
-        return {alunni:nAlunni, femmine:nFemmine, media:media.toFixed(2), residenza:residenza, bocciati:bocciati, iniziale:iniziale};
+        return {
+            alunni: nAlunni,
+            femmine: nFemmine,
+            media: media.toFixed(2),
+            residenza: residenza,
+            bocciati: bocciati,
+            iniziale: iniziale
+        };
     },
 
     /**
@@ -183,10 +191,10 @@ module.exports = {
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
-    fixClassi: function (callback) {
+    fixClassi: function () {//viva i moldavi e i rumeni due per classe
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            for (var prop in objproblem){
+            for (var prop in objproblem) {
                 switch (prop) {
                     case "alunni":
                         module.exports.fixAlunni(listaClassi[k].nome);
@@ -212,11 +220,15 @@ module.exports = {
             }
         }
         module.exports.printProprieta();
+    },
+
+    fixClassiConCallback: function (callback) {
+        module.exports.fixClassi();
         callback();
     },
 
-    printProprieta: function (){
-        for(var k=0; k < listaClassi.length;k++){
+    printProprieta: function () {
+        for (var k = 0; k < listaClassi.length; k++) {
             console.log(listaClassi[k].proprieta);
         }
     },
@@ -230,7 +242,7 @@ module.exports = {
      * @param classe
      * @returns {Number}
      */
-    countFemmine : function (listaAlunniClasse) {
+    countFemmine: function (listaAlunniClasse) {
         var cont = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
@@ -246,7 +258,7 @@ module.exports = {
      * @param listaAlunniClasse
      * @returns {number}
      */
-    mediaClasse : function (listaAlunniClasse) {
+    mediaClasse: function (listaAlunniClasse) {
         var somma = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
@@ -262,13 +274,13 @@ module.exports = {
      * @param listaAlunniClasse
      * @returns {Array}
      */
-    countStranieri : function (listaAlunniClasse) {
+    countStranieri: function (listaAlunniClasse) {
         var listaNaz = [];
         var count = 0;
         var ris = [];
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            if (listaAlunniClasse[i].nazionalita.toLowerCase() != "italiana"){
+            if (listaAlunniClasse[i].nazionalita.toLowerCase() != "italiana") {
                 listaNaz.push(listaAlunniClasse[i].cap_provenienza);
             }
         }
@@ -278,8 +290,8 @@ module.exports = {
             if (listaNaz[i] == listaNaz[i + 1]) {
                 count++;
             } else {
-                if (count > settings.nazionalita){
-                    ris.push({nazionalita:listaNaz[i], num: count + 1});
+                if (count > settings.nazionalita) {
+                    ris.push({nazionalita: listaNaz[i], num: count + 1});
                 }
                 count = 0;
             }
@@ -292,9 +304,9 @@ module.exports = {
      * @param listaAlunniClasse
      * @returns {number}
      */
-    countBocciati : function (listaAlunniClasse) {
+    countBocciati: function (listaAlunniClasse) {
         var count = 0;
-        var data  = "";
+        var data = "";
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             data = listaAlunniClasse[i].data_di_nascita;
@@ -316,7 +328,7 @@ module.exports = {
      * @param classe oggetto classe
      * @returns {Array}
      */
-    countStessaResid : function (listaAlunniClasse) {
+    countStessaResid: function (listaAlunniClasse) {
         var listaCap = [];
         var count = 0;
         var ris = [];
@@ -329,8 +341,8 @@ module.exports = {
             if (listaCap[i] == listaCap[i + 1]) {
                 count++;
             } else {
-                if (count > settings.stessa_pr){
-                    ris.push({cap:listaCap[i], num: count + 1});
+                if (count > settings.stessa_pr) {
+                    ris.push({cap: listaCap[i], num: count + 1});
                 }
                 count = 0;
             }
@@ -357,8 +369,8 @@ module.exports = {
             if (listaIniz[i] == listaIniz[i + 1]) {
                 count++;
             } else {
-                if (count > settings.iniziale){
-                    ris.push({lettera:listaIniz[i], num: count + 1});
+                if (count > settings.iniziale) {
+                    ris.push({lettera: listaIniz[i], num: count + 1});
                 }
                 count = 0;
             }
@@ -366,7 +378,7 @@ module.exports = {
         return ris;
     },
 
-    countStessaInizialeCognome:function (listaAlunniClasse, carattere) {
+    countStessaInizialeCognome: function (listaAlunniClasse, carattere) {
         var count = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
@@ -377,32 +389,32 @@ module.exports = {
         return ris;
     },
 
-    problemiClasse: function(listaAlunniClasse){
+    problemiClasse: function (listaAlunniClasse) {
         var ris = {};
         var proprieta = module.exports.createProprietaClasse(listaAlunniClasse);
-        for (var prop in proprieta){
+        for (var prop in proprieta) {
             switch (prop) {
                 case "alunni":
-                    if (proprieta.alunni < settings.min_al || proprieta.alunni > settings.max_al){
+                    if (proprieta.alunni < settings.min_al || proprieta.alunni > settings.max_al) {
                         ris["alunni"] = proprieta.alunni;
                     }
                 case "femmine":
-                    if (proprieta.femmine != 0 && proprieta.femmine < settings.fem){
+                    if (proprieta.femmine != 0 && proprieta.femmine < settings.fem) {
                         ris["femmine"] = proprieta.femmine;
                     }
                     break;
                 case "stranieri":
-                    if (proprieta.nazionalita < settings.nazionalita){
+                    if (proprieta.nazionalita < settings.nazionalita) {
                         ris["nazionalita"] = proprieta.nazionalita;
                     }
                     break;
                 case "bocciati":
-                    if (proprieta.bocciati > settings.boc){
+                    if (proprieta.bocciati > settings.boc) {
                         ris["bocciati"] = proprieta.bocciati;
                     }
                     break;
                 case "residenza":
-                    if(proprieta.residenza.length != 0) {
+                    if (proprieta.residenza.length != 0) {
                         for (var k = 0; k < proprieta.residenza.length; k++) {
                             if (proprieta.residenza > settings.stessa_pr) {
                                 ris["residenza"] = proprieta.residenza;
@@ -411,22 +423,22 @@ module.exports = {
                     }
                     break;
                 case "media":
-                    if (proprieta.media < settings.media_min){
+                    if (proprieta.media < settings.media_min) {
                         ris["media"] = proprieta.media;
                     }
                     break;
                 case "iniziale":
-                    /*
-                    if (proprieta.iniziale.length != 0) {
-                        ris["iniziale"] = [];
-                        for (var k = 0; k < proprieta.iniziale.length; k++) {
-                            if (proprieta.iniziale[k].num > settings.iniziale) {
-                                ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
-                            }
-                        }
-                    }
-                    break;
-                    */
+                /*
+                 if (proprieta.iniziale.length != 0) {
+                 ris["iniziale"] = [];
+                 for (var k = 0; k < proprieta.iniziale.length; k++) {
+                 if (proprieta.iniziale[k].num > settings.iniziale) {
+                 ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
+                 }
+                 }
+                 }
+                 break;
+                 */
 
             }
         }
@@ -438,12 +450,12 @@ module.exports = {
      * fixFemmine inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
      * @param nomeClasse
      */
-    fixFemmine: function(nomeClasse) {
+    fixFemmine: function (nomeClasse) {
         var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
-        for (var i = 0; i < listaClassi.length; i++){
-            if (listaClassi[i].nome != nomeClasse){
-                if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) &&  module.exports.countFemmine(listaClassi[i].alunni) != 0
-                    && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem){
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
+                if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
+                    && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem) {
                     var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
                     if (objfem != null) {
                         module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
@@ -452,7 +464,7 @@ module.exports = {
                 }
             }
             //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
-            if (module.exports.countFemmine(classe.alunni) == settings.fem){
+            if (module.exports.countFemmine(classe.alunni) == settings.fem) {
                 break;
             }
         }
@@ -462,12 +474,12 @@ module.exports = {
      * fixAlunni inserisce nella classe param gli alunni di altre classi che non rispettano i vincoli.
      * @param nomeClasse
      */
-    fixAlunni: function(nomeClasse) {
+    fixAlunni: function (nomeClasse) {
         var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
-        for (var i = 0; i < listaClassi.length; i++){
-            if (listaClassi[i].nome != nomeClasse){
-                if (classe.alunni.length < settings.min_al){
-                    if (listaClassi[i].alunni.length > settings.min_al){
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
+                if (classe.alunni.length < settings.min_al) {
+                    if (listaClassi[i].alunni.length > settings.min_al) {
                         var objal = module.exports.searchAlunno("sesso", "M", listaClassi[i].alunni);
                         if (objal != null) {
                             module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
@@ -475,16 +487,16 @@ module.exports = {
                     }
                 }
             }
-            if (classe.alunni.length == settings.min_al){
+            if (classe.alunni.length == settings.min_al) {
                 break;
             }
         }
     },
 
-    fixMedia: function(nomeClasse) {
+    fixMedia: function (nomeClasse) {
         var classe = module.exports.findClasseFromString(nomeClasse);
-        for (var i = 0; i < listaClassi.length; i++){
-            if (listaClassi[i].nome != nomeClasse){
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
                 var mCl = module.exports.mediaClasse(listaClassi[i].alunni);
                 if (mCl >= settings.media_max || (mCl < listaClassi[i].media_max && mCl > settings.media_min)) {
                     var objal = module.exports.searchAlunno("media_voti", module.exports.determinaVoto(classe), listaClassi[i].alunni);
@@ -494,16 +506,16 @@ module.exports = {
                     }
                 }
             }
-            if (classe.alunni.media >= settings.media_min){
+            if (classe.alunni.media >= settings.media_min) {
                 break;
             }
         }
     },
 
-    fixIniziale: function(nomeClasse, caratteri){
+    fixIniziale: function (nomeClasse, caratteri) {
         var classe = module.exports.findClasseFromString(nomeClasse);
-        for (var i = 0; i < listaClassi.length; i++){
-            if (listaClassi[i].nome != nomeClasse){
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
                 for (var k = 0; k < caratteri.length; k++) {
                     if (module.exports.countStessaInizialeCognome(classe.alunni, caratteri[k]) > settings.iniziale) {
 
@@ -511,7 +523,7 @@ module.exports = {
                 }
 
             }
-            if (classe.alunni.media >= settings.media_min){
+            if (classe.alunni.media >= settings.media_min) {
                 break;
             }
         }
@@ -522,30 +534,29 @@ module.exports = {
      * @param objclasse
      * @returns {number}
      */
-    determinaVoto: function(objclasse){
+    determinaVoto: function (objclasse) {
         var eN = 0;
-        for (i = 0; i < objclasse.alunni.length; i++){
+        for (i = 0; i < objclasse.alunni.length; i++) {
             eN += objclasse.alunni[i].media_voti;
         }
         var voto = Math.round((settings.media_min * (objclasse.alunni.length + 1)) - eN);
-        if(voto > 10 ){
+        if (voto > 10) {
             return 10;
         }
         return voto;
     },
 
 
-
-    searchAlunno: function(attr, valore, listaAlunniClasse) {
-        for (var i = 0; i < listaAlunniClasse.length; i++){
-            if (listaAlunniClasse[i][attr] == valore){
+    searchAlunno: function (attr, valore, listaAlunniClasse) {
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i][attr] == valore) {
                 return listaAlunniClasse[i];
             }
         }
         return null;
     },
 
-    setListaClassi: function (lC){
+    setListaClassi: function (lC) {
         listaClassi = lC;
     },
 
@@ -556,13 +567,13 @@ module.exports = {
      * @param nuovaCl
      * @param salvoDB flag che salva sul DB
      */
-    addStundentInClss: function (objAl, veccCl, nuovaCl, salvoDB){
+    addStundentInClss: function (objAl, veccCl, nuovaCl, salvoDB) {
         veccCl = module.exports.classeIsObj(veccCl);
         nuovaCl = module.exports.classeIsObj(nuovaCl);
         veccCl.alunni.splice(veccCl.alunni.indexOf(objAl, 0), 1);
         nuovaCl.alunni.push(objAl);
 
-        if (salvoDB){
+        if (salvoDB) {
             query.removeAlunnoInClass(veccCl.nome, objAl.cf);
             query.insertAlunnoInClass(nuovaCl.nome, objAl.cf);
         }
@@ -580,7 +591,7 @@ module.exports = {
      * @param nomeClasse stringa
      * @returns {object}
      */
-    findClasseFromString : function(nomeClasse) {
+    findClasseFromString: function (nomeClasse) {
         for (var k = 0; k < listaClassi.length; k++) {
             if (listaClassi[k].nome == nomeClasse) {
                 return listaClassi[k];
@@ -609,20 +620,24 @@ module.exports = {
      * removeUndefinedDaArray rimuove un undefined da un array
      * @param array
      */
-    removeUndefinedDaArray: function(array){
-        return array.filter(function(n){ return n != undefined });
+    removeUndefinedDaArray: function (array) {
+        return array.filter(function (n) {
+            return n != undefined
+        });
     },
 
     /**
      * removeNullFromArray rimuove un undefined da un array
      * @param array
      */
-    removeNullFromArray: function(array){
-        return array.filter(function(n){ return n != null });
+    removeNullFromArray: function (array) {
+        return array.filter(function (n) {
+            return n != null
+        });
     },
 
-    removeNullFromListaClassi: function(){
-        for (var i = 0; i < listaClassi; i++){
+    removeNullFromListaClassi: function () {
+        for (var i = 0; i < listaClassi; i++) {
             listaClassi[i] = module.exports.removeNullFromArray(listaClassi[i]);
         }
     }
