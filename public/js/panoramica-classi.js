@@ -246,6 +246,7 @@ $(document).ready(function() {
                             .appendTo(div);
 
                         //menu
+
                     }
                 }
 
@@ -263,7 +264,7 @@ $(document).ready(function() {
                     data: {
                         labels: ["Sei", "Sette", "Otto", "Nove", "Dieci"],
                         datasets: [{
-                            label: 'studenti',
+                            label: 'classe' + nomeClasse,
                             data: [
                                 jsonVoti[6],
                                 jsonVoti[7],
@@ -272,23 +273,49 @@ $(document).ready(function() {
                                 jsonVoti[10]
                             ],
                             backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
+                                '#FFCDD2',
+                                '#F0F4C3',
+                                '#D4E157',
+                                '#AED581',
+                                '#2E7D32'
                             ],
                             borderColor: [
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
+                                '#EF5350',
+                                '#E6EE9C',
+                                '#CDDC39',
+                                '#8BC34A',
+                                '#2E7D32'
                             ],
-                            borderWidth: 1
-                        }]
+                            borderWidth: 1,
+                            stack: 1
+                        },
+                            {
+                                label: 'Totali',
+                                data: [
+                                    8,
+                                    8,
+                                    2,
+                                    1,
+                                    10
+                                ],
+                                backgroundColor: [
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0'
+                                ],
+                                borderColor: [
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD'
+                                ],
+                                borderWidth: 1,
+                                stack: 2
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
