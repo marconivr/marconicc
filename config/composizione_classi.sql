@@ -33,18 +33,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `tag` (
   `tag` varchar(25) PRIMARY KEY,
-  `descrizione` text,
-  `peso` int(11) DEFAULT NULL
+  `descrizione` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dump dei dati per la tabella `tag`
 --
 
-INSERT INTO `tag` (`tag`, `descrizione`, `peso`) VALUES
-('DSA', 'non so', 1),
-('dbms', 'non so', 2),
-('DCD', 'non so', 3);
+INSERT INTO `tag` (`tag`, `descrizione`) VALUES
+('DSA', 'non so'),
+('dbms', 'non so'),
+('DCD', 'non so');
 
 
 --
@@ -92,16 +91,15 @@ CREATE TABLE `amici` (
 DROP TABLE IF EXISTS `impostazioni`;
 CREATE TABLE `impostazioni` (
   `id` int(11) NOT NULL,
+  `min_alunni` int(11) DEFAULT NULL,
   `max_alunni` int(11) DEFAULT NULL,
   `max_femmine` int(11) DEFAULT NULL,
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
+  `stessa_iniziale` int(11) DEFAULT NULL,
   `media_min` float DEFAULT NULL,
   `media_max` float DEFAULT NULL,
-  `bocciati` int(11) DEFAULT NULL,
-  `anno_scolastico` varchar(25) NOT NULL,
-  `descrizione` varchar(255) NOT NULL,
-  `classe_futura` varchar(25) NOT NULL
+  `bocciati` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

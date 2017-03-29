@@ -217,6 +217,8 @@ pip-log.txt
 ######
 .idea/
 
+public/bower_components
+
 ##############
 # node modules
 ##############

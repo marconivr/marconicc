@@ -95,7 +95,7 @@ module.exports = function (app, passport) {
     });
 
     app.get('/update-tag', function (req, res) {
-        
+
         query.updateTagFromCF(function (err, results) {
             if (err)
                 throw err;
@@ -130,19 +130,7 @@ module.exports = function (app, passport) {
             pageTitle: "Panoramica classi   "
         })
     });
-
-    app.get('/panoramica-classi-v2', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        res.render('panoramica-classi-v2.ejs',{
-            pageTitle: "Panoramica classi-v2"
-        })
-    });
-
-    app.get('/panoramica-classi-v3', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        res.render('panoramica-classi-v3.ejs',{
-            pageTitle: "Panoramica classi-v3"
-        })
-    });
-
+    
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         query.getNumerOfStudentiPrima(function (err, results) {
             if (err)
@@ -192,6 +180,30 @@ module.exports = function (app, passport) {
             pageTitle: " settings ",
             data:JSON.stringify(dataInSettings)
         });
+    });
+
+    /**
+     * inserisce il tag
+     */
+    app.get('/insert-tag', function (req, res) {
+        query.insertTag(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        },req.query.tag, req.query.descrizione);
+    });
+
+    /**
+     * inserisce il tag
+     */
+    app.get('/insert-settings', function (req, res) {
+        query.insertSettings(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
     });
 
     function setValueOfArrayForSettings(rows, key) {

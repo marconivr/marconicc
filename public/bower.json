@@ -17,10 +17,7 @@
   ],
   "dependencies": {
     "jquery": ">=1.8",
-    "dragular": "^4.3.1",
-    "angular": "1.6.1",
     "semantic": "semantic-ui#^2.2.6",
-    "angular-datatables": "^2.1.0",
-    "angular-ui-sortable": "^0.16.1"
+    "chart.js": "^2.5.0"
   }
 }

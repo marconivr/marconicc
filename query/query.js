@@ -72,6 +72,26 @@ module.exports = {
         });
     },
 
+    insertTag: function (callback, tag, descrizione) {
+        connection.query("INSERT INTO tag VALUES (?, ?)", [tag, descrizione], function (err, row) {
+            if (err) {
+                console.log(err);
+            }else {
+                callback(err, row, tag, descrizione);
+            }
+        });
+    },
+
+    insertSettings: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
+        connection.query("INSERT INTO impostazioni VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+            if (err) {
+                console.log(err);
+            }else {
+                callback(err, row, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati);
+            }
+        });
+    },
+
     getClassi: function (callback) {
         connection.query("SELECT * from classi", function (err, rows) {
             if (err) {
@@ -122,6 +142,17 @@ module.exports = {
     getStudentiPrima: function (callback) {
 
         connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getStudentiTerza: function (callback) {
+
+        connection.query("SELECT * from alunni WHERE classe_futura = 'TERZA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -218,9 +249,14 @@ module.exports = {
      * @param identifier
      */
     getAllStudents: function (callback,identifier) {
+        var nome, cognome;
+        nome = identifier.split(" ")[1];
+        cognome = identifier.split(" ")[0];
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? ",[ "%" + identifier + "%", "%" +  identifier + "%" ], function (err, rows) {
+            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?)",
+            ["%" + identifier + "%", "%" + identifier + "%", "%" + cognome + nome + "%"],
+            function (err, rows) {
             if (err) {
                 throw err;
             } else {

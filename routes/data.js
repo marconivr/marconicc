@@ -78,17 +78,50 @@ module.exports = function (app, passport, upload) {
     /**
      * Elenco studenti in tabella
      */
+    
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
-        query.getStudentiPrima(function (err, results) {
-            if (err)
-                console.log(err);
-            else
-                res.render('studenti.ejs', {
-                    user: req.user,
-                    pageTitle: " Studenti ",
-                    studentsData: results
+
+        async.parallel({
+            studentiPrima: function (callback) {
+                query.getStudentiPrima(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'prima': results})
                 });
+            },
+
+            studentiTerza: function (callback) {
+                query.getStudentiTerza(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'terza': results})
+                });
+            }
+        }, function (err, results) {
+            res.render('studenti.ejs', {
+                user: req.user,
+                pageTitle: " Studenti ",
+                studentsPrima: results.studentiPrima.prima,
+                studentsTerza: results.studentiTerza.terza
+            });
+
         });
+        //
+        // //TODO:ASYNC
+        //  query.getStudentiPrima(function (err, results) {
+        //      if (err)
+        //         console.log(err);
+        //      else
+        //          res.render('studenti.ejs', {
+        //              user: req.user,
+        //              pageTitle: " Studenti ",
+        //              studentsData: results
+        //          });
+        //  });
+
+
     });
 
 
