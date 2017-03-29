@@ -19,17 +19,15 @@
                 <tr>
                     <th>cognome</th>
                     <th>nome</th>
+                    <th>matricola</th>
                     <th>cf</th>
                     <th>sesso</th>
                     <th>data_di_nascita</th>
                     <th>stato</th>
+                    <th>nazionalita</th>
                     <th>cap_provenienza</th>
-                    <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
                     <th>anno_scolastico</th>
-                    <th>anno</th>
-                    <th>cod_cat</th>
                     <th>media_voti</th>
-                    <th>classe_futura</th>
 
                 </tr>
                 </thead>
@@ -39,6 +37,7 @@
                 <tr>
                     <td><%= studentsPrima[i].cognome %></td>
                     <td><%= studentsPrima[i].nome %></td>
+                    <td><%= studentsPrima[i].matricola %></td>
                     <td><%= studentsPrima[i].cf %></td>
                     <td><%= studentsPrima[i].sesso %></td>
 
@@ -52,13 +51,10 @@
                     <td><%= finalDate %></td>
 
                     <td><%= studentsPrima[i].stato %></td>
+                    <td><%= studentsPrima[i].nazionalita %></td>
                     <td><%= studentsPrima[i].cap_provenienza %></td>
-                    <!--<td><%= studentsPrima[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
                     <td><%= studentsPrima[i].anno_scolastico %></td>
-                    <td><%= studentsPrima[i].anno %></td>
-                    <td><%= studentsPrima[i].cod_cat %></td>
                     <td><%= studentsPrima[i].media_voti %></td>
-                    <td><%= studentsPrima[i].classe_futura %></td>
 
                 </tr>
                 <% } %>
@@ -68,18 +64,15 @@
                 <tr>
                     <th>cognome</th>
                     <th>nome</th>
+                    <th>matricola</th>
                     <th>cf</th>
                     <th>sesso</th>
                     <th>data_di_nascita</th>
                     <th>stato</th>
+                    <th>nazionalita</th>
                     <th>cap_provenienza</th>
-                    <!-- <th>scelta_indirizzo</th> ho commentato perchè troppo largo e rompe layout tabella -->
                     <th>anno_scolastico</th>
-                    <th>anno</th>
-                    <th>cod_cat</th>
                     <th>media_voti</th>
-                    <th>classe_futura</th>
-
                 </tr>
                 </tfoot>
             </table>

@@ -22,15 +22,106 @@ function getStudentsOfClass(nomeClasse){
 }
 
 /**
+ * ritorna un json con il numero dei voti di una classe
+ * {
+ *  6:3,
+ *  7:8,
+ *  8:2....}
+ * @param className
+ */
+function numerOfVotiOfClass(className) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            var jsonVoti = {};
+            for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
+                var voto = arrayClassi[i].alunni[studenti].media_voti;
+                if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+                else jsonVoti[voto] = jsonVoti[voto] + 1;
+            }
+        }
+    }
+    return jsonVoti;
+}
+
+
+/**
+ * ritorna un json con il numero dei voti di tutte le prime
+ * {
+ *  6:3,
+ *  7:8,
+ *  8:2....}
+ */
+function totalVotiOfAllClass() {
+    var jsonVoti = {};
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
+            var voto = arrayClassi[i].alunni[studenti].media_voti;
+            if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+            else jsonVoti[voto] = jsonVoti[voto] + 1;
+        }
+
+    }
+    return jsonVoti;
+}
+
+
+/**
+ * return the number of student of one class
+ * @param className
+ */
+function totalNumberOfStudent(className) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            return arrayClassi[i].alunni.length;
+        }
+    }
+}
+
+/**
+ * return the number of student of all class
+ */
+function totalNumberOfStudentOfAllClass() {
+    var number = 0;
+    for (var i = 0; i < arrayClassi.length; i++) {
+        number += arrayClassi[i].alunni.length;
+    }
+    return number;
+}
+
+/**
  * update a chart for a specific chart
  * @param newClassName
  */
 function updateChart(newClassName) {
+    //TODO:APPROSIAMRE LE PERCENTUALI
     //json voti di questa classe
+    var jsonVoti = numerOfVotiOfClass(newClassName);
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
     var myChart = chartArray[position];
+    var numerOfStudent = totalNumberOfStudent(newClassName);
+    myChart.data.datasets[0].data[0] = (jsonVoti[6] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[1] = (jsonVoti[7] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[2] = (jsonVoti[8] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[3] = (jsonVoti[9] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[4] = (jsonVoti[10] / numerOfStudent) * 100;
+    myChart.update();
+}
 
-    myChart.data.datasets[0].data[0] = 10;
+/**
+ * refresh the data in the old chart
+ * @param oldClassName
+ */
+function refreshChart(oldClassName) {
+    //json voti di questa classe
+    var jsonVoti = numerOfVotiOfClass(oldClassName);
+    var position = oldClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
+    var myChart = chartArray[position];
+    var numerOfStudent = totalNumberOfStudent(newClassName);
+    myChart.data.datasets[0].data[0] = (jsonVoti[6] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[1] = (jsonVoti[7] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[2] = (jsonVoti[8] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[3] = (jsonVoti[9] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[4] = (jsonVoti[10] / numerOfStudent) * 100;
     myChart.update();
 }
 
@@ -155,7 +246,8 @@ function moveStudent(cf,fromClass,toClass){
 
     //updateStatistiche(fromClass);
     //updateStatistiche(toClass);
-    updateChart(toClass)
+    updateChart(toClass);//refresh the new chart
+    refreshChart(fromClass); //refresh the old chart
 
 }
 
@@ -176,6 +268,7 @@ $(document).ready(function() {
         success: function (listaClassi) {
 
             populate(listaClassi);
+
 
 
             for (var i = 0; i < listaClassi.length; i++) {
@@ -217,7 +310,7 @@ $(document).ready(function() {
                     'class': 'contenitoreClasse ui vertical menu'
                 }).appendTo(wrapperClasse);
 
-
+                jsonVoti = {};
                 for (var j = 0; j < arrayStudenti.length; j++) {
                     if (arrayStudenti[j] !== undefined) {
                         var cognomeStudente = arrayStudenti[j].cognome;
@@ -239,7 +332,7 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 50
+                                    'height': 40
                                 })
                                 .addClass('ui segment tooltip guys ')
                                 .attr('id', cf)
@@ -249,7 +342,7 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 50
+                                    'height': 40
                                 })
                                 .addClass('ui segment tooltip girl ')
                                 .attr('id', cf)
@@ -271,10 +364,16 @@ $(document).ready(function() {
                         var li = $('<li/>')
                             .html(container)
                             .appendTo(div);
+
+                        //menu
+
                     }
                 }
 
-                //CHART DATA//
+                var jsonVotiPrima = totalVotiOfAllClass();
+                var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
+
+                // CHART DATA //
                 var chart = $('<canvas/>',
                     {
                         'id': nomeClasse,
@@ -288,7 +387,7 @@ $(document).ready(function() {
                     data: {
                         labels: ["Sei", "Sette", "Otto", "Nove", "Dieci"],
                         datasets: [{
-                            label: 'studenti',
+                            label: 'classe' + nomeClasse,
                             data: [
                                 jsonVoti[6],
                                 jsonVoti[7],
@@ -297,30 +396,59 @@ $(document).ready(function() {
                                 jsonVoti[10]
                             ],
                             backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
+                                '#FFCDD2',
+                                '#F0F4C3',
+                                '#D4E157',
+                                '#AED581',
+                                '#2E7D32'
                             ],
                             borderColor: [
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
+                                '#EF5350',
+                                '#E6EE9C',
+                                '#CDDC39',
+                                '#8BC34A',
+                                '#2E7D32'
                             ],
-                            borderWidth: 1
-                        }]
+                            borderWidth: 1,
+                            stack: 1
+                        },
+                            {
+                                label: 'Totali',
+                                data: [
+                                    (jsonVotiPrima[6] / totalNumberOfAllClass) * 100,
+                                    (jsonVotiPrima[7] / totalNumberOfAllClass) * 100,
+                                    (jsonVotiPrima[8] / totalNumberOfAllClass) * 100,
+                                    (jsonVotiPrima[9] / totalNumberOfAllClass) * 100,
+                                    (jsonVotiPrima[10] / totalNumberOfAllClass) * 100
+                                ],
+                                backgroundColor: [
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0'
+                                ],
+                                borderColor: [
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD'
+                                ],
+                                borderWidth: 1,
+                                stack: 2
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
                         scales: {
                             yAxes: [{
                                 ticks: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                    steps: 10,
+                                    stepValue: 6,
+                                    max: 60
                                 }
                             }]
                         }
@@ -344,7 +472,7 @@ $(document).ready(function() {
                     moveStudent(cf_studente_spostato,classFrom,classTo);
 
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
-                    //updateChart(newList.attr('id'));
+
 
                 },
                 change: function (event, ui) {
