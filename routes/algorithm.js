@@ -59,24 +59,20 @@ module.exports = {
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
-                            },
+                            }/*,
                             function (callback) {
                                 console.log("Qui ci entro");
                                 module.exports.fixClassiConCallback(function () {
                                     callback();
                                 });
                                 console.log("Finisce il ci entro");
-                            }
+                            }*/
                         ],
                         function (err, succes) {
                             if (err) {
                                 console.log(err);
                             } else {
-                                /*
-                                 * qui di potrebbe ordinare anche la prima volta che vengono generate random le classi;
-                                 */
-
-                                callback(err, listaClassi);
+                                callback(err);
                             }
                         }
                     )
@@ -197,7 +193,7 @@ module.exports = {
             for (var prop in objproblem) {
                 switch (prop) {
                     case "alunni":
-                        module.exports.fixAlunni(listaClassi[k].nome);
+                        //module.exports.fixAlunni(listaClassi[k].nome);
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
@@ -212,12 +208,13 @@ module.exports = {
 
                         break;
                     case "media":
-                        module.exports.fixMedia(listaClassi[k].nome);
+                        //module.exports.fixMedia(listaClassi[k].nome);
                         break;
                     case "iniziale":
                         break;
                 }
             }
+            listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
         }
         module.exports.printProprieta();
     },
@@ -455,13 +452,19 @@ module.exports = {
         for (var i = 0; i < listaClassi.length; i++) {
             if (listaClassi[i].nome != nomeClasse) {
                 if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
-                    && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem) {
+                    && module.exports.countFemmine(listaClassi[i].alunni) <= settings.fem) {
                     var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
                     if (objfem != null) {
                         module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
-                        console.log(objfem.nome + ", classe prov " + listaClassi[i].nome + ", classe fin " + classe.nome);
                     }
                 }
+                /*else if(module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
+                    && module.exports.countFemmine(classe.alunni) < settings.fem){
+                    var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
+                    if (objfem != null) {
+                        module.exports.addStundentInClss(objfem, classe,listaClassi[i], true);
+                    }
+                }*/
             }
             //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
             if (module.exports.countFemmine(classe.alunni) == settings.fem) {
@@ -558,6 +561,10 @@ module.exports = {
 
     setListaClassi: function (lC) {
         listaClassi = lC;
+    },
+
+    getListaClassi: function () {
+        return listaClassi;
     },
 
     /**

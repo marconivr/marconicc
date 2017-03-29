@@ -78,7 +78,7 @@ module.exports = function (app, passport, upload) {
     /**
      * Elenco studenti in tabella
      */
-    
+
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
 
         async.parallel({
@@ -139,11 +139,11 @@ module.exports = function (app, passport, upload) {
             else {
                 nAlunniCompCl = results[0].result;
                 if (nAlunniCompCl == 0) {
-                    alg.main("prima", function (err, results) {
+                    alg.main("prima", function (err) {
                         if (err)
                             console.log(err);
                         else {
-                            classi = results;
+                            classi = alg.getListaClassi();
                             query.insertClassi(alg.listaNomiClassi());
                             for (var i = 0; i < classi.length; i++) {
                                 for (var k = 0; k < classi[i].alunni.length; k++) {
@@ -152,7 +152,8 @@ module.exports = function (app, passport, upload) {
                                     }
                                 }
                             }
-                            res.send(classi);
+                            alg.fixClassi();
+                            res.send(alg.getListaClassi());
                         }
                     });
                 } else {
@@ -169,11 +170,11 @@ module.exports = function (app, passport, upload) {
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
-                                        listaClassi.push({nome: nomeCl, alunni: listaAlunniClasse});
+                                        listaClassi.push({nome: nomeCl, proprieta:null,  alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
                                             alg.setListaClassi(listaClassi);
-                                            //alg.fixClassi();
-                                            res.send(listaClassi);
+                                            alg.fixClassi();
+                                            res.send(alg.getListaClassi());
                                         }
                                     }
                                 });
