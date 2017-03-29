@@ -5,8 +5,8 @@
 <style>
     .contenitoreClasse{
         list-style-type: none;
-        padding-left: 0px;
         padding-right: 10px !important;
+
     }
 
     .contenitoreClasse li{
@@ -19,9 +19,9 @@
         width: 120px;
     }
     .wrapperClasse{
-        //border: 1px solid #eee;
         display:table-cell;
-        //padding-right:45px;
+        border: 1px solid #eee;
+        border-radius: .28571429rem;
     }
 
     #wrapper {
@@ -81,6 +81,10 @@
         opacity: 1;
     }
 
+
+    .ui.menu{
+        border: none;
+    }
 </style>
 
 
@@ -90,7 +94,7 @@
 
     <div id="contenitoreCheckBox" class="item">
         <div id="checkBox" class="ui toggle checkbox">
-            <input type="checkbox" name="public">
+            <input id="check" type="checkbox" name="public">
             <label>Mostra tutte</label>
         </div>
     </div>

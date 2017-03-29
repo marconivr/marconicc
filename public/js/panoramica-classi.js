@@ -1,5 +1,4 @@
 var debug = true;
-var jsonVoti = {};
 var chartArray = [];
 var arrayClassi = null;
 
@@ -40,7 +39,7 @@ function numerOfVotiOfClass(className) {
             }
         }
     }
-    if (debug) {
+    if (false) {
         console.log(className + "json voti->");
         console.log(jsonVoti);
     }
@@ -92,6 +91,10 @@ function totalNumberOfStudentOfAllClass() {
     return number;
 }
 
+function approxNum(num){
+    return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+}
+
 /**
  * update a chart for a specific chart
  * @param newClassName
@@ -103,11 +106,11 @@ function updateChart(newClassName) {
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
     var myChart = chartArray[position];
     var numerOfStudent = totalNumberOfStudent(newClassName);
-    myChart.data.datasets[0].data[0] = (jsonVoti[6] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[1] = (jsonVoti[7] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[2] = (jsonVoti[8] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[3] = (jsonVoti[9] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[4] = (jsonVoti[10] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
     myChart.update();
 }
 
@@ -121,11 +124,11 @@ function refreshChart(oldClassName) {
     var position = oldClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
     var myChart = chartArray[position];
     var numerOfStudent = totalNumberOfStudent(oldClassName);
-    myChart.data.datasets[0].data[0] = (jsonVoti[6] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[1] = (jsonVoti[7] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[2] = (jsonVoti[8] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[3] = (jsonVoti[9] / numerOfStudent) * 100;
-    myChart.data.datasets[0].data[4] = (jsonVoti[10] / numerOfStudent) * 100;
+    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
     myChart.update();
 }
 
@@ -141,7 +144,7 @@ function getMediaOfClass(nomeClasse){
         somma = somma + studentiOfClass[i].media_voti;
     }
     var result =  somma/studentiOfClass.length;
-    var approx = result.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+    var approx = approxNum(result);
     return approx;
 }
 
@@ -266,7 +269,7 @@ $(document).ready(function() {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>'
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <h4 class="title">Distribuzione Voti</h4> '
                 }).appendTo(wrapperClasse);
 
 
@@ -363,15 +366,15 @@ $(document).ready(function() {
                 var myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ["Sei", "Sette", "Otto", "Nove", "Dieci"],
+                        labels: ["6", "7", "8", "9", "10"],
                         datasets: [{
                             label: 'classe' + nomeClasse,
                             data: [
-                                (jsonVoti[6] / numerOfStudent) * 100,
-                                (jsonVoti[7] / numerOfStudent) * 100,
-                                (jsonVoti[8] / numerOfStudent) * 100,
-                                (jsonVoti[9] / numerOfStudent) * 100,
-                                (jsonVoti[10] / numerOfStudent) * 100
+                                approxNum((jsonVoti[6] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[7] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[8] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[9] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[10] / numerOfStudent) * 100)
                             ],
                             backgroundColor: [
                                 '#FFCDD2',
@@ -393,11 +396,11 @@ $(document).ready(function() {
                             {
                                 label: 'Totali',
                                 data: [
-                                    (jsonVotiPrima[6] / totalNumberOfAllClass) * 100,
-                                    (jsonVotiPrima[7] / totalNumberOfAllClass) * 100,
-                                    (jsonVotiPrima[8] / totalNumberOfAllClass) * 100,
-                                    (jsonVotiPrima[9] / totalNumberOfAllClass) * 100,
-                                    (jsonVotiPrima[10] / totalNumberOfAllClass) * 100
+                                    approxNum((jsonVotiPrima[6] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[7] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[8] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[9] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[10] / totalNumberOfAllClass) * 100)
                                 ],
                                 backgroundColor: [
                                     '#E0E0E0',
@@ -426,7 +429,9 @@ $(document).ready(function() {
                                     beginAtZero: true,
                                     steps: 10,
                                     stepValue: 6,
-                                    max: 60
+                                    max: 60,
+                                    callback: function(value){return value+ "%"   //mettendo questa per la percentuale il voto viene messo orizzontale
+                                    }
                                 }
                             }]
                         }
