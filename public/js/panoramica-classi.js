@@ -1,8 +1,123 @@
-$( document ).ready(function() {
-    var classi_json = null;
-    var jsonVoti = {};
-    var chartArray = [];
+var debug = true;
+var classi_json = null;
+var jsonVoti = {};
+var chartArray = [];
+var arrayClassi = null;
 
+
+function populate(listaClassi) {
+    arrayClassi = listaClassi;
+}
+
+/**
+ *
+ * @param nomeClasse
+ * @returns {Array|*} Studenti della classe
+ */
+function getStudentsOfClass(nomeClasse){
+    for (var i=0; i < arrayClassi.length; i++){
+        if(arrayClassi[i].nome == nomeClasse){
+            return arrayClassi[i].alunni;
+        }
+    }
+}
+
+/**
+ *
+ * @param nomeClasse
+ * @returns {number} Media voti della classe
+ */
+function getMediaOfClass(nomeClasse){
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
+    var somma = 0;
+    for (var i=0; i < studentiOfClass.length; i++){
+        somma = somma + studentiOfClass[i].media_voti;
+    }
+    var result =  somma/studentiOfClass.length;
+    var approx = result.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+    return approx;
+}
+
+
+function getNumberOfDifferentNationalityOfClass(nomeClasse){
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
+    //todo manca nel db il campo nazionalità
+}
+
+
+function getNumberOfFemmineOfClass(nomeClasse) {
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
+    var count = 0;
+    for (var i=0; i < studentiOfClass.length; i++){
+        if (studentiOfClass[i].sesso == "F"){
+            count += 1;
+        }
+    }
+    return count;
+}
+
+function getStudentsNumber(nomeClasse) {
+    var studentiOfClass = getStudentsOfClass(nomeClasse);
+    return studentiOfClass.length;
+}
+
+function updateStatistiche(classe){
+
+    $('#femmine'+classe).text("femmine: " + getNumberOfFemmineOfClass(classe));
+    $('#media'+classe).text("media: " + getMediaOfClass(classe));
+    $('#alunni'+classe).text("alunni: " + getStudentsNumber(classe));
+
+}
+
+/**
+ *
+ * @param cf
+ * @param fromClass
+ * @param toClass
+ */
+function moveStudent(cf,fromClass,toClass){
+
+    var removedStudent = null;
+
+    for (var i=0; i < arrayClassi.length; i++){
+        if (arrayClassi[i].nome == fromClass){
+            var alunni = arrayClassi[i].alunni;
+            for (var j=0; i < alunni.length; j++ ){
+                if (alunni[j].cf == cf){
+                    removedStudent = alunni.splice( alunni.indexOf(alunni[j]) , 1 )[0];
+                    if(debug){
+                        console.log(fromClass);
+                        console.log(getNumberOfFemmineOfClass(fromClass));
+                        console.log(arrayClassi[i].alunni);
+                    }
+
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    for (var i=0; i < arrayClassi.length; i++){
+        if (arrayClassi[i].nome == toClass){
+            arrayClassi[i].alunni.push(removedStudent);
+
+            if(debug) {
+                console.log(toClass);
+                console.log(getNumberOfFemmineOfClass(toClass));
+                console.log(arrayClassi[i].alunni);
+            }
+
+            break;
+        }
+    }
+
+    updateStatistiche(fromClass);
+    updateStatistiche(toClass);
+
+}
+
+$(document).ready(function() {
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
@@ -18,6 +133,7 @@ $( document ).ready(function() {
 
         success: function (listaClassi) {
 
+            populate(listaClassi);
             classi_json = listaClassi;
 
             for (var i = 0; i < listaClassi.length; i++) {
@@ -51,7 +167,6 @@ $( document ).ready(function() {
                         //     .text(prop + ": " + proprieta[prop])
                         //     .appendTo(settingClasse);
                         //<canvas id="myChart" width="400" height="400"></canvas>
-
                     }
                 }
 
@@ -65,6 +180,7 @@ $( document ).ready(function() {
                     if (arrayStudenti[j] !== undefined) {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
+                        var cf = arrayStudenti[j].cf;
                         var cf = arrayStudenti[j].cf;
 
                         //sezione per sapere quanti studenti hanno un determinato voto
@@ -105,7 +221,7 @@ $( document ).ready(function() {
                         var tooltip = $('<span/>')
                             .addClass('tooltiptext')
                             .html('Media : ' + arrayStudenti[j].media_voti)
-                            .appendTo(container)
+                            .appendTo(container);
 
                         var li = $('<li/>')
                             .html(container)
@@ -177,6 +293,11 @@ $( document ).ready(function() {
                 },
                 stop: function (event, ui) {
                     var cf_studente_spostato = item[0].childNodes[0].id;
+                    var classFrom = oldList.attr('id');
+                    var classTo = newList.attr('id');
+
+                    moveStudent(cf_studente_spostato,classFrom,classTo);
+
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
                     updateChart(newList.attr('id'));
 
@@ -261,8 +382,3 @@ $( document ).ready(function() {
     }
 
 });
-
-
-
-
-
