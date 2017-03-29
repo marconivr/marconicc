@@ -1,5 +1,7 @@
 $( document ).ready(function() {
     var classi_json = null;
+    var jsonVoti = {};
+    var chartArray = [];
 
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
@@ -41,14 +43,18 @@ $( document ).ready(function() {
                 }).appendTo(wrapperClasse);
 
 
+
                 for (var prop in proprieta) {
                     if (prop != "residenza" && prop != "iniziale" && prop != "bocciati") {
-                        var li = $('<div/>')
-                            .addClass("ui info message")
-                            .text(prop + ": " + proprieta[prop])
-                            .appendTo(settingClasse);
+                        // var li = $('<div/>')
+                        //     .addClass("ui info message")
+                        //     .text(prop + ": " + proprieta[prop])
+                        //     .appendTo(settingClasse);
+                        //<canvas id="myChart" width="400" height="400"></canvas>
+
                     }
                 }
+
 
                 var div = $('<ul/>', {
                     'class': 'contenitoreClasse ui vertical menu'
@@ -59,21 +65,34 @@ $( document ).ready(function() {
                     if (arrayStudenti[j] !== undefined) {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
-                        var cf = arrayStudenti[j].cf
+                        var cf = arrayStudenti[j].cf;
+
+                        //sezione per sapere quanti studenti hanno un determinato voto
+                        var voto = arrayStudenti[j].media_voti;
+                        if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+                        else jsonVoti[voto] = jsonVoti[voto] + 1;
+
 
                         var tag;
-
+                        var anagrafica = $('<p/>')
+                            .html(cognomeStudente + " " + nomeStudente);
                         if (arrayStudenti[j].sesso == "M") {
-                            var container = $('<div/>')
-                                .addClass('ui segment tooltip guys')
+                            var container = $('<div/>',
+                                {
+                                    'width': $('.contenitoreClasse ').width()
+                                })
+                                .addClass('ui segment tooltip guys ')
                                 .attr('id', cf)
-                                .html(cognomeStudente + " " + nomeStudente)
+                                .html(anagrafica)
                         }
                         else {
-                            var container = $('<div/>')
-                                .addClass('ui segment tooltip girl')
+                            var container = $('<div/>',
+                                {
+                                    'width': $('.contenitoreClasse ').width()
+                                })
+                                .addClass('ui segment tooltip girl ')
                                 .attr('id', cf)
-                                .html(cognomeStudente + " " + nomeStudente)
+                                .html(anagrafica)
                         }
                         if (arrayStudenti[j].tag != null) {
                             //contiene il tag studente
@@ -93,6 +112,61 @@ $( document ).ready(function() {
                             .appendTo(div);
                     }
                 }
+
+                //CHART DATA//
+                var chart = $('<canvas/>',
+                    {
+                        'id': nomeClasse,
+                        'width': 200,
+                        'height': 200
+                    }).appendTo(settingClasse);
+
+                var ctx = chart;
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Sei", "Sette", "Otto", "Nove", "Dieci"],
+                        datasets: [{
+                            label: 'studenti',
+                            data: [
+                                jsonVoti[6],
+                                jsonVoti[7],
+                                jsonVoti[8],
+                                jsonVoti[9],
+                                jsonVoti[10]
+                            ],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+                chartArray.push(myChart);
+
             }
             var oldList, newList, item;
             $(".contenitoreClasse").sortable({
@@ -104,6 +178,8 @@ $( document ).ready(function() {
                 stop: function (event, ui) {
                     var cf_studente_spostato = item[0].childNodes[0].id;
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
+                    updateChart(newList.attr('id'));
+
                 },
                 change: function (event, ui) {
                     if (ui.sender) newList = ui.placeholder.parent().parent();
@@ -112,6 +188,8 @@ $( document ).ready(function() {
         },
         type: 'GET'
     });
+
+    //TODO:FIX WHEN SELECTION WIDTH
 
 
     /**
@@ -170,4 +248,21 @@ $( document ).ready(function() {
 
     });
 
+    /**
+     * update a chart for a specific chart
+     * @param newClassName
+     */
+    function updateChart(newClassName) {
+        var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter TODO:CONTROLLA
+        var myChart = chartArray[position];
+
+        myChart.data.datasets[0].data[0] = 10;
+        myChart.update();
+    }
+
 });
+
+
+
+
+
