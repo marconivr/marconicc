@@ -20,7 +20,7 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 }
-var priority = {}
+var priority =["numero_alunni", "104", "107", "amici", "ripetenti", "femmine", "nazionalita", "CAP", "Voto"];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -183,6 +183,14 @@ module.exports = {
      }
      */
 
+    isInsideProblemiClasse: function(objproblem, strPriority){
+        for (var prop in objproblem){
+            if (prop == strPriority ){
+                return true;
+            }
+        }
+        return false;
+    },
 
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
@@ -190,28 +198,30 @@ module.exports = {
     fixClassi: function () {//viva i moldavi e i rumeni due per classe
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            for (var prop in objproblem) {
-                switch (prop) {
-                    case "alunni":
-                        //module.exports.fixAlunni(listaClassi[k].nome);
-                        break;
-                    case "femmine":
-                        module.exports.fixFemmine(listaClassi[k].nome);
-                        break;
-                    case "stranieri":
+            for (k = priority.length; k >= 0; k--){
+                if (module.exports.isInsideProblemiClasse(objproblem, priority[k])){
+                    switch (prop) {
+                        case "alunni":
+                            module.exports.fixAlunni(listaClassi[k].nome);
+                            break;
+                        case "femmine":
+                            module.exports.fixFemmine(listaClassi[k].nome);
+                            break;
+                        case "stranieri":
 
-                        break;
-                    case "bocciati":
+                            break;
+                        case "bocciati":
 
-                        break;
-                    case "stessa_provenienza":
+                            break;
+                        case "stessa_provenienza":
 
-                        break;
-                    case "media":
-                        //module.exports.fixMedia(listaClassi[k].nome);
-                        break;
-                    case "iniziale":
-                        break;
+                            break;
+                        case "media":
+                            module.exports.fixMedia(listaClassi[k].nome);
+                            break;
+                        case "iniziale":
+                            break;
+                    }
                 }
             }
             listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
@@ -458,13 +468,6 @@ module.exports = {
                         module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
                     }
                 }
-                /*else if(module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
-                    && module.exports.countFemmine(classe.alunni) < settings.fem){
-                    var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
-                    if (objfem != null) {
-                        module.exports.addStundentInClss(objfem, classe,listaClassi[i], true);
-                    }
-                }*/
             }
             //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
             if (module.exports.countFemmine(classe.alunni) == settings.fem) {
@@ -481,12 +484,10 @@ module.exports = {
         var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
         for (var i = 0; i < listaClassi.length; i++) {
             if (listaClassi[i].nome != nomeClasse) {
-                if (classe.alunni.length < settings.min_al) {
-                    if (listaClassi[i].alunni.length > settings.min_al) {
-                        var objal = module.exports.searchAlunno("sesso", "M", listaClassi[i].alunni);
-                        if (objal != null) {
-                            module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
-                        }
+                if (classe.alunni.length < settings.min_al && listaClassi[i].alunni.length > settings.min_al) {
+                    var objal = module.exports.searchAlunno("sesso", "M", listaClassi[i].alunni);
+                    if (objal != null) {
+                        module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
                     }
                 }
             }
@@ -504,7 +505,6 @@ module.exports = {
                 if (mCl >= settings.media_max || (mCl < listaClassi[i].media_max && mCl > settings.media_min)) {
                     var objal = module.exports.searchAlunno("media_voti", module.exports.determinaVoto(classe), listaClassi[i].alunni);
                     if (objal != null) {
-                        console.log(objal.nome + ", " + objal.cognome);
                         module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
                     }
                 }
