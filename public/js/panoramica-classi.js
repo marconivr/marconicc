@@ -22,6 +22,19 @@ function getStudentsOfClass(nomeClasse){
 }
 
 /**
+ * update a chart for a specific chart
+ * @param newClassName
+ */
+function updateChart(newClassName) {
+    //json voti di questa classe
+    var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
+    var myChart = chartArray[position];
+
+    myChart.data.datasets[0].data[0] = 10;
+    myChart.update();
+}
+
+/**
  *
  * @param nomeClasse
  * @returns {number} Media voti della classe
@@ -191,11 +204,14 @@ $(document).ready(function() {
 
                         var tag;
                         var anagrafica = $('<p/>')
+                            .addClass('roboto')
                             .html(cognomeStudente + " " + nomeStudente);
+
                         if (arrayStudenti[j].sesso == "M") {
                             var container = $('<div/>',
                                 {
-                                    'width': $('.contenitoreClasse ').width()
+                                    'width': $('.contenitoreClasse ').width(),
+                                    'height': 50
                                 })
                                 .addClass('ui segment tooltip guys ')
                                 .attr('id', cf)
@@ -204,7 +220,8 @@ $(document).ready(function() {
                         else {
                             var container = $('<div/>',
                                 {
-                                    'width': $('.contenitoreClasse ').width()
+                                    'width': $('.contenitoreClasse ').width(),
+                                    'height': 50
                                 })
                                 .addClass('ui segment tooltip girl ')
                                 .attr('id', cf)
@@ -299,7 +316,7 @@ $(document).ready(function() {
                     moveStudent(cf_studente_spostato,classFrom,classTo);
 
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
-                    updateChart(newList.attr('id'));
+                    //updateChart(newList.attr('id'));
 
                 },
                 change: function (event, ui) {
@@ -369,17 +386,6 @@ $(document).ready(function() {
 
     });
 
-    /**
-     * update a chart for a specific chart
-     * @param newClassName
-     */
-    function updateChart(newClassName) {
-        //json voti di questa classe
-        var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
-        var myChart = chartArray[position];
 
-        myChart.data.datasets[0].data[0] = 10;
-        myChart.update();
-    }
 
 });
