@@ -108,20 +108,6 @@ module.exports = function (app, passport, upload) {
             });
 
         });
-        //
-        // //TODO:ASYNC
-        //  query.getStudentiPrima(function (err, results) {
-        //      if (err)
-        //         console.log(err);
-        //      else
-        //          res.render('studenti.ejs', {
-        //              user: req.user,
-        //              pageTitle: " Studenti ",
-        //              studentsData: results
-        //          });
-        //  });
-
-
     });
 
 
