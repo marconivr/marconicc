@@ -39,10 +39,11 @@ function numerOfVotiOfClass(className) {
             }
         }
     }
-    if (false) {
+    if (debug) {
         console.log(className + "json voti->");
         console.log(jsonVoti);
     }
+    if (jsonVoti[10] === undefined)jsonVoti[10] = 0;
     return jsonVoti;
 }
 
