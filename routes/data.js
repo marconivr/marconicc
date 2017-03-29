@@ -78,7 +78,7 @@ module.exports = function (app, passport, upload) {
     /**
      * Elenco studenti in tabella
      */
-    
+
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
 
         async.parallel({
@@ -169,11 +169,11 @@ module.exports = function (app, passport, upload) {
                                         console.log(err);
                                     else {
                                         listaAlunniClasse = results;
-                                        listaClassi.push({nome: nomeCl, alunni: listaAlunniClasse});
+                                        listaClassi.push({nome: nomeCl, proprieta:null,  alunni: listaAlunniClasse});
                                         if (counter  == listaNomiClassi.length - 1){
                                             alg.setListaClassi(listaClassi);
-                                            //alg.fixClassi();
-                                            res.send(listaClassi);
+                                            alg.fixClassi();
+                                            res.send(alg.getListaClassi());
                                         }
                                     }
                                 });

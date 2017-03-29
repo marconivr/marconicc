@@ -59,24 +59,20 @@ module.exports = {
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
-                            },
+                            }/*,
                             function (callback) {
                                 console.log("Qui ci entro");
                                 module.exports.fixClassiConCallback(function () {
                                     callback();
                                 });
                                 console.log("Finisce il ci entro");
-                            }
+                            }*/
                         ],
                         function (err, succes) {
                             if (err) {
                                 console.log(err);
                             } else {
-                                /*
-                                 * qui di potrebbe ordinare anche la prima volta che vengono generate random le classi;
-                                 */
-
-                                callback(err, listaClassi);
+                                callback(err);
                             }
                         }
                     )
@@ -197,7 +193,7 @@ module.exports = {
             for (var prop in objproblem) {
                 switch (prop) {
                     case "alunni":
-                        module.exports.fixAlunni(listaClassi[k].nome);
+                        //module.exports.fixAlunni(listaClassi[k].nome);
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
@@ -212,12 +208,13 @@ module.exports = {
 
                         break;
                     case "media":
-                        module.exports.fixMedia(listaClassi[k].nome);
+                        //module.exports.fixMedia(listaClassi[k].nome);
                         break;
                     case "iniziale":
                         break;
                 }
             }
+            listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
         }
         module.exports.printProprieta();
     },
@@ -459,7 +456,6 @@ module.exports = {
                     var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
                     if (objfem != null) {
                         module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
-                        console.log(objfem.nome + ", classe prov " + listaClassi[i].nome + ", classe fin " + classe.nome);
                     }
                 }
             }
@@ -558,6 +554,10 @@ module.exports = {
 
     setListaClassi: function (lC) {
         listaClassi = lC;
+    },
+
+    getListaClassi: function () {
+        return listaClassi;
     },
 
     /**
