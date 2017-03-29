@@ -375,6 +375,7 @@ $(document).ready(function() {
      * @param newClassName
      */
     function updateChart(newClassName) {
+        //json voti di questa classe
         var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
         var myChart = chartArray[position];
 
