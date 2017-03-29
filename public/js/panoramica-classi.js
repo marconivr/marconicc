@@ -182,7 +182,6 @@ $(document).ready(function() {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
-                        var cf = arrayStudenti[j].cf;
 
                         //sezione per sapere quanti studenti hanno un determinato voto
                         var voto = arrayStudenti[j].media_voti;
