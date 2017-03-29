@@ -40,6 +40,10 @@ function numerOfVotiOfClass(className) {
             }
         }
     }
+    if (debug) {
+        console.log(className + "json voti->");
+        console.log(jsonVoti);
+    }
     return jsonVoti;
 }
 
@@ -116,7 +120,7 @@ function refreshChart(oldClassName) {
     var jsonVoti = numerOfVotiOfClass(oldClassName);
     var position = oldClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
     var myChart = chartArray[position];
-    var numerOfStudent = totalNumberOfStudent(newClassName);
+    var numerOfStudent = totalNumberOfStudent(oldClassName);
     myChart.data.datasets[0].data[0] = (jsonVoti[6] / numerOfStudent) * 100;
     myChart.data.datasets[0].data[1] = (jsonVoti[7] / numerOfStudent) * 100;
     myChart.data.datasets[0].data[2] = (jsonVoti[8] / numerOfStudent) * 100;
@@ -289,10 +293,10 @@ $(document).ready(function() {
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
 
-                        //sezione per sapere quanti studenti hanno un determinato voto
-                        var voto = arrayStudenti[j].media_voti;
-                        if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
-                        else jsonVoti[voto] = jsonVoti[voto] + 1;
+                        // //sezione per sapere quanti studenti hanno un determinato voto
+                        // var voto = arrayStudenti[j].media_voti;
+                        // if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+                        // else jsonVoti[voto] = jsonVoti[voto] + 1;
 
 
                         var tag;
@@ -343,6 +347,8 @@ $(document).ready(function() {
                 }
 
                 var jsonVotiPrima = totalVotiOfAllClass();
+                var jsonVoti = numerOfVotiOfClass(nomeClasse);
+                var numerOfStudent = totalNumberOfStudent(nomeClasse);
                 var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
 
                 // CHART DATA //
@@ -361,11 +367,11 @@ $(document).ready(function() {
                         datasets: [{
                             label: 'classe' + nomeClasse,
                             data: [
-                                jsonVoti[6],
-                                jsonVoti[7],
-                                jsonVoti[8],
-                                jsonVoti[9],
-                                jsonVoti[10]
+                                (jsonVoti[6] / numerOfStudent) * 100,
+                                (jsonVoti[7] / numerOfStudent) * 100,
+                                (jsonVoti[8] / numerOfStudent) * 100,
+                                (jsonVoti[9] / numerOfStudent) * 100,
+                                (jsonVoti[10] / numerOfStudent) * 100
                             ],
                             backgroundColor: [
                                 '#FFCDD2',
