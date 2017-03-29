@@ -26,6 +26,7 @@ function getStudentsOfClass(nomeClasse){
  * @param newClassName
  */
 function updateChart(newClassName) {
+
     //json voti di questa classe
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
     var myChart = chartArray[position];
@@ -211,7 +212,7 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 50
+                                    'height': 40
                                 })
                                 .addClass('ui segment tooltip guys ')
                                 .attr('id', cf)
@@ -221,7 +222,7 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 50
+                                    'height': 40
                                 })
                                 .addClass('ui segment tooltip girl ')
                                 .attr('id', cf)
@@ -243,6 +244,8 @@ $(document).ready(function() {
                         var li = $('<li/>')
                             .html(container)
                             .appendTo(div);
+
+                        //menu
                     }
                 }
 
