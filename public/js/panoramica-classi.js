@@ -1,5 +1,4 @@
 var debug = true;
-var classi_json = null;
 var jsonVoti = {};
 var chartArray = [];
 var arrayClassi = null;
@@ -61,13 +60,14 @@ function getStudentsNumber(nomeClasse) {
     return studentiOfClass.length;
 }
 
-function updateStatistiche(classe){
-
-    $('#femmine'+classe).text("femmine: " + getNumberOfFemmineOfClass(classe));
-    $('#media'+classe).text("media: " + getMediaOfClass(classe));
-    $('#alunni'+classe).text("alunni: " + getStudentsNumber(classe));
-
-}
+//
+// function updateStatistiche(classe){
+//
+//     $('#femmine'+classe).text("femmine: " + getNumberOfFemmineOfClass(classe));
+//     $('#media'+classe).text("media: " + getMediaOfClass(classe));
+//     $('#alunni'+classe).text("alunni: " + getStudentsNumber(classe));
+//
+// }
 
 /**
  *
@@ -112,8 +112,9 @@ function moveStudent(cf,fromClass,toClass){
         }
     }
 
-    updateStatistiche(fromClass);
-    updateStatistiche(toClass);
+    //updateStatistiche(fromClass);
+    //updateStatistiche(toClass);
+    updateChart(toClass)
 
 }
 
@@ -134,7 +135,7 @@ $(document).ready(function() {
         success: function (listaClassi) {
 
             populate(listaClassi);
-            classi_json = listaClassi;
+
 
             for (var i = 0; i < listaClassi.length; i++) {
 
@@ -374,7 +375,7 @@ $(document).ready(function() {
      * @param newClassName
      */
     function updateChart(newClassName) {
-        var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter TODO:CONTROLLA
+        var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
         var myChart = chartArray[position];
 
         myChart.data.datasets[0].data[0] = 10;
