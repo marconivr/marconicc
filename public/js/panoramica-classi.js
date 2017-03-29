@@ -43,7 +43,13 @@ function numerOfVotiOfClass(className) {
         console.log(className + "json voti->");
         console.log(jsonVoti);
     }
+
+    if (jsonVoti[6] === undefined)jsonVoti[6] = 0;
+    if (jsonVoti[7] === undefined)jsonVoti[7] = 0;
+    if (jsonVoti[8] === undefined)jsonVoti[8] = 0;
+    if (jsonVoti[9] === undefined)jsonVoti[9] = 0;
     if (jsonVoti[10] === undefined)jsonVoti[10] = 0;
+
     return jsonVoti;
 }
 
@@ -172,14 +178,13 @@ function getStudentsNumber(nomeClasse) {
     return studentiOfClass.length;
 }
 
-//
-// function updateStatistiche(classe){
-//
-//     $('#femmine'+classe).text("femmine: " + getNumberOfFemmineOfClass(classe));
-//     $('#media'+classe).text("media: " + getMediaOfClass(classe));
-//     $('#alunni'+classe).text("alunni: " + getStudentsNumber(classe));
-//
-// }
+function displayAllClass() {
+    //visualizzo tutto lasciando in selezione gli altri item
+    $('.wrapperClasse').show();
+    //attivo il doppio scroll che non funziona bisognerà indagare
+    $('#wrapper').doubleScroll();
+
+}
 
 /**
  *
@@ -463,6 +468,8 @@ $(document).ready(function() {
                     if (ui.sender) newList = ui.placeholder.parent().parent();
                 }
             }).disableSelection();
+
+            displayAllClass();
         },
         type: 'GET'
     });
@@ -495,8 +502,6 @@ $(document).ready(function() {
                     //visualizzo l'elemento
                     $('#' + classe).show();
                 }
-                //attivo il doppio scroll che non funziona bisognerà indagare
-                $('#wrapper').doubleScroll();
             }
         });
 
@@ -505,8 +510,7 @@ $(document).ready(function() {
      */
     $('#checkBox').checkbox({
         onChecked: function () {
-            //visualizzo tutto lasciando in selezione gli altri item
-            $('.wrapperClasse').show();
+            displayAllClass();
         },
         onUnchecked: function () {
             //prima di pulire tutto controllo gli item già attivi per portare alla situazione precendente le visualizzazioni
