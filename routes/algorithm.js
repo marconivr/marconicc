@@ -452,19 +452,19 @@ module.exports = {
         for (var i = 0; i < listaClassi.length; i++) {
             if (listaClassi[i].nome != nomeClasse) {
                 if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
-                    && module.exports.countFemmine(listaClassi[i].alunni) < settings.fem) {
+                    && module.exports.countFemmine(listaClassi[i].alunni) <= settings.fem) {
                     var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
                     if (objfem != null) {
                         module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
                     }
                 }
-                else if(module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
+                /*else if(module.exports.countFemmine(classe.alunni) < module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
                     && module.exports.countFemmine(classe.alunni) < settings.fem){
                     var objfem = module.exports.searchAlunno("sesso", "F", classe.alunni);
                     if (objfem != null) {
                         module.exports.addStundentInClss(objfem, classe,listaClassi[i], true);
                     }
-                }
+                }*/
             }
             //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
             if (module.exports.countFemmine(classe.alunni) == settings.fem) {
