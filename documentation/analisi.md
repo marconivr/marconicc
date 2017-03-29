@@ -9,6 +9,7 @@ studenti: [
     {
      nome: nome,
      cognome: cognome,
+     data_di_nascita,
      cf: codice fiscale,
      sesso: (M / F),
      cap: codice postale,
@@ -16,7 +17,8 @@ studenti: [
      voto: per le prime voto di uscita dalle medie, per le seconde la media dei voti,
      condotta: sicuramente si avrà per le terze per le prime è da definire.(In caso verrà lasciato o nullo o verrà attribuito un valore uguale per tutti per lasciare gli algoritmi uguali),
      nazionalita: nazionalità,
-     desiderata: cf dello studente voluto,
+     desiderata1: cf dello studente voluto,
+     desiderata2: cf dello studente voluto,
      bs: (true/false) sia se è bes o sia se è dsa. Nei dati che ci vengono forniti non sappiamo la differenza,
      104: (true/false) alunni disabili,
      certificazione_linguistica: (true/false) gli alunni che hanno questa certificazione quindi con campo true vengono considerati NON madrelingua
