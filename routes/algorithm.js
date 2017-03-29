@@ -11,7 +11,7 @@ var settings = {
     max_al: 28,
     min_al: 25,
     fem: 4,
-    max_str: 5,
+    max_str: 7,
     iniziale: 3,
     stessa_pr: 4,
     nazionalita: 4,
@@ -136,13 +136,15 @@ module.exports = {
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
         var bocciati = module.exports.countBocciati(listaAlunniClasse);
         var iniziale = module.exports.countTutteInizialiCognome(listaAlunniClasse);
+        var stranieri = module.exports.countStranieri(listaAlunniClasse);
         return {
             alunni: nAlunni,
             femmine: nFemmine,
             media: media.toFixed(2),
             residenza: residenza,
             bocciati: bocciati,
-            iniziale: iniziale
+            iniziale: iniziale,
+            stranieri: stranieri
         };
     },
 
@@ -193,13 +195,14 @@ module.exports = {
             for (var prop in objproblem) {
                 switch (prop) {
                     case "alunni":
-                        //module.exports.fixAlunni(listaClassi[k].nome);
+                        module.exports.fixAlunni(listaClassi[k].nome);
                         break;
                     case "femmine":
                         module.exports.fixFemmine(listaClassi[k].nome);
+                        module.exports.fixAlunni(listaClassi[k].nome);
                         break;
                     case "stranieri":
-
+                        module.exports.fixStranieri(listaClassi[k].nome);
                         break;
                     case "bocciati":
 
@@ -226,6 +229,7 @@ module.exports = {
 
     printProprieta: function () {
         for (var k = 0; k < listaClassi.length; k++) {
+            console.log("Proprieta");
             console.log(listaClassi[k].proprieta);
         }
     },
@@ -266,34 +270,20 @@ module.exports = {
     },
 
     /**
-     * countStranieri ritorna una lista di oggetti come nell es. {nazionalita:"brasiliano", num:3}
+     * countStranieri ritorna il numero di stranieri
      * se superano il valore max impostato in settings
      * @param listaAlunniClasse
      * @returns {Array}
      */
     countStranieri: function (listaAlunniClasse) {
-        var listaNaz = [];
         var count = 0;
-        var ris = [];
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i].nazionalita.toLowerCase() != "italiana") {
-                listaNaz.push(listaAlunniClasse[i].cap_provenienza);
-            }
-        }
-        listaNaz.sort();
-
-        for (var i = 0; i < listaNaz.length - 1; i++) {
-            if (listaNaz[i] == listaNaz[i + 1]) {
                 count++;
-            } else {
-                if (count > settings.nazionalita) {
-                    ris.push({nazionalita: listaNaz[i], num: count + 1});
-                }
-                count = 0;
             }
         }
-        return ris;
+        return count;
     },
 
     /**
@@ -401,8 +391,8 @@ module.exports = {
                     }
                     break;
                 case "stranieri":
-                    if (proprieta.nazionalita < settings.nazionalita) {
-                        ris["nazionalita"] = proprieta.nazionalita;
+                    if (proprieta.stranieri > settings.max_str) {
+                        ris["stranieri"] = proprieta.stranieri;
                     }
                     break;
                 case "bocciati":
@@ -439,7 +429,6 @@ module.exports = {
 
             }
         }
-
         return ris;
     },
 
@@ -515,6 +504,25 @@ module.exports = {
         }
     },
 
+    fixStranieri: function(nomeClasse){
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
+                if (module.exports.countStranieri(classe.alunni) > settings.max_str
+                    && module.exports.countStranieri(listaClassi[i].alunni) < settings.max_str) {
+                    var objal = module.exports.searchStraniero(listaClassi[i].alunni);
+                    console.log("Alunno " + objal.nome + " Da " + classe.nome + " a " + listaClassi[i].nome);
+                    if (objal != null) {
+                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
+                    }
+                }
+            }
+            if (module.exports.countStranieri(classe.alunni) == settings.max_str) {
+                break;
+            }
+        }
+    },
+
     fixIniziale: function (nomeClasse, caratteri) {
         var classe = module.exports.findClasseFromString(nomeClasse);
         for (var i = 0; i < listaClassi.length; i++) {
@@ -553,6 +561,16 @@ module.exports = {
     searchAlunno: function (attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i][attr] == valore) {
+                return listaAlunniClasse[i];
+            }
+        }
+        return null;
+    },
+
+    searchStraniero: function (listaAlunniClasse) {
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i]["nazionalita"].toLowerCase() != "italiana") {
+                console.log("Nazionalita " + listaAlunniClasse[i]["nazionalita"])
                 return listaAlunniClasse[i];
             }
         }
