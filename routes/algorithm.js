@@ -59,14 +59,7 @@ module.exports = {
                                 module.exports.popolaListaClassiRandom("prima", function () {
                                     callback();
                                 });
-                            }/*,
-                            function (callback) {
-                                console.log("Qui ci entro");
-                                module.exports.fixClassiConCallback(function () {
-                                    callback();
-                                });
-                                console.log("Finisce il ci entro");
-                            }*/
+                            }
                         ],
                         function (err, succes) {
                             if (err) {
@@ -166,7 +159,7 @@ module.exports = {
     fixClassi: function () {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            for (j = priority.length; j >= 0; j--) {
+            for (var j = priority.length; j >= 0; j--) {
                 if (module.exports.isInsideProblemiClasse(objproblem, priority[j])) {
                     switch (priority[j]) {
                         case "alunni":
