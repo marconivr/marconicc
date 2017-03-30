@@ -223,11 +223,6 @@ module.exports = {
         }
     },
 
-    fixClassiConCallback: function (callback) {
-        module.exports.fixClassi();
-        callback();
-    },
-
     printProprieta: function () {
         for (var k = 0; k < listaClassi.length; k++) {
             console.log("Proprieta");
