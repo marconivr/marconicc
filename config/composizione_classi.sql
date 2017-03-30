@@ -65,6 +65,7 @@ CREATE TABLE  `alunni` (
  `legge_107` VARCHAR(25) NULL,
  `legge_104` VARCHAR(25) NULL,
  `scelta_indirizzo` VARCHAR( 50 ) NOT NULL ,
+ `classe_precedente` VARCHAR( 5 ) NULL ,
  `anno_scolastico` VARCHAR( 15 ) NOT NULL ,
  `anno` VARCHAR( 4 ) NOT NULL ,
  `cod_cat` VARCHAR( 10 ) NOT NULL ,
