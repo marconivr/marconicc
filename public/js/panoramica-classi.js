@@ -1,5 +1,4 @@
 var debug = true;
-var jsonVoti = {};
 var chartArray = [];
 var arrayClassi = null;
 
@@ -22,15 +21,121 @@ function getStudentsOfClass(nomeClasse){
 }
 
 /**
+ * ritorna un json con il numero dei voti di una classe
+ * {
+ *  6:3,
+ *  7:8,
+ *  8:2....}
+ * @param className
+ */
+function numerOfVotiOfClass(className) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            var jsonVoti = {};
+            for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
+                var voto = arrayClassi[i].alunni[studenti].media_voti;
+                if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+                else jsonVoti[voto] = jsonVoti[voto] + 1;
+            }
+        }
+    }
+    if (debug) {
+        console.log(className + "json voti->");
+        console.log(jsonVoti);
+    }
+
+    if (jsonVoti[6] === undefined)jsonVoti[6] = 0;
+    if (jsonVoti[7] === undefined)jsonVoti[7] = 0;
+    if (jsonVoti[8] === undefined)jsonVoti[8] = 0;
+    if (jsonVoti[9] === undefined)jsonVoti[9] = 0;
+    if (jsonVoti[10] === undefined)jsonVoti[10] = 0;
+
+    return jsonVoti;
+}
+
+
+/**
+ * ritorna un json con il numero dei voti di tutte le prime
+ * {
+ *  6:3,
+ *  7:8,
+ *  8:2....}
+ */
+function totalVotiOfAllClass() {
+    var jsonVoti = {};
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
+            var voto = arrayClassi[i].alunni[studenti].media_voti;
+            if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+            else jsonVoti[voto] = jsonVoti[voto] + 1;
+        }
+
+    }
+    return jsonVoti;
+}
+
+
+/**
+ * return the number of student of one class
+ * @param className
+ */
+function totalNumberOfStudent(className) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            return arrayClassi[i].alunni.length;
+        }
+    }
+}
+
+/**
+ * return the number of student of all class
+ */
+function totalNumberOfStudentOfAllClass() {
+    var number = 0;
+    for (var i = 0; i < arrayClassi.length; i++) {
+        number += arrayClassi[i].alunni.length;
+    }
+    return number;
+}
+
+function approxNum(num){
+    return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+}
+
+/**
  * update a chart for a specific chart
  * @param newClassName
  */
 function updateChart(newClassName) {
+    //TODO:APPROSIAMRE LE PERCENTUALI
     //json voti di questa classe
+    var jsonVoti = numerOfVotiOfClass(newClassName);
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
     var myChart = chartArray[position];
+    var numerOfStudent = totalNumberOfStudent(newClassName);
+    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
+    myChart.update();
+}
 
-    myChart.data.datasets[0].data[0] = 10;
+/**
+ * refresh the data in the old chart
+ * @param oldClassName
+ */
+function refreshChart(oldClassName) {
+    //json voti di questa classe
+    var jsonVoti = numerOfVotiOfClass(oldClassName);
+    var position = oldClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
+    var myChart = chartArray[position];
+    var numerOfStudent = totalNumberOfStudent(oldClassName);
+    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
+    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
     myChart.update();
 }
 
@@ -46,7 +151,7 @@ function getMediaOfClass(nomeClasse){
         somma = somma + studentiOfClass[i].media_voti;
     }
     var result =  somma/studentiOfClass.length;
-    var approx = result.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+    var approx = approxNum(result);
     return approx;
 }
 
@@ -101,14 +206,13 @@ function getStudentsNumber(nomeClasse) {
     return studentiOfClass.length;
 }
 
-//
-// function updateStatistiche(classe){
-//
-//     $('#femmine'+classe).text("femmine: " + getNumberOfFemmineOfClass(classe));
-//     $('#media'+classe).text("media: " + getMediaOfClass(classe));
-//     $('#alunni'+classe).text("alunni: " + getStudentsNumber(classe));
-//
-// }
+function displayAllClass() {
+    //visualizzo tutto lasciando in selezione gli altri item
+    $('.wrapperClasse').show();
+    //attivo il doppio scroll che non funziona bisognerà indagare
+    $('#wrapper').doubleScroll();
+
+}
 
 /**
  *
@@ -155,7 +259,8 @@ function moveStudent(cf,fromClass,toClass){
 
     //updateStatistiche(fromClass);
     //updateStatistiche(toClass);
-    updateChart(toClass)
+    updateChart(toClass);//refresh the new chart
+    refreshChart(fromClass); //refresh the old chart
 
 }
 
@@ -178,6 +283,7 @@ $(document).ready(function() {
             populate(listaClassi);
 
 
+
             for (var i = 0; i < listaClassi.length; i++) {
 
                 var nomeClasse = listaClassi[i].nome;
@@ -197,7 +303,7 @@ $(document).ready(function() {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>'
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <h4 class="title">Distribuzione Voti</h4> '
                 }).appendTo(wrapperClasse);
 
 
@@ -217,17 +323,17 @@ $(document).ready(function() {
                     'class': 'contenitoreClasse ui vertical menu'
                 }).appendTo(wrapperClasse);
 
-
+                jsonVoti = {};
                 for (var j = 0; j < arrayStudenti.length; j++) {
                     if (arrayStudenti[j] !== undefined) {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
 
-                        //sezione per sapere quanti studenti hanno un determinato voto
-                        var voto = arrayStudenti[j].media_voti;
-                        if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
-                        else jsonVoti[voto] = jsonVoti[voto] + 1;
+                        // //sezione per sapere quanti studenti hanno un determinato voto
+                        // var voto = arrayStudenti[j].media_voti;
+                        // if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+                        // else jsonVoti[voto] = jsonVoti[voto] + 1;
 
 
                         var tag;
@@ -239,7 +345,7 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 50
+                                    'height': 40
                                 })
                                 .addClass('ui segment tooltip guys ')
                                 .attr('id', cf)
@@ -249,7 +355,7 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 50
+                                    'height': 40
                                 })
                                 .addClass('ui segment tooltip girl ')
                                 .attr('id', cf)
@@ -271,10 +377,18 @@ $(document).ready(function() {
                         var li = $('<li/>')
                             .html(container)
                             .appendTo(div);
+
+                        //menu
+
                     }
                 }
 
-                //CHART DATA//
+                var jsonVotiPrima = totalVotiOfAllClass();
+                var jsonVoti = numerOfVotiOfClass(nomeClasse);
+                var numerOfStudent = totalNumberOfStudent(nomeClasse);
+                var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
+
+                // CHART DATA //
                 var chart = $('<canvas/>',
                     {
                         'id': nomeClasse,
@@ -286,41 +400,72 @@ $(document).ready(function() {
                 var myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ["Sei", "Sette", "Otto", "Nove", "Dieci"],
+                        labels: ["6", "7", "8", "9", "10"],
                         datasets: [{
-                            label: 'studenti',
+                            label: 'classe' + nomeClasse,
                             data: [
-                                jsonVoti[6],
-                                jsonVoti[7],
-                                jsonVoti[8],
-                                jsonVoti[9],
-                                jsonVoti[10]
+                                approxNum((jsonVoti[6] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[7] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[8] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[9] / numerOfStudent) * 100),
+                                approxNum((jsonVoti[10] / numerOfStudent) * 100)
                             ],
                             backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
+                                '#FFCDD2',
+                                '#F0F4C3',
+                                '#D4E157',
+                                '#AED581',
+                                '#2E7D32'
                             ],
                             borderColor: [
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
+                                '#EF5350',
+                                '#E6EE9C',
+                                '#CDDC39',
+                                '#8BC34A',
+                                '#2E7D32'
                             ],
-                            borderWidth: 1
-                        }]
+                            borderWidth: 1,
+                            stack: 1
+                        },
+                            {
+                                label: 'Totali',
+                                data: [
+                                    approxNum((jsonVotiPrima[6] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[7] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[8] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[9] / totalNumberOfAllClass) * 100),
+                                    approxNum((jsonVotiPrima[10] / totalNumberOfAllClass) * 100)
+                                ],
+                                backgroundColor: [
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0',
+                                    '#E0E0E0'
+                                ],
+                                borderColor: [
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD',
+                                    '#BDBDBD'
+                                ],
+                                borderWidth: 1,
+                                stack: 2
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
                         scales: {
                             yAxes: [{
                                 ticks: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                    steps: 10,
+                                    stepValue: 6,
+                                    max: 60,
+                                    callback: function(value){return value+ "%"   //mettendo questa per la percentuale il voto viene messo orizzontale
+                                    }
                                 }
                             }]
                         }
@@ -344,13 +489,15 @@ $(document).ready(function() {
                     moveStudent(cf_studente_spostato,classFrom,classTo);
 
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
-                    //updateChart(newList.attr('id'));
+
 
                 },
                 change: function (event, ui) {
                     if (ui.sender) newList = ui.placeholder.parent().parent();
                 }
             }).disableSelection();
+
+            displayAllClass();
         },
         type: 'GET'
     });
@@ -383,8 +530,6 @@ $(document).ready(function() {
                     //visualizzo l'elemento
                     $('#' + classe).show();
                 }
-                //attivo il doppio scroll che non funziona bisognerà indagare
-                $('#wrapper').doubleScroll();
             }
         });
 
@@ -393,8 +538,7 @@ $(document).ready(function() {
      */
     $('#checkBox').checkbox({
         onChecked: function () {
-            //visualizzo tutto lasciando in selezione gli altri item
-            $('.wrapperClasse').show();
+            displayAllClass();
         },
         onUnchecked: function () {
             //prima di pulire tutto controllo gli item già attivi per portare alla situazione precendente le visualizzazioni
