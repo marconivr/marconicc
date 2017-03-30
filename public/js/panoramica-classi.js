@@ -1,6 +1,22 @@
 var debug = true;
 var chartArray = [];
+var informazioniArray = [];
 var arrayClassi = null;
+var iconJson = {
+    'media': {
+        'color': 'floating ui green label',
+        'icon': 'write icon'
+    },
+    'bocciati': {
+        'color': 'floating ui red label',
+        'icon': 'configure icon'
+    },
+    'alunni': {
+        'color': 'floating ui blue  label',
+        'icon': 'student icon'
+    }
+
+};
 
 
 function populate(listaClassi) {
@@ -140,6 +156,42 @@ function refreshChart(oldClassName) {
 }
 
 /**
+ * count bocciati of one class
+ * @param className
+ * @returns {number}
+ */
+function countBocciatiOfClass(className) {
+    var bocciati = 0;
+
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+                if (arrayClassi[i].alunni[studente].classe_precedente != "") bocciati += 1;
+            }
+        }
+    }
+    return bocciati;
+    a
+}
+
+/**
+ * ritorna un json con le proprietà
+ * @param nomeClasse
+ * @returns {{}}
+ */
+function createProprietaForASpecificClass(className) {
+    var prop = {};
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            prop['alunni'] = arrayClassi[i].alunni.length;
+            prop['media'] = getMediaOfClass(arrayClassi[i].nome);
+            prop['bocciati'] = countBocciatiOfClass(className);
+            return prop;
+        }
+    }
+
+}
+/**
  *
  * @param nomeClasse
  * @returns {number} Media voti della classe
@@ -210,8 +262,62 @@ function displayAllClass() {
     //visualizzo tutto lasciando in selezione gli altri item
     $('.wrapperClasse').show();
     //attivo il doppio scroll che non funziona bisognerà indagare
-    $('#wrapper').doubleScroll();
+    $('#wrapper').doubleScroll()
+}
 
+/**
+ * crea il box delle informazioni per ogni classe
+ */
+function createBoxInformazioni(wrapperClasse, nomeClasse) {
+
+    var proprieta = createProprietaForASpecificClass(nomeClasse);
+    for (var prop in proprieta) {
+        var menu = $('<div/>')
+            .addClass('ui compact menu')
+            .appendTo(wrapperClasse);
+
+        //donne
+        var item = $('<a/>')
+            .addClass('item')
+            .appendTo(menu);
+
+        var studentIcon = $('<i/>')
+            .addClass(iconJson[prop].icon)
+            .appendTo(item);
+
+        var floatingMenu = $('<div/>')
+            .addClass(iconJson[prop].color)
+            .appendTo(item);
+
+        var value = $('<p/>',
+            {
+                'id': 'donne-' + nomeClasse
+            })
+            .html(proprieta[prop])
+            .appendTo(floatingMenu);
+
+    }
+
+
+//     <a class="item">
+//     <i class="female icon"></i> Donne
+//     <div class="floating ui pink label">
+//     <p id="donne-in-classe-prima">
+//
+// <%= jsonData.numberOfGirlPrima %>
+//     </p>
+//     </div>
+//     </a>
+//     <a class="item">
+//     <i class="write icon"></i> Media
+//     <div class="floating ui blue  label">
+//     <p id="media-in-classe-prima">
+//
+// <%= jsonData.AVGOfStudentiPrima %>
+//     </p>
+//     </div>
+//     </a>
+//     </div>
 }
 
 /**
@@ -306,19 +412,6 @@ $(document).ready(function() {
                     'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <h4 class="title">Distribuzione Voti</h4> '
                 }).appendTo(wrapperClasse);
 
-
-
-                for (var prop in proprieta) {
-                    if (prop != "residenza" && prop != "iniziale" && prop != "bocciati") {
-                        // var li = $('<div/>')
-                        //     .addClass("ui info message")
-                        //     .text(prop + ": " + proprieta[prop])
-                        //     .appendTo(settingClasse);
-                        //<canvas id="myChart" width="400" height="400"></canvas>
-                    }
-                }
-
-
                 var div = $('<ul/>', {
                     'class': 'contenitoreClasse ui vertical menu'
                 }).appendTo(wrapperClasse);
@@ -364,7 +457,7 @@ $(document).ready(function() {
                         if (arrayStudenti[j].tag != null) {
                             //contiene il tag studente
                             tag = $('<div/>')
-                                .addClass('floating ui grey  label')
+                                .addClass('floating ui grey label tiny')
                                 .html(arrayStudenti[j].tag)
                                 .appendTo(container)
                         }
@@ -381,6 +474,8 @@ $(document).ready(function() {
                         //menu
 
                     }
+
+
                 }
 
                 var jsonVotiPrima = totalVotiOfAllClass();
@@ -396,6 +491,7 @@ $(document).ready(function() {
                         'height': 200
                     }).appendTo(settingClasse);
 
+                var br = $('<br>').appendTo(settingClasse);
                 var ctx = chart;
                 var myChart = new Chart(ctx, {
                     type: 'bar',
@@ -472,6 +568,11 @@ $(document).ready(function() {
                     }
                 });
                 chartArray.push(myChart);
+
+                //box informazioni
+                //TODO:CREATE PROP FOòR CLASS
+                createBoxInformazioni(settingClasse, nomeClasse);
+
 
             }
             var oldList, newList, item;

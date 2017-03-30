@@ -169,7 +169,7 @@ module.exports = {
                             module.exports.fixFemmine(listaClassi[k].nome);
                             break;
                         case "stranieri":
-                            //module.exports.fixStranieri(listaClassi[k].nome);
+                            module.exports.fixStranieri(listaClassi[k].nome);
                             break;
                         case "bocciati":
 
@@ -271,18 +271,11 @@ module.exports = {
      */
     countBocciati: function (listaAlunniClasse) {
         var count = 0;
-        var data = "";
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            data = listaAlunniClasse[i].data_di_nascita;
-
-            if (typeof data === 'string' || data instanceof String) {
-                data = new Date(Date.parse(data.split(" ")[0]));
-            }
-
-            if ((1900 + data.getYear()) < (new Date().getFullYear() - 14)) {
-                count++;
-            }
+           if (listaAlunniClasse[i].classe_precedente != null){
+               count++;
+           }
         }
 
         return count;
@@ -479,7 +472,7 @@ module.exports = {
             if (listaClassi[i].nome != nomeClasse) {
                 if (module.exports.countStranieri(classe.alunni) > settings.max_str
                     && module.exports.countStranieri(listaClassi[i].alunni) < settings.max_str) {
-                    var objal = module.exports.searchStraniero(listaClassi[i].alunni);
+                    var objal = module.exports.searchStraniero(classe.alunni);
                     console.log("Alunno " + objal.nome + " Da " + classe.nome + " a " + listaClassi[i].nome);
                     if (objal != null) {
                         module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
