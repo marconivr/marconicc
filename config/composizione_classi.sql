@@ -8,7 +8,7 @@ CREATE DATABASE IF NOT EXISTS `composizione_classi` DEFAULT CHARACTER SET latin1
 USE `composizione_classi`;
 
 -- --------------------------------------------------------
--- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dumpa
 -- version 4.5.1
 -- http://www.phpmyadmin.net
 --
@@ -64,8 +64,8 @@ CREATE TABLE  `alunni` (
  `nazionalita` VARCHAR(25) NOT NULL,
  `legge_107` VARCHAR(25) NULL,
  `legge_104` VARCHAR(25) NULL,
- `scelta_indirizzo` VARCHAR( 50 ) NOT NULL ,
  `classe_precedente` VARCHAR( 5 ) NULL ,
+ `scelta_indirizzo` VARCHAR( 50 ) NOT NULL ,
  `anno_scolastico` VARCHAR( 15 ) NOT NULL ,
  `anno` VARCHAR( 4 ) NOT NULL ,
  `cod_cat` VARCHAR( 10 ) NOT NULL ,
