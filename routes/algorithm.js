@@ -160,32 +160,6 @@ module.exports = {
         return listaNomi;
     },
 
-    /*
-     * for (var i = 0; i < priority.length; i++) {
-     switch (priority[i]) {
-     case "alunni":
-
-     break;
-     case "femmine":
-
-     break;
-     case "stranieri":
-
-     break;
-     case "bocciati":
-
-     break;
-     case "stessa_provenienza":
-
-     break;
-     case "media":
-
-     break;
-     }
-     }
-     */
-
-
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
@@ -223,6 +197,12 @@ module.exports = {
         }
     },
 
+    /**
+     * isInsideProblemiClasse funzione che determina se un problema è dentro ad un oggetto problema
+     * @param objProblema
+     * @param strProblema
+     * @returns {boolean}
+     */
     isInsideProblemiClasse: function(objProblema, strProblema){
         for (var prop in objProblema){
             if (prop == strProblema){
