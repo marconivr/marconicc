@@ -20,7 +20,7 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 }
-var priority = ["alunni", "104", "107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
+var priority = ["alunni", "104", "107", "desiderata", "bocciati", "femmine", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -181,12 +181,13 @@ module.exports = {
                             module.exports.fixMedia(listaClassi[k].nome);
                             break;
                         case "iniziale":
+
                             break;
                     }
                 }
                 listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
-            module.exports.printProprieta();
+            console.log("Bocciati classe " + listaClassi[k].nome + ":"+ listaClassi[k].proprieta.bocciati);
         }
     },
 
@@ -265,7 +266,7 @@ module.exports = {
     },
 
     /**
-     * countBocciati ritorna il numeero di bocciati per classe
+     * countBocciati ritorna il numero di bocciati per classe
      * @param listaAlunniClasse
      * @returns {number}
      */
@@ -273,9 +274,27 @@ module.exports = {
         var count = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-           if (listaAlunniClasse[i].classe_precedente != null){
+           if (listaAlunniClasse[i].classe_precedente[0] == "1"){
                count++;
            }
+        }
+
+        return count;
+    },
+
+    /**
+     * countBocciati ritorna il numero di bocciati totali
+     * @param listaAlunniClasseTot
+     * @returns {number}
+     */
+    countBocciatiTot: function () {
+        var count = 0;
+        for (var k = 0; k < listaClassi.length; k++){
+            for (var i = 0; i < listaClassi[k].alunni.length; i++) {
+                if (listaClassi[k].alunni[i].classe_precedente[0] == "1"){
+                    count++;
+                }
+            }
         }
 
         return count;
@@ -473,13 +492,35 @@ module.exports = {
                 if (module.exports.countStranieri(classe.alunni) > settings.max_str
                     && module.exports.countStranieri(listaClassi[i].alunni) < settings.max_str) {
                     var objal = module.exports.searchStraniero(classe.alunni);
-                    console.log("Alunno " + objal.nome + " Da " + classe.nome + " a " + listaClassi[i].nome);
                     if (objal != null) {
                         module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
                     }
                 }
             }
             if (module.exports.countStranieri(classe.alunni) == settings.max_str) {
+                break;
+            }
+        }
+    },
+
+    /**
+     * fixFemmine inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
+     * @param nomeClasse
+     */
+    fixBocciati: function (nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
+                if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
+                    && module.exports.countFemmine(listaClassi[i].alunni) <= settings.fem) {
+                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
+                    if (objfem != null) {
+                        module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
+                    }
+                }
+            }
+            //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
+            if (module.exports.countFemmine(classe.alunni) == settings.fem) {
                 break;
             }
         }
@@ -532,7 +573,6 @@ module.exports = {
     searchStraniero: function (listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i]["nazionalita"].toLowerCase() != "italiana") {
-                console.log("Nazionalita " + listaAlunniClasse[i]["nazionalita"])
                 return listaAlunniClasse[i];
             }
         }
