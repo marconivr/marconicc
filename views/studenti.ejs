@@ -11,9 +11,7 @@
 </div>
 <div class="ui bottom attached tab active  segment" data-tab="first">
 
-    <div class="ui two column centered grid">
-        <div class="column">
-
+    <div class="tableContainer">
             <table id="studenti" class="ui celled table" cellspacing="0" width="100%">
                 <thead>
                 <tr>
@@ -79,8 +77,6 @@
                 </tr>
                 </tfoot>
             </table>
-
-        </div>
     </div>
     <!--close first tabs-->
 </div>
@@ -89,8 +85,7 @@
 <div class="ui bottom attached tab segment" data-tab="third">
 
 
-    <div class="ui two column centered grid">
-        <div class="column">
+    <div class="tableContainer">
     <table id="studenti-terza" class="ui celled table" cellspacing="0" width="100%">
         <thead>
         <tr>
@@ -160,8 +155,8 @@
         </tr>
         </tfoot>
     </table>
-        </div>
     </div>
+
 
 </div>
 
@@ -321,6 +316,8 @@
         });
         table.buttons().container()
             .appendTo($('div.eight.column:eq(0)', table.table().container()));
+        $('.sixteen').removeClass().addClass('tableContainer');
+
     });
 </script>
 
@@ -345,11 +342,11 @@
                 {"data": "cod_cat"},
                 {"data": "media_voti"},
                 {"data": "classe_futura"}
-
             ]
         });
         table.buttons().container()
                 .appendTo($('div.eight.column:eq(0)', table.table().container()));
+        $('.sixteen').removeClass().addClass('tableContainer');
     });
 </script>
 
