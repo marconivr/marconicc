@@ -33,15 +33,16 @@ module.exports = {
         var nazionalita = arrayRow[8];
         var legge_107 = arrayRow[9];
         var legge_104 = arrayRow[10];
-        var indirizzo = arrayRow[11];
-        var annoScolastico = arrayRow[12];
-        var anno = arrayRow[13];
-        var codice_cat = arrayRow[14];
-        var media_voto = arrayRow[15];
-        var condotta = arrayRow[16];
-        var classe_futura = arrayRow[17];
-        var tag = arrayRow[18];
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, nazionalita, legge_107, legge_104, indirizzo, annoScolastico, anno, codice_cat, media_voto, condotta, classe_futura,tag], function (err, row) {
+        var classe_precedente = arrayRow[11];
+        var indirizzo = arrayRow[12];
+        var annoScolastico = arrayRow[13];
+        var anno = arrayRow[14];
+        var codice_cat = arrayRow[15];
+        var media_voto = arrayRow[16];
+        var condotta = arrayRow[17];
+        var classe_futura = arrayRow[18];
+        var tag = arrayRow[19];
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, media_voto, condotta, classe_futura,tag], function (err, row) {
             if (err) {
                 console.log(err);
             }

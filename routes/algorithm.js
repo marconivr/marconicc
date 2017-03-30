@@ -271,18 +271,11 @@ module.exports = {
      */
     countBocciati: function (listaAlunniClasse) {
         var count = 0;
-        var data = "";
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            data = listaAlunniClasse[i].data_di_nascita;
-
-            if (typeof data === 'string' || data instanceof String) {
-                data = new Date(Date.parse(data.split(" ")[0]));
-            }
-
-            if ((1900 + data.getYear()) < (new Date().getFullYear() - 14)) {
-                count++;
-            }
+           if (listaAlunniClasse[i].classe_precedente != null){
+               count++;
+           }
         }
 
         return count;
