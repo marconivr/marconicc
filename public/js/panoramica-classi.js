@@ -1,4 +1,7 @@
 var debug = true;
+var saveRealTimeOnDb = true;
+
+
 var chartArray = [];//reference to chart
 var informationArray = [];//reference to information
 var arrayClassi = null;
@@ -343,6 +346,33 @@ function updateInformation(className) {
 }
 
 
+function saveStudentMovementOnDb(cf, fromClass, toClass) {
+
+    var jsonToSend = {
+        cf : cf,
+        fromClass : fromClass,
+        toClass : toClass
+    }
+
+    if(saveRealTimeOnDb){
+        $.ajax({
+            type: "POST",
+            url: "/move-student",
+
+            data: jsonToSend,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+            },
+            failure: function(errMsg) {
+                alert(errMsg);
+            }
+        });
+    }
+
+}
+
 /**
  *
  * @param cf
@@ -386,6 +416,7 @@ function moveStudent(cf,fromClass,toClass){
         }
     }
 
+    saveStudentMovementOnDb(cf,fromClass,toClass);
     updateChart(toClass);//refresh the new chart
     refreshChart(fromClass); //refresh the old chart
     updateInformation(toClass);
