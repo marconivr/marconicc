@@ -19,6 +19,28 @@ var iconJson = {
 };
 
 
+var flagJson = {
+    'ITALIANA' : 'it',
+    'CINGALESE' : 'lk',
+    'BANGLADESE': 'bd',
+    'ROMENA' : 'ro',
+    'CINESE' : 'cn',
+    'MAROCCHINA' : 'ma',
+    'PARAGUAIANA' : 'py',
+    'TUNISINA' : 'tn',
+    'FILIPPINA' : 'ph',
+    'ALBANESE' : 'al',
+    'MOLDAVA' : 'md',
+    'LETTONE' : 'lv',
+    'BRASILIANA' : 'br',
+    'NIGERIANA' : 'ne',
+    'GHANESE' : 'gh',
+    'PERUVIANA' : 'pe',
+    'CUBANA' : 'cu',
+    'CROATA' : 'hr',
+    'SENEGALESE' : 'sn'
+};
+
 function populate(listaClassi) {
     arrayClassi = listaClassi;
 }
@@ -371,6 +393,12 @@ function moveStudent(cf,fromClass,toClass){
 
 }
 
+function flagTag(nazionalita) {
+    return flagJson[nazionalita];
+
+}
+
+
 $(document).ready(function() {
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
@@ -410,7 +438,7 @@ $(document).ready(function() {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <h4 class="title">Distribuzione Voti</h4> '
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'bar' + ' class="ui button"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chart' + ' class="ui button"><i class="pie chart icon"></i></button></div> <h4 class="title">Distribuzione Voti</h4> '
                 }).appendTo(wrapperClasse);
 
                 var div = $('<ul/>', {
@@ -423,17 +451,19 @@ $(document).ready(function() {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
+                        var nazionalita = arrayStudenti[j].nazionalita;
 
-                        // //sezione per sapere quanti studenti hanno un determinato voto
-                        // var voto = arrayStudenti[j].media_voti;
-                        // if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
-                        // else jsonVoti[voto] = jsonVoti[voto] + 1;
+
+                        var iconFlagElement = "";
+                        if (nazionalita != "ITALIANA"){
+                            iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
+                        }
 
 
                         var tag;
                         var anagrafica = $('<p/>')
                             .addClass('roboto')
-                            .html(cognomeStudente + " " + nomeStudente);
+                            .html(iconFlagElement + " " +cognomeStudente + " " + nomeStudente );
 
                         if (arrayStudenti[j].sesso == "M") {
                             var container = $('<div/>',
@@ -455,17 +485,35 @@ $(document).ready(function() {
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
-                        if (arrayStudenti[j].tag != null) {
+
+                        var tooltipValue = "";
+
+
+                        if ((arrayStudenti[j].legge_104) != "") {
+                            tooltipValue = "104"
+                        }else if(arrayStudenti[j].legge_107 != ""){
+                            tooltipValue = "107";
+                        }
+
+                        if (tooltipValue != ""){
                             //contiene il tag studente
                             tag = $('<div/>')
                                 .addClass('floating ui grey label tiny')
-                                .html(arrayStudenti[j].tag)
+                                .html(tooltipValue)
                                 .appendTo(container)
                         }
+
+
+
                         //tooltip
+                        var handicapTooltip = "";
+                        if ((arrayStudenti[j])['legge_'+tooltipValue] !== undefined){
+                            handicapTooltip = '<br>'+tooltipValue+': '+(arrayStudenti[j])['legge_'+tooltipValue];
+                        }
+
                         var tooltip = $('<span/>')
                             .addClass('tooltiptext')
-                            .html('Media : ' + arrayStudenti[j].media_voti)
+                            .html('media : ' + arrayStudenti[j].media_voti + '<br>naz : ' + nazionalita + handicapTooltip)
                             .appendTo(container);
 
                         var li = $('<li/>')
