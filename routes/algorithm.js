@@ -15,12 +15,12 @@ var settings = {
     iniziale: 3,
     stessa_pr: 4,
     nazionalita: 4,
-    media_min: 7.5,
+    media_min: 7.7,
     media_max: 8.0,
     boc: 2,
     an_scol: "2017-2018"
 }
-var priority = {}
+var priority = ["alunni", "104", "107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -116,7 +116,7 @@ module.exports = {
                             break;
                         }
                     }
-                    //listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
+                    listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
                     listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
                 }
             }
@@ -189,12 +189,12 @@ module.exports = {
     /**
      * fixClassi sistema le classi in base alle impostazioni e alle priorità
      */
-    fixClassi: function () {//viva i moldavi e i rumeni due per classe
+    fixClassi: function () {
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            for (k = priority.length; k >= 0; k--) {
-                if (module.exports.isInsideProblemiClasse(objproblem, priority[k])) {
-                    switch (prop) {
+            for (j = priority.length; j >= 0; j--) {
+                if (module.exports.isInsideProblemiClasse(objproblem, priority[j])) {
+                    switch (priority[j]) {
                         case "alunni":
                             module.exports.fixAlunni(listaClassi[k].nome);
                             break;
@@ -202,7 +202,7 @@ module.exports = {
                             module.exports.fixFemmine(listaClassi[k].nome);
                             break;
                         case "stranieri":
-                            module.exports.fixStranieri(listaClassi[k].nome);
+                            //module.exports.fixStranieri(listaClassi[k].nome);
                             break;
                         case "bocciati":
 
@@ -211,7 +211,7 @@ module.exports = {
 
                             break;
                         case "media":
-                            //module.exports.fixMedia(listaClassi[k].nome);
+                            module.exports.fixMedia(listaClassi[k].nome);
                             break;
                         case "iniziale":
                             break;
@@ -221,6 +221,15 @@ module.exports = {
             }
             module.exports.printProprieta();
         }
+    },
+
+    isInsideProblemiClasse: function(objProblema, strProblema){
+        for (var prop in objProblema){
+            if (prop == strProblema){
+                return true;
+            }
+        }
+        return false;
     },
 
     printProprieta: function () {
