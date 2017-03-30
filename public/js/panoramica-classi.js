@@ -1,6 +1,6 @@
 var debug = true;
-var chartArray = [];
-var informazioniArray = [];
+var chartArray = [];//reference to chart
+var informationArray = [];//reference to information
 var arrayClassi = null;
 var iconJson = {
     'media': {
@@ -123,7 +123,6 @@ function approxNum(num){
  * @param newClassName
  */
 function updateChart(newClassName) {
-    //TODO:APPROSIAMRE LE PERCENTUALI
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(newClassName);
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
@@ -171,7 +170,6 @@ function countBocciatiOfClass(className) {
         }
     }
     return bocciati;
-    a
 }
 
 /**
@@ -271,7 +269,9 @@ function displayAllClass() {
 function createBoxInformazioni(wrapperClasse, nomeClasse) {
 
     var proprieta = createProprietaForASpecificClass(nomeClasse);
+    var array = [];
     for (var prop in proprieta) {
+
         var menu = $('<div/>')
             .addClass('ui compact menu')
             .appendTo(wrapperClasse);
@@ -289,36 +289,37 @@ function createBoxInformazioni(wrapperClasse, nomeClasse) {
             .addClass(iconJson[prop].color)
             .appendTo(item);
 
+        var reference = prop
         var value = $('<p/>',
             {
-                'id': 'donne-' + nomeClasse
+                'id': prop + '-' + nomeClasse
             })
             .html(proprieta[prop])
             .appendTo(floatingMenu);
 
+        array.push(value);
     }
-
-
-//     <a class="item">
-//     <i class="female icon"></i> Donne
-//     <div class="floating ui pink label">
-//     <p id="donne-in-classe-prima">
-//
-// <%= jsonData.numberOfGirlPrima %>
-//     </p>
-//     </div>
-//     </a>
-//     <a class="item">
-//     <i class="write icon"></i> Media
-//     <div class="floating ui blue  label">
-//     <p id="media-in-classe-prima">
-//
-// <%= jsonData.AVGOfStudentiPrima %>
-//     </p>
-//     </div>
-//     </a>
-//     </div>
+    informationArray.push(array);
 }
+
+/**
+ * update the information of a specific class
+ * @param className
+ */
+function updateInformation(className) {
+    var proprieta = createProprietaForASpecificClass(className);
+    for (var i = 0; i < arrayClassi.length; i++)
+
+        if (arrayClassi[i].nome == className) {
+            informationArray[i][0].html(proprieta["alunni"]);
+            informationArray[i][1].html(proprieta["media"]);
+            informationArray[i][2].html(proprieta["bocciati"]);
+
+
+        }
+
+}
+
 
 /**
  *
@@ -363,10 +364,10 @@ function moveStudent(cf,fromClass,toClass){
         }
     }
 
-    //updateStatistiche(fromClass);
-    //updateStatistiche(toClass);
     updateChart(toClass);//refresh the new chart
     refreshChart(fromClass); //refresh the old chart
+    updateInformation(toClass);
+    updateInformation(fromClass);
 
 }
 
@@ -570,7 +571,6 @@ $(document).ready(function() {
                 chartArray.push(myChart);
 
                 //box informazioni
-                //TODO:CREATE PROP FOòR CLASS
                 createBoxInformazioni(settingClasse, nomeClasse);
 
 
