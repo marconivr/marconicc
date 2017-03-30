@@ -1,5 +1,22 @@
 {
   "ITALIANA" : "it",
   "CINGALESE" : "lk",
+  "BANGLADESE": "bd",
+  "ROMENA" : "ro",
+  "CINESE" : "cn",
+  "MAROCCHINA" : "ma",
+  "PARAGUAIANA" : "py",
+  "TUNISINA" : "tn",
+  "FILIPPINA" : "ph",
+  "ALBANESE" : "al",
+  "MOLDAVA" : "md",
+  "LETTONE" : "lv",
+  "BRASILIANA" : "br",
+  "NIGERIANA" : "ne",
+  "GHANESE" : "gh",
+  "PERUVIANA" : "pe",
+  "CUBANA" : "cu",
+  "CROATA" : "hr",
+  "SENEGALESE" : "sn"
 
 }
