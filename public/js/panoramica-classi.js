@@ -161,7 +161,30 @@ function getNumberOfDifferentNationalityOfClass(nomeClasse){
     //todo manca nel db il campo nazionalità
 }
 
+function getVotesDistributionOfClass(nomeClasse){
+    var jsonVoti = null;
 
+    var alunni = getStudentsOfClass(nomeClasse);
+
+    for (var i=0; i < alunni.length; i++){
+        var voto = alunni[i].media_voti;
+
+        if (jsonVoti[voto] === undefined){
+            jsonVoti[voto] = 1;
+
+        } else {
+            jsonVoti[voto] = jsonVoti[voto] + 1;
+        }
+    }
+
+    return jsonVoti;
+}
+
+/**
+ *
+ * @param nomeClasse
+ * @returns {number}
+ */
 function getNumberOfFemmineOfClass(nomeClasse) {
     var studentiOfClass = getStudentsOfClass(nomeClasse);
     var count = 0;
@@ -173,6 +196,11 @@ function getNumberOfFemmineOfClass(nomeClasse) {
     return count;
 }
 
+/**
+ *
+ * @param nomeClasse
+ * @returns {Number}
+ */
 function getStudentsNumber(nomeClasse) {
     var studentiOfClass = getStudentsOfClass(nomeClasse);
     return studentiOfClass.length;

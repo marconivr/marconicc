@@ -64,7 +64,7 @@ module.exports = {
     insertAlunnoInClass: function (classe, cf) {
         connection.query("INSERT INTO comp_classi VALUES (?, ?)", [classe, cf], function (err, row) {
             if (err) {
-                console.log(err);
+                console.error(err);
             }
         });
     },
@@ -72,7 +72,7 @@ module.exports = {
     removeAlunnoInClass: function (classe, cf) {
         connection.query("DELETE FROM comp_classi WHERE nome_classe = '" + classe + "' AND cf_alunno = '" + cf +  "'", function (err, row) {
             if (err) {
-                console.log(err);
+                console.error(err);
             }
         });
     },
@@ -100,7 +100,7 @@ module.exports = {
     getClassi: function (callback) {
         connection.query("SELECT * from classi", function (err, rows) {
             if (err) {
-                console.log(err);
+                console.error(err);
             } else {
                 callback(err, rows);
             }
