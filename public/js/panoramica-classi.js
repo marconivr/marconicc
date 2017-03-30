@@ -165,12 +165,13 @@ function countBocciatiOfClass(className) {
 
     for (var i = 0; i < arrayClassi.length; i++) {
         if (arrayClassi[i].nome == className) {
-            for (var studente in arrayClassi[i].alunni) {
-                if (studente.classe_precedente != null) bocciati += 1;
+            for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+                if (arrayClassi[i].alunni[studente].classe_precedente != "") bocciati += 1;
             }
         }
     }
     return bocciati;
+    a
 }
 
 /**
@@ -184,7 +185,7 @@ function createProprietaForASpecificClass(className) {
         if (arrayClassi[i].nome == className) {
             prop['alunni'] = arrayClassi[i].alunni.length;
             prop['media'] = getMediaOfClass(arrayClassi[i].nome);
-            prop['bocciati'] = countBocciati(arrayClassi[i].alunni);
+            prop['bocciati'] = countBocciatiOfClass(className);
             return prop;
         }
     }
