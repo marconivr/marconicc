@@ -116,7 +116,7 @@ module.exports = {
                             break;
                         }
                     }
-                    listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
+                    //listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
                     listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
                 }
             }
