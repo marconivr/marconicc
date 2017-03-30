@@ -156,6 +156,41 @@ function refreshChart(oldClassName) {
 }
 
 /**
+ * count bocciati of one class
+ * @param className
+ * @returns {number}
+ */
+function countBocciatiOfClass(className) {
+    var bocciati = 0;
+
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            for (var studente in arrayClassi[i].alunni) {
+                if (studente.classe_precedente != null) bocciati += 1;
+            }
+        }
+    }
+    return bocciati;
+}
+
+/**
+ * ritorna un json con le proprietà
+ * @param nomeClasse
+ * @returns {{}}
+ */
+function createProprietaForASpecificClass(className) {
+    var prop = {};
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            prop['alunni'] = arrayClassi[i].alunni.length;
+            prop['media'] = getMediaOfClass(arrayClassi[i].nome);
+            prop['bocciati'] = countBocciati(arrayClassi[i].alunni);
+            return prop;
+        }
+    }
+
+}
+/**
  *
  * @param nomeClasse
  * @returns {number} Media voti della classe
@@ -204,30 +239,35 @@ function displayAllClass() {
 /**
  * crea il box delle informazioni per ogni classe
  */
-function createBoxInformazioni(wrapperClasse, nomeClasse, prop, proprieta) {
-    var menu = $('<div/>')
-        .addClass('ui compact menu')
-        .appendTo(wrapperClasse);
+function createBoxInformazioni(wrapperClasse, nomeClasse) {
 
-    //donne
-    var item = $('<a/>')
-        .addClass('item')
-        .appendTo(menu);
+    var proprieta = createProprietaForASpecificClass(nomeClasse);
+    for (var prop in proprieta) {
+        var menu = $('<div/>')
+            .addClass('ui compact menu')
+            .appendTo(wrapperClasse);
 
-    var studentIcon = $('<i/>')
-        .addClass(iconJson[prop].icon)
-        .appendTo(item);
+        //donne
+        var item = $('<a/>')
+            .addClass('item')
+            .appendTo(menu);
 
-    var floatingMenu = $('<div/>')
-        .addClass(iconJson[prop].color)
-        .appendTo(item);
+        var studentIcon = $('<i/>')
+            .addClass(iconJson[prop].icon)
+            .appendTo(item);
 
-    var value = $('<p/>',
-        {
-            'id': 'donne-' + nomeClasse
-        })
-        .html(proprieta[prop])
-        .appendTo(floatingMenu);
+        var floatingMenu = $('<div/>')
+            .addClass(iconJson[prop].color)
+            .appendTo(item);
+
+        var value = $('<p/>',
+            {
+                'id': 'donne-' + nomeClasse
+            })
+            .html(proprieta[prop])
+            .appendTo(floatingMenu);
+
+    }
 
 
 //     <a class="item">
@@ -501,11 +541,8 @@ $(document).ready(function() {
                 chartArray.push(myChart);
 
                 //box informazioni
-                for (var prop in proprieta) {
-                    if (prop != "residenza" && prop != "iniziale" && prop != "femmine") {
-                        createBoxInformazioni(settingClasse, nomeClasse, prop, proprieta);
-                    }
-                }
+                //TODO:CREATE PROP FOòR CLASS
+                createBoxInformazioni(settingClasse, nomeClasse);
 
 
             }
