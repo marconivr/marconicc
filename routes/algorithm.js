@@ -192,8 +192,8 @@ module.exports = {
     fixClassi: function () {//viva i moldavi e i rumeni due per classe
         for (var k = 0; k < listaClassi.length; k++) {
             var objproblem = module.exports.problemiClasse(listaClassi[k].alunni);
-            for (k = priority.length; k >= 0; k--){
-                if (module.exports.isInsideProblemiClasse(objproblem, priority[k])){
+            for (k = priority.length; k >= 0; k--) {
+                if (module.exports.isInsideProblemiClasse(objproblem, priority[k])) {
                     switch (prop) {
                         case "alunni":
                             module.exports.fixAlunni(listaClassi[k].nome);
@@ -206,20 +206,21 @@ module.exports = {
                             break;
                         case "bocciati":
 
-                        break;
-                    case "stessa_provenienza":
+                            break;
+                        case "stessa_provenienza":
 
-                        break;
-                    case "media":
-                        //module.exports.fixMedia(listaClassi[k].nome);
-                        break;
-                    case "iniziale":
-                        break;
+                            break;
+                        case "media":
+                            //module.exports.fixMedia(listaClassi[k].nome);
+                            break;
+                        case "iniziale":
+                            break;
+                    }
                 }
+                listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
-            listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
+            module.exports.printProprieta();
         }
-        module.exports.printProprieta();
     },
 
     fixClassiConCallback: function (callback) {
