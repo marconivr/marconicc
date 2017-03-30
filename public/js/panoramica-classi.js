@@ -664,20 +664,19 @@ $(document).ready(function() {
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
 
-                    var classe = $(this).text();
+                    if($('#check').prop("checked") == false){
+                        var classe = $(this).text();
+                        $('#' + classe).hide();
+                    }
 
-                    //nascondo l'elemento
-
-
-                    //bisogna fare il controllo per quando si preme tante volte
-                    $('#' + classe).hide();
 
                 } else {
                     $(this).addClass('active');
-                    var classe = $(this).text();
 
-                    //visualizzo l'elemento
-                    $('#' + classe).show();
+                    if($('#check').prop("checked") == false){
+                        var classe = $(this).text();
+                        $('#' + classe).show();
+                    }
                 }
             }
         });
