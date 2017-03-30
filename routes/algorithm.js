@@ -14,23 +14,23 @@ var settings = {
     max_str: 7,
     iniziale: 3,
     stessa_pr: 4,
-    nazionalita: 4,
+    nazionalita: 3,
     media_min: 7.7,
     media_max: 8.0,
     boc: 2,
     an_scol: "2017-2018"
-}
+};
 var priority = ["alunni", "104", "107", "desiderata", "bocciati", "femmine", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 module.exports = {
     /**
-     * main dell'algoritmo
+     * firstGeneration prima generazione con le operazioni che seguono
      * @param classe
      * @param callback
      */
-    main: function (classe, callback) {
+    firstGeneration: function (classe, callback) {
         if (classe.toLowerCase() == "prima") {
             query.getStudentiPrima(function (err, results) {
                 if (err)
@@ -168,10 +168,11 @@ module.exports = {
                         case "femmine":
                             module.exports.fixFemmine(listaClassi[k].nome);
                             break;
-                        case "stranieri":
-                            module.exports.fixStranieri(listaClassi[k].nome);
+                        case "nazionalita":
+                            //module.exports.fixStranieri(listaClassi[k].nome);
+                            module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
                             break;
-                        case "bocciati":
+                        case "ripetenti":
 
                             break;
                         case "stessa_provenienza":
@@ -187,7 +188,7 @@ module.exports = {
                 }
                 listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
-            console.log("Bocciati classe " + listaClassi[k].nome + ":"+ listaClassi[k].proprieta.bocciati);
+            //console.log("Bocciati classe " + listaClassi[k].nome + ":"+ listaClassi[k].proprieta.bocciati);
         }
     },
 
@@ -259,6 +260,17 @@ module.exports = {
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i].nazionalita.toLowerCase() != "italiana") {
+                count++;
+            }
+        }
+        return count;
+    },
+
+    countStranieriStessaNaz: function (listaAlunniClasse, nazionalita) {
+        var count = 0;
+
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i].nazionalita.toLowerCase() == nazionalita) {
                 count++;
             }
         }
@@ -381,8 +393,20 @@ module.exports = {
                     }
                     break;
                 case "stranieri":
-                    if (proprieta.stranieri > settings.max_str) {
+                    /*if (proprieta.stranieri > settings.max_str) {
                         ris["stranieri"] = proprieta.stranieri;
+                    }*/
+                    var probl = {};
+                    var divNaz = module.exports.diverseNazionalita(listaAlunniClasse);
+
+                    for (var i = 0; i < divNaz.length; i++){
+                        var countStr = module.exports.countStranieriStessaNaz(listaAlunniClasse, divNaz[i]);
+                        if (countStr > settings.nazionalita){
+                            probl[divNaz[i]] = countStr;
+                        }
+                    }
+                    if (probl != {}){
+                        ris["nazionalita"] = probl;
                     }
                     break;
                 case "bocciati":
@@ -474,7 +498,6 @@ module.exports = {
                 if (mCl >= settings.media_max || (mCl < listaClassi[i].media_max && mCl > settings.media_min)) {
                     var objal = module.exports.searchAlunno("media_voti", module.exports.determinaVoto(classe), listaClassi[i].alunni);
                     if (objal != null) {
-                        console.log(objal.nome + ", " + objal.cognome);
                         module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
                     }
                 }
@@ -485,15 +508,60 @@ module.exports = {
         }
     },
 
+    /**
+     * delCerry
+     * @param nomeClasse
+     */
     fixStranieri: function(nomeClasse){
         var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
         for (var i = 0; i < listaClassi.length; i++) {
             if (listaClassi[i].nome != nomeClasse) {
-                if (module.exports.countStranieri(classe.alunni) > settings.max_str
+                if (module.exports.countStranieri(classe.alunni) >= settings.max_str
                     && module.exports.countStranieri(listaClassi[i].alunni) < settings.max_str) {
                     var objal = module.exports.searchStraniero(classe.alunni);
                     if (objal != null) {
                         module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
+                    }
+                }
+            }
+            if (module.exports.countStranieri(classe.alunni) == settings.max_str) {
+                break;
+            }
+        }
+    },
+
+    /**
+     * diverseNazionalita crea una lista con tutte le diverse nazionalità in classe
+     * @param listaAlunniClasse
+     * @returns {*}
+     */
+    diverseNazionalita: function(listaAlunniClasse){
+        var ris = [];
+        for(var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i]["nazionalita"].toLowerCase() != "italiana" &&
+                (ris.indexOf(listaAlunniClasse[i]["nazionalita"].toLowerCase()) == -1)) {
+                ris.push(listaAlunniClasse[i]["nazionalita"].toLowerCase());
+            }
+        }
+        return ris;
+    },
+
+    /**
+     * fixStranieriPerNaz fixa per nazionalita se rispettano quelle prestabilite
+     * @param nomeClasse
+     * @param objNaz
+     */
+    fixStranieriPerNaz: function (nomeClasse, objNaz) {
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
+        for (var i = 0; i < listaClassi.length; i++) {
+            for (var naz in objNaz){
+                if (listaClassi[i].nome != nomeClasse) {
+                    if (module.exports.countStranieriStessaNaz(listaClassi[i].alunni, naz) < (objNaz[naz] - 1)) {
+                        var objal = module.exports.searchAlunno("nazionalita", naz.toUpperCase(), classe.alunni);
+                        console.log(objal);
+                        if (objal != null) {
+                            module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
+                        }
                     }
                 }
             }
@@ -563,6 +631,7 @@ module.exports = {
 
     searchAlunno: function (attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
+            console.log(listaAlunniClasse[i][attr] + ", " + valore);
             if (listaAlunniClasse[i][attr] == valore) {
                 return listaAlunniClasse[i];
             }
