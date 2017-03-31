@@ -171,6 +171,12 @@ module.exports = function (app, passport, upload) {
             }
         });
     });
+
+
+    app.post('/move-student', middleware.isLoggedIn, function (req, res) {
+        console.log(req);
+        res.send("ok arrivato al db");
+    });
 };
 
 
