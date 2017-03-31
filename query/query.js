@@ -154,7 +154,6 @@ module.exports = {
     },
 
     getStudentiPrima: function (callback) {
-
         connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
             if (err) {
                 console.log('error');

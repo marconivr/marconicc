@@ -21,7 +21,6 @@ var iconJson = {
 
 };
 
-
 var flagJson = {
     'ITALIANA' : 'it',
     'CINGALESE' : 'lk',

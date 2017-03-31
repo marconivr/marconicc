@@ -17,6 +17,7 @@ var settings = {
     nazionalita: 3,
     media_min: 7.7,
     media_max: 8.0,
+    max_al_104: 23,
     boc: 2,
     an_scol: "2017-2018"
 };
@@ -130,6 +131,7 @@ module.exports = {
         var ripetenti = module.exports.countRipetenti(listaAlunniClasse);
         var iniziale = module.exports.countTutteInizialiCognome(listaAlunniClasse);
         var stranieri = module.exports.countStranieri(listaAlunniClasse);
+        var desiderata = module.exports.countDesiderata(listaAlunniClasse);
         return {
             alunni: nAlunni,
             femmine: nFemmine,
@@ -137,7 +139,8 @@ module.exports = {
             residenza: residenza,
             ripetenti: ripetenti,
             iniziale: iniziale,
-            stranieri: stranieri
+            stranieri: stranieri,
+            desiderata: desiderata
         };
     },
 
@@ -181,14 +184,16 @@ module.exports = {
                         case "iniziale":
 
                             break;
+                        case "desiderata":
+                            module.exports.fixDesiderata(listaClassi[k].nome);
+                            break;
                     }
                 }
                 listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
             //module.exports.fixRipetenti(listaClassi[k].nome);
-            console.log("Proprietà classe: " + listaClassi[k].nome);
-            module.exports.printProprieta();
-            //console.log("Bocciati classe " + listaClassi[k].nome + ":"+ listaClassi[k].proprieta.bocciati);
+            //console.log("Proprietà classe: " + listaClassi[k].nome);
+            //module.exports.printProprieta();
         }
     },
 
@@ -260,6 +265,17 @@ module.exports = {
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i].nazionalita.toLowerCase() != "italiana") {
+                count++;
+            }
+        }
+        return count;
+    },
+
+    countDesiderata: function(listaAlunniClasse){
+        var count = 0;
+
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i].cf_amico.toLowerCase() != "") {
                 count++;
             }
         }
@@ -424,18 +440,23 @@ module.exports = {
                     }
                     break;
                 case "iniziale":
-                /*
-                 if (proprieta.iniziale.length != 0) {
-                 ris["iniziale"] = [];
-                 for (var k = 0; k < proprieta.iniziale.length; k++) {
-                 if (proprieta.iniziale[k].num > settings.iniziale) {
-                 ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
-                 }
-                 }
-                 }
-                 break;
+                    /*
+                     if (proprieta.iniziale.length != 0) {
+                     ris["iniziale"] = [];
+                     for (var k = 0; k < proprieta.iniziale.length; k++) {
+                     if (proprieta.iniziale[k].num > settings.iniziale) {
+                     ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
+                     }
+                     }
+                     }
+                     break;
                  */
-
+                    break;
+                case "desiderata":
+                    if (proprieta.desiderata != 0) {
+                        ris["desiderata"] = proprieta.desiderata;
+                    }
+                    break;
             }
         }
         return ris;
@@ -503,6 +524,23 @@ module.exports = {
         }
     },
 
+    fixDesiderata: function (nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);
+        var elencoDesiderataClasse = module.exports.elencoDesiderataInClass(classe.alunni);
+        for (var cf in elencoDesiderataClasse ){
+            for (var i = 0; i < listaClassi.length; i++){
+                var objal = module.exports.searchAlunno("cf", elencoDesiderataClasse[cf], listaClassi[i].alunni);
+
+                if (objal != null) {
+                    if (objal.cf_amico == cf){
+                        console.log(objal.cognome + " " + classe.nome);
+                        module.exports.addStundentInClss(objal,listaClassi[i], classe, true);
+                    }
+                }
+            }
+        }
+    },
+
     /**
      * delCerry
      * @param nomeClasse
@@ -542,6 +580,21 @@ module.exports = {
     },
 
     /**
+     *
+     * @param listaAlunniClasse
+     * @returns {{}}
+     */
+    elencoDesiderataInClass: function (listaAlunniClasse) {
+        var ris = {};
+        for(var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i]["cf_amico"].toLowerCase() != "") {
+                ris[listaAlunniClasse[i]["cf"]] = listaAlunniClasse[i]["cf_amico"];
+            }
+        }
+        return ris;
+    },
+
+    /**
      * fixStranieriPerNaz fixa per nazionalita se rispettano quelle prestabilite
      * @param nomeClasse
      * @param objNaz
@@ -553,7 +606,6 @@ module.exports = {
                 if (listaClassi[i].nome != nomeClasse) {
                     if (module.exports.countStranieriStessaNaz(listaClassi[i].alunni, naz) < (objNaz[naz] - 1)) {
                         var objal = module.exports.searchAlunno("nazionalita", naz.toUpperCase(), classe.alunni);
-                        console.log(objal);
                         if (objal != null) {
                             module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
                         }
@@ -631,10 +683,15 @@ module.exports = {
         return voto;
     },
 
-
+    /**
+     * searchAlunno cerca un alunno data un attributo, un valore e la lista di alunni di una classe
+     * @param attr
+     * @param valore
+     * @param listaAlunniClasse
+     * @returns {*}
+     */
     searchAlunno: function (attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            console.log(listaAlunniClasse[i][attr] + ", " + valore);
             if (listaAlunniClasse[i][attr] == valore) {
                 return listaAlunniClasse[i];
             }
