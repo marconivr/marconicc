@@ -48,7 +48,6 @@ module.exports = {
                 console.log(err);
             }
         });
-        /*
         if (cf_amico != ""){
             connection.query("INSERT INTO amici (cf_1, cf_2) VALUES (?,?)", [cf, cf_amico], function (err, row) {
                 if (err) {
@@ -56,7 +55,6 @@ module.exports = {
                 }
             });
         }
-        */
     },
 
     /*
@@ -157,7 +155,7 @@ module.exports = {
 
     getStudentiPrima: function (callback) {
 
-        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico AND  = (" + anno_sc + ")", function (err, rows) {
+        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
