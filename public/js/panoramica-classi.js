@@ -74,6 +74,21 @@ function getNationalityOfClass(nomeClasse) {
 
 /**
  *
+ * @param a
+ * @param b
+ * @returns {number}
+ */
+function compare(a,b) {
+    if (a.cognome < b.cognome)
+        return -1;
+    if (a.cognome > b.cognome)
+        return 1;
+    return 0;
+}
+
+
+/**
+ *
  * @param nomeClasse
  * @returns {Array|*} Studenti della classe
  */
@@ -510,6 +525,11 @@ $(document).ready(function() {
         dataType: 'json',
 
         success: function (listaClassi) {
+
+
+            for (i=0; i < listaClassi.length;i++){
+                listaClassi[i].alunni.sort(compare);
+            }
 
             populate(listaClassi);
 
