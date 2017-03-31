@@ -43,11 +43,12 @@ module.exports = {
         var condotta = arrayRow[18];
         var classe_futura = arrayRow[19];
         var tag = arrayRow[20];
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, media_voto, condotta, classe_futura,tag], function (err, row) {
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, cf_amico, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, media_voto, condotta, classe_futura,tag], function (err, row) {
             if (err) {
                 console.log(err);
             }
         });
+        /*
         if (cf_amico != ""){
             connection.query("INSERT INTO amici (cf_1, cf_2) VALUES (?,?)", [cf, cf_amico], function (err, row) {
                 if (err) {
@@ -55,6 +56,7 @@ module.exports = {
                 }
             });
         }
+        */
     },
 
     /*
@@ -155,7 +157,7 @@ module.exports = {
 
     getStudentiPrima: function (callback) {
 
-        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico AND  = (" + anno_sc + ")", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {

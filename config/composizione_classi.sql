@@ -57,6 +57,7 @@ CREATE TABLE  `alunni` (
  `nome` VARCHAR( 255 ) NOT NULL ,
  `matricola` INT(10) NOT NULL,
  `cf` CHAR( 16 ) NOT NULL ,
+ `cf_amico` CHAR( 16 ) NULL ,
  `sesso` CHAR( 1 ) NOT NULL ,
  `data_di_nascita` DATE NOT NULL ,
  `stato` VARCHAR( 20 ) NOT NULL ,
