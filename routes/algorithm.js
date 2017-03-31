@@ -143,7 +143,6 @@ module.exports = {
             iniziale: iniziale,
             stranieri: stranieri,
             desiderata: desiderata,
-            stranieri: stranieri,
             legge_104: legge_104,
             legge_107: legge_107
         };
