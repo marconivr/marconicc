@@ -127,7 +127,7 @@ module.exports = {
         var nFemmine = module.exports.countFemmine(listaAlunniClasse);
         var media = module.exports.mediaClasse(listaAlunniClasse);
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
-        var bocciati = module.exports.countBocciati(listaAlunniClasse);
+        var ripetenti = module.exports.countRipetenti(listaAlunniClasse);
         var iniziale = module.exports.countTutteInizialiCognome(listaAlunniClasse);
         var stranieri = module.exports.countStranieri(listaAlunniClasse);
         return {
@@ -135,7 +135,7 @@ module.exports = {
             femmine: nFemmine,
             media: media.toFixed(2),
             residenza: residenza,
-            bocciati: bocciati,
+            ripetenti: ripetenti,
             iniziale: iniziale,
             stranieri: stranieri
         };
@@ -172,9 +172,6 @@ module.exports = {
                             //module.exports.fixStranieri(listaClassi[k].nome);
                             module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
                             break;
-                        case "ripetenti":
-
-                            break;
                         case "stessa_provenienza":
 
                             break;
@@ -188,6 +185,9 @@ module.exports = {
                 }
                 listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
+            //module.exports.fixRipetenti(listaClassi[k].nome);
+            console.log("Proprietà classe: " + listaClassi[k].nome);
+            module.exports.printProprieta();
             //console.log("Bocciati classe " + listaClassi[k].nome + ":"+ listaClassi[k].proprieta.bocciati);
         }
     },
@@ -278,11 +278,11 @@ module.exports = {
     },
 
     /**
-     * countBocciati ritorna il numero di bocciati per classe
+     * countRipetenti ritorna il numero di ripetenti della classe param
      * @param listaAlunniClasse
      * @returns {number}
      */
-    countBocciati: function (listaAlunniClasse) {
+    countRipetenti: function (listaAlunniClasse) {
         var count = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
@@ -295,11 +295,11 @@ module.exports = {
     },
 
     /**
-     * countBocciati ritorna il numero di bocciati totali
-     * @param listaAlunniClasseTot
+     * countRipetentiTot ritorna il numero di ripetenti totali
+     * @param listaAlunniClasse
      * @returns {number}
      */
-    countBocciatiTot: function () {
+    countRipetentiTot: function () {
         var count = 0;
         for (var k = 0; k < listaClassi.length; k++){
             for (var i = 0; i < listaClassi[k].alunni.length; i++) {
@@ -407,11 +407,6 @@ module.exports = {
                     }
                     if (probl != {}){
                         ris["nazionalita"] = probl;
-                    }
-                    break;
-                case "bocciati":
-                    if (proprieta.bocciati > settings.boc) {
-                        ris["bocciati"] = proprieta.bocciati;
                     }
                     break;
                 case "residenza":
@@ -572,23 +567,31 @@ module.exports = {
     },
 
     /**
-     * fixFemmine inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
+     * fixRipetenti inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
      * @param nomeClasse
      */
-    fixBocciati: function (nomeClasse) {
+    fixRipetenti: function (nomeClasse) {
+        var num_ripetenti = Math.round(module.exports.countRipetentiTot()/listaClassi.length);   //numero ripetenti per classe
         var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
         for (var i = 0; i < listaClassi.length; i++) {
             if (listaClassi[i].nome != nomeClasse) {
-                if (module.exports.countFemmine(classe.alunni) >= module.exports.countFemmine(listaClassi[i].alunni) && module.exports.countFemmine(listaClassi[i].alunni) != 0
-                    && module.exports.countFemmine(listaClassi[i].alunni) <= settings.fem) {
-                    var objfem = module.exports.searchAlunno("sesso", "F", listaClassi[i].alunni);
-                    if (objfem != null) {
-                        module.exports.addStundentInClss(objfem, listaClassi[i], classe, true);
+                if (module.exports.countRipetenti(classe.alunni) > num_ripetenti
+                    && module.exports.countRipetenti(listaClassi[i].alunni) < num_ripetenti) {
+                    var objal = module.exports.searchRipetente(classe.alunni);
+                    if (objal != null) {
+                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
+                    }
+                }
+                if (module.exports.countRipetenti(classe.alunni) < num_ripetenti
+                    && module.exports.countRipetenti(listaClassi[i].alunni) > num_ripetenti) {
+                    var objal = module.exports.searchRipetente(classe.alunni);
+                    if (objal != null) {
+                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
                     }
                 }
             }
-            //Esce dal ciclo se, nella classe passata come parametro, non ci sono più femmine
-            if (module.exports.countFemmine(classe.alunni) == settings.fem) {
+
+            if (module.exports.countRipetenti(listaClassi[i].alunni) == num_ripetenti) {
                 break;
             }
         }
@@ -642,6 +645,15 @@ module.exports = {
     searchStraniero: function (listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i]["nazionalita"].toLowerCase() != "italiana") {
+                return listaAlunniClasse[i];
+            }
+        }
+        return null;
+    },
+
+    searchRipetente: function (listaAlunniClasse) {
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i]["classe_precedente"] != "") {
                 return listaAlunniClasse[i];
             }
         }
