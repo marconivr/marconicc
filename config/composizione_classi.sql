@@ -57,6 +57,7 @@ CREATE TABLE  `alunni` (
  `nome` VARCHAR( 255 ) NOT NULL ,
  `matricola` INT(10) NOT NULL,
  `cf` CHAR( 16 ) NOT NULL ,
+ `cf_amico` CHAR( 16 ) NULL ,
  `sesso` CHAR( 1 ) NOT NULL ,
  `data_di_nascita` DATE NOT NULL ,
  `stato` VARCHAR( 20 ) NOT NULL ,
@@ -84,8 +85,8 @@ FOREIGN KEY (`tag`) REFERENCES tag(`tag`)
 DROP TABLE IF EXISTS `amici`;
 CREATE TABLE `amici` (
   `id` int(11) NOT NULL,
-  `matricola_1` int(5) NOT NULL,
-  `matricola_2` int(5) NOT NULL
+  `cf_1` CHAR(16) NOT NULL,
+  `cf_2` CHAR(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -249,5 +250,3 @@ primary key(nome_classe, cf_alunno),
 foreign key (nome_classe) references classi(nome),
 foreign key (cf_alunno) references alunni(cf)
 );
-
-

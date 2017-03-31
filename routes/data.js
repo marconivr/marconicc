@@ -124,7 +124,7 @@ module.exports = function (app, passport, upload) {
             else {
                 nAlunniCompCl = results[0].result;
                 if (nAlunniCompCl == 0) {
-                    alg.main("prima", function (err) {
+                    alg.firstGeneration("prima", function (err) {
                         if (err)
                             console.log(err);
                         else {

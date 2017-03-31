@@ -567,7 +567,7 @@ $(document).ready(function() {
                 var numerOfStudent = totalNumberOfStudent(nomeClasse);
                 var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
 
-                // CHART DATA //
+                // CHART BAR //
                 var chart = $('<canvas/>',
                     {
                         'id': nomeClasse,

@@ -26,27 +26,35 @@ module.exports = {
         var nome = arrayRow[1];
         var matricola = arrayRow[2];
         var cf = arrayRow[3];
-        var sesso = arrayRow[4];
-        var dataDiNascita = arrayRow[5];
-        var statoRichiesta = arrayRow[6];
-        var cap = arrayRow[7];
-        var nazionalita = arrayRow[8];
-        var legge_107 = arrayRow[9];
-        var legge_104 = arrayRow[10];
-        var classe_precedente = arrayRow[11];
-        var indirizzo = arrayRow[12];
-        var annoScolastico = arrayRow[13];
-        var anno = arrayRow[14];
-        var codice_cat = arrayRow[15];
-        var media_voto = arrayRow[16];
-        var condotta = arrayRow[17];
-        var classe_futura = arrayRow[18];
-        var tag = arrayRow[19];
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, media_voto, condotta, classe_futura,tag], function (err, row) {
+        var cf_amico = arrayRow[4];
+        var sesso = arrayRow[5];
+        var dataDiNascita = arrayRow[6];
+        var statoRichiesta = arrayRow[7];
+        var cap = arrayRow[8];
+        var nazionalita = arrayRow[9];
+        var legge_107 = arrayRow[10];
+        var legge_104 = arrayRow[11];
+        var classe_precedente = arrayRow[12];
+        var indirizzo = arrayRow[13];
+        var annoScolastico = arrayRow[14];
+        var anno = arrayRow[15];
+        var codice_cat = arrayRow[16];
+        var media_voto = arrayRow[17];
+        var condotta = arrayRow[18];
+        var classe_futura = arrayRow[19];
+        var tag = arrayRow[20];
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, cf_amico, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, media_voto, condotta, classe_futura,tag], function (err, row) {
             if (err) {
                 console.log(err);
             }
         });
+        if (cf_amico != ""){
+            connection.query("INSERT INTO amici (cf_1, cf_2) VALUES (?,?)", [cf, cf_amico], function (err, row) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
     },
 
     /*
