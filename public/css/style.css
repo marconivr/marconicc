@@ -26,12 +26,20 @@
     padding: 0.65em 0 0.65em 0.7em;
 }
 
+.tableContainer {
+    padding-left: 1%;
+    padding-right: 1%;
+    clear: both;
+    width: 100%;
+    table-layout: fixed;
+}
+
 .roboto {
     font-family: Roboto, sans-serif !important;
     font-size: 0.7em;
     line-height: 1em;
     color: black;
-    display: inline-block;
+    /*display: inline-block;*/
     text-align: left;
 
 }
@@ -66,10 +74,18 @@
     background-color: #f2bed0 !important;
     border-color: #f2bed0 !important;
     color: #000000 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .guys{
     background-color: #99c9f7 !important;
     border-color: #99c9f7 !important;
     color: #000000 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
 }

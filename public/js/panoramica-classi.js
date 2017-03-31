@@ -1,7 +1,47 @@
 var debug = true;
-var chartArray = [];
-var arrayClassi = null;
+var saveRealTimeOnDb = true;
 
+
+var chartArray = [];//reference to chart
+var informationArray = [];//reference to information
+var arrayClassi = null;
+var iconJson = {
+    'media': {
+        'color': 'floating ui green label',
+        'icon': 'write icon'
+    },
+    'bocciati': {
+        'color': 'floating ui red label',
+        'icon': 'configure icon'
+    },
+    'alunni': {
+        'color': 'floating ui blue  label',
+        'icon': 'student icon'
+    }
+
+};
+
+var flagJson = {
+    'ITALIANA' : 'it',
+    'CINGALESE' : 'lk',
+    'BANGLADESE': 'bd',
+    'ROMENA' : 'ro',
+    'CINESE' : 'cn',
+    'MAROCCHINA' : 'ma',
+    'PARAGUAIANA' : 'py',
+    'TUNISINA' : 'tn',
+    'FILIPPINA' : 'ph',
+    'ALBANESE' : 'al',
+    'MOLDAVA' : 'md',
+    'LETTONE' : 'lv',
+    'BRASILIANA' : 'br',
+    'NIGERIANA' : 'ne',
+    'GHANESE' : 'gh',
+    'PERUVIANA' : 'pe',
+    'CUBANA' : 'cu',
+    'CROATA' : 'hr',
+    'SENEGALESE' : 'sn'
+};
 
 function populate(listaClassi) {
     arrayClassi = listaClassi;
@@ -107,7 +147,6 @@ function approxNum(num){
  * @param newClassName
  */
 function updateChart(newClassName) {
-    //TODO:APPROSIAMRE LE PERCENTUALI
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(newClassName);
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
@@ -139,6 +178,41 @@ function refreshChart(oldClassName) {
     myChart.update();
 }
 
+/**
+ * count bocciati of one class
+ * @param className
+ * @returns {number}
+ */
+function countBocciatiOfClass(className) {
+    var bocciati = 0;
+
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+                if (arrayClassi[i].alunni[studente].classe_precedente != "") bocciati += 1;
+            }
+        }
+    }
+    return bocciati;
+}
+
+/**
+ * ritorna un json con le proprietà
+ * @param nomeClasse
+ * @returns {{}}
+ */
+function createProprietaForASpecificClass(className) {
+    var prop = {};
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            prop['alunni'] = arrayClassi[i].alunni.length;
+            prop['media'] = getMediaOfClass(arrayClassi[i].nome);
+            prop['bocciati'] = countBocciatiOfClass(className);
+            return prop;
+        }
+    }
+
+}
 /**
  *
  * @param nomeClasse
@@ -210,7 +284,91 @@ function displayAllClass() {
     //visualizzo tutto lasciando in selezione gli altri item
     $('.wrapperClasse').show();
     //attivo il doppio scroll che non funziona bisognerà indagare
-    $('#wrapper').doubleScroll();
+    $('#wrapper').doubleScroll()
+}
+
+/**
+ * crea il box delle informazioni per ogni classe
+ */
+function createBoxInformazioni(wrapperClasse, nomeClasse) {
+
+    var proprieta = createProprietaForASpecificClass(nomeClasse);
+    var array = [];
+    for (var prop in proprieta) {
+
+        var menu = $('<div/>')
+            .addClass('ui compact menu')
+            .appendTo(wrapperClasse);
+
+        //donne
+        var item = $('<a/>')
+            .addClass('item')
+            .appendTo(menu);
+
+        var studentIcon = $('<i/>')
+            .addClass(iconJson[prop].icon)
+            .appendTo(item);
+
+        var floatingMenu = $('<div/>')
+            .addClass(iconJson[prop].color)
+            .appendTo(item);
+
+        var reference = prop
+        var value = $('<p/>',
+            {
+                'id': prop + '-' + nomeClasse
+            })
+            .html(proprieta[prop])
+            .appendTo(floatingMenu);
+
+        array.push(value);
+    }
+    informationArray.push(array);
+}
+
+/**
+ * update the information of a specific class
+ * @param className
+ */
+function updateInformation(className) {
+    var proprieta = createProprietaForASpecificClass(className);
+    for (var i = 0; i < arrayClassi.length; i++)
+
+        if (arrayClassi[i].nome == className) {
+            informationArray[i][0].html(proprieta["alunni"]);
+            informationArray[i][1].html(proprieta["media"]);
+            informationArray[i][2].html(proprieta["bocciati"]);
+
+
+        }
+
+}
+
+
+function saveStudentMovementOnDb(cf, fromClass, toClass) {
+
+    var jsonToSend = {
+        cf : cf,
+        fromClass : fromClass,
+        toClass : toClass
+    }
+
+    if(saveRealTimeOnDb){
+        $.ajax({
+            type: "POST",
+            url: "/move-student",
+
+            data: jsonToSend,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data){
+                console.log(data);
+            },
+            failure: function(errMsg) {
+                alert(errMsg);
+            }
+        });
+    }
 
 }
 
@@ -257,12 +415,19 @@ function moveStudent(cf,fromClass,toClass){
         }
     }
 
-    //updateStatistiche(fromClass);
-    //updateStatistiche(toClass);
+    saveStudentMovementOnDb(cf,fromClass,toClass);
     updateChart(toClass);//refresh the new chart
     refreshChart(fromClass); //refresh the old chart
+    updateInformation(toClass);
+    updateInformation(fromClass);
 
 }
+
+function flagTag(nazionalita) {
+    return flagJson[nazionalita];
+
+}
+
 
 $(document).ready(function() {
     /**
@@ -303,21 +468,8 @@ $(document).ready(function() {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <h4 class="title">Distribuzione Voti</h4> '
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'bar' + ' class="ui button"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chart' + ' class="ui button"><i class="pie chart icon"></i></button></div> <h4 class="title">Distribuzione Voti</h4> '
                 }).appendTo(wrapperClasse);
-
-
-
-                for (var prop in proprieta) {
-                    if (prop != "residenza" && prop != "iniziale" && prop != "bocciati") {
-                        // var li = $('<div/>')
-                        //     .addClass("ui info message")
-                        //     .text(prop + ": " + proprieta[prop])
-                        //     .appendTo(settingClasse);
-                        //<canvas id="myChart" width="400" height="400"></canvas>
-                    }
-                }
-
 
                 var div = $('<ul/>', {
                     'class': 'contenitoreClasse ui vertical menu'
@@ -329,17 +481,19 @@ $(document).ready(function() {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
+                        var nazionalita = arrayStudenti[j].nazionalita;
 
-                        // //sezione per sapere quanti studenti hanno un determinato voto
-                        // var voto = arrayStudenti[j].media_voti;
-                        // if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
-                        // else jsonVoti[voto] = jsonVoti[voto] + 1;
+
+                        var iconFlagElement = "";
+                        if (nazionalita != "ITALIANA"){
+                            iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
+                        }
 
 
                         var tag;
                         var anagrafica = $('<p/>')
                             .addClass('roboto')
-                            .html(cognomeStudente + " " + nomeStudente);
+                            .html(iconFlagElement + " " +cognomeStudente + " " + nomeStudente );
 
                         if (arrayStudenti[j].sesso == "M") {
                             var container = $('<div/>',
@@ -361,17 +515,35 @@ $(document).ready(function() {
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
-                        if (arrayStudenti[j].tag != null) {
+
+                        var tooltipValue = "";
+
+
+                        if ((arrayStudenti[j].legge_104) != "") {
+                            tooltipValue = "104"
+                        }else if(arrayStudenti[j].legge_107 != ""){
+                            tooltipValue = "107";
+                        }
+
+                        if (tooltipValue != ""){
                             //contiene il tag studente
                             tag = $('<div/>')
-                                .addClass('floating ui grey  label')
-                                .html(arrayStudenti[j].tag)
+                                .addClass('floating ui grey label tiny')
+                                .html(tooltipValue)
                                 .appendTo(container)
                         }
+
+
+
                         //tooltip
+                        var handicapTooltip = "";
+                        if ((arrayStudenti[j])['legge_'+tooltipValue] !== undefined){
+                            handicapTooltip = '<br>'+tooltipValue+': '+(arrayStudenti[j])['legge_'+tooltipValue];
+                        }
+
                         var tooltip = $('<span/>')
                             .addClass('tooltiptext')
-                            .html('Media : ' + arrayStudenti[j].media_voti)
+                            .html('media : ' + arrayStudenti[j].media_voti + '<br>naz : ' + nazionalita + handicapTooltip)
                             .appendTo(container);
 
                         var li = $('<li/>')
@@ -381,6 +553,8 @@ $(document).ready(function() {
                         //menu
 
                     }
+
+
                 }
 
                 var jsonVotiPrima = totalVotiOfAllClass();
@@ -396,6 +570,7 @@ $(document).ready(function() {
                         'height': 200
                     }).appendTo(settingClasse);
 
+                var br = $('<br>').appendTo(settingClasse);
                 var ctx = chart;
                 var myChart = new Chart(ctx, {
                     type: 'bar',
@@ -473,6 +648,10 @@ $(document).ready(function() {
                 });
                 chartArray.push(myChart);
 
+                //box informazioni
+                createBoxInformazioni(settingClasse, nomeClasse);
+
+
             }
             var oldList, newList, item;
             $(".contenitoreClasse").sortable({
@@ -515,20 +694,19 @@ $(document).ready(function() {
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
 
-                    var classe = $(this).text();
+                    if($('#check').prop("checked") == false){
+                        var classe = $(this).text();
+                        $('#' + classe).hide();
+                    }
 
-                    //nascondo l'elemento
-
-
-                    //bisogna fare il controllo per quando si preme tante volte
-                    $('#' + classe).hide();
 
                 } else {
                     $(this).addClass('active');
-                    var classe = $(this).text();
 
-                    //visualizzo l'elemento
-                    $('#' + classe).show();
+                    if($('#check').prop("checked") == false){
+                        var classe = $(this).text();
+                        $('#' + classe).show();
+                    }
                 }
             }
         });

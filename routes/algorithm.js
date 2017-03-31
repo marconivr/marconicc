@@ -17,10 +17,11 @@ var settings = {
     nazionalita: 3,
     media_min: 7.7,
     media_max: 8.0,
+    max_al_104: 23,
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["alunni", "legge_104", "legge_107", "desiderata", "bocciati", "femmine", "nazionalita", "CAP", "voto"];
+var priority = ["alunni", "legge_104", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -132,6 +133,7 @@ module.exports = {
         var stranieri = module.exports.countStranieri(listaAlunniClasse);
         var legge_104 = module.exports.count104(listaAlunniClasse);
         var legge_107 = module.exports.count107(listaAlunniClasse);
+        var desiderata = module.exports.countDesiderata(listaAlunniClasse);
         return {
             alunni: nAlunni,
             femmine: nFemmine,
@@ -139,6 +141,8 @@ module.exports = {
             residenza: residenza,
             ripetenti: ripetenti,
             iniziale: iniziale,
+            stranieri: stranieri,
+            desiderata: desiderata,
             stranieri: stranieri,
             legge_104: legge_104,
             legge_107: legge_107
@@ -185,14 +189,18 @@ module.exports = {
                         case "iniziale":
 
                             break;
+                        case "desiderata":
+                            module.exports.fixDesiderata(listaClassi[k].nome);
+                            break;
                         case "legge_104":
-                            console.log("culo");
                             module.exports.fix104(listaClassi[k].nome);
-                            break
+                            break;
                     }
                 }
                 listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
+            //module.exports.fixRipetenti(listaClassi[k].nome);
+            //console.log("Proprietà classe: " + listaClassi[k].nome);
             //module.exports.printProprieta();
         }
     },
@@ -265,6 +273,17 @@ module.exports = {
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i].nazionalita.toLowerCase() != "italiana") {
+                count++;
+            }
+        }
+        return count;
+    },
+
+    countDesiderata: function(listaAlunniClasse){
+        var count = 0;
+
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i].cf_amico.toLowerCase() != "") {
                 count++;
             }
         }
@@ -453,17 +472,23 @@ module.exports = {
                     }
                     break;
                 case "iniziale":
-                /*
-                 if (proprieta.iniziale.length != 0) {
-                 ris["iniziale"] = [];
-                 for (var k = 0; k < proprieta.iniziale.length; k++) {
-                 if (proprieta.iniziale[k].num > settings.iniziale) {
-                 ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
-                 }
-                 }
-                 }
+                    /*
+                     if (proprieta.iniziale.length != 0) {
+                     ris["iniziale"] = [];
+                     for (var k = 0; k < proprieta.iniziale.length; k++) {
+                     if (proprieta.iniziale[k].num > settings.iniziale) {
+                     ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
+                     }
+                     }
+                     }
+                     break;
                  */
-                 break;
+                    break;
+                case "desiderata":
+                    if (proprieta.desiderata != 0) {
+                        ris["desiderata"] = proprieta.desiderata;
+                    }
+                    break;
                 case "legge_104":
                     if (listaAlunniClasse.length > 20 && proprieta.legge_104 > 0){
                         ris["legge_104"] = proprieta.legge_104;
@@ -536,6 +561,22 @@ module.exports = {
         }
     },
 
+    fixDesiderata: function (nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);
+        var elencoDesiderataClasse = module.exports.elencoDesiderataInClass(classe.alunni);
+        for (var cf in elencoDesiderataClasse ){
+            for (var i = 0; i < listaClassi.length; i++){
+                var objal = module.exports.searchAlunno("cf", elencoDesiderataClasse[cf], listaClassi[i].alunni);
+
+                if (objal != null) {
+                    if (objal.cf_amico == cf){
+                        module.exports.addStundentInClss(objal,listaClassi[i], classe, true);
+                    }
+                }
+            }
+        }
+    },
+
     /**
      * delCerry
      * @param nomeClasse
@@ -575,6 +616,21 @@ module.exports = {
     },
 
     /**
+     *
+     * @param listaAlunniClasse
+     * @returns {{}}
+     */
+    elencoDesiderataInClass: function (listaAlunniClasse) {
+        var ris = {};
+        for(var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i]["cf_amico"].toLowerCase() != "") {
+                ris[listaAlunniClasse[i]["cf"]] = listaAlunniClasse[i]["cf_amico"];
+            }
+        }
+        return ris;
+    },
+
+    /**
      * fixStranieriPerNaz fixa per nazionalita se rispettano quelle prestabilite
      * @param nomeClasse
      * @param objNaz
@@ -586,7 +642,7 @@ module.exports = {
                 if (listaClassi[i].nome != nomeClasse) {
                     if (module.exports.countStranieriStessaNaz(listaClassi[i].alunni, naz) < (objNaz[naz] - 1)) {
                         var objal = module.exports.searchAlunno("nazionalita", naz.toUpperCase(), classe.alunni);
-                        //console.log(objal);
+                        console.log(objal);
                         if (objal != null) {
                             module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
                         }
@@ -676,7 +732,13 @@ module.exports = {
         return voto;
     },
 
-
+    /**
+     * searchAlunno cerca un alunno data un attributo, un valore e la lista di alunni di una classe
+     * @param attr
+     * @param valore
+     * @param listaAlunniClasse
+     * @returns {*}
+     */
     searchAlunno: function (attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i][attr] == valore) {
