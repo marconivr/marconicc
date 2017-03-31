@@ -480,8 +480,7 @@ module.exports = {
                      }
                      }
                      }
-                     break;
-                 */
+                    */
                     break;
                 case "desiderata":
                     if (proprieta.desiderata != 0) {
@@ -492,6 +491,7 @@ module.exports = {
                     if (listaAlunniClasse.length > 20 && proprieta.legge_104 > 0){
                         ris["legge_104"] = proprieta.legge_104;
                     }
+                    break;
 
             }
         }
