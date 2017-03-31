@@ -21,7 +21,7 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["alunni", "104", "107", "desiderata", "bocciati", "femmine", "nazionalita", "CAP", "voto"];
+var priority = ["alunni", "104", "107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -140,7 +140,7 @@ module.exports = {
             ripetenti: ripetenti,
             iniziale: iniziale,
             stranieri: stranieri,
-            desiderata: desiderata
+            desiderata: desiderata,
         };
     },
 
