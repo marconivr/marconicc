@@ -2,7 +2,9 @@ var debug = true;
 var saveRealTimeOnDb = true;
 
 
-var chartArray = [];//reference to chart
+var barChartArray = [];//reference to barChart
+var pieChartArray = [];//reference to pieChart
+
 var informationArray = [];//reference to information
 var arrayClassi = null;
 var iconJson = {
@@ -46,6 +48,28 @@ var flagJson = {
 
 function populate(listaClassi) {
     arrayClassi = listaClassi;
+}
+
+/**
+ * @param nomeClasse
+ * @returns {{}} oggetto che rappresenta la situazione stranieri nella classe
+ */
+function getNationalityOfClass(nomeClasse) {
+    var alunni = getStudentsOfClass(nomeClasse);
+
+    var nazionalita = {};
+    for (var i=0; i < alunni.length; i++){
+        nazionalita[alunni[i].nazionalita] = 0;
+    }
+
+    for(var prop in nazionalita){
+        for (i=0; i < alunni.length; i++){
+            if (alunni[i].nazionalita == prop){
+                nazionalita[prop] += 1;
+            }
+        }
+    }
+    return nazionalita;
 }
 
 /**
@@ -151,14 +175,14 @@ function updateChart(newClassName) {
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(newClassName);
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
-    var myChart = chartArray[position];
+    var barChart = barChartArray[position];
     var numerOfStudent = totalNumberOfStudent(newClassName);
-    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
-    myChart.update();
+    barChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
+    barChart.update();
 }
 
 /**
@@ -169,14 +193,14 @@ function refreshChart(oldClassName) {
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(oldClassName);
     var position = oldClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
-    var myChart = chartArray[position];
+    var barChart = barChartArray[position];
     var numerOfStudent = totalNumberOfStudent(oldClassName);
-    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
-    myChart.update();
+    barChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
+    barChart.update();
 }
 
 /**
@@ -496,7 +520,7 @@ $(document).ready(function() {
                         /////////////////////STUDENTI//////////////////
                         //CREAZIONE TAG
                         //ES : CIECO
-                        //ES : DSG-> DISGRAFICO
+                        //ES : DSA-> DISGRAFICO
 
                         //CONTROLLO ANAGRAFICA
                         //CONTROLLO DESIDERATA
@@ -568,16 +592,15 @@ $(document).ready(function() {
                 var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
 
                 // CHART BAR //
-                var chart = $('<canvas/>',
+                var canvasBarChart = $('<canvas/>',
                     {
-                        'id': nomeClasse,
+                        'class': 'barChart',
                         'width': 200,
                         'height': 200
                     }).appendTo(settingClasse);
 
                 var br = $('<br>').appendTo(settingClasse);
-                var ctx = chart;
-                var myChart = new Chart(ctx, {
+                var barChart = new Chart(canvasBarChart, {
                     type: 'bar',
                     data: {
                         labels: ["6", "7", "8", "9", "10"],
@@ -651,7 +674,48 @@ $(document).ready(function() {
                         }
                     }
                 });
-                chartArray.push(myChart);
+
+                barChartArray.push(barChart);
+
+
+                // PIE CHART//
+                var canvasPieChart = $('<canvas/>',
+                    {
+                        'class': 'pieChart',
+                        'width': 200,
+                        'height': 200
+                    });
+
+                // For a pie chart
+                var pieChart = new Chart(canvasPieChart,{
+                    type: 'pie',
+                    data: {
+                        labels: [
+                            "Red",
+                            "Blue",
+                            "Yellow"
+                        ],
+                        datasets: [
+                            {
+                                data: [300, 50, 100],
+                                backgroundColor: [
+                                    "#FF6384",
+                                    "#36A2EB",
+                                    "#FFCE56"
+                                ],
+                                hoverBackgroundColor: [
+                                    "#FF6384",
+                                    "#36A2EB",
+                                    "#FFCE56"
+                                ]
+                            }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+
+                pieChartArray.push(pieChart);
 
                 //box informazioni
                 createBoxInformazioni(settingClasse, nomeClasse);
@@ -737,12 +801,8 @@ $(document).ready(function() {
                     } catch (e) {
                         //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe
                     }
-
                 }
-
             });
         }
-
     });
-
 });
