@@ -20,7 +20,7 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["alunni", "104", "107", "desiderata", "bocciati", "femmine", "nazionalita", "CAP", "voto"];
+var priority = ["alunni", "legge_104", "legge_107", "desiderata", "bocciati", "femmine", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -130,6 +130,8 @@ module.exports = {
         var ripetenti = module.exports.countRipetenti(listaAlunniClasse);
         var iniziale = module.exports.countTutteInizialiCognome(listaAlunniClasse);
         var stranieri = module.exports.countStranieri(listaAlunniClasse);
+        var legge_104 = module.exports.count104(listaAlunniClasse);
+        var legge_107 = module.exports.count107(listaAlunniClasse);
         return {
             alunni: nAlunni,
             femmine: nFemmine,
@@ -137,7 +139,9 @@ module.exports = {
             residenza: residenza,
             ripetenti: ripetenti,
             iniziale: iniziale,
-            stranieri: stranieri
+            stranieri: stranieri,
+            legge_104: legge_104,
+            legge_107: legge_107
         };
     },
 
@@ -181,14 +185,15 @@ module.exports = {
                         case "iniziale":
 
                             break;
+                        case "legge_104":
+                            console.log("culo");
+                            module.exports.fix104(listaClassi[k].nome);
+                            break
                     }
                 }
                 listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
-            //module.exports.fixRipetenti(listaClassi[k].nome);
-            console.log("Proprietà classe: " + listaClassi[k].nome);
-            module.exports.printProprieta();
-            //console.log("Bocciati classe " + listaClassi[k].nome + ":"+ listaClassi[k].proprieta.bocciati);
+            //module.exports.printProprieta();
         }
     },
 
@@ -209,7 +214,7 @@ module.exports = {
 
     printProprieta: function () {
         for (var k = 0; k < listaClassi.length; k++) {
-            console.log("Proprieta");
+            console.log("Proprieta classe: " + listaClassi[k].nome);
             console.log(listaClassi[k].proprieta);
         }
     },
@@ -378,6 +383,30 @@ module.exports = {
         return ris;
     },
 
+    count104: function (listaAlunniClasse) {
+        var count = 0;
+
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i].legge_104 != ""){
+                count++;
+            }
+        }
+
+        return count;
+    },
+
+    count107: function (listaAlunniClasse) {
+        var count = 0;
+
+        for (var i = 0; i < listaAlunniClasse.length; i++) {
+            if (listaAlunniClasse[i].legge_107 != ""){
+                count++;
+            }
+        }
+
+        return count;
+    },
+
     problemiClasse: function (listaAlunniClasse) {
         var ris = {};
         var proprieta = module.exports.createProprietaClasse(listaAlunniClasse);
@@ -433,8 +462,12 @@ module.exports = {
                  }
                  }
                  }
-                 break;
                  */
+                 break;
+                case "legge_104":
+                    if (listaAlunniClasse.length > 20 && proprieta.legge_104 > 0){
+                        ris["legge_104"] = proprieta.legge_104;
+                    }
 
             }
         }
@@ -553,7 +586,7 @@ module.exports = {
                 if (listaClassi[i].nome != nomeClasse) {
                     if (module.exports.countStranieriStessaNaz(listaClassi[i].alunni, naz) < (objNaz[naz] - 1)) {
                         var objal = module.exports.searchAlunno("nazionalita", naz.toUpperCase(), classe.alunni);
-                        console.log(objal);
+                        //console.log(objal);
                         if (objal != null) {
                             module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
                         }
@@ -567,32 +600,25 @@ module.exports = {
     },
 
     /**
-     * fixRipetenti inserisce nella classe param le femmine di altre classi che non rispettano i vincoli.
+     * fixRipetenti
      * @param nomeClasse
      */
-    fixRipetenti: function (nomeClasse) {
-        var num_ripetenti = Math.round(module.exports.countRipetentiTot()/listaClassi.length);   //numero ripetenti per classe
-        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
-        for (var i = 0; i < listaClassi.length; i++) {
-            if (listaClassi[i].nome != nomeClasse) {
-                if (module.exports.countRipetenti(classe.alunni) > num_ripetenti
-                    && module.exports.countRipetenti(listaClassi[i].alunni) < num_ripetenti) {
-                    var objal = module.exports.searchRipetente(classe.alunni);
-                    if (objal != null) {
-                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
-                    }
-                }
-                if (module.exports.countRipetenti(classe.alunni) < num_ripetenti
-                    && module.exports.countRipetenti(listaClassi[i].alunni) > num_ripetenti) {
-                    var objal = module.exports.searchRipetente(classe.alunni);
-                    if (objal != null) {
-                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
-                    }
+    fixRipetenti: function () {
+        var ripetenti = [];
+        for (var k = 0; k < listaClassi.length; k++){
+            for (var i = 0; i < listaClassi[k].alunni.length; i++) {
+                if (listaClassi[k].alunni[i].classe_precedente != ""){
+                    var objAl = listaClassi[k].alunni[i];
+                    listaClassi[k].alunni.splice(k, 1);
+                    ripetenti.push(objAl);
                 }
             }
-
-            if (module.exports.countRipetenti(listaClassi[i].alunni) == num_ripetenti) {
-                break;
+        }
+        while (ripetenti.length != 0){
+            for (var i = 0; i < listaClassi.length; i++) {
+                var objAl2 = ripetenti[0];
+                ripetenti.splice(0, 1);
+                listaClassi[i].alunni.push(objAl2);
             }
         }
     },
@@ -612,6 +638,25 @@ module.exports = {
                 break;
             }
         }
+    },
+
+    fix104: function (nomeClasse) {
+        var classe = module.exports.findClasseFromString(nomeClasse);
+        while (classe.alunni.length > 20){
+            for (var i = 0; i < listaClassi.length; i++) {
+                if (listaClassi[i].nome != nomeClasse) {
+                    var objal = module.exports.searchAlunno("legge_104", "", classe.alunni);
+                    console.log(objal.legge_104);
+                    if (objal != null){
+                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
+                    }
+                }
+                if (classe.alunni.length <= 20) {
+                    break;
+                }
+            }
+        }
+
     },
 
     /**
@@ -634,7 +679,6 @@ module.exports = {
 
     searchAlunno: function (attr, valore, listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            console.log(listaAlunniClasse[i][attr] + ", " + valore);
             if (listaAlunniClasse[i][attr] == valore) {
                 return listaAlunniClasse[i];
             }
