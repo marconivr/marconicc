@@ -3,9 +3,6 @@
 <body>
 <% include sidebar-start.ejs %>
 
-
-
-
 <!--tabs-->
 <div class="ui top attached tabular menu">
     <a class="item active" data-tab="first">Prime</a>
@@ -14,22 +11,24 @@
 </div>
 <div class="ui bottom attached tab active  segment" data-tab="first">
 
-    <div class="tableContainer">
+    <div class="ui two column centered grid">
+        <div class="column">
+
             <table id="studenti" class="ui celled table" cellspacing="0" width="100%">
                 <thead>
                 <tr>
-                    <th>Cognome</th>
-                    <th>Nome</th>
-                    <th>Matricola</th>
-                    <th>Codice fiscale</th>
-                    <th>Sesso</th>
-                    <th>Data di nascita</th>
-                    <th>Stato</th>
-                    <th>Nazionalita</th>
-                    <th>Classe precedente</th>
-                    <th>Cap residenza</th>
-                    <th>Anno scolastico</th>
-                    <th>Voto medie</th>
+                    <th>cognome</th>
+                    <th>nome</th>
+                    <th>matricola</th>
+                    <th>cf</th>
+                    <th>sesso</th>
+                    <th>data_di_nascita</th>
+                    <th>stato</th>
+                    <th>nazionalita</th>
+                    <th>classe_precedente</th>
+                    <th>cap_provenienza</th>
+                    <th>anno_scolastico</th>
+                    <th>media_voti</th>
 
                 </tr>
                 </thead>
@@ -53,7 +52,7 @@
                     <td><%= finalDate %></td>
 
                     <td><%= studentsPrima[i].stato %></td>
-                    <td><%=studentsPrima[i].nazionalita %></td>
+                    <td><%= studentsPrima[i].nazionalita %></td>
                     <td><%= studentsPrima[i].classe_precedente %></td>
                     <td><%= studentsPrima[i].cap_provenienza %></td>
                     <td><%= studentsPrima[i].anno_scolastico %></td>
@@ -65,21 +64,23 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <th>Cognome</th>
-                    <th>Nome</th>
-                    <th>Matricola</th>
-                    <th>Codice fiscale</th>
-                    <th>Sesso</th>
-                    <th>Data di nascita</th>
-                    <th>Stato</th>
-                    <th>Nazionalita</th>
-                    <th>Classe precedente</th>
-                    <th>Cap residenza</th>
-                    <th>Anno scolastico</th>
-                    <th>Voto medie</th>
+                    <th>cognome</th>
+                    <th>nome</th>
+                    <th>matricola</th>
+                    <th>cf</th>
+                    <th>sesso</th>
+                    <th>data_di_nascita</th>
+                    <th>stato</th>
+                    <th>nazionalita</th>
+                    <th>classe_precedente</th>
+                    <th>cap_provenienza</th>
+                    <th>anno_scolastico</th>
+                    <th>media_voti</th>
                 </tr>
                 </tfoot>
             </table>
+
+        </div>
     </div>
     <!--close first tabs-->
 </div>
@@ -88,21 +89,22 @@
 <div class="ui bottom attached tab segment" data-tab="third">
 
 
-    <div class="tableContainer">
+    <div class="ui two column centered grid">
+        <div class="column">
     <table id="studenti-terza" class="ui celled table" cellspacing="0" width="100%">
         <thead>
         <tr>
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Codice fiscale</th>
-            <th>Sesso</th>
-            <th>Data di nascita</th>
-            <th>Stato</th>
-            <th>Cap provenienza</th>
+            <th>cognome</th>
+            <th>nome</th>
+            <th>cf</th>
+            <th>sesso</th>
+            <th>data_di_nascita</th>
+            <th>stato</th>
+            <th>cap_provenienza</th>
             <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
-            <th>Anno scolastico</th>
-            <th>Anno</th>
-            <th>Cod_cat</th>
+            <th>anno_scolastico</th>
+            <th>anno</th>
+            <th>cod_cat</th>
             <th>media_voti</th>
             <th>classe_futura</th>
 
@@ -158,8 +160,8 @@
         </tr>
         </tfoot>
     </table>
+        </div>
     </div>
-
 
 </div>
 
@@ -297,16 +299,6 @@
 <script>
     $(document).ready(function () {
         var table = $('#studenti').DataTable({
-
-            language: {
-                searchPlaceholder: "Studente",
-                search: "Cerca:",
-                EmptyTable: "Nessun alunno presente, vai nella sezione caricamento studenti per aggiungere degli studenti.",
-                paginate: { "sFirst": "Primo", "sLast": "Ultimo", "sNext": "Avanti", "sPrevious": "Indietro" },
-                "sLengthMenu": "Display _MENU_ records"
-
-
-            },
             processing: true,
             lengthChange: false,
             buttons: ['excel'],
@@ -329,8 +321,6 @@
         });
         table.buttons().container()
             .appendTo($('div.eight.column:eq(0)', table.table().container()));
-        $('.sixteen').removeClass().addClass('tableContainer');
-
     });
 </script>
 
@@ -338,15 +328,6 @@
 <script>
     $(document).ready(function () {
         var table = $('#studenti-terza').DataTable({
-
-            language: {
-                searchPlaceholder: "Studente",
-                search: "Cerca:",
-                sEmptyTable: "Nessun alunno presente, vai nella sezione caricamento studenti per aggiungere degli studenti.",
-                paginate: { "sFirst": "Primo", "sLast": "Ultimo", "sNext": "Avanti", "sPrevious": "Indietro" }
-
-
-            },
             processing: true,
             lengthChange: false,
             buttons: ['excel'],
@@ -364,11 +345,11 @@
                 {"data": "cod_cat"},
                 {"data": "media_voti"},
                 {"data": "classe_futura"}
+
             ]
         });
         table.buttons().container()
                 .appendTo($('div.eight.column:eq(0)', table.table().container()));
-        $('.sixteen').removeClass().addClass('tableContainer');
     });
 </script>
 
@@ -413,12 +394,7 @@
  var cf_code ;
  var existing_tag;
 
-
-
-
-
-
- //this section is execute when user type in the search field
+    //this section is execute when user type in the search field
     $('.ui.search')
         .search({
             apiSettings: {
