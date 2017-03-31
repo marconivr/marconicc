@@ -533,7 +533,6 @@ module.exports = {
 
                 if (objal != null) {
                     if (objal.cf_amico == cf){
-                        console.log(objal.cognome + " " + classe.nome);
                         module.exports.addStundentInClss(objal,listaClassi[i], classe, true);
                     }
                 }
