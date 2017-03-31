@@ -718,6 +718,8 @@ $(document).ready(function() {
                                 newList = oldList = ui.item.parent().parent();
                             }
                             else {
+                                var index = cfArray.indexOf(cf);
+                                cfArray.splice(index, 1);
                                 newList = oldList = ui.item.parent().parent();
                             }
                         }
