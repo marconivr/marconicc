@@ -662,8 +662,14 @@ $(document).ready(function() {
             $(".contenitoreClasse").sortable({
                 connectWith: ".contenitoreClasse",
                 start: function (event, ui) {
-                    item = ui.item;
-                    newList = oldList = ui.item.parent().parent();
+                    if ($(this).hasClass('desiderata')) {
+                        $('.ui.basic.modal').modal('show');
+                    }
+                    else {
+                        item = ui.item;
+                        newList = oldList = ui.item.parent().parent();
+                    }
+
                 },
                 stop: function (event, ui) {
                     var cf_studente_spostato = item[0].childNodes[0].id;
