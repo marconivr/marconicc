@@ -187,8 +187,13 @@ function refreshChart(oldClassName) {
  */
 function countBocciatiOfClass(className) {
     var bocciati = 0;
-
-
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == className) {
+            for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+                if (arrayClassi[i].alunni[studente].classe_precedente != "") bocciati += 1;
+            }
+        }
+    }
     return bocciati;
 }
 
@@ -361,7 +366,19 @@ function getStudentByCF(cf) {
             if (arrayClassi[i].alunni[studente].cf == cf)
                 return arrayClassi[i].alunni[studente].nome + " " + arrayClassi[i].alunni[studente].cognome;
         }
+    }
+}
 
+/**
+ * return classname of the student
+ * @param stundentCf
+ */
+function getClassNameFromStudent(stundentCf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf == stundentCf)
+                return arrayClassi[i].nome;
+        }
     }
 }
 
@@ -697,7 +714,7 @@ $(document).ready(function() {
                         //check if i've already this cf
                         if (jQuery.inArray(cf, cfArray) == -1) {
                             cfArray.push(cf);
-                            if (confirm("Questo alunno vuole stare con un amico: " + getStudentByCF(cfAmico) + ", continuare?")) {
+                            if (confirm("Questo alunno vuole stare con un amico: " + getStudentByCF(cfAmico) + " della " + getClassNameFromStudent(cfAmico) + ", continuare?")) {
                                 newList = oldList = ui.item.parent().parent();
                             }
                             else {
