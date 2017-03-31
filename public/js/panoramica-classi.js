@@ -298,7 +298,6 @@ function createBoxInformazioni(wrapperClasse, nomeClasse) {
             .addClass('ui compact menu')
             .appendTo(wrapperClasse);
 
-        //donne
         var item = $('<a/>')
             .addClass('item')
             .appendTo(menu);
@@ -311,7 +310,7 @@ function createBoxInformazioni(wrapperClasse, nomeClasse) {
             .addClass(iconJson[prop].color)
             .appendTo(item);
 
-        var reference = prop
+        var reference = prop;
         var value = $('<p/>',
             {
                 'id': prop + '-' + nomeClasse
@@ -336,10 +335,7 @@ function updateInformation(className) {
             informationArray[i][0].html(proprieta["alunni"]);
             informationArray[i][1].html(proprieta["media"]);
             informationArray[i][2].html(proprieta["bocciati"]);
-
-
         }
-
 }
 
 
@@ -398,7 +394,13 @@ function flagTag(nazionalita) {
 
 }
 
-
+////////////////////////////////////////////////////
+//AJAX CALL//
+////////////////////////////////////////////////////
+// - SCARICAMENTE JSON
+// - CREAZIONE BOX INFORMAZIONI
+// - CREAZIONE CHART
+// - INIZIALIZZAZIONE DRAG AND DROP STUDENTI
 $(document).ready(function() {
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
@@ -452,6 +454,7 @@ $(document).ready(function() {
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
                         var nazionalita = arrayStudenti[j].nazionalita;
+                        var desiderata = arrayStudenti[j].cf_amico;
 
 
                         var iconFlagElement = "";
@@ -459,11 +462,18 @@ $(document).ready(function() {
                             iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
                         }
 
+                        /////////////////////STUDENTI//////////////////
+                        //CREAZIONE TAG
+                        //ES : CIECO
+                        //ES : DSG-> DISGRAFICO
 
+                        //CONTROLLO ANAGRAFICA
+                        //CONTROLLO DESIDERATA
                         var tag;
                         var anagrafica = $('<p/>')
                             .addClass('roboto')
                             .html(iconFlagElement + " " +cognomeStudente + " " + nomeStudente );
+
 
                         if (arrayStudenti[j].sesso == "M") {
                             var container = $('<div/>',
@@ -486,9 +496,10 @@ $(document).ready(function() {
                                 .html(anagrafica)
                         }
 
+                        //aggiungo la classe desiderata se presente
+                        if (desiderata != "")container.addClass('desiderata');
+
                         var tooltipValue = "";
-
-
                         if ((arrayStudenti[j].legge_104) != "") {
                             tooltipValue = "104"
                         }else if(arrayStudenti[j].legge_107 != ""){
@@ -502,8 +513,6 @@ $(document).ready(function() {
                                 .html(tooltipValue)
                                 .appendTo(container)
                         }
-
-
 
                         //tooltip
                         var handicapTooltip = "";
@@ -519,12 +528,7 @@ $(document).ready(function() {
                         var li = $('<li/>')
                             .html(container)
                             .appendTo(div);
-
-                        //menu
-
                     }
-
-
                 }
 
                 var jsonVotiPrima = totalVotiOfAllClass();
@@ -651,6 +655,10 @@ $(document).ready(function() {
         type: 'GET'
     });
 
+    $('.ui.basic.modal')
+        .modal('show')
+    ;
+
     //TODO:FIX WHEN SELECTION WIDTH
 
 
@@ -706,7 +714,5 @@ $(document).ready(function() {
         }
 
     });
-
-
 
 });
