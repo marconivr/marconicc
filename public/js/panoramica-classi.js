@@ -691,11 +691,7 @@ $(document).ready(function() {
         },
         type: 'GET'
     });
-
-    $('.ui.basic.modal')
-        .modal('show')
-    ;
-
+    
     //TODO:FIX WHEN SELECTION WIDTH
 
 
