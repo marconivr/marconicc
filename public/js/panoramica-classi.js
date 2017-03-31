@@ -718,44 +718,44 @@ $(document).ready(function() {
                 barChartArray.push(barChart);
 
 
-                // PIE CHART//
-                var canvasPieChart = $('<canvas/>',
-                    {
-                        'class': 'pieChart',
-                        'width': 200,
-                        'height': 200
-                    });
-
-                // For a pie chart
-                var pieChart = new Chart(canvasPieChart,{
-                    type: 'pie',
-                    data: {
-                        labels: [
-                            "Red",
-                            "Blue",
-                            "Yellow"
-                        ],
-                        datasets: [
-                            {
-                                data: [300, 50, 100],
-                                backgroundColor: [
-                                    "#FF6384",
-                                    "#36A2EB",
-                                    "#FFCE56"
-                                ],
-                                hoverBackgroundColor: [
-                                    "#FF6384",
-                                    "#36A2EB",
-                                    "#FFCE56"
-                                ]
-                            }]
-                    },
-                    options: {
-                        responsive: true
-                    }
-                });
-
-                pieChartArray.push(pieChart);
+                // // PIE CHART//
+                // var canvasPieChart = $('<canvas/>',
+                //     {
+                //         'class': 'pieChart',
+                //         'width': 200,
+                //         'height': 200
+                //     });
+                //
+                // // For a pie chart
+                // var pieChart = new Chart(canvasPieChart,{
+                //     type: 'pie',
+                //     data: {
+                //         labels: [
+                //             "Red",
+                //             "Blue",
+                //             "Yellow"
+                //         ],
+                //         datasets: [
+                //             {
+                //                 data: [300, 50, 100],
+                //                 backgroundColor: [
+                //                     "#FF6384",
+                //                     "#36A2EB",
+                //                     "#FFCE56"
+                //                 ],
+                //                 hoverBackgroundColor: [
+                //                     "#FF6384",
+                //                     "#36A2EB",
+                //                     "#FFCE56"
+                //                 ]
+                //             }]
+                //     },
+                //     options: {
+                //         responsive: true
+                //     }
+                // });
+                //
+                // pieChartArray.push(pieChart);
 
                 //box informazioni
                 createBoxInformazioni(settingClasse, nomeClasse);
