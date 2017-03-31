@@ -1,9 +1,10 @@
 var debug = true;
-var saveRealTimeOnDb = true;
+var saveRealTimeOnDb = false;
 
 
 var chartArray = [];//reference to chart
 var informationArray = [];//reference to information
+var cfArray = []; //serve per i desiderata e per non rompere i coglioni
 var arrayClassi = null;
 var iconJson = {
     'media': {
@@ -187,13 +188,7 @@ function refreshChart(oldClassName) {
 function countBocciatiOfClass(className) {
     var bocciati = 0;
 
-    for (var i = 0; i < arrayClassi.length; i++) {
-        if (arrayClassi[i].nome == className) {
-            for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
-                if (arrayClassi[i].alunni[studente].classe_precedente != "") bocciati += 1;
-            }
-        }
-    }
+
     return bocciati;
 }
 
@@ -341,6 +336,34 @@ function updateInformation(className) {
         }
 }
 
+/**
+ * ritorna il cf di uno studente
+ * @param cf : cf da controllare
+ */
+function getAlunnoDesiderataByCF(cf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf_amico == cf)
+                return arrayClassi[i].alunni[studente].cf;
+        }
+
+    }
+}
+
+/**
+ * ritorna uno studente da un cf
+ * @param cf
+ * @returns {string}
+ */
+function getStudentByCF(cf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf == cf)
+                return arrayClassi[i].alunni[studente].nome + " " + arrayClassi[i].alunni[studente].cognome;
+        }
+
+    }
+}
 
 function saveStudentMovementOnDb(cf, fromClass, toClass) {
 
@@ -658,17 +681,61 @@ $(document).ready(function() {
 
 
             }
-            var oldList, newList, item;
+            var oldList, newList, item, desiderata, cfAmico;
             $(".contenitoreClasse").sortable({
                 connectWith: ".contenitoreClasse",
                 start: function (event, ui) {
-                    if ($(this).hasClass('desiderata')) {
-                        $('.ui.basic.modal').modal('show');
+
+                    item = ui.item;
+                    var currentPos = $(this).position();
+                    desiderata = item.children().hasClass('desiderata');
+                    cf = item.children()[0].id; //cf dell'alunno selezionato
+                    cfAmico = getAlunnoDesiderataByCF(cf);
+
+
+                    if (desiderata) {
+                        //check if i've already this cf
+                        if (jQuery.inArray(cf, cfArray) == -1) {
+                            cfArray.push(cf);
+                            if (confirm("Questo alunno vuole stare con un amico: " + getStudentByCF(cfAmico) + ", continuare?")) {
+                                newList = oldList = ui.item.parent().parent();
+                            }
+                            else {
+                                newList = oldList = ui.item.parent().parent();
+                            }
+                        }
+                        else {
+                            newList = oldList = ui.item.parent().parent();
+                        }
+
                     }
                     else {
-                        item = ui.item;
                         newList = oldList = ui.item.parent().parent();
                     }
+                    // cfAmico = getAlunnoDesiderataByCF(cf);
+                    // if(desiderata)
+                    // {
+                    //     if(jQuery.inArray(cf, cfArray) == 0 )
+                    //     {
+                    //         var index = cfArray.indexOf(cf);
+                    //         cfArray.splice(index, 1);
+                    //         if(confirm("Questo alunno vuole stare con un amico: "  + getStudentByCF(cfAmico) + ", continuare?"))
+                    //         {
+                    //             ;
+                    //         }
+                    //         else
+                    //         {
+                    //             newList = oldList = ui.item.parent().parent();
+                    //         }
+                    //     }
+                    //
+                    //
+                    // }
+                    // else {
+                    //     newList = oldList = ui.item.parent().parent();
+                    // }
+
+
 
                 },
                 stop: function (event, ui) {
@@ -691,7 +758,7 @@ $(document).ready(function() {
         },
         type: 'GET'
     });
-    
+
     //TODO:FIX WHEN SELECTION WIDTH
 
 
