@@ -78,7 +78,6 @@ module.exports = function (app, passport, upload) {
     /**
      * Elenco studenti in tabella
      */
-
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
 
         async.parallel({
