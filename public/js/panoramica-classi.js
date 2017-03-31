@@ -38,7 +38,7 @@ var flagJson = {
     'MOLDAVA' : 'md',
     'LETTONE' : 'lv',
     'BRASILIANA' : 'br',
-    'NIGERIANA' : 'ne',
+    'NIGERIANA' : 'ng',
     'GHANESE' : 'gh',
     'PERUVIANA' : 'pe',
     'CUBANA' : 'cu',
