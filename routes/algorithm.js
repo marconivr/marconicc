@@ -560,7 +560,7 @@ module.exports = {
                     }
                 }
             }
-            if (classe.alunni.media >= settings.media_min) {
+            if (classe.alunni.media > settings.media_min) {
                 break;
             }
         }
