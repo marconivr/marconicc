@@ -201,21 +201,58 @@ function updateChart(newClassName) {
 }
 
 /**
- * refresh the data in the old chart
- * @param oldClassName
+ * filtra il colore del box pdegli studenti per il voto
+ * @param voto voto con cui filtrare -> integer
  */
-function refreshChart(oldClassName) {
-    //json voti di questa classe
-    var jsonVoti = numerOfVotiOfClass(oldClassName);
-    var position = oldClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
-    var barChart = barChartArray[position];
-    var numerOfStudent = totalNumberOfStudent(oldClassName);
-    barChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
-    barChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
-    barChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
-    barChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
-    barChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
-    barChart.update();
+function setFilterVoti(voto) {
+    //trasformo il voto da intero a string
+    var votoString = votoIntegerToDecimal(voto);
+
+    $('.' + voto).each(function (index, element) {
+        $(element).addClass(votoString);
+    });
+}
+
+
+/**
+ *
+ * @param voto
+ * @returns {string} voto in string
+ */
+function votoIntegerToDecimal(voto) {
+    switch (voto) {
+        case (6):
+            return 'sei';
+            break;
+
+        case (7):
+            return 'sette';
+            break;
+
+        case (8):
+            return 'otto';
+            break;
+
+        case (9):
+            return 'nove';
+            break;
+
+        case (10):
+            return 'dieci';
+            break;
+    }
+}
+
+/**
+ * toglie il filtro dei voti
+ * @param voto voto da togliere : integer
+ */
+function disableFilterVoti(voto) {
+    //trasformo il voto da intero a string
+    var votoString = votoIntegerToDecimal(voto);
+    $('.' + voto).each(function (index, element) {
+        $(element).removeClass(votoString);
+    });
 }
 
 /**
@@ -492,7 +529,7 @@ function moveStudent(cf,fromClass,toClass){
 
     saveStudentMovementOnDb(cf,fromClass,toClass);
     updateChart(toClass);//refresh the new chart
-    refreshChart(fromClass); //refresh the old chart
+    updateChart(fromClass); //refresh the old chart
     updateInformation(toClass);
     updateInformation(fromClass);
 
@@ -569,6 +606,7 @@ $(document).ready(function() {
                         var cf = arrayStudenti[j].cf;
                         var nazionalita = arrayStudenti[j].nazionalita;
                         var desiderata = arrayStudenti[j].cf_amico;
+                        var voto = arrayStudenti[j].media_voti;
 
 
                         var iconFlagElement = "";
@@ -583,6 +621,8 @@ $(document).ready(function() {
 
                         //CONTROLLO ANAGRAFICA
                         //CONTROLLO DESIDERATA
+                        //AGGIUGNO CLASSE VOTO
+
                         var tag;
                         var anagrafica = $('<p/>')
                             .addClass('roboto')
@@ -595,7 +635,7 @@ $(document).ready(function() {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40
                                 })
-                                .addClass('ui segment tooltip guys ')
+                                .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
@@ -605,7 +645,7 @@ $(document).ready(function() {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40
                                 })
-                                .addClass('ui segment tooltip girl ')
+                                .addClass('ui segment tooltip girl ' + voto)
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
@@ -628,7 +668,7 @@ $(document).ready(function() {
                                 .appendTo(container)
                         }
 
-                        //tooltip
+                        //tooltip for handicap
                         var handicapTooltip = "";
                         if ((arrayStudenti[j])['legge_'+tooltipValue] !== undefined){
                             handicapTooltip = '<br>'+tooltipValue+': '+(arrayStudenti[j])['legge_'+tooltipValue];
@@ -636,7 +676,7 @@ $(document).ready(function() {
 
                         var tooltip = $('<span/>')
                             .addClass('tooltiptext')
-                            .html('media : ' + arrayStudenti[j].media_voti + '<br>naz : ' + nazionalita + handicapTooltip)
+                            .html('media : ' + voto + '<br>naz : ' + nazionalita + handicapTooltip)
                             .appendTo(container);
 
                         var li = $('<li/>')
@@ -673,18 +713,18 @@ $(document).ready(function() {
                                 approxNum((jsonVoti[10] / numerOfStudent) * 100)
                             ],
                             backgroundColor: [
-                                '#FFCDD2',
-                                '#F0F4C3',
+                                '#FFCC80',
+                                '#E6EE9C',
                                 '#D4E157',
-                                '#AED581',
-                                '#2E7D32'
+                                '#C5E1A5',
+                                '#AED581'
                             ],
                             borderColor: [
-                                '#EF5350',
+                                '#FFB74D',
                                 '#E6EE9C',
                                 '#CDDC39',
-                                '#8BC34A',
-                                '#2E7D32'
+                                '#C5E1A5',
+                                '#AED581'
                             ],
                             borderWidth: 1,
                             stack: 1
