@@ -15,7 +15,7 @@ var settings = {
     iniziale: 3,
     stessa_pr: 4,
     nazionalita: 3,
-    media_min: 7.7,
+    media_min: 7.5,
     media_max: 8.0,
     max_al_104: 23,
     max_107: 2,
@@ -23,7 +23,8 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["legge_104","alunni", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
+var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "CAP", "voto"];
+var insiemi = [];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -78,6 +79,53 @@ module.exports = {
     },
 
     /**
+     * creaInsiemi genera i possibili insiemi dati gli alunni
+     */
+    creaInsiemi: function(){
+        for (var i = 0; i < priority.length; i++){
+            if(priority[i] != "alunni"){
+                insiemi.push({nome:priority[i], alunni:[]});
+            }
+        }
+        var alunni = query.getStudentiPrima(function (err, results) {
+            if (err)
+                console.log(err);
+            else
+                return results
+        });
+        console.log(alunni);
+
+        for (var i = 0; i < alunni.length; i++){
+            for (var j = 0; j < priority.length; j++){
+                switch (priority[j]) {
+                    case "sesso":
+                        module.exports.fixFemmine(listaClassi[k].nome);
+                        break;
+                    case "nazionalita":
+                        //module.exports.fixStranieri(listaClassi[k].nome);
+                        module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
+                        break;
+                    case "stessa_provenienza":
+
+                        break;
+                    case "media":
+                        module.exports.fixMedia(listaClassi[k].nome);
+                        break;
+                    case "desiderata":
+                        module.exports.fixDesiderata(listaClassi[k].nome);
+                        break;
+                    case "legge_104":
+                        module.exports.fix104(listaClassi[k].nome);
+                        break;
+                    case "legge_107":
+                        module.exports.fix107(listaClassi[k].nome);
+                        break;
+                }
+            }
+        }
+    },
+
+    /**
      * generaListaClassi è una funzione che genera oggetti classe {nome: classe, proprieta:{}, alunni: []}
      * in base agli alunni minimi
      * @param classe
@@ -122,7 +170,7 @@ module.exports = {
     /**
      * createProprietaClasse crea le proprieta di una lista di alunni
      * @param listaAlunniClasse
-     * @returns {{alunni: *, femmine: (*|Number), media: *, residenza: (*|Array), bocciati: (*|number), iniziale: *}}
+     * @returns {{alunni: *, sesso: (*|Number), media: *, residenza: (*|Array), bocciati: (*|number), iniziale: *}}
      */
     createProprietaClasse: function (listaAlunniClasse) {
         var nAlunni = listaAlunniClasse.length;
@@ -137,8 +185,8 @@ module.exports = {
         var desiderata = module.exports.countDesiderata(listaAlunniClasse);
         return {
             alunni: nAlunni,
-            femmine: nFemmine,
-            media: media.toFixed(2),
+            sesso: nFemmine,
+            voto: media.toFixed(2),
             residenza: residenza,
             ripetenti: ripetenti,
             iniziale: iniziale,
@@ -259,7 +307,7 @@ module.exports = {
         var somma = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            somma += Number(listaAlunniClasse[i].media_voti);
+            somma += Number(listaAlunniClasse[i].voto);
         }
         return (somma / listaAlunniClasse.length);
 
@@ -554,7 +602,7 @@ module.exports = {
             if (listaClassi[i].nome != nomeClasse) {
                 var mCl = module.exports.mediaClasse(listaClassi[i].alunni);
                 if (mCl >= settings.media_max || (mCl < listaClassi[i].media_max && mCl > settings.media_min)) {
-                    var objal = module.exports.searchAlunno("media_voti", module.exports.determinaVoto(classe), listaClassi[i].alunni);
+                    var objal = module.exports.searchAlunno("voto", module.exports.determinaVoto(classe), listaClassi[i].alunni);
                     if (objal != null) {
                         module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
                     }
@@ -770,7 +818,7 @@ module.exports = {
     determinaVoto: function (objclasse) {
         var eN = 0;
         for (i = 0; i < objclasse.alunni.length; i++) {
-            eN += objclasse.alunni[i].media_voti;
+            eN += objclasse.alunni[i].voto;
         }
         var voto = Math.round((settings.media_min * (objclasse.alunni.length + 1)) - eN);
         if (voto > 10) {
