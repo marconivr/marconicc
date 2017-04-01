@@ -61,7 +61,7 @@ CREATE TABLE  `alunni` (
  `sesso` CHAR( 1 ) NOT NULL ,
  `data_di_nascita` DATE NOT NULL ,
  `stato` VARCHAR( 20 ) NOT NULL ,
- `CAP` INT( 5 ) NOT NULL ,
+ `cap_provenienza` INT( 5 ) NOT NULL ,
  `nazionalita` VARCHAR(25) NOT NULL,
  `legge_107` VARCHAR(25) NULL,
  `legge_104` VARCHAR(25) NULL,
