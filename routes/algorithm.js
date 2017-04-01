@@ -259,7 +259,7 @@ module.exports = {
         var somma = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            somma += Number(listaAlunniClasse[i].media_voti);
+            somma += Number(listaAlunniClasse[i].voto);
         }
         return (somma / listaAlunniClasse.length);
 
@@ -286,7 +286,7 @@ module.exports = {
         var count = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            if (listaAlunniClasse[i].cf_amico.toLowerCase() != "") {
+            if (listaAlunniClasse[i].desiderata.toLowerCase() != "") {
                 count++;
             }
         }
@@ -554,7 +554,7 @@ module.exports = {
             if (listaClassi[i].nome != nomeClasse) {
                 var mCl = module.exports.mediaClasse(listaClassi[i].alunni);
                 if (mCl >= settings.media_max || (mCl < listaClassi[i].media_max && mCl > settings.media_min)) {
-                    var objal = module.exports.searchAlunno("media_voti", module.exports.determinaVoto(classe), listaClassi[i].alunni);
+                    var objal = module.exports.searchAlunno("voto", module.exports.determinaVoto(classe), listaClassi[i].alunni);
                     if (objal != null) {
                         module.exports.addStundentInClss(objal, listaClassi[i], classe, true);
                     }
@@ -574,7 +574,7 @@ module.exports = {
                 var objal = module.exports.searchAlunno("cf", elencoDesiderataClasse[cf], listaClassi[i].alunni);
 
                 if (objal != null) {
-                    if (objal.cf_amico == cf){
+                    if (objal.desiderata == cf){
                         module.exports.addStundentInClss(objal,listaClassi[i], classe, true);
                     }
                 }
@@ -628,8 +628,8 @@ module.exports = {
     elencoDesiderataInClass: function (listaAlunniClasse) {
         var ris = {};
         for(var i = 0; i < listaAlunniClasse.length; i++) {
-            if (listaAlunniClasse[i]["cf_amico"].toLowerCase() != "") {
-                ris[listaAlunniClasse[i]["cf"]] = listaAlunniClasse[i]["cf_amico"];
+            if (listaAlunniClasse[i]["desiderata"].toLowerCase() != "") {
+                ris[listaAlunniClasse[i]["cf"]] = listaAlunniClasse[i]["desiderata"];
             }
         }
         return ris;
@@ -770,7 +770,7 @@ module.exports = {
     determinaVoto: function (objclasse) {
         var eN = 0;
         for (i = 0; i < objclasse.alunni.length; i++) {
-            eN += objclasse.alunni[i].media_voti;
+            eN += objclasse.alunni[i].voto;
         }
         var voto = Math.round((settings.media_min * (objclasse.alunni.length + 1)) - eN);
         if (voto > 10) {

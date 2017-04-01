@@ -116,7 +116,7 @@ function numerOfVotiOfClass(className) {
         if (arrayClassi[i].nome == className) {
             var jsonVoti = {};
             for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
-                var voto = arrayClassi[i].alunni[studenti].media_voti;
+                var voto = arrayClassi[i].alunni[studenti].voto;
                 if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
                 else jsonVoti[voto] = jsonVoti[voto] + 1;
             }
@@ -148,7 +148,7 @@ function totalVotiOfAllClass() {
     var jsonVoti = {};
     for (var i = 0; i < arrayClassi.length; i++) {
         for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
-            var voto = arrayClassi[i].alunni[studenti].media_voti;
+            var voto = arrayClassi[i].alunni[studenti].voto;
             if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
             else jsonVoti[voto] = jsonVoti[voto] + 1;
         }
@@ -182,7 +182,15 @@ function totalNumberOfStudentOfAllClass() {
 }
 
 function approxNum(num){
-    return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+   try{
+       return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+   }catch (e){
+       console.log(e);
+       return num;
+   }
+         
+    
+
 }
 
 /**
@@ -301,7 +309,7 @@ function getMediaOfClass(nomeClasse){
     var studentiOfClass = getStudentsOfClass(nomeClasse);
     var somma = 0;
     for (var i=0; i < studentiOfClass.length; i++){
-        somma = somma + studentiOfClass[i].media_voti;
+        somma = somma + studentiOfClass[i].voto;
     }
     var result =  somma/studentiOfClass.length;
     var approx = approxNum(result);
@@ -320,7 +328,7 @@ function getVotesDistributionOfClass(nomeClasse){
     var alunni = getStudentsOfClass(nomeClasse);
 
     for (var i=0; i < alunni.length; i++){
-        var voto = alunni[i].media_voti;
+        var voto = alunni[i].voto;
 
         if (jsonVoti[voto] === undefined){
             jsonVoti[voto] = 1;
@@ -426,7 +434,7 @@ function updateInformation(className) {
 function getAlunnoDesiderataByCF(cf) {
     for (var i = 0; i < arrayClassi.length; i++) {
         for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
-            if (arrayClassi[i].alunni[studente].cf_amico == cf)
+            if (arrayClassi[i].alunni[studente].desiderata == cf)
                 return arrayClassi[i].alunni[studente].cf;
         }
 
@@ -693,8 +701,8 @@ $(document).ready(function() {
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
                         var nazionalita = arrayStudenti[j].nazionalita;
-                        var desiderata = arrayStudenti[j].cf_amico;
-                        var voto = arrayStudenti[j].media_voti;
+                        var desiderata = arrayStudenti[j].desiderata;
+                        var voto = arrayStudenti[j].voto;
 
 
                         var iconFlagElement = "";
