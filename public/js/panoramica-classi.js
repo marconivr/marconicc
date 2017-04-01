@@ -628,7 +628,7 @@ $(document).ready(function() {
                                 .appendTo(container)
                         }
 
-                        //tooltip
+                        //tooltip for handicap
                         var handicapTooltip = "";
                         if ((arrayStudenti[j])['legge_'+tooltipValue] !== undefined){
                             handicapTooltip = '<br>'+tooltipValue+': '+(arrayStudenti[j])['legge_'+tooltipValue];
