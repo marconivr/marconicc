@@ -762,6 +762,7 @@ $(document).ready(function() {
                 // CHART BAR //
                 var canvasBarChart = $('<canvas/>',
                     {
+                        'id' :  nomeClasse + 'barChart',
                         'class': 'barChart',
                         'width': 200,
                         'height': 200
@@ -957,20 +958,16 @@ $(document).ready(function() {
                 classe = $(this).parent().parent().parent().attr('id');
 
                 pieChart = $("#" + classe + "pieChart").hide();
-
                 barChart =  $("#" + classe + "barChart").show();
-
-                console.log(barChart);
-                console.log(pieChart);
-
-
 
             });
 
             $(".pieChartButton").on('click',function(e){
-                idPieChart = $(this).attr("id");
-                $('#' + idPieChart);
 
+                classe = $(this).parent().parent().parent().attr('id');
+
+                barChart =  $("#" + classe + "barChart").hide();
+                pieChart = $("#" + classe + "pieChart").show();
             });
 
 
