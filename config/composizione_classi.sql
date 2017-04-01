@@ -57,11 +57,11 @@ CREATE TABLE  `alunni` (
  `nome` VARCHAR( 255 ) NOT NULL ,
  `matricola` INT(10) NOT NULL,
  `cf` CHAR( 16 ) NOT NULL ,
- `cf_amico` CHAR( 16 ) NULL ,
+ `desiderata` CHAR( 16 ) NULL ,
  `sesso` CHAR( 1 ) NOT NULL ,
  `data_di_nascita` DATE NOT NULL ,
  `stato` VARCHAR( 20 ) NOT NULL ,
- `cap_provenienza` INT( 5 ) NOT NULL ,
+ `CAP` INT( 5 ) NOT NULL ,
  `nazionalita` VARCHAR(25) NOT NULL,
  `legge_107` VARCHAR(25) NULL,
  `legge_104` VARCHAR(25) NULL,
@@ -70,7 +70,7 @@ CREATE TABLE  `alunni` (
  `anno_scolastico` VARCHAR( 15 ) NOT NULL ,
  `anno` VARCHAR( 4 ) NOT NULL ,
  `cod_cat` VARCHAR( 10 ) NOT NULL ,
- `media_voti` DOUBLE NOT NULL ,
+ `voto` INT(1) NOT NULL ,
  `condotta` INT(1) NULL,
  `classe_futura` VARCHAR( 50 ) NOT NULL ,
  `tag` VARCHAR( 25 ) ,
@@ -188,8 +188,12 @@ ALTER TABLE `amici`
 --
 -- Indici per le tabelle `impostazioni`
 --
-ALTER TABLE `impostazioni`
+ALTER TABLE `impostazioni_prime`
   ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `impostazioni_terze`
+  ADD PRIMARY KEY (`id`);
+
 
 --
 -- Indici per le tabelle `priorita_scelta`

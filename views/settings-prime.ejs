@@ -47,7 +47,7 @@
             <div class="ui centered grid">
                 <div class="six wide tablet ten wide computer column">
                     <!--sematic form-->
-                    <form class="ui form" onsubmit='return onSubmit(this)'>
+                    <form class="ui form success" onsubmit='return onSubmit(this)'>
                         <h4 class="ui dividing header">Impostazioni prime</h4>
 
                         <!--sematic fields-->
@@ -93,9 +93,10 @@
                             <label>Ripetenti</label>
                             <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
                         </div>
-
-
-
+                        <div class="ui success message">
+                            <div class="header">Form Completed</div>
+                            <p>You're all signed up for the newsletter.</p>
+                        </div>
                         <!--sematic button-->
                         <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div>
                     </form>
@@ -206,7 +207,7 @@
         var mediaMax = parseFloat($("#mediaMax").val());
         var bocciati = parseInt($("#bocciati").val());
         $.ajax({
-            url: '/insert-settings',
+            url: '/insert-settings-prime',
             data: {
                 "alunniMin" : alunniMin,
                 "alunniMax": alunniMax ,
