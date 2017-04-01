@@ -89,3 +89,53 @@
     padding-right: 5px;
     padding-left: 5px;
 }
+
+.dieci {
+    background-color: #AED581 !important;
+    border-color: #AED581 !important;
+    color: #AED581 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.nove {
+    background-color: #C5E1A5 !important;
+    border-color: #C5E1A5 !important;
+    color: #C5E1A5 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.otto {
+    background-color: #D4E157 !important;
+    border-color: #CDDC39 !important;
+    color: #D4E157 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.sette {
+    background-color: #E6EE9C !important;
+    border-color: #E6EE9C !important;
+    color: #E6EE9C !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.sei {
+    background-color: #FFCC80 !important;
+    border-color: #FFB74D !important;
+    color: #FFCC80 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
