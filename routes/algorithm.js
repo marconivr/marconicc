@@ -334,7 +334,7 @@ module.exports = {
         var count = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            if (listaAlunniClasse[i].cf_amico.toLowerCase() != "") {
+            if (listaAlunniClasse[i].desiderata.toLowerCase() != "") {
                 count++;
             }
         }
@@ -622,7 +622,7 @@ module.exports = {
                 var objal = module.exports.searchAlunno("cf", elencoDesiderataClasse[cf], listaClassi[i].alunni);
 
                 if (objal != null) {
-                    if (objal.cf_amico == cf){
+                    if (objal.desiderata == cf){
                         module.exports.addStundentInClss(objal,listaClassi[i], classe, true);
                     }
                 }
@@ -676,8 +676,8 @@ module.exports = {
     elencoDesiderataInClass: function (listaAlunniClasse) {
         var ris = {};
         for(var i = 0; i < listaAlunniClasse.length; i++) {
-            if (listaAlunniClasse[i]["cf_amico"].toLowerCase() != "") {
-                ris[listaAlunniClasse[i]["cf"]] = listaAlunniClasse[i]["cf_amico"];
+            if (listaAlunniClasse[i]["desiderata"].toLowerCase() != "") {
+                ris[listaAlunniClasse[i]["cf"]] = listaAlunniClasse[i]["desiderata"];
             }
         }
         return ris;
