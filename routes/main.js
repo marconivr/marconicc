@@ -139,7 +139,7 @@ module.exports = function (app, passport) {
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('settings.ejs',{
-            pageTitle: "settings   "
+            pageTitle: "Settings   "
         })
     });
     
@@ -189,7 +189,7 @@ module.exports = function (app, passport) {
         });
 
         res.render('settings-prime.ejs', {
-            pageTitle: " settings prime",
+            pageTitle: " Settings prime",
             data:JSON.stringify(dataInSettings)
         });
     });
@@ -240,7 +240,7 @@ module.exports = function (app, passport) {
         });
 
         res.render('settings-terze.ejs', {
-            pageTitle: " settings terze",
+            pageTitle: " Settings terze",
             data:JSON.stringify(dataInSettings)
         });
     });

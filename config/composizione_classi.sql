@@ -95,8 +95,22 @@ CREATE TABLE `amici` (
 -- Struttura della tabella `impostazioni`
 --
 
-DROP TABLE IF EXISTS `impostazioni`;
-CREATE TABLE `impostazioni` (
+DROP TABLE IF EXISTS `impostazioni_prime`;
+CREATE TABLE `impostazioni_prime` (
+  `id` int(11) NOT NULL,
+  `min_alunni` int(11) DEFAULT NULL,
+  `max_alunni` int(11) DEFAULT NULL,
+  `max_femmine` int(11) DEFAULT NULL,
+  `max_stranieri` int(11) DEFAULT NULL,
+  `stessa_provenienza` int(11) DEFAULT NULL,
+  `stessa_iniziale` int(11) DEFAULT NULL,
+  `media_min` float DEFAULT NULL,
+  `media_max` float DEFAULT NULL,
+  `bocciati` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `impostazioni_terze`;
+CREATE TABLE `impostazioni_terze` (
   `id` int(11) NOT NULL,
   `min_alunni` int(11) DEFAULT NULL,
   `max_alunni` int(11) DEFAULT NULL,
