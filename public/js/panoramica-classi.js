@@ -219,7 +219,7 @@ function setFilterVoti(voto) {
     //trasformo il voto da intero a string
     var votoString = votoIntegerToDecimal(voto);
 
-    $('.' + voto).each(function (index, element) {
+    $('.'+ voto).each(function (index, element) {
         $(element).addClass(votoString);
     });
 }
@@ -921,7 +921,7 @@ $(document).ready(function() {
                             tooltips:{
                                 callbacks: {
                                     label: function(tooltipItems, data) {
-                                        return data.datasets[0].data[tooltipItems.index] + ' -> naz: '+  nazionalitaByTag(labels[tooltipItems.index]).toLowerCase();
+                                        return data.datasets[0].data[tooltipItems.index] + ' -> naz: '+  nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
                                     }
 
                                 }
