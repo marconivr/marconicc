@@ -26,6 +26,7 @@ var iconJson = {
 
 };
 
+
 var flagJson = {
     'ITALIANA' : 'it',
     'CINGALESE' : 'lk',
@@ -251,7 +252,7 @@ function votoIntegerToDecimal(voto) {
  */
 function disableFilterVoti(voto) {
     //trasformo il voto da intero a string
-    var votoString = votoIntegerToDecimal(voto);
+    var votoString = votoIntegerToDecimal(voto);3
     $('.' + voto).each(function (index, element) {
         $(element).removeClass(votoString);
     });
@@ -659,7 +660,7 @@ $(document).ready(function() {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'bar' + ' class="ui button"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chart' + ' class="ui button"><i class="pie chart icon"></i></button></div> <h4 class="title">Distribuzione Voti</h4> '
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button></div> <h4 class="title">Distribuzione Voti</h4> '
                 }).appendTo(wrapperClasse);
 
                 var div = $('<ul/>', {
@@ -848,6 +849,7 @@ $(document).ready(function() {
                     // PIE CHART//
                     var canvasPieChart = $('<canvas/>',
                         {
+                            'id' : nomeClasse + 'pieChart',
                             'class': 'pieChart',
                             'width': 200,
                             'height': 200
@@ -950,6 +952,28 @@ $(document).ready(function() {
             }).disableSelection();
 
             displayAllClass();
+
+            $(".barChartButton").on('click',function(e){
+                classe = $(this).parent().parent().parent().attr('id');
+
+                pieChart = $("#" + classe + "pieChart").hide();
+
+                barChart =  $("#" + classe + "barChart").show();
+
+                console.log(barChart);
+                console.log(pieChart);
+
+
+
+            });
+
+            $(".pieChartButton").on('click',function(e){
+                idPieChart = $(this).attr("id");
+                $('#' + idPieChart);
+
+            });
+
+
         },
         type: 'GET'
     });
