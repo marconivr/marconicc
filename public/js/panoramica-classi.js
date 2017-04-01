@@ -737,44 +737,44 @@ $(document).ready(function() {
                 barChartArray.push(barChart);
 
 
-                // // PIE CHART//
-                // var canvasPieChart = $('<canvas/>',
-                //     {
-                //         'class': 'pieChart',
-                //         'width': 200,
-                //         'height': 200
-                //     });
-                //
-                // // For a pie chart
-                // var pieChart = new Chart(canvasPieChart,{
-                //     type: 'pie',
-                //     data: {
-                //         labels: [
-                //             "Red",
-                //             "Blue",
-                //             "Yellow"
-                //         ],
-                //         datasets: [
-                //             {
-                //                 data: [300, 50, 100],
-                //                 backgroundColor: [
-                //                     "#FF6384",
-                //                     "#36A2EB",
-                //                     "#FFCE56"
-                //                 ],
-                //                 hoverBackgroundColor: [
-                //                     "#FF6384",
-                //                     "#36A2EB",
-                //                     "#FFCE56"
-                //                 ]
-                //             }]
-                //     },
-                //     options: {
-                //         responsive: true
-                //     }
-                // });
-                //
-                // pieChartArray.push(pieChart);
+                    // PIE CHART//
+                    var canvasPieChart = $('<canvas/>',
+                        {
+                            'class': 'pieChart',
+                            'width': 200,
+                            'height': 200
+                        }).appendTo(settingClasse).hide();
+
+                    // For a pie chart
+                    var pieChart = new Chart(canvasPieChart,{
+                        type: 'pie',
+                        data: {
+                            labels: [
+                                "Red",
+                                "Blue",
+                                "Yellow"
+                            ],
+                            datasets: [
+                                {
+                                    data: [300, 50, 100],
+                                    backgroundColor: [
+                                        "#FF6384",
+                                        "#36A2EB",
+                                        "#FFCE56"
+                                    ],
+                                    hoverBackgroundColor: [
+                                        "#FF6384",
+                                        "#36A2EB",
+                                        "#FFCE56"
+                                    ]
+                                }]
+                        },
+                        options: {
+                            responsive: true
+                        }
+                    });
+
+                    pieChartArray.push(pieChart);
 
                 //box informazioni
                 createBoxInformazioni(settingClasse, nomeClasse);
@@ -855,7 +855,9 @@ $(document).ready(function() {
     $('#selezioneClassi')
         .on('click', '.item', function () {
 
-            if ($(this)[0].id != "contenitoreCheckBox") { //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
+            console.log($(this)[0]);
+
+            if (!$($(this)[0]).hasClass('notSelectable')) { //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
 
