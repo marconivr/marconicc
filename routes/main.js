@@ -130,8 +130,20 @@ module.exports = function (app, passport) {
             pageTitle: "Panoramica classi   "
         })
     });
-    
+
+    app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('panoramica-classi.ejs',{
+            pageTitle: "Panoramica classi   "
+        })
+    });
+
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('settings.ejs',{
+            pageTitle: "Settings   "
+        })
+    });
+    
+    app.get('/settings-prime', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         query.getNumerOfStudentiPrima(function (err, results) {
             if (err)
                 throw err;
@@ -176,29 +188,80 @@ module.exports = function (app, passport) {
                 setValueOfArrayForSettings(results,"AVGOfStudentiTerza");
         });
 
-        res.render('settings.ejs', {
-            pageTitle: " settings ",
+        res.render('settings-prime.ejs', {
+            pageTitle: " Settings prime",
+            data:JSON.stringify(dataInSettings)
+        });
+    });
+
+    app.get('/settings-terze', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        query.getNumerOfStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"numberOfStudentiPrima");
+        });
+
+        query.getNumerOfStudentiTerza(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"numberOfStudentiTerza");
+
+        });
+
+        query.getNumberGirl(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"numberOfGirlPrima");
+        }, "PRIMA");
+
+        query.getAVGOfStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"AVGOfStudentiPrima");
+        });
+
+        query.getNumberOfGirlTerza(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"numberOfGirlTerza");
+        });
+
+
+        query.getAVGOfStudentiTerza(function (err, results) {
+            if (err)
+                throw err;
+            else
+                setValueOfArrayForSettings(results,"AVGOfStudentiTerza");
+        });
+
+        res.render('settings-terze.ejs', {
+            pageTitle: " Settings terze",
             data:JSON.stringify(dataInSettings)
         });
     });
 
     /**
-     * inserisce il tag
+     * inserisce le impostazioni delle prime
      */
-    app.get('/insert-tag', function (req, res) {
-        query.insertTag(function (err, results) {
+    app.get('/insert-settings-prime', function (req, res) {
+        query.insertSettingsPrime(function (err, results) {
             if (err)
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        },req.query.tag, req.query.descrizione);
+        }, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
     });
 
     /**
-     * inserisce il tag
+     * inserisce le impostazioni delle prime
      */
-    app.get('/insert-settings', function (req, res) {
-        query.insertSettings(function (err, results) {
+    app.get('/insert-settings-terze', function (req, res) {
+        query.insertSettingsTerze(function (err, results) {
             if (err)
                 throw err;
             else

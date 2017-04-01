@@ -1,0 +1,238 @@
+<% include header %>
+
+<body xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+<style>
+    #sortable1, #sortable2, #sortable3, #sortable4, #sortable5, #sortable6, #sortable7, #sortable8 {
+        border: 1px solid #eee;
+        width: 142px;
+        min-height: 20px;
+        list-style-type: none;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+    }
+
+    #sortable1 li, #sortable2 li, #sortable3 li, #sortable4 li, #sortable5 li, #sortable6 li, #sortable7 li, #sortable8 li {
+        margin: 0 5px 5px 5px;
+        padding: 5px;
+        font-size: 1.2em;
+        width: 120px;
+    }
+</style>
+
+<script>
+    $(function () {
+        $("#sortable1, #sortable2,#sortable3, #sortable4, #sortable5, #sortable6, #sortable7,#sortable8").sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+    });
+</script>
+
+<% include sidebar-start.ejs %>
+
+<!--data-->
+<% var jsonData = JSON.parse(data) %>
+
+<div class="ui internally celled grid">
+    <div class="row">
+        <!--this section represent the relatime data-->
+        <div class="three wide column">
+            <a class="ui teal tag label"> Statistiche RealTime</a><br>
+            <b>Numero di classi:</b>
+            <p id="classe-realtime"></p>
+        </div>
+        <div class="ten wide column">
+            <div class="ui centered grid">
+                <div class="six wide tablet ten wide computer column">
+                    <!--sematic form-->
+                    <form class="ui form success" onsubmit='return onSubmit(this)'>
+                        <h4 class="ui dividing header">Impostazioni prime</h4>
+
+                        <!--sematic fields-->
+                        <div class="field">
+                            <label>Alunni</label>
+                            <div class="two fields">
+                                <div class="field">
+                                    <input type="number" name="alunni_min" placeholder="Alunni minimi" id="alunni-min">
+                                </div>
+                                <div class="field">
+                                    <input type="number" name="alunni_max" placeholder="Alunni massimi" onchange="setDataRealtimeNumberOfStudents()" id="alunni-max">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Femmine</label>
+                            <input name="max_femmine" placeholder="Femmine" type="number" id="femmine">
+                        </div>
+                        <div class="field">
+                            <label>Stranieri</label>
+                            <input name="max_stranieri" placeholder="Stranieri" type="number" id="stranieri">
+                        </div>
+                        <div class="field">
+                            <label>Stessa residenza</label>
+                            <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza">
+                        </div>
+                        <div class="field">
+                            <label>Stessa iniziale</label>
+                            <input name="stessa_iniziale" placeholder="Residenza" type="number" id="iniziale">
+                        </div>
+                        <div class="field">
+                            <label>Media</label>
+                            <div class="two fields">
+                                <div class="field">
+                                    <input type="number" name="media_min" placeholder="Media minima" id="media-min">
+                                </div>
+                                <div class="field">
+                                    <input type="number" name="media_max" placeholder="Media massima" id="media-max">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Ripetenti</label>
+                            <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
+                        </div>
+                        <div class="ui success message">
+                            <div class="header">Form Completed</div>
+                            <p>You're all signed up for the newsletter.</p>
+                        </div>
+                        <!--sematic button-->
+                        <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--this section represent data in db-->
+        <div class="three wide column">
+
+            <a class="ui orange tag label">Dati Studenti</a><br><br>
+            <div class="ui compact menu">
+                <a class="item">
+                    <i class="student icon"></i> Studenti
+                    <div class="floating ui yellow label">
+                        <p id="alunni-in-classe-prima">
+                            <%= jsonData.numberOfStudentiPrima %>
+                        </p>
+                    </div>
+                </a>
+                <a class="item">
+                    <i class="female icon"></i> Donne
+                    <div class="floating ui pink label">
+                        <p id="donne-in-classe-prima">
+
+                            <%= jsonData.numberOfGirlPrima %>
+                        </p>
+                    </div>
+                </a>
+                <a class="item">
+                    <i class="write icon"></i> Media
+                    <div class="floating ui blue  label">
+                        <p id="media-in-classe-prima">
+
+                            <%= jsonData.AVGOfStudentiPrima %>
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+            <br>
+
+        </div>
+    </div>
+    <!--<div class="row">-->
+    <!--<div class="three wide column">-->
+    <!--hjhj-->
+    <!--</div>-->
+    <!--<div class="ten wide column">-->
+    <!--hjhj-->
+    <!--</div>-->
+    <!--<div class="three wide column">-->
+    <!--<img>-->
+    <!--</div>-->
+    <!--</div>-->
+</div>
+
+<% include sidebar-stop.ejs %>
+<!--personal script for specific page -->
+
+
+<script>
+    $('.ui.dropdown').dropdown();
+
+</script>
+
+<script>
+    //this function set the number of student for class
+    function setDataRealtimeNumberOfStudents() {
+        var classe = $('#classe').dropdown('get value');
+        if (classe == "prima") {
+            alunniPrima = $("#alunni-in-classe-prima").text();
+            maxNumberOfAlunni = $("#max-number-of-students").val();
+            $("#classe-realtime").html(Math.floor(alunniPrima / maxNumberOfAlunni))
+
+        }
+    }
+
+    function addTag() {
+        var tag = $("#nome-tag").val();
+        var descrizione = $("#descrizione-tag").val();
+
+        $.ajax({
+            url: '/insert-tag',
+            data: {
+                "tag": tag,
+                "descrizione" : descrizione
+            },
+            type: 'get',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    }
+
+    function addSettings() {
+        var alunniMin = parseInt($("#alunni-min").val());
+        var alunniMax = parseInt($("#alunni-max").val());
+        var femmine = parseInt($("#femmine").val());
+        var stranieri = parseInt($("#stranieri").val());
+        var residenza = parseInt($("#residenza").val());
+        var iniziale = parseInt($("#iniziale").val());
+        var mediaMin = parseFloat($("#mediaMin").val());
+        var mediaMax = parseFloat($("#mediaMax").val());
+        var bocciati = parseInt($("#bocciati").val());
+        $.ajax({
+            url: '/insert-settings-prime',
+            data: {
+                "alunniMin" : alunniMin,
+                "alunniMax": alunniMax ,
+                "femmine" : femmine ,
+                "stranieri" : stranieri,
+                "residenza" : residenza,
+                "iniziale" : iniziale,
+                "mediaMin" : mediaMin,
+                "mediaMax" : mediaMax,
+                "bocciati" : bocciati
+            },
+            type: 'get',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    }
+
+</script>
+
+
+<!--close html tag-->
+<% include tag-close.ejs %>
