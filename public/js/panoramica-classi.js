@@ -1,9 +1,12 @@
 var debug = true;
-var saveRealTimeOnDb = true;
+var saveRealTimeOnDb = false;
 
 
-var chartArray = [];//reference to chart
+var barChartArray = [];//reference to barChart
+var pieChartArray = [];//reference to pieChart
+
 var informationArray = [];//reference to information
+var cfArray = []; //serve per i desiderata e per non rompere i coglioni
 var arrayClassi = null;
 var iconJson = {
     'media': {
@@ -35,7 +38,7 @@ var flagJson = {
     'MOLDAVA' : 'md',
     'LETTONE' : 'lv',
     'BRASILIANA' : 'br',
-    'NIGERIANA' : 'ne',
+    'NIGERIANA' : 'ng',
     'GHANESE' : 'gh',
     'PERUVIANA' : 'pe',
     'CUBANA' : 'cu',
@@ -46,6 +49,43 @@ var flagJson = {
 function populate(listaClassi) {
     arrayClassi = listaClassi;
 }
+
+/**
+ * @param nomeClasse
+ * @returns {{}} oggetto che rappresenta la situazione stranieri nella classe
+ */
+function getNationalityOfClass(nomeClasse) {
+    var alunni = getStudentsOfClass(nomeClasse);
+
+    var nazionalita = {};
+    for (var i=0; i < alunni.length; i++){
+        nazionalita[alunni[i].nazionalita] = 0;
+    }
+
+    for(var prop in nazionalita){
+        for (i=0; i < alunni.length; i++){
+            if (alunni[i].nazionalita == prop){
+                nazionalita[prop] += 1;
+            }
+        }
+    }
+    return nazionalita;
+}
+
+/**
+ *
+ * @param a
+ * @param b
+ * @returns {number}
+ */
+function compare(a,b) {
+    if (a.cognome < b.cognome)
+        return -1;
+    if (a.cognome > b.cognome)
+        return 1;
+    return 0;
+}
+
 
 /**
  *
@@ -150,32 +190,69 @@ function updateChart(newClassName) {
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(newClassName);
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
-    var myChart = chartArray[position];
+    var barChart = barChartArray[position];
     var numerOfStudent = totalNumberOfStudent(newClassName);
-    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
-    myChart.update();
+    barChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
+    barChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
+    barChart.update();
 }
 
 /**
- * refresh the data in the old chart
- * @param oldClassName
+ * filtra il colore del box pdegli studenti per il voto
+ * @param voto voto con cui filtrare -> integer
  */
-function refreshChart(oldClassName) {
-    //json voti di questa classe
-    var jsonVoti = numerOfVotiOfClass(oldClassName);
-    var position = oldClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
-    var myChart = chartArray[position];
-    var numerOfStudent = totalNumberOfStudent(oldClassName);
-    myChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[1] = approxNum((jsonVoti[7] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[2] = approxNum((jsonVoti[8] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[3] = approxNum((jsonVoti[9] / numerOfStudent) * 100);
-    myChart.data.datasets[0].data[4] = approxNum((jsonVoti[10] / numerOfStudent) * 100);
-    myChart.update();
+function setFilterVoti(voto) {
+    //trasformo il voto da intero a string
+    var votoString = votoIntegerToDecimal(voto);
+
+    $('.' + voto).each(function (index, element) {
+        $(element).addClass(votoString);
+    });
+}
+
+
+/**
+ *
+ * @param voto
+ * @returns {string} voto in string
+ */
+function votoIntegerToDecimal(voto) {
+    switch (voto) {
+        case (6):
+            return 'sei';
+            break;
+
+        case (7):
+            return 'sette';
+            break;
+
+        case (8):
+            return 'otto';
+            break;
+
+        case (9):
+            return 'nove';
+            break;
+
+        case (10):
+            return 'dieci';
+            break;
+    }
+}
+
+/**
+ * toglie il filtro dei voti
+ * @param voto voto da togliere : integer
+ */
+function disableFilterVoti(voto) {
+    //trasformo il voto da intero a string
+    var votoString = votoIntegerToDecimal(voto);
+    $('.' + voto).each(function (index, element) {
+        $(element).removeClass(votoString);
+    });
 }
 
 /**
@@ -185,7 +262,6 @@ function refreshChart(oldClassName) {
  */
 function countBocciatiOfClass(className) {
     var bocciati = 0;
-
     for (var i = 0; i < arrayClassi.length; i++) {
         if (arrayClassi[i].nome == className) {
             for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
@@ -300,7 +376,6 @@ function createBoxInformazioni(wrapperClasse, nomeClasse) {
             .addClass('ui compact menu')
             .appendTo(wrapperClasse);
 
-        //donne
         var item = $('<a/>')
             .addClass('item')
             .appendTo(menu);
@@ -313,7 +388,7 @@ function createBoxInformazioni(wrapperClasse, nomeClasse) {
             .addClass(iconJson[prop].color)
             .appendTo(item);
 
-        var reference = prop
+        var reference = prop;
         var value = $('<p/>',
             {
                 'id': prop + '-' + nomeClasse
@@ -338,12 +413,49 @@ function updateInformation(className) {
             informationArray[i][0].html(proprieta["alunni"]);
             informationArray[i][1].html(proprieta["media"]);
             informationArray[i][2].html(proprieta["bocciati"]);
-
-
         }
-
 }
 
+/**
+ * ritorna il cf di uno studente
+ * @param cf : cf da controllare
+ */
+function getAlunnoDesiderataByCF(cf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf_amico == cf)
+                return arrayClassi[i].alunni[studente].cf;
+        }
+
+    }
+}
+
+/**
+ * ritorna uno studente da un cf
+ * @param cf
+ * @returns {string}
+ */
+function getStudentByCF(cf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf == cf)
+                return arrayClassi[i].alunni[studente].nome + " " + arrayClassi[i].alunni[studente].cognome;
+        }
+    }
+}
+
+/**
+ * return classname of the student
+ * @param stundentCf
+ */
+function getClassNameFromStudent(stundentCf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf == stundentCf)
+                return arrayClassi[i].nome;
+        }
+    }
+}
 
 function saveStudentMovementOnDb(cf, fromClass, toClass) {
 
@@ -417,7 +529,7 @@ function moveStudent(cf,fromClass,toClass){
 
     saveStudentMovementOnDb(cf,fromClass,toClass);
     updateChart(toClass);//refresh the new chart
-    refreshChart(fromClass); //refresh the old chart
+    updateChart(fromClass); //refresh the old chart
     updateInformation(toClass);
     updateInformation(fromClass);
 
@@ -428,7 +540,13 @@ function flagTag(nazionalita) {
 
 }
 
-
+////////////////////////////////////////////////////
+//AJAX CALL//
+////////////////////////////////////////////////////
+// - SCARICAMENTE JSON
+// - CREAZIONE BOX INFORMAZIONI
+// - CREAZIONE CHART
+// - INIZIALIZZAZIONE DRAG AND DROP STUDENTI
 $(document).ready(function() {
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
@@ -444,6 +562,11 @@ $(document).ready(function() {
         dataType: 'json',
 
         success: function (listaClassi) {
+
+
+            for (i=0; i < listaClassi.length;i++){
+                listaClassi[i].alunni.sort(compare);
+            }
 
             populate(listaClassi);
 
@@ -482,6 +605,8 @@ $(document).ready(function() {
                         var nomeStudente = arrayStudenti[j].nome;
                         var cf = arrayStudenti[j].cf;
                         var nazionalita = arrayStudenti[j].nazionalita;
+                        var desiderata = arrayStudenti[j].cf_amico;
+                        var voto = arrayStudenti[j].media_voti;
 
 
                         var iconFlagElement = "";
@@ -489,11 +614,20 @@ $(document).ready(function() {
                             iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
                         }
 
+                        /////////////////////STUDENTI//////////////////
+                        //CREAZIONE TAG
+                        //ES : CIECO
+                        //ES : DSA-> DISGRAFICO
+
+                        //CONTROLLO ANAGRAFICA
+                        //CONTROLLO DESIDERATA
+                        //AGGIUGNO CLASSE VOTO
 
                         var tag;
                         var anagrafica = $('<p/>')
                             .addClass('roboto')
                             .html(iconFlagElement + " " +cognomeStudente + " " + nomeStudente );
+
 
                         if (arrayStudenti[j].sesso == "M") {
                             var container = $('<div/>',
@@ -501,7 +635,7 @@ $(document).ready(function() {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40
                                 })
-                                .addClass('ui segment tooltip guys ')
+                                .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
@@ -511,14 +645,15 @@ $(document).ready(function() {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40
                                 })
-                                .addClass('ui segment tooltip girl ')
+                                .addClass('ui segment tooltip girl ' + voto)
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
 
+                        //aggiungo la classe desiderata se presente
+                        if (desiderata != "")container.addClass('desiderata');
+
                         var tooltipValue = "";
-
-
                         if ((arrayStudenti[j].legge_104) != "") {
                             tooltipValue = "104"
                         }else if(arrayStudenti[j].legge_107 != ""){
@@ -533,9 +668,7 @@ $(document).ready(function() {
                                 .appendTo(container)
                         }
 
-
-
-                        //tooltip
+                        //tooltip for handicap
                         var handicapTooltip = "";
                         if ((arrayStudenti[j])['legge_'+tooltipValue] !== undefined){
                             handicapTooltip = '<br>'+tooltipValue+': '+(arrayStudenti[j])['legge_'+tooltipValue];
@@ -543,18 +676,13 @@ $(document).ready(function() {
 
                         var tooltip = $('<span/>')
                             .addClass('tooltiptext')
-                            .html('media : ' + arrayStudenti[j].media_voti + '<br>naz : ' + nazionalita + handicapTooltip)
+                            .html('media : ' + voto + '<br>naz : ' + nazionalita + handicapTooltip)
                             .appendTo(container);
 
                         var li = $('<li/>')
                             .html(container)
                             .appendTo(div);
-
-                        //menu
-
                     }
-
-
                 }
 
                 var jsonVotiPrima = totalVotiOfAllClass();
@@ -562,17 +690,16 @@ $(document).ready(function() {
                 var numerOfStudent = totalNumberOfStudent(nomeClasse);
                 var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
 
-                // CHART DATA //
-                var chart = $('<canvas/>',
+                // CHART BAR //
+                var canvasBarChart = $('<canvas/>',
                     {
-                        'id': nomeClasse,
+                        'class': 'barChart',
                         'width': 200,
                         'height': 200
                     }).appendTo(settingClasse);
 
                 var br = $('<br>').appendTo(settingClasse);
-                var ctx = chart;
-                var myChart = new Chart(ctx, {
+                var barChart = new Chart(canvasBarChart, {
                     type: 'bar',
                     data: {
                         labels: ["6", "7", "8", "9", "10"],
@@ -586,18 +713,18 @@ $(document).ready(function() {
                                 approxNum((jsonVoti[10] / numerOfStudent) * 100)
                             ],
                             backgroundColor: [
-                                '#FFCDD2',
-                                '#F0F4C3',
+                                '#FFCC80',
+                                '#E6EE9C',
                                 '#D4E157',
-                                '#AED581',
-                                '#2E7D32'
+                                '#C5E1A5',
+                                '#AED581'
                             ],
                             borderColor: [
-                                '#EF5350',
+                                '#FFB74D',
                                 '#E6EE9C',
                                 '#CDDC39',
-                                '#8BC34A',
-                                '#2E7D32'
+                                '#C5E1A5',
+                                '#AED581'
                             ],
                             borderWidth: 1,
                             stack: 1
@@ -646,19 +773,97 @@ $(document).ready(function() {
                         }
                     }
                 });
-                chartArray.push(myChart);
+
+                barChartArray.push(barChart);
+
+
+                    // PIE CHART//
+                    var canvasPieChart = $('<canvas/>',
+                        {
+                            'class': 'pieChart',
+                            'width': 200,
+                            'height': 200
+                        }).appendTo(settingClasse).hide();
+
+                    // For a pie chart
+                    var pieChart = new Chart(canvasPieChart,{
+                        type: 'pie',
+                        data: {
+                            labels: [
+                                "Red",
+                                "Blue",
+                                "Yellow"
+                            ],
+                            datasets: [
+                                {
+                                    data: [300, 50, 100],
+                                    backgroundColor: [
+                                        "#FF6384",
+                                        "#36A2EB",
+                                        "#FFCE56"
+                                    ],
+                                    hoverBackgroundColor: [
+                                        "#FF6384",
+                                        "#36A2EB",
+                                        "#FFCE56"
+                                    ]
+                                }]
+                        },
+                        options: {
+                            responsive: true
+                        }
+                    });
+
+                    pieChartArray.push(pieChart);
 
                 //box informazioni
                 createBoxInformazioni(settingClasse, nomeClasse);
 
 
             }
-            var oldList, newList, item;
+            var oldList, newList, item, desiderata, cfAmico;
             $(".contenitoreClasse").sortable({
                 connectWith: ".contenitoreClasse",
                 start: function (event, ui) {
+
                     item = ui.item;
-                    newList = oldList = ui.item.parent().parent();
+                    var currentPos = $(this).position();
+                    desiderata = item.children().hasClass('desiderata');
+                    cf = item.children()[0].id; //cf dell'alunno selezionato
+                    cfAmico = getAlunnoDesiderataByCF(cf);
+
+
+                    if (desiderata) {
+                        //check if i've already this cf
+                        if (jQuery.inArray(cf, cfArray) == -1) {
+                            cfArray.push(cf);
+                            var amico = getStudentByCF(cfAmico);
+                            var classeAmico = getClassNameFromStudent(cfAmico);
+                            //se la desiderata non è corrisposta
+                            if (!(cfAmico === undefined || classeAmico === undefined)) {
+                                if (confirm("Questo alunno vuole stare con un amico: " + amico + " della " + classeAmico + ", continuare?")) {
+                                    newList = oldList = ui.item.parent().parent();
+                                }
+                                else {
+                                    var index = cfArray.indexOf(cf);
+                                    cfArray.splice(index, 1);
+                                    newList = oldList = ui.item.parent().parent();
+                                }
+                            }
+                            else {
+                                newList = oldList = ui.item.parent().parent();
+                            }
+
+                        }
+                        else {
+                            newList = oldList = ui.item.parent().parent();
+                        }
+
+                    }
+                    else {
+                        newList = oldList = ui.item.parent().parent();
+                    }
+
                 },
                 stop: function (event, ui) {
                     var cf_studente_spostato = item[0].childNodes[0].id;
@@ -690,7 +895,9 @@ $(document).ready(function() {
     $('#selezioneClassi')
         .on('click', '.item', function () {
 
-            if ($(this)[0].id != "contenitoreCheckBox") { //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
+            console.log($(this)[0]);
+
+            if (!$($(this)[0]).hasClass('notSelectable')) { //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
 
@@ -728,14 +935,8 @@ $(document).ready(function() {
                     } catch (e) {
                         //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe
                     }
-
                 }
-
             });
         }
-
     });
-
-
-
 });

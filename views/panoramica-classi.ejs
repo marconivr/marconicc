@@ -85,6 +85,10 @@
     .ui.menu{
         border: none;
     }
+
+    .ui.menu .item>.floating.label{
+        z-index: 0;
+    }
 </style>
 
 
@@ -92,7 +96,7 @@
 
 <div id="selezioneClassi" class="ui labeled icon menu">
 
-    <div id="contenitoreCheckBox" class="item">
+    <div id="contenitoreCheckBox" class="item notSelectable" >
         <div id="checkBox" class="ui toggle checkbox">
             <input id="check" type="checkbox" name="public" checked>
             <label>Mostra tutte</label>
