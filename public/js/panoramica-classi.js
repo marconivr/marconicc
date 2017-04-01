@@ -797,14 +797,23 @@ $(document).ready(function() {
                         //check if i've already this cf
                         if (jQuery.inArray(cf, cfArray) == -1) {
                             cfArray.push(cf);
-                            if (confirm("Questo alunno vuole stare con un amico: " + getStudentByCF(cfAmico) + " della " + getClassNameFromStudent(cfAmico) + ", continuare?")) {
-                                newList = oldList = ui.item.parent().parent();
+                            var amico = getStudentByCF(cfAmico);
+                            var classeAmico = getClassNameFromStudent(cfAmico);
+                            //se la desiderata non è corrisposta
+                            if (!(cfAmico === undefined || classeAmico === undefined)) {
+                                if (confirm("Questo alunno vuole stare con un amico: " + amico + " della " + classeAmico + ", continuare?")) {
+                                    newList = oldList = ui.item.parent().parent();
+                                }
+                                else {
+                                    var index = cfArray.indexOf(cf);
+                                    cfArray.splice(index, 1);
+                                    newList = oldList = ui.item.parent().parent();
+                                }
                             }
                             else {
-                                var index = cfArray.indexOf(cf);
-                                cfArray.splice(index, 1);
                                 newList = oldList = ui.item.parent().parent();
                             }
+
                         }
                         else {
                             newList = oldList = ui.item.parent().parent();
@@ -814,30 +823,6 @@ $(document).ready(function() {
                     else {
                         newList = oldList = ui.item.parent().parent();
                     }
-                    // cfAmico = getAlunnoDesiderataByCF(cf);
-                    // if(desiderata)
-                    // {
-                    //     if(jQuery.inArray(cf, cfArray) == 0 )
-                    //     {
-                    //         var index = cfArray.indexOf(cf);
-                    //         cfArray.splice(index, 1);
-                    //         if(confirm("Questo alunno vuole stare con un amico: "  + getStudentByCF(cfAmico) + ", continuare?"))
-                    //         {
-                    //             ;
-                    //         }
-                    //         else
-                    //         {
-                    //             newList = oldList = ui.item.parent().parent();
-                    //         }
-                    //     }
-                    //
-                    //
-                    // }
-                    // else {
-                    //     newList = oldList = ui.item.parent().parent();
-                    // }
-
-
 
                 },
                 stop: function (event, ui) {
