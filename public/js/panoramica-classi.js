@@ -538,10 +538,29 @@ function moveStudent(cf,fromClass,toClass){
 
 }
 
+/**
+ * Data una nazionalità in italiano maiuscolo torna il codice iso relativo alla bandiera
+ * @param nazionalita
+ * @returns {*}
+ */
 function flagTag(nazionalita) {
     return flagJson[nazionalita];
-
 }
+
+/**
+ * Funzione che dato il codice iso della bandiera torna la nazionalità
+ * @param tag
+ * @returns {*}
+ */
+function nazionalitaByTag(tag) {
+    for (var prop in flagJson){
+        if (flagJson[prop] == tag){
+            return prop;
+        }
+    }
+}
+
+
 
 /**
  * this function set all filter on the page;
@@ -660,7 +679,7 @@ $(document).ready(function() {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button></div> <h4 class="title">Distribuzione Voti</h4> '
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button></div>'
                 }).appendTo(wrapperClasse);
 
                 var div = $('<ul/>', {
@@ -847,27 +866,36 @@ $(document).ready(function() {
                 barChartArray.push(barChart);
 
 
-                    // PIE CHART//
+                    // PIE CHART
+                    //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
+
                     var canvasPieChart = $('<canvas/>',
                         {
                             'id' : nomeClasse + 'pieChart',
                             'class': 'pieChart',
-                            'width': 200,
-                            'height': 200
+                            'width': 150,
+                            'height': 150
                         }).appendTo(settingClasse).hide();
+
+
+
+                    var stranieri = getNationalityOfClass(nomeClasse);
+                    labels = []
+                    data = []
+                    for (var prop in stranieri){
+                        labels.push(flagTag(prop));
+                        data.push(stranieri[prop]);
+                    }
+
 
                     // For a pie chart
                     var pieChart = new Chart(canvasPieChart,{
                         type: 'pie',
                         data: {
-                            labels: [
-                                "Red",
-                                "Blue",
-                                "Yellow"
-                            ],
+                            labels: labels,
                             datasets: [
                                 {
-                                    data: [300, 50, 100],
+                                    data: data,
                                     backgroundColor: [
                                         "#FF6384",
                                         "#36A2EB",
@@ -881,7 +909,16 @@ $(document).ready(function() {
                                 }]
                         },
                         options: {
-                            responsive: true
+                            responsive: true,
+                            tooltips:{
+                                callbacks: {
+                                    label: function(tooltipItems, data) {
+                                        return data.datasets[0].data[tooltipItems.index] + ' -> naz: '+  nazionalitaByTag(labels[tooltipItems.index]).toLowerCase();
+                                    }
+
+                                }
+                            }
+
                         }
                     });
 
