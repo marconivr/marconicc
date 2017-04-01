@@ -1,10 +1,12 @@
-var debug = true;
+var debug = false;
 var saveRealTimeOnDb = false;
 
 
 var barChartArray = [];//reference to barChart
 var pieChartArray = [];//reference to pieChart
 
+var checkBoxArrayActive = []; //array for filter voto
+var checkBoxArrayDisable = [];//array for disable voti
 var informationArray = [];//reference to information
 var cfArray = []; //serve per i desiderata e per non rompere i coglioni
 var arrayClassi = null;
@@ -540,6 +542,63 @@ function flagTag(nazionalita) {
 
 }
 
+/**
+ * this function set all filter on the page;
+ */
+function setAllFilter() {
+    for (var i = 0; i < checkBoxArrayActive.length; i++) {
+        setFilterVoti(checkBoxArrayActive[i]);
+    }
+}
+
+
+/**
+ * this function handle the checkbox for the FILTER VOTI
+ */
+function handleCheckBox() {
+    $('.list .child.checkbox')
+        .checkbox({
+            // Fire on load to set parent value
+            fireOnInit: true,
+            // Change parent state on each child checkbox change
+            onChange: function () {
+                var
+                    $listGroup = $(this).closest('.list'),
+                    $parentCheckbox = $listGroup.closest('.item').children('.checkbox'),
+                    $checkbox = $listGroup.find('.checkbox'),
+                    allChecked = true,
+                    allUnchecked = true
+                    ;
+                checkBoxArrayActive = [];
+                // check to see if all other siblings are checked or unchecked
+                $checkbox.each(function (index, element) {
+                    if ($(this).checkbox('is checked')) {
+                        checkBoxArrayActive.push(index + 6);
+
+                    }
+                    else {
+                        allChecked = false;
+                        disableFilterVoti(index + 6);
+                        // checkBoxArrayDisable.push(index+6);
+                    }
+                });
+                // set parent checkbox state, but dont trigger its onChange callback
+                if (allChecked) {
+                    $parentCheckbox.checkbox('set checked');
+                }
+                else if (allUnchecked) {
+                    $parentCheckbox.checkbox('set unchecked');
+                }
+                else {
+                    $parentCheckbox.checkbox('set indeterminate');
+                }
+                setAllFilter();
+
+            }
+        })
+    ;
+}
+
 ////////////////////////////////////////////////////
 //AJAX CALL//
 ////////////////////////////////////////////////////
@@ -562,6 +621,15 @@ $(document).ready(function() {
         dataType: 'json',
 
         success: function (listaClassi) {
+
+            //dropdown for the settings
+            $('.ui.dropdown.settings').dropdown(
+                {
+                    action: 'nothing'
+                }
+            );
+            handleCheckBox();
+
 
 
             for (i=0; i < listaClassi.length;i++){
