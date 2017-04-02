@@ -116,8 +116,7 @@ module.exports = function (app, passport, upload) {
         var listaClassi = [];
         var listaNomiClassi = [];
         var listaAlunniClasse = [];
-
-
+        alg.creaInsiemi(); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         query.getNumberAlunniClassi("prima", function (err, results) {
             if (err)
                 console.log(results);
@@ -177,6 +176,8 @@ module.exports = function (app, passport, upload) {
 
     app.post('/move-student', middleware.isLoggedIn, function (req, res) {
         console.log(req);
+        alg.addStundentInClss(req.cf, req.fromClass, req.toClass, true);
+        console.log("Salvo sul db");
         res.send("ok arrivato al db");
     });
 };

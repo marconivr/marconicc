@@ -516,7 +516,6 @@ function moveStudent(cf,fromClass,toClass){
                         console.log(getNumberOfFemmineOfClass(fromClass));
                         console.log(arrayClassi[i].alunni);
                     }
-
                     break;
                 }
             }
@@ -527,13 +526,11 @@ function moveStudent(cf,fromClass,toClass){
     for (var i=0; i < arrayClassi.length; i++){
         if (arrayClassi[i].nome == toClass){
             arrayClassi[i].alunni.push(removedStudent);
-
             if(debug) {
                 console.log(toClass);
                 console.log(getNumberOfFemmineOfClass(toClass));
                 console.log(arrayClassi[i].alunni);
             }
-
             break;
         }
     }
