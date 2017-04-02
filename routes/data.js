@@ -158,8 +158,7 @@ module.exports = function (app, passport, upload) {
                                         if (counter  == listaNomiClassi.length - 1){
                                             alg.setListaClassi(listaClassi);
                                             alg.fixClassi();
-                                            //alg.fixRipetenti();
-                                            //alg.printProprieta();
+                                            alg.printProprieta();
                                             res.send(alg.getListaClassi());
                                         }
                                     }

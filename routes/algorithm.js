@@ -23,7 +23,7 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "CAP", "voto"];
+var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "stranieri", "CAP", "voto"];
 var insiemi = [];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
@@ -253,32 +253,34 @@ module.exports = {
                 if (module.exports.isInsideProblemiClasse(objproblem, priority[j])) {
                     switch (priority[j]) {
                         case "alunni":
-                            module.exports.fixAlunni(listaClassi[k].nome);
+                            //module.exports.fixAlunni(listaClassi[k].nome);
                             break;
                         case "femmine":
-                            module.exports.fixFemmine(listaClassi[k].nome);
+                            //module.exports.fixFemmine(listaClassi[k].nome);
                             break;
-                        case "nazionalita":
+                        case "stranieri":
                             //module.exports.fixStranieri(listaClassi[k].nome);
-                            module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
+                            //module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
                             break;
                         case "CAP":
 
                             break;
+                        case "ripetenti":
+                            //module.exports.fixRipetenti(listaClassi[k].nome);
                         case "media":
-                            module.exports.fixMedia(listaClassi[k].nome);
+                            //module.exports.fixMedia(listaClassi[k].nome);
                             break;
                         case "iniziale":
 
                             break;
                         case "desiderata":
-                            module.exports.fixDesiderata(listaClassi[k].nome);
+                            //module.exports.fixDesiderata(listaClassi[k].nome);
                             break;
                         case "legge_104":
-                            module.exports.fix104(listaClassi[k].nome);
+                            //module.exports.fix104(listaClassi[k].nome);
                             break;
                         case "legge_107":
-                            module.exports.fix107(listaClassi[k].nome);
+                            //module.exports.fix107(listaClassi[k].nome);
                             break;
                     }
                 }
@@ -524,9 +526,10 @@ module.exports = {
                     }
                     break;
                 case "stranieri":
-                    /*if (proprieta.stranieri > settings.max_str) {
+                    if (proprieta.stranieri > settings.max_str) {
                         ris["stranieri"] = proprieta.stranieri;
-                    }*/
+                    }
+                    /*
                     var probl = {};
                     var divNaz = module.exports.diverseNazionalita(listaAlunniClasse);
 
@@ -539,7 +542,12 @@ module.exports = {
                     if (probl != {}){
                         ris["nazionalita"] = probl;
                     }
+                    */
                     break;
+                case "ripetenti":
+                    if (proprieta.ripetenti > Math.round(module.exports.countRipetentiTot()/listaClassi.length)){
+                        ris["ripetenti"] = proprieta.ripetenti;
+                    }
                 case "residenza":
                     if (proprieta.residenza.length != 0) {
                         for (var k = 0; k < proprieta.residenza.length; k++) {
@@ -745,22 +753,21 @@ module.exports = {
      * fixRipetenti
      * @param nomeClasse
      */
-    fixRipetenti: function () {
-        var ripetenti = [];
-        for (var k = 0; k < listaClassi.length; k++){
-            for (var i = 0; i < listaClassi[k].alunni.length; i++) {
-                if (listaClassi[k].alunni[i].classe_precedente != ""){
-                    var objAl = listaClassi[k].alunni[i];
-                    listaClassi[k].alunni.splice(k, 1);
-                    ripetenti.push(objAl);
+    fixRipetenti: function (nomeClasse) {
+        var num_ripetenti = Math.round(module.exports.countRipetentiTot()/listaClassi.length);
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
+                if (module.exports.countRipetenti(classe.alunni) > num_ripetenti
+                    && module.exports.countRipetenti(classe.alunni) > module.exports.countRipetenti(listaClassi[i].alunni)) {
+                    var objal = module.exports.searchRipetente(classe.alunni);
+                    if (objal != null) {
+                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
+                    }
                 }
             }
-        }
-        while (ripetenti.length != 0){
-            for (var i = 0; i < listaClassi.length; i++) {
-                var objAl2 = ripetenti[0];
-                ripetenti.splice(0, 1);
-                listaClassi[i].alunni.push(objAl2);
+            if (module.exports.countRipetenti(classe.alunni) == num_ripetenti) {
+                break;
             }
         }
     },
@@ -807,6 +814,7 @@ module.exports = {
                 }
             }
         }
+        /*
         var al104 = module.exports.get104Classe(classe.alunni);
 
         for (var k = 0; k < listaClassi.length; k++){
@@ -817,6 +825,7 @@ module.exports = {
                 if (al104.length == settings.max_107)   break;
             }
         }
+        */
     },
     
     get107Classe: function (listaAlunniClasse) {
@@ -889,6 +898,7 @@ module.exports = {
     searchRipetente: function (listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i]["classe_precedente"] != "") {
+                console.log(listaAlunniClasse[i]["classe_precedente"]);
                 return listaAlunniClasse[i];
             }
         }
