@@ -27,27 +27,25 @@ var iconJson = {
 };
 
 
-var flagJson = {
-    'ITALIANA' : 'it',
-    'CINGALESE' : 'lk',
-    'BANGLADESE': 'bd',
-    'ROMENA' : 'ro',
-    'CINESE' : 'cn',
-    'MAROCCHINA' : 'ma',
-    'PARAGUAIANA' : 'py',
-    'TUNISINA' : 'tn',
-    'FILIPPINA' : 'ph',
-    'ALBANESE' : 'al',
-    'MOLDAVA' : 'md',
-    'LETTONE' : 'lv',
-    'BRASILIANA' : 'br',
-    'NIGERIANA' : 'ng',
-    'GHANESE' : 'gh',
-    'PERUVIANA' : 'pe',
-    'CUBANA' : 'cu',
-    'CROATA' : 'hr',
-    'SENEGALESE' : 'sn'
-};
+var flagJson = { ITALIANA: { iso: 'it', color: '#00ffff' },
+    CINGALESE: { iso: 'lk', color: '#f0ffff' },
+    BANGLADESE: { iso: 'bd', color: '#000000' },
+    ROMENA: { iso: 'ro', color: '#0000ff' },
+    CINESE: { iso: 'cn', color: '#a52a2a' },
+    MAROCCHINA: { iso: 'ma', color: '#008b8b' },
+    PARAGUAIANA: { iso: 'py', color: '#a9a9a9' },
+    TUNISINA: { iso: 'tn', color: '#006400' },
+    FILIPPINA: { iso: 'ph', color: '#bdb76b' },
+    ALBANESE: { iso: 'al', color: '#556b2f' },
+    MOLDAVA: { iso: 'md', color: '#8b0000' },
+    LETTONE: { iso: 'lv', color: '#e9967a' },
+    BRASILIANA: { iso: 'br', color: '#008000' },
+    NIGERIANA: { iso: 'ng', color: '#4b0082' },
+    GHANESE: { iso: 'gh', color: '#f0e68c' },
+    PERUVIANA: { iso: 'pe', color: '#00ff00' },
+    CUBANA: { iso: 'cu', color: '#ff00ff' },
+    CROATA: { iso: 'hr', color: '#800000' },
+    SENEGALESE: { iso: 'sn', color: '#000080' } };
 
 function populate(listaClassi) {
     arrayClassi = listaClassi;
@@ -61,13 +59,13 @@ function getNationalityOfClass(nomeClasse) {
     var alunni = getStudentsOfClass(nomeClasse);
 
     var nazionalita = {};
-    for (var i=0; i < alunni.length; i++){
+    for (var i = 0; i < alunni.length; i++) {
         nazionalita[alunni[i].nazionalita] = 0;
     }
 
-    for(var prop in nazionalita){
-        for (i=0; i < alunni.length; i++){
-            if (alunni[i].nazionalita == prop){
+    for (var prop in nazionalita) {
+        for (i = 0; i < alunni.length; i++) {
+            if (alunni[i].nazionalita == prop) {
                 nazionalita[prop] += 1;
             }
         }
@@ -81,7 +79,7 @@ function getNationalityOfClass(nomeClasse) {
  * @param b
  * @returns {number}
  */
-function compare(a,b) {
+function compare(a, b) {
     if (a.cognome < b.cognome)
         return -1;
     if (a.cognome > b.cognome)
@@ -95,9 +93,9 @@ function compare(a,b) {
  * @param nomeClasse
  * @returns {Array|*} Studenti della classe
  */
-function getStudentsOfClass(nomeClasse){
-    for (var i=0; i < arrayClassi.length; i++){
-        if(arrayClassi[i].nome == nomeClasse){
+function getStudentsOfClass(nomeClasse) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == nomeClasse) {
             return arrayClassi[i].alunni;
         }
     }
@@ -117,7 +115,7 @@ function numerOfVotiOfClass(className) {
             var jsonVoti = {};
             for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
                 var voto = arrayClassi[i].alunni[studenti].voto;
-                if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+                if (jsonVoti[voto] === undefined) jsonVoti[voto] = 1;
                 else jsonVoti[voto] = jsonVoti[voto] + 1;
             }
         }
@@ -127,11 +125,11 @@ function numerOfVotiOfClass(className) {
         console.log(jsonVoti);
     }
 
-    if (jsonVoti[6] === undefined)jsonVoti[6] = 0;
-    if (jsonVoti[7] === undefined)jsonVoti[7] = 0;
-    if (jsonVoti[8] === undefined)jsonVoti[8] = 0;
-    if (jsonVoti[9] === undefined)jsonVoti[9] = 0;
-    if (jsonVoti[10] === undefined)jsonVoti[10] = 0;
+    if (jsonVoti[6] === undefined) jsonVoti[6] = 0;
+    if (jsonVoti[7] === undefined) jsonVoti[7] = 0;
+    if (jsonVoti[8] === undefined) jsonVoti[8] = 0;
+    if (jsonVoti[9] === undefined) jsonVoti[9] = 0;
+    if (jsonVoti[10] === undefined) jsonVoti[10] = 0;
 
     return jsonVoti;
 }
@@ -149,7 +147,7 @@ function totalVotiOfAllClass() {
     for (var i = 0; i < arrayClassi.length; i++) {
         for (var studenti = 0; studenti < arrayClassi[i].alunni.length; studenti++) {
             var voto = arrayClassi[i].alunni[studenti].voto;
-            if (jsonVoti[voto] === undefined)jsonVoti[voto] = 1;
+            if (jsonVoti[voto] === undefined) jsonVoti[voto] = 1;
             else jsonVoti[voto] = jsonVoti[voto] + 1;
         }
 
@@ -181,15 +179,14 @@ function totalNumberOfStudentOfAllClass() {
     return number;
 }
 
-function approxNum(num){
-   try{
-       return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
-   }catch (e){
-       console.log(e);
-       return num;
-   }
-         
-    
+function approxNum(num) {
+    try {
+        return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+    } catch (e) {
+        console.log(e);
+        return num;
+    }
+
 
 }
 
@@ -197,7 +194,7 @@ function approxNum(num){
  * update a chart for a specific chart
  * @param newClassName
  */
-function updateChart(newClassName) {
+function updateChartBar(newClassName) {
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(newClassName);
     var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
@@ -219,7 +216,7 @@ function setFilterVoti(voto) {
     //trasformo il voto da intero a string
     var votoString = votoIntegerToDecimal(voto);
 
-    $('.'+ voto).each(function (index, element) {
+    $('.' + voto).each(function (index, element) {
         $(element).addClass(votoString);
     });
 }
@@ -260,7 +257,8 @@ function votoIntegerToDecimal(voto) {
  */
 function disableFilterVoti(voto) {
     //trasformo il voto da intero a string
-    var votoString = votoIntegerToDecimal(voto);3
+    var votoString = votoIntegerToDecimal(voto);
+    3
     $('.' + voto).each(function (index, element) {
         $(element).removeClass(votoString);
     });
@@ -305,39 +303,34 @@ function createProprietaForASpecificClass(className) {
  * @param nomeClasse
  * @returns {number} Media voti della classe
  */
-function getMediaOfClass(nomeClasse){
+function getMediaOfClass(nomeClasse) {
     var studentiOfClass = getStudentsOfClass(nomeClasse);
     var somma = 0;
-    for (var i=0; i < studentiOfClass.length; i++){
+    for (var i = 0; i < studentiOfClass.length; i++) {
         somma = somma + studentiOfClass[i].voto;
     }
-    var result =  somma/studentiOfClass.length;
+    var result = somma / studentiOfClass.length;
     var approx = approxNum(result);
     return approx;
 }
 
 
-function getNumberOfDifferentNationalityOfClass(nomeClasse){
-    var studentiOfClass = getStudentsOfClass(nomeClasse);
-    //todo manca nel db il campo nazionalità
-}
 
-function getVotesDistributionOfClass(nomeClasse){
+function getVotesDistributionOfClass(nomeClasse) {
     var jsonVoti = null;
 
     var alunni = getStudentsOfClass(nomeClasse);
 
-    for (var i=0; i < alunni.length; i++){
+    for (var i = 0; i < alunni.length; i++) {
         var voto = alunni[i].voto;
 
-        if (jsonVoti[voto] === undefined){
+        if (jsonVoti[voto] === undefined) {
             jsonVoti[voto] = 1;
 
         } else {
             jsonVoti[voto] = jsonVoti[voto] + 1;
         }
     }
-
     return jsonVoti;
 }
 
@@ -349,8 +342,8 @@ function getVotesDistributionOfClass(nomeClasse){
 function getNumberOfFemmineOfClass(nomeClasse) {
     var studentiOfClass = getStudentsOfClass(nomeClasse);
     var count = 0;
-    for (var i=0; i < studentiOfClass.length; i++){
-        if (studentiOfClass[i].sesso == "F"){
+    for (var i = 0; i < studentiOfClass.length; i++) {
+        if (studentiOfClass[i].sesso == "F") {
             count += 1;
         }
     }
@@ -471,12 +464,12 @@ function getClassNameFromStudent(stundentCf) {
 function saveStudentMovementOnDb(cf, fromClass, toClass) {
 
     var jsonToSend = {
-        cf : cf,
-        fromClass : fromClass,
-        toClass : toClass
+        cf: cf,
+        fromClass: fromClass,
+        toClass: toClass
     }
 
-    if(saveRealTimeOnDb){
+    if (saveRealTimeOnDb) {
         $.ajax({
             type: "POST",
             url: "/move-student",
@@ -484,10 +477,10 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
             data: jsonToSend,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            success: function(data){
+            success: function (data) {
                 console.log(data);
             },
-            failure: function(errMsg) {
+            failure: function (errMsg) {
                 alert(errMsg);
             }
         });
@@ -501,17 +494,17 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
  * @param fromClass
  * @param toClass
  */
-function moveStudent(cf,fromClass,toClass){
+function moveStudent(cf, fromClass, toClass) {
 
     var removedStudent = null;
 
-    for (var i=0; i < arrayClassi.length; i++){
-        if (arrayClassi[i].nome == fromClass){
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == fromClass) {
             var alunni = arrayClassi[i].alunni;
-            for (var j=0; i < alunni.length; j++ ){
-                if (alunni[j].cf == cf){
-                    removedStudent = alunni.splice( alunni.indexOf(alunni[j]) , 1 )[0];
-                    if(debug){
+            for (var j = 0; i < alunni.length; j++) {
+                if (alunni[j].cf == cf) {
+                    removedStudent = alunni.splice(alunni.indexOf(alunni[j]), 1)[0];
+                    if (debug) {
                         console.log(fromClass);
                         console.log(getNumberOfFemmineOfClass(fromClass));
                         console.log(arrayClassi[i].alunni);
@@ -524,11 +517,11 @@ function moveStudent(cf,fromClass,toClass){
         }
     }
 
-    for (var i=0; i < arrayClassi.length; i++){
-        if (arrayClassi[i].nome == toClass){
+    for (var i = 0; i < arrayClassi.length; i++) {
+        if (arrayClassi[i].nome == toClass) {
             arrayClassi[i].alunni.push(removedStudent);
 
-            if(debug) {
+            if (debug) {
                 console.log(toClass);
                 console.log(getNumberOfFemmineOfClass(toClass));
                 console.log(arrayClassi[i].alunni);
@@ -538,9 +531,9 @@ function moveStudent(cf,fromClass,toClass){
         }
     }
 
-    saveStudentMovementOnDb(cf,fromClass,toClass);
-    updateChart(toClass);//refresh the new chart
-    updateChart(fromClass); //refresh the old chart
+    saveStudentMovementOnDb(cf, fromClass, toClass);
+    updateChartBar(toClass);//refresh the new chart
+    updateChartBar(fromClass); //refresh the old chart
     updateInformation(toClass);
     updateInformation(fromClass);
 
@@ -552,7 +545,7 @@ function moveStudent(cf,fromClass,toClass){
  * @returns {*}
  */
 function flagTag(nazionalita) {
-    return flagJson[nazionalita];
+    return flagJson[nazionalita].iso;
 }
 
 /**
@@ -561,13 +554,12 @@ function flagTag(nazionalita) {
  * @returns {*}
  */
 function nazionalitaByTag(tag) {
-    for (var prop in flagJson){
-        if (flagJson[prop] == tag){
+    for (var prop in flagJson) {
+        if (flagJson[prop].iso == tag) {
             return prop;
         }
     }
 }
-
 
 
 /**
@@ -596,7 +588,7 @@ function handleCheckBox() {
                     $checkbox = $listGroup.find('.checkbox'),
                     allChecked = true,
                     allUnchecked = true
-                    ;
+                ;
                 checkBoxArrayActive = [];
                 // check to see if all other siblings are checked or unchecked
                 $checkbox.each(function (index, element) {
@@ -627,6 +619,17 @@ function handleCheckBox() {
     ;
 }
 
+
+function getColorOfNationalitiesByLabelArray(label) {
+    var colorArray = []
+    for (var iso in label){
+        var nazionalita = nazionalitaByTag(label[iso]);
+        colorArray.push(flagJson[nazionalita].color);
+    }
+    return colorArray;
+
+}
+
 ////////////////////////////////////////////////////
 //AJAX CALL//
 ////////////////////////////////////////////////////
@@ -634,7 +637,7 @@ function handleCheckBox() {
 // - CREAZIONE BOX INFORMAZIONI
 // - CREAZIONE CHART
 // - INIZIALIZZAZIONE DRAG AND DROP STUDENTI
-$(document).ready(function() {
+$(document).ready(function () {
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
@@ -659,13 +662,11 @@ $(document).ready(function() {
             handleCheckBox();
 
 
-
-            for (i=0; i < listaClassi.length;i++){
+            for (i = 0; i < listaClassi.length; i++) {
                 listaClassi[i].alunni.sort(compare);
             }
 
             populate(listaClassi);
-
 
 
             for (var i = 0; i < listaClassi.length; i++) {
@@ -706,7 +707,7 @@ $(document).ready(function() {
 
 
                         var iconFlagElement = "";
-                        if (nazionalita != "ITALIANA"){
+                        if (nazionalita != "ITALIANA") {
                             iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
                         }
 
@@ -722,7 +723,7 @@ $(document).ready(function() {
                         var tag;
                         var anagrafica = $('<p/>')
                             .addClass('roboto')
-                            .html(iconFlagElement + " " +cognomeStudente + " " + nomeStudente );
+                            .html(iconFlagElement + " " + cognomeStudente + " " + nomeStudente);
 
 
                         if (arrayStudenti[j].sesso == "M") {
@@ -747,16 +748,16 @@ $(document).ready(function() {
                         }
 
                         //aggiungo la classe desiderata se presente
-                        if (desiderata != "")container.addClass('desiderata');
+                        if (desiderata != "") container.addClass('desiderata');
 
                         var tooltipValue = "";
                         if ((arrayStudenti[j].legge_104) != "") {
                             tooltipValue = "104"
-                        }else if(arrayStudenti[j].legge_107 != ""){
+                        } else if (arrayStudenti[j].legge_107 != "") {
                             tooltipValue = "107";
                         }
 
-                        if (tooltipValue != ""){
+                        if (tooltipValue != "") {
                             //contiene il tag studente
                             tag = $('<div/>')
                                 .addClass('floating ui grey label tiny')
@@ -766,8 +767,8 @@ $(document).ready(function() {
 
                         //tooltip for handicap
                         var handicapTooltip = "";
-                        if ((arrayStudenti[j])['legge_'+tooltipValue] !== undefined){
-                            handicapTooltip = '<br>'+tooltipValue+': '+(arrayStudenti[j])['legge_'+tooltipValue];
+                        if ((arrayStudenti[j])['legge_' + tooltipValue] !== undefined) {
+                            handicapTooltip = '<br>' + tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
                         }
 
                         var tooltip = $('<span/>')
@@ -789,13 +790,16 @@ $(document).ready(function() {
                 // CHART BAR //
                 var canvasBarChart = $('<canvas/>',
                     {
-                        'id' :  nomeClasse + 'barChart',
+                        'id': nomeClasse + 'barChart',
                         'class': 'barChart',
                         'width': 200,
                         'height': 200
                     }).appendTo(settingClasse);
 
-                var br = $('<br>').appendTo(settingClasse);
+                var br = $('<br>', {
+                    class: 'barChart'
+                }).appendTo(settingClasse);
+
                 var barChart = new Chart(canvasBarChart, {
                     type: 'bar',
                     data: {
@@ -855,7 +859,7 @@ $(document).ready(function() {
                         ]
                     },
                     options: {
-                        responsive: true,
+                        responsive: false,
                         scales: {
                             yAxes: [{
                                 ticks: {
@@ -863,7 +867,8 @@ $(document).ready(function() {
                                     steps: 10,
                                     stepValue: 6,
                                     max: 60,
-                                    callback: function(value){return value+ "%"   //mettendo questa per la percentuale il voto viene messo orizzontale
+                                    callback: function (value) {
+                                        return value + "%"   //mettendo questa per la percentuale il voto viene messo orizzontale
                                     }
                                 }
                             }]
@@ -874,65 +879,64 @@ $(document).ready(function() {
                 barChartArray.push(barChart);
 
 
-                    // PIE CHART
-                    //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
+                // PIE CHART
+                //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
 
-                    var canvasPieChart = $('<canvas/>',
-                        {
-                            'id' : nomeClasse + 'pieChart',
-                            'class': 'pieChart',
-                            'width': 150,
-                            'height': 150
-                        }).appendTo(settingClasse).hide();
-
-
-
-                    var stranieri = getNationalityOfClass(nomeClasse);
-                    labels = []
-                    data = []
-                    for (var prop in stranieri){
-                        labels.push(flagTag(prop));
-                        data.push(stranieri[prop]);
-                    }
+                var canvasPieChart = $('<canvas/>',
+                    {
+                        'id': nomeClasse + 'pieChart',
+                        'class': 'pieChart',
+                        'width': 200,
+                        'height': 200
+                    }).appendTo(settingClasse).hide();
 
 
-                    // For a pie chart
-                    var pieChart = new Chart(canvasPieChart,{
-                        type: 'pie',
-                        data: {
-                            labels: labels,
-                            datasets: [
-                                {
-                                    data: data,
-                                    backgroundColor: [
-                                        "#FF6384",
-                                        "#36A2EB",
-                                        "#FFCE56"
-                                    ],
-                                    hoverBackgroundColor: [
-                                        "#FF6384",
-                                        "#36A2EB",
-                                        "#FFCE56"
-                                    ]
-                                }]
-                        },
-                        options: {
-                            responsive: true,
-                            tooltips:{
-                                callbacks: {
-                                    label: function(tooltipItems, data) {
-                                        return data.datasets[0].data[tooltipItems.index] + ' -> naz: '+  nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
-                                    }
+                var stranieri = getNationalityOfClass(nomeClasse);
+                var labels = [];
+                var data = [];
 
+
+                for (var prop in stranieri) {
+                    labels.push(flagTag(prop));
+                    data.push(stranieri[prop]);
+                }
+
+                var colorArray = getColorOfNationalitiesByLabelArray(labels);
+
+                var br = $('<br>', {
+                    class: 'pieChart'
+                }).appendTo(settingClasse);
+
+                // For a pie chart
+                var pieChart = new Chart(canvasPieChart, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                data: data,
+                                backgroundColor: colorArray,
+                                hoverBackgroundColor: colorArray
+                            }]
+                    },
+                    options: {
+                        responsive: false,
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItems, data) {
+                                    return data.datasets[0].data[tooltipItems.index] + ' -> naz: ' + nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
                                 }
+
                             }
-
                         }
-                    });
 
-                    pieChartArray.push(pieChart);
+                    }
+                });
+
+                pieChartArray.push(pieChart);
 
                 //box informazioni
+
                 createBoxInformazioni(settingClasse, nomeClasse);
 
 
@@ -986,7 +990,7 @@ $(document).ready(function() {
                     var classFrom = oldList.attr('id');
                     var classTo = newList.attr('id');
 
-                    moveStudent(cf_studente_spostato,classFrom,classTo);
+                    moveStudent(cf_studente_spostato, classFrom, classTo);
 
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
 
@@ -999,19 +1003,19 @@ $(document).ready(function() {
 
             displayAllClass();
 
-            $(".barChartButton").on('click',function(e){
+            $(".barChartButton").on('click', function (e) {
                 classe = $(this).parent().parent().parent().attr('id');
 
                 pieChart = $("#" + classe + "pieChart").hide();
-                barChart =  $("#" + classe + "barChart").show();
+                barChart = $("#" + classe + "barChart").show();
 
             });
 
-            $(".pieChartButton").on('click',function(e){
+            $(".pieChartButton").on('click', function (e) {
 
                 classe = $(this).parent().parent().parent().attr('id');
 
-                barChart =  $("#" + classe + "barChart").hide();
+                barChart = $("#" + classe + "barChart").hide();
                 pieChart = $("#" + classe + "pieChart").show();
             });
 
@@ -1035,7 +1039,7 @@ $(document).ready(function() {
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
 
-                    if($('#check').prop("checked") == false){
+                    if ($('#check').prop("checked") == false) {
                         var classe = $(this).text();
                         $('#' + classe).hide();
                     }
@@ -1044,7 +1048,7 @@ $(document).ready(function() {
                 } else {
                     $(this).addClass('active');
 
-                    if($('#check').prop("checked") == false){
+                    if ($('#check').prop("checked") == false) {
                         var classe = $(this).text();
                         $('#' + classe).show();
                     }

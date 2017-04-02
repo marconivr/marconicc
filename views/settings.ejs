@@ -1,15 +1,16 @@
 <% include header %>
-<body class="pageBackground">
+<body >
+<% include sidebar-start.ejs %>
 <div class="container">
     <div class="ui equal width center aligned padded grid">
         <div class="row">
             <div class="column">
-                <h1 class="robotoWhiteTitle">
-                    Impostazioni
+                <h1>
+                    Configurazione
                 </h1>
             </div>
         </div>
-        <p style="color: white">Scegliere se inserire le impostazioni delle classi prime o delle terze</p>
+        <p>Scegliere se inserire le impostazioni delle classi prime o delle terze</p>
         <div class="row">
             <div class="column">
                 <div class="ui large buttons">
@@ -21,5 +22,5 @@
         </div>
     </div>
 </div>
-</body>
-</html>
+<% include sidebar-stop.ejs%>
+<% include tag-close.ejs%>
