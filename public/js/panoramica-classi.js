@@ -5,8 +5,12 @@ var saveRealTimeOnDb = false;
 var barChartArray = [];//reference to barChart
 var pieChartArray = [];//reference to pieChart
 
-var checkBoxArrayActive = []; //array for filter voto
-var checkBoxArrayDisable = [];//array for disable voti
+//FILTER
+var votiCheckBoxArray = []; //array for filter voto
+var nazionalitaCheckBoxArray = [];//array for filter nazionalità
+var desiderataNonRispettato = false;
+
+//chart
 var informationArray = [];//reference to information
 var cfArray = []; //serve per i desiderata e per non rompere i coglioni
 var arrayClassi = null;
@@ -211,60 +215,7 @@ function updateChart(newClassName) {
     barChart.update();
 }
 
-/**
- * filtra il colore del box pdegli studenti per il voto
- * @param voto voto con cui filtrare -> integer
- */
-function setFilterVoti(voto) {
-    //trasformo il voto da intero a string
-    var votoString = votoIntegerToDecimal(voto);
 
-    $('.'+ voto).each(function (index, element) {
-        $(element).addClass(votoString);
-    });
-}
-
-
-/**
- *
- * @param voto
- * @returns {string} voto in string
- */
-function votoIntegerToDecimal(voto) {
-    switch (voto) {
-        case (6):
-            return 'sei';
-            break;
-
-        case (7):
-            return 'sette';
-            break;
-
-        case (8):
-            return 'otto';
-            break;
-
-        case (9):
-            return 'nove';
-            break;
-
-        case (10):
-            return 'dieci';
-            break;
-    }
-}
-
-/**
- * toglie il filtro dei voti
- * @param voto voto da togliere : integer
- */
-function disableFilterVoti(voto) {
-    //trasformo il voto da intero a string
-    var votoString = votoIntegerToDecimal(voto);3
-    $('.' + voto).each(function (index, element) {
-        $(element).removeClass(votoString);
-    });
-}
 
 /**
  * count bocciati of one class
@@ -568,22 +519,144 @@ function nazionalitaByTag(tag) {
     }
 }
 
+function setFilterVoti(voto, elemento) {
+    //trasformo il voto da intero a string
+    var votoString = votoIntegerToDecimal(voto);
+    $(elemento).addClass(votoString);
+
+}
+
+function setFilterNazionalita(elemento) {
+    elemento.popup({
+        silent: true,
+        hoverable: true
+    }).popup('show');
+
+    elemento.visibility({
+        onTopVisible: function () {
+            elemento.popup({
+                silent: true,
+                hoverable: true
+            }).popup('show');
+        }
+    });
+}
+
+/**
+ * toglie tutti i filtri
+ */
+function disableAllFilter() {
+    //remove voto
+    //trasformo il voto da intero a string
+    for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+        var votoString = votoIntegerToDecimal(votiCheckBoxArray[voto]);
+        $('.' + votiCheckBoxArray[voto]).each(function (index, element) {
+            $(element).removeClass(votoString);
+        });
+    }
+
+    //todo : delete popup
+    //todo:  delete desiderata
+
+
+}
+
+
+/**
+ *
+ * @param voto
+ * @returns {string} voto in string
+ */
+function votoIntegerToDecimal(voto) {
+    switch (voto) {
+        case (6):
+            return 'sei';
+            break;
+
+        case (7):
+            return 'sette';
+            break;
+
+        case (8):
+            return 'otto';
+            break;
+
+        case (9):
+            return 'nove';
+            break;
+
+        case (10):
+            return 'dieci';
+            break;
+    }
+}
+
 
 
 /**
  * this function set all filter on the page;
  */
 function setAllFilter() {
-    for (var i = 0; i < checkBoxArrayActive.length; i++) {
-        setFilterVoti(checkBoxArrayActive[i]);
+    //TODO: SET ALL FILTER
+    //vedere queli filtri sono vuoti e comportarsi di conseguenza
+
+    //guardo se il checkbox dei voti è spuntanto,se no procedo con gli altri filtri
+    if (votiCheckBoxArray.length != 0) {
+        //controllo se il filtro delle nazionalità è attivo
+        if (nazionalitaCheckBoxArray.length != 0) {
+            //controllo se c'è il filtro desiderata
+            if (desiderataNonRispettato) {
+                //ci sono tutti i filtri
+                //scorro tutti gli studenti
+                for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                    //todo
+                }
+            }
+            //desiderata non è rispettato, filtro pe voto e per nazionalita
+            else {
+
+                var arrayStudentiVoti = [];
+
+                for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                    arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
+                    for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                        arrayStudentiVoti.each(function (index, element) {
+                            if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
+                                setFilterVoti(votiCheckBoxArray[voto], $(element));
+                                setFilterNazionalita($(element));
+                            }
+
+                        });
+
+                    }
+                }
+
+            }
+        }
+        else {
+            //filtri di voti ci sono, nazionalita no
+            if (desiderataNonRispettato) {
+
+            }
+            else {
+                //ho solo i voti come filtro
+                for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                    $('.' + votiCheckBoxArray[voto]).each(function (index, element) {
+                        setFilterVoti(votiCheckBoxArray[voto], element)
+                    });
+                }
+            }
+        }
     }
+
+
 }
 
 
 /**
  * this function handle the checkbox for the FILTER VOTI
  */
-function handleCheckBox() {
+function handleCheckBoxVoti() {
     $('.list .child.checkbox')
         .checkbox({
             // Fire on load to set parent value
@@ -597,16 +670,16 @@ function handleCheckBox() {
                     allChecked = true,
                     allUnchecked = true
                     ;
-                checkBoxArrayActive = [];
+                disableAllFilter();
+                votiCheckBoxArray = [];
                 // check to see if all other siblings are checked or unchecked
                 $checkbox.each(function (index, element) {
                     if ($(this).checkbox('is checked')) {
-                        checkBoxArrayActive.push(index + 6);
+                        votiCheckBoxArray.push(index + 6);
 
                     }
                     else {
                         allChecked = false;
-                        disableFilterVoti(index + 6);
                         // checkBoxArrayDisable.push(index+6);
                     }
                 });
@@ -623,8 +696,104 @@ function handleCheckBox() {
                 setAllFilter();
 
             }
-        })
-    ;
+        });
+}
+
+
+/**
+ * this function handle the checkbox for the FILTER VOTI
+ */
+function handleCheckBoxNazionalita() {
+    $('.list .child.checkbox.nazionalita')
+        .checkbox({
+            // Fire on load to set parent value
+            fireOnInit: true,
+            // Change parent state on each child checkbox change
+            onChange: function () {
+                var
+                    $listGroup = $(this).closest('.list'),
+                    $parentCheckbox = $listGroup.closest('.item').children('.checkbox'),
+                    $checkbox = $listGroup.find('.checkbox'),
+                    allChecked = true,
+                    allUnchecked = true
+                    ;
+                // check to see if all other siblings are checked or unchecked
+                disableAllFilter();
+                nazionalitaCheckBoxArray = [];
+                var parent,
+                    value;
+
+                $checkbox.each(function (index, element) {
+                    if ($(this).checkbox('is checked')) {
+                        parent = $(this)[0];
+                        value = parent.innerText.replace(/[^a-zA-Z0-9_ ]/g, "");
+                        nazionalitaCheckBoxArray.push(value);
+
+                    }
+                    else {
+                        allChecked = false;
+                        //disableFilterVoti(index + 6);
+                    }
+                });
+                // set parent checkbox state, but dont trigger its onChange callback
+                if (allChecked) {
+                    $parentCheckbox.checkbox('set checked');
+                }
+                else if (allUnchecked) {
+                    $parentCheckbox.checkbox('set unchecked');
+                }
+                else {
+                    $parentCheckbox.checkbox('set indeterminate');
+                }
+                setAllFilter();
+            }
+        });
+}
+
+
+function handleCheckBoxDesiderata() {
+    $('.child.checkbox.desiderata')
+        .checkbox({
+            // Fire on load to set parent value
+            fireOnInit: true,
+            // Change parent state on each child checkbox change
+            onChange: function () {
+                var
+                    $listGroup = $(this).closest('.list'),
+                    $parentCheckbox = $listGroup.closest('.item').children('.checkbox'),
+                    $checkbox = $listGroup.find('.checkbox'),
+                    allChecked = true,
+                    allUnchecked = true
+                    ;
+                // check to see if all other siblings are checked or unchecked
+                disableAllFilter();
+                desiderataNonRispettato = false;
+
+                var parent;
+                $checkbox.each(function (index, element) {
+                    if ($(this).checkbox('is checked')) {
+                        parent = $(this)[0];
+                        if (parent.innerText != "") desiderataNonRispettato = true;
+
+                    }
+                    else {
+                        allChecked = false;
+                        desiderataNonRispettato = false;
+                    }
+                });
+                // set parent checkbox state, but dont trigger its onChange callback
+                if (allChecked) {
+                    $parentCheckbox.checkbox('set checked');
+                }
+                else if (allUnchecked) {
+                    $parentCheckbox.checkbox('set unchecked');
+                }
+                else {
+                    $parentCheckbox.checkbox('set indeterminate');
+                }
+                setAllFilter();
+            }
+        });
 }
 
 ////////////////////////////////////////////////////
@@ -656,7 +825,9 @@ $(document).ready(function() {
                     action: 'nothing'
                 }
             );
-            handleCheckBox();
+            handleCheckBoxVoti();
+            handleCheckBoxNazionalita();
+            handleCheckBoxDesiderata();
 
 
 
@@ -729,7 +900,9 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 40
+                                    'height': 40,
+                                    'data-content': nazionalita,
+                                    'data-variation': "tiny"
                                 })
                                 .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
@@ -739,7 +912,9 @@ $(document).ready(function() {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 40
+                                    'height': 40,
+                                    'data-content': nazionalita,
+                                    'data-variation': "tiny"
                                 })
                                 .addClass('ui segment tooltip girl ' + voto)
                                 .attr('id', cf)
@@ -1020,8 +1195,6 @@ $(document).ready(function() {
         type: 'GET'
     });
 
-    //TODO:FIX WHEN SELECTION WIDTH
-
 
     /**
      * Osservatore per gestire la visualizzazione delle classi
@@ -1074,3 +1247,4 @@ $(document).ready(function() {
         }
     });
 });
+
