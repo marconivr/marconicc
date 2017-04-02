@@ -26,26 +26,46 @@ var iconJson = {
 
 };
 
+var filtri = {
+    voto : {
+        6 : {color:'#FFCC80'},
+        7 :  {color:'#E6EE9C'},
+        8 :  {color:'#D4E157'},
+        9 :  {color:'#C5E1A5'},
+        10 :  {color:'#AED581'}
+    },
+    sesso : {
+        M : {color:''},
+        F : {color:''}
+    },
+    nazionalita : { ITALIANA: { iso: 'it', color: '#00ffff' },
+        CINGALESE: { iso: 'lk', color: '#f0ffff' },
+        BANGLADESE: { iso: 'bd', color: '#000000' },
+        ROMENA: { iso: 'ro', color: '#0000ff' },
+        CINESE: { iso: 'cn', color: '#a52a2a' },
+        MAROCCHINA: { iso: 'ma', color: '#008b8b' },
+        PARAGUAIANA: { iso: 'py', color: '#a9a9a9' },
+        TUNISINA: { iso: 'tn', color: '#006400' },
+        FILIPPINA: { iso: 'ph', color: '#bdb76b' },
+        ALBANESE: { iso: 'al', color: '#556b2f' },
+        MOLDAVA: { iso: 'md', color: '#8b0000' },
+        LETTONE: { iso: 'lv', color: '#e9967a' },
+        BRASILIANA: { iso: 'br', color: '#008000' },
+        NIGERIANA: { iso: 'ng', color: '#4b0082' },
+        GHANESE: { iso: 'gh', color: '#f0e68c' },
+        PERUVIANA: { iso: 'pe', color: '#00ff00' },
+        CUBANA: { iso: 'cu', color: '#ff00ff' },
+        CROATA: { iso: 'hr', color: '#800000' },
+        SENEGALESE: { iso: 'sn', color: '#000080' }
+    }
+};
 
-var flagJson = { ITALIANA: { iso: 'it', color: '#00ffff' },
-    CINGALESE: { iso: 'lk', color: '#f0ffff' },
-    BANGLADESE: { iso: 'bd', color: '#000000' },
-    ROMENA: { iso: 'ro', color: '#0000ff' },
-    CINESE: { iso: 'cn', color: '#a52a2a' },
-    MAROCCHINA: { iso: 'ma', color: '#008b8b' },
-    PARAGUAIANA: { iso: 'py', color: '#a9a9a9' },
-    TUNISINA: { iso: 'tn', color: '#006400' },
-    FILIPPINA: { iso: 'ph', color: '#bdb76b' },
-    ALBANESE: { iso: 'al', color: '#556b2f' },
-    MOLDAVA: { iso: 'md', color: '#8b0000' },
-    LETTONE: { iso: 'lv', color: '#e9967a' },
-    BRASILIANA: { iso: 'br', color: '#008000' },
-    NIGERIANA: { iso: 'ng', color: '#4b0082' },
-    GHANESE: { iso: 'gh', color: '#f0e68c' },
-    PERUVIANA: { iso: 'pe', color: '#00ff00' },
-    CUBANA: { iso: 'cu', color: '#ff00ff' },
-    CROATA: { iso: 'hr', color: '#800000' },
-    SENEGALESE: { iso: 'sn', color: '#000080' } };
+
+//init css property
+$(".guys").css("backgroud-color",filtri['sesso']['M']);
+
+
+
 
 function populate(listaClassi) {
     arrayClassi = listaClassi;
@@ -545,7 +565,7 @@ function moveStudent(cf, fromClass, toClass) {
  * @returns {*}
  */
 function flagTag(nazionalita) {
-    return flagJson[nazionalita].iso;
+    return filtri['nazionalita'][nazionalita].iso;
 }
 
 /**
@@ -554,8 +574,8 @@ function flagTag(nazionalita) {
  * @returns {*}
  */
 function nazionalitaByTag(tag) {
-    for (var prop in flagJson) {
-        if (flagJson[prop].iso == tag) {
+    for (var prop in filtri['nazionalita']) {
+        if (filtri['nazionalita'][prop].iso == tag) {
             return prop;
         }
     }
@@ -624,7 +644,7 @@ function getColorOfNationalitiesByLabelArray(label) {
     var colorArray = []
     for (var iso in label){
         var nazionalita = nazionalitaByTag(label[iso]);
-        colorArray.push(flagJson[nazionalita].color);
+        colorArray.push(filtri['nazionalita'][nazionalita].color);
     }
     return colorArray;
 
@@ -672,7 +692,6 @@ $(document).ready(function () {
             for (var i = 0; i < listaClassi.length; i++) {
 
                 var nomeClasse = listaClassi[i].nome;
-                var proprieta = listaClassi[i].proprieta;
                 var arrayStudenti = listaClassi[i].alunni;
 
                 var wrapperClasse = $('<div/>', {
@@ -700,10 +719,21 @@ $(document).ready(function () {
                     if (arrayStudenti[j] !== undefined) {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
+                        var sesso =  arrayStudenti[j].sesso;
                         var cf = arrayStudenti[j].cf;
                         var nazionalita = arrayStudenti[j].nazionalita;
                         var desiderata = arrayStudenti[j].desiderata;
                         var voto = arrayStudenti[j].voto;
+                        var cap = arrayStudenti[j].CAP;
+                        var legge104 = "";
+                        var legge107 = "";
+
+                        if (arrayStudenti[j].legge_104 != ""){
+                            legge104 = "104";
+                        }
+                        if (arrayStudenti[j].legge_107 != ""){
+                            legge107 = "107";
+                        }
 
 
                         var iconFlagElement = "";
@@ -711,14 +741,6 @@ $(document).ready(function () {
                             iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
                         }
 
-                        /////////////////////STUDENTI//////////////////
-                        //CREAZIONE TAG
-                        //ES : CIECO
-                        //ES : DSA-> DISGRAFICO
-
-                        //CONTROLLO ANAGRAFICA
-                        //CONTROLLO DESIDERATA
-                        //AGGIUGNO CLASSE VOTO
 
                         var tag;
                         var anagrafica = $('<p/>')
@@ -726,38 +748,28 @@ $(document).ready(function () {
                             .html(iconFlagElement + " " + cognomeStudente + " " + nomeStudente);
 
 
-                        if (arrayStudenti[j].sesso == "M") {
-                            var container = $('<div/>',
+                        var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40
                                 })
-                                .addClass('ui segment tooltip guys ' + voto)
+                                .addClass('ui segment tooltip ' + voto + " " + sesso + " " + legge104 + " " + legge107 + " " + cap + " " + nazionalita)
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
-                        else {
-                            var container = $('<div/>',
-                                {
-                                    'width': $('.contenitoreClasse ').width(),
-                                    'height': 40
-                                })
-                                .addClass('ui segment tooltip girl ' + voto)
-                                .attr('id', cf)
-                                .html(anagrafica)
-                        }
+
 
                         //aggiungo la classe desiderata se presente
                         if (desiderata != "") container.addClass('desiderata');
 
                         var tooltipValue = "";
-                        if ((arrayStudenti[j].legge_104) != "") {
+                        if (legge104 != "") {
                             tooltipValue = "104"
-                        } else if (arrayStudenti[j].legge_107 != "") {
+                        } else if (legge107 != "") {
                             tooltipValue = "107";
                         }
 
-                        if (tooltipValue != "") {
+                        if (legge107 != "" || legge104 != "") {
                             //contiene il tag studente
                             tag = $('<div/>')
                                 .addClass('floating ui grey label tiny')
@@ -800,6 +812,9 @@ $(document).ready(function () {
                     class: 'barChart'
                 }).appendTo(settingClasse);
 
+
+                var barColor = [filtri['voto'][6].color, filtri['voto'][7].color, filtri['voto'][8].color, filtri['voto'][9].color, filtri['voto'][10].color];
+
                 var barChart = new Chart(canvasBarChart, {
                     type: 'bar',
                     data: {
@@ -813,20 +828,8 @@ $(document).ready(function () {
                                 approxNum((jsonVoti[9] / numerOfStudent) * 100),
                                 approxNum((jsonVoti[10] / numerOfStudent) * 100)
                             ],
-                            backgroundColor: [
-                                '#FFCC80',
-                                '#E6EE9C',
-                                '#D4E157',
-                                '#C5E1A5',
-                                '#AED581'
-                            ],
-                            borderColor: [
-                                '#FFB74D',
-                                '#E6EE9C',
-                                '#CDDC39',
-                                '#C5E1A5',
-                                '#AED581'
-                            ],
+                            backgroundColor: barColor,
+                            borderColor: barColor,
                             borderWidth: 1,
                             stack: 1
                         },
@@ -940,7 +943,6 @@ $(document).ready(function () {
                 createBoxInformazioni(settingClasse, nomeClasse);
 
 
-            }
             var oldList, newList, item, desiderata, cfAmico;
             $(".contenitoreClasse").sortable({
                 connectWith: ".contenitoreClasse",

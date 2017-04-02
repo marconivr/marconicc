@@ -70,20 +70,28 @@
  body > .grid {
     height: 100%;
 }
+ .student{
+     color: #000000 !important;
+     border-left-width: 5px;
+     border-right-width: 5px;
+     padding-right: 5px;
+     padding-left: 5px;
+ }
+
 .girl{
     background-color: #f2bed0 !important;
     border-color: #f2bed0 !important;
-    color: #000000 !important;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    padding-right: 5px;
-    padding-left: 5px;
+
 }
 
 .guys{
     background-color: #99c9f7 !important;
     border-color: #99c9f7 !important;
-    color: #000000 !important;
+}
+
+
+/*penso non serva a niente ora verifico*/
+.voto {
     border-left-width: 5px;
     border-right-width: 5px;
     padding-right: 5px;
@@ -93,49 +101,24 @@
 .dieci {
     background-color: #AED581 !important;
     border-color: #AED581 !important;
-    color: #AED581 !important;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    padding-right: 5px;
-    padding-left: 5px;
 }
 
 .nove {
     background-color: #C5E1A5 !important;
     border-color: #C5E1A5 !important;
-    color: #C5E1A5 !important;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    padding-right: 5px;
-    padding-left: 5px;
 }
 
 .otto {
     background-color: #D4E157 !important;
-    border-color: #CDDC39 !important;
-    color: #D4E157 !important;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    padding-right: 5px;
-    padding-left: 5px;
+    border-color: #D4E157 !important;
 }
 
 .sette {
     background-color: #E6EE9C !important;
     border-color: #E6EE9C !important;
-    color: #E6EE9C !important;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    padding-right: 5px;
-    padding-left: 5px;
 }
 
 .sei {
     background-color: #FFCC80 !important;
-    border-color: #FFB74D !important;
-    color: #FFCC80 !important;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    padding-right: 5px;
-    padding-left: 5px;
+    border-color: #FFCC80 !important;
 }
