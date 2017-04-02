@@ -98,21 +98,6 @@
 
                         <!--sematic button-->
                         <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div>
-                    </form></br></br>
-                    <form class="ui form">
-                        <h4 class="ui dividing header">Tags</h4>
-                        <label><b>Proprietà alunni</b></label>
-                        <div class="three fields">
-                            <div class="field">
-                                <input placeholder="Nome" type="text" id="nome-tag">
-                            </div>
-                            <div class="field">
-                                <input placeholder="Descrizione" type="text" id="descrizione-tag">
-                            </div>
-                            <div class="field">
-                                <div class="medium ui button" tabindex="0" onclick="addTag()">Aggiungi</div>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -120,43 +105,7 @@
         <!--this section represent data in db-->
         <div class="three wide column">
 
-            <a class="ui orange tag label">Dati Studenti</a><br>
-
-            <!--dati max studetni di prima-->
-            <label>Prima</label><br>
-            <div class="ui compact menu">
-                <a class="item">
-                    <i class="student icon"></i> Studenti
-                    <div class="floating ui yellow label">
-                        <p id="alunni-in-classe-prima">
-                            <%= jsonData.numberOfStudentiPrima %>
-                        </p>
-                    </div>
-                </a>
-                <a class="item">
-                    <i class="female icon"></i> Donne
-                    <div class="floating ui pink label">
-                        <p id="donne-in-classe-prima">
-
-                            <%= jsonData.numberOfGirlPrima %>
-                        </p>
-                    </div>
-                </a>
-                <a class="item">
-                    <i class="write icon"></i> Media
-                    <div class="floating ui blue  label">
-                        <p id="media-in-classe-prima">
-
-                            <%= jsonData.AVGOfStudentiPrima %>
-                        </p>
-                    </div>
-                </a>
-            </div>
-
-            <br>
-            <hr>
-            <!--dati max studenti di terza-->
-            <label>Terza</label><br>
+            <a class="ui orange tag label">Dati Studenti</a><br><br>
             <div class="ui compact menu">
                 <a class="item">
                     <i class="student icon"></i> Studenti
@@ -254,7 +203,7 @@
         var mediaMax = parseFloat($("#mediaMax").val());
         var bocciati = parseInt($("#bocciati").val());
         $.ajax({
-            url: '/insert-settings',
+            url: '/insert-settings-terze',
             data: {
                 "alunniMin" : alunniMin,
                 "alunniMax": alunniMax ,

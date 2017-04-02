@@ -57,7 +57,7 @@ CREATE TABLE  `alunni` (
  `nome` VARCHAR( 255 ) NOT NULL ,
  `matricola` INT(10) NOT NULL,
  `cf` CHAR( 16 ) NOT NULL ,
- `desiderata` CHAR( 16 ) NULL ,
+ `cf_amico` CHAR( 16 ) NULL ,
  `sesso` CHAR( 1 ) NOT NULL ,
  `data_di_nascita` DATE NOT NULL ,
  `stato` VARCHAR( 20 ) NOT NULL ,
@@ -70,7 +70,7 @@ CREATE TABLE  `alunni` (
  `anno_scolastico` VARCHAR( 15 ) NOT NULL ,
  `anno` VARCHAR( 4 ) NOT NULL ,
  `cod_cat` VARCHAR( 10 ) NOT NULL ,
- `voto` DOUBLE NOT NULL ,
+ `media_voti` DOUBLE NOT NULL ,
  `condotta` INT(1) NULL,
  `classe_futura` VARCHAR( 50 ) NOT NULL ,
  `tag` VARCHAR( 25 ) ,
@@ -95,22 +95,8 @@ CREATE TABLE `amici` (
 -- Struttura della tabella `impostazioni`
 --
 
-DROP TABLE IF EXISTS `impostazioni_prime`;
-CREATE TABLE `impostazioni_prime` (
-  `id` int(11) NOT NULL,
-  `min_alunni` int(11) DEFAULT NULL,
-  `max_alunni` int(11) DEFAULT NULL,
-  `max_femmine` int(11) DEFAULT NULL,
-  `max_stranieri` int(11) DEFAULT NULL,
-  `stessa_provenienza` int(11) DEFAULT NULL,
-  `stessa_iniziale` int(11) DEFAULT NULL,
-  `media_min` float DEFAULT NULL,
-  `media_max` float DEFAULT NULL,
-  `bocciati` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `impostazioni_terze`;
-CREATE TABLE `impostazioni_terze` (
+DROP TABLE IF EXISTS `impostazioni`;
+CREATE TABLE `impostazioni` (
   `id` int(11) NOT NULL,
   `min_alunni` int(11) DEFAULT NULL,
   `max_alunni` int(11) DEFAULT NULL,
@@ -188,12 +174,8 @@ ALTER TABLE `amici`
 --
 -- Indici per le tabelle `impostazioni`
 --
-ALTER TABLE `impostazioni_prime`
+ALTER TABLE `impostazioni`
   ADD PRIMARY KEY (`id`);
-
-ALTER TABLE `impostazioni_terze`
-  ADD PRIMARY KEY (`id`);
-
 
 --
 -- Indici per le tabelle `priorita_scelta`

@@ -26,11 +26,11 @@ module.exports = {
         var nome = arrayRow[1];
         var matricola = arrayRow[2];
         var cf = arrayRow[3];
-        var cf_amico = arrayRow[4];
+        var desiderata = arrayRow[4];
         var sesso = arrayRow[5];
         var dataDiNascita = arrayRow[6];
         var statoRichiesta = arrayRow[7];
-        var cap = arrayRow[8];
+        var CAP = arrayRow[8];
         var nazionalita = arrayRow[9];
         var legge_107 = arrayRow[10];
         var legge_104 = arrayRow[11];
@@ -39,17 +39,17 @@ module.exports = {
         var annoScolastico = arrayRow[14];
         var anno = arrayRow[15];
         var codice_cat = arrayRow[16];
-        var media_voto = arrayRow[17];
+        var voto = arrayRow[17];
         var condotta = arrayRow[18];
         var classe_futura = arrayRow[19];
         var tag = arrayRow[20];
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, cf_amico, sesso, dataDiNascita.split(" ")[0], statoRichiesta, cap, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, media_voto, condotta, classe_futura,tag], function (err, row) {
+        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], statoRichiesta, CAP, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, voto, condotta, classe_futura,tag], function (err, row) {
             if (err) {
                 console.log(err);
             }
         });
-        if (cf_amico != ""){
-            connection.query("INSERT INTO amici (cf_1, cf_2) VALUES (?,?)", [cf, cf_amico], function (err, row) {
+        if (desiderata != ""){
+            connection.query("INSERT INTO amici (cf_1, cf_2) VALUES (?,?)", [cf, desiderata], function (err, row) {
                 if (err) {
                     console.log(err);
                 }
@@ -86,18 +86,18 @@ module.exports = {
         });
     },
 
-    insertTag: function (callback, tag, descrizione) {
-        connection.query("INSERT INTO tag VALUES (?, ?)", [tag, descrizione], function (err, row) {
+    insertSettingsPrime: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
+        connection.query("INSERT INTO impostazioni_prime VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
-                callback(err, row, tag, descrizione);
+                callback(err, row, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati);
             }
         });
     },
 
-    insertSettings: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+    insertSettingsTerze: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
+        connection.query("INSERT INTO impostazioni_terze VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {
                 console.log(err);
             }else {

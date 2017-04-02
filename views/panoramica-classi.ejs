@@ -3,23 +3,24 @@
 <script src="js/panoramica-classi.js"></script>
 
 <style>
-    .contenitoreClasse{
+    .contenitoreClasse {
         list-style-type: none;
         padding-right: 10px !important;
 
     }
 
-    .contenitoreClasse li{
+    .contenitoreClasse li {
         margin: 0 5px 5px 5px;
         width: 100%;
 
     }
 
-    .studenteItem{
+    .studenteItem {
         width: 120px;
     }
-    .wrapperClasse{
-        display:table-cell;
+
+    .wrapperClasse {
+        display: table-cell;
         border: 1px solid #eee;
         border-radius: .28571429rem;
     }
@@ -31,14 +32,14 @@
     }
 
     .table {
-        display:table;
+        display: table;
     }
 
     .tr {
-        display:table-row;
+        display: table-row;
     }
 
-    .wrapperSettingClasse{
+    .wrapperSettingClasse {
 
     }
 
@@ -81,8 +82,7 @@
         opacity: 1;
     }
 
-
-    .ui.menu{
+    .ui.menu {
         border: none;
     }
 
@@ -95,6 +95,58 @@
 <% include sidebar-start.ejs %>
 
 <div id="selezioneClassi" class="ui labeled icon menu">
+    <!--filter and settings-->
+    <div class="ui dropdown settings item notSelectable">
+        <span class="ui tiny header">Filtri</span>
+       <!-- <i class="dropdown icon "></i>  occupa tanto spazio -->
+        <div class="menu">
+            <div class="item">New</div>
+            <div class="item">
+                <span class="description">ctrl + o</span>
+                Open...
+            </div>
+            <div class="divider"></div>
+            <div class="item">
+                <i class="dropdown icon"></i>
+                Filtra per voto
+                <div class="menu">
+                    <div class="list">
+                        <div class="item">
+                            <div class="ui  child checkbox">
+                                <input type="checkbox" name="6">
+                                <label>6 &nbsp</label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child   checkbox">
+                                <input type="checkbox" name="7">
+                                <label>7 &nbsp</label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child  checkbox">
+                                <input type="checkbox" name="8">
+                                <label>8 &nbsp</label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child  checkbox">
+                                <input type="checkbox" name="9">
+                                <label>9 &nbsp</label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child  checkbox">
+                                <input type="checkbox" name="10">
+                                <label>10</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">E-mail Collaborators</div>
+        </div>
+    </div>
 
     <div id="contenitoreCheckBox" class="item notSelectable" >
         <div id="checkBox" class="ui toggle checkbox">
@@ -110,8 +162,6 @@
         <div id="rowForInsertClasses" class="tr">
 
 
-
-
         </div>
     </div>
 </div>
@@ -121,8 +171,8 @@
 <br>
 <br>
 
-<% include sidebar-stop.ejs%>
+<% include sidebar-stop.ejs %>
 
 
 <!--close html tag-->
-<% include tag-close.ejs%>
+<% include tag-close.ejs %>

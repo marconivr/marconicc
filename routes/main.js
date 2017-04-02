@@ -139,7 +139,7 @@ module.exports = function (app, passport) {
 
     app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('settings.ejs',{
-            pageTitle: "settings   "
+            pageTitle: "Settings   "
         })
     });
     
@@ -189,7 +189,7 @@ module.exports = function (app, passport) {
         });
 
         res.render('settings-prime.ejs', {
-            pageTitle: " settings prime",
+            pageTitle: " Settings prime",
             data:JSON.stringify(dataInSettings)
         });
     });
@@ -240,28 +240,28 @@ module.exports = function (app, passport) {
         });
 
         res.render('settings-terze.ejs', {
-            pageTitle: " settings terze",
+            pageTitle: " Settings terze",
             data:JSON.stringify(dataInSettings)
         });
     });
 
     /**
-     * inserisce il tag
+     * inserisce le impostazioni delle prime
      */
-    app.get('/insert-tag', function (req, res) {
-        query.insertTag(function (err, results) {
+    app.get('/insert-settings-prime', function (req, res) {
+        query.insertSettingsPrime(function (err, results) {
             if (err)
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        },req.query.tag, req.query.descrizione);
+        }, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
     });
 
     /**
-     * inserisce il tag
+     * inserisce le impostazioni delle prime
      */
-    app.get('/insert-settings', function (req, res) {
-        query.insertSettings(function (err, results) {
+    app.get('/insert-settings-terze', function (req, res) {
+        query.insertSettingsTerze(function (err, results) {
             if (err)
                 throw err;
             else
