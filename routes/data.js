@@ -159,7 +159,7 @@ module.exports = function (app, passport, upload) {
                                             alg.setListaClassi(listaClassi);
                                             alg.fixClassi();
                                             //alg.fixRipetenti();
-                                            alg.printProprieta();
+                                            //alg.printProprieta();
                                             res.send(alg.getListaClassi());
                                         }
                                     }

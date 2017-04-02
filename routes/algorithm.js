@@ -93,11 +93,12 @@ module.exports = {
     creaInsiemi: function(){
         for (var i = 0; i < priority.length; i++){
             if(priority[i] != "alunni"){
-                if (priority[i] == "sesso" || priority[i] == "ripetenti" || priority[i] == "legge_107" || priority[i] == "legge_107") {
+                if (priority[i] == "sesso" || priority[i] == "ripetenti" || priority[i] == "legge_104" || priority[i] == "legge_107"
+                    || priority[i] == "desiderata") {
                     insiemi.push({nome:priority[i], alunni:[]});
                 }
                 else{
-                    insiemi.push({nome:priority[i], alunni:[]});
+                    insiemi.push({nome:priority[i], alunni:{}});
                 }
             }
         }
@@ -118,23 +119,23 @@ module.exports = {
                                 break;
                             case "nazionalita":
                                 if (listaAlunni[i].nazionalita.toLowerCase() != "italiana"){
-                                    if (!(module.exports.isAttributeInsideObject(ins, listaAlunni[i].nazionalita.toLowerCase()))){
-                                        ins[listaAlunni[i].nazionalita] = [];
+                                    if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].nazionalita.toLowerCase()))){
+                                        ins.alunni[listaAlunni[i].nazionalita] = [];
                                     }
-                                    ins[listaAlunni[i].nazionalita].push(listaAlunni[i]);
+                                    ins.alunni[listaAlunni[i].nazionalita].push(listaAlunni[i]);
                                 }
                                 break;
                             case "CAP":
-                                if (!(module.exports.isAttributeInsideObject(ins, listaAlunni[i].CAP))){
-                                    ins[listaAlunni[i].CAP] = [];
+                                if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].CAP))){
+                                    ins.alunni[listaAlunni[i].CAP] = [];
                                 }
-                                ins[listaAlunni[i].CAP].push(listaAlunni[i]);
+                                ins.alunni[listaAlunni[i].CAP].push(listaAlunni[i]);
                                 break;
                             case "voto":
-                                if (!(module.exports.isAttributeInsideObject(ins, listaAlunni[i].voto))){
-                                    ins[listaAlunni[i].voto] = [];
+                                if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].voto))){
+                                    ins.alunni[listaAlunni[i].voto] = [];
                                 }
-                                ins[listaAlunni[i].voto].push(listaAlunni[i]);
+                                ins.alunni[listaAlunni[i].voto].push(listaAlunni[i]);
                                 break;
                             case "desiderata":
                                 if (listaAlunni[i].desiderata != ""){
@@ -153,11 +154,9 @@ module.exports = {
                                 break;
                         }
                     }
-                    console.log(ins.alunni);
                 }
             }
         });
-
     },
 
     /**
