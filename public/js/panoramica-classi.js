@@ -489,6 +489,17 @@ function moveStudent(cf, fromClass, toClass) {
 
 }
 
+
+function getColorOfNationalitiesByLabelArray(label) {
+    var colorArray = []
+    for (var iso in label) {
+        var nazionalita = nazionalitaByTag(label[iso]);
+        colorArray.push(flagJson[nazionalita].color);
+    }
+    return colorArray;
+
+}
+
 /**
  * Data una nazionalità in italiano maiuscolo torna il codice iso relativo alla bandiera
  * @param nazionalita
@@ -1186,6 +1197,8 @@ $(document).ready(function () {
         },
         type: 'GET'
     });
+
+    //TODO:FIX WHEN SELECTION WIDTH
 
 
     /**
