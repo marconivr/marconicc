@@ -1,10 +1,12 @@
-var debug = true;
+var debug = false;
 var saveRealTimeOnDb = false;
 
 
 var barChartArray = [];//reference to barChart
 var pieChartArray = [];//reference to pieChart
 
+var checkBoxArrayActive = []; //array for filter voto
+var checkBoxArrayDisable = [];//array for disable voti
 var informationArray = [];//reference to information
 var cfArray = []; //serve per i desiderata e per non rompere i coglioni
 var arrayClassi = null;
@@ -23,6 +25,7 @@ var iconJson = {
     }
 
 };
+
 
 var flagJson = {
     'ITALIANA' : 'it',
@@ -179,7 +182,15 @@ function totalNumberOfStudentOfAllClass() {
 }
 
 function approxNum(num){
-    return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+   try{
+       return num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+   }catch (e){
+       console.log(e);
+       return num;
+   }
+         
+    
+
 }
 
 /**
@@ -208,7 +219,7 @@ function setFilterVoti(voto) {
     //trasformo il voto da intero a string
     var votoString = votoIntegerToDecimal(voto);
 
-    $('.' + voto).each(function (index, element) {
+    $('.'+ voto).each(function (index, element) {
         $(element).addClass(votoString);
     });
 }
@@ -249,7 +260,7 @@ function votoIntegerToDecimal(voto) {
  */
 function disableFilterVoti(voto) {
     //trasformo il voto da intero a string
-    var votoString = votoIntegerToDecimal(voto);
+    var votoString = votoIntegerToDecimal(voto);3
     $('.' + voto).each(function (index, element) {
         $(element).removeClass(votoString);
     });
@@ -505,7 +516,6 @@ function moveStudent(cf,fromClass,toClass){
                         console.log(getNumberOfFemmineOfClass(fromClass));
                         console.log(arrayClassi[i].alunni);
                     }
-
                     break;
                 }
             }
@@ -516,13 +526,11 @@ function moveStudent(cf,fromClass,toClass){
     for (var i=0; i < arrayClassi.length; i++){
         if (arrayClassi[i].nome == toClass){
             arrayClassi[i].alunni.push(removedStudent);
-
             if(debug) {
                 console.log(toClass);
                 console.log(getNumberOfFemmineOfClass(toClass));
                 console.log(arrayClassi[i].alunni);
             }
-
             break;
         }
     }
@@ -535,9 +543,85 @@ function moveStudent(cf,fromClass,toClass){
 
 }
 
+/**
+ * Data una nazionalità in italiano maiuscolo torna il codice iso relativo alla bandiera
+ * @param nazionalita
+ * @returns {*}
+ */
 function flagTag(nazionalita) {
     return flagJson[nazionalita];
+}
 
+/**
+ * Funzione che dato il codice iso della bandiera torna la nazionalità
+ * @param tag
+ * @returns {*}
+ */
+function nazionalitaByTag(tag) {
+    for (var prop in flagJson){
+        if (flagJson[prop] == tag){
+            return prop;
+        }
+    }
+}
+
+
+
+/**
+ * this function set all filter on the page;
+ */
+function setAllFilter() {
+    for (var i = 0; i < checkBoxArrayActive.length; i++) {
+        setFilterVoti(checkBoxArrayActive[i]);
+    }
+}
+
+
+/**
+ * this function handle the checkbox for the FILTER VOTI
+ */
+function handleCheckBox() {
+    $('.list .child.checkbox')
+        .checkbox({
+            // Fire on load to set parent value
+            fireOnInit: true,
+            // Change parent state on each child checkbox change
+            onChange: function () {
+                var
+                    $listGroup = $(this).closest('.list'),
+                    $parentCheckbox = $listGroup.closest('.item').children('.checkbox'),
+                    $checkbox = $listGroup.find('.checkbox'),
+                    allChecked = true,
+                    allUnchecked = true
+                    ;
+                checkBoxArrayActive = [];
+                // check to see if all other siblings are checked or unchecked
+                $checkbox.each(function (index, element) {
+                    if ($(this).checkbox('is checked')) {
+                        checkBoxArrayActive.push(index + 6);
+
+                    }
+                    else {
+                        allChecked = false;
+                        disableFilterVoti(index + 6);
+                        // checkBoxArrayDisable.push(index+6);
+                    }
+                });
+                // set parent checkbox state, but dont trigger its onChange callback
+                if (allChecked) {
+                    $parentCheckbox.checkbox('set checked');
+                }
+                else if (allUnchecked) {
+                    $parentCheckbox.checkbox('set unchecked');
+                }
+                else {
+                    $parentCheckbox.checkbox('set indeterminate');
+                }
+                setAllFilter();
+
+            }
+        })
+    ;
 }
 
 ////////////////////////////////////////////////////
@@ -562,6 +646,15 @@ $(document).ready(function() {
         dataType: 'json',
 
         success: function (listaClassi) {
+
+            //dropdown for the settings
+            $('.ui.dropdown.settings').dropdown(
+                {
+                    action: 'nothing'
+                }
+            );
+            handleCheckBox();
+
 
 
             for (i=0; i < listaClassi.length;i++){
@@ -591,7 +684,7 @@ $(document).ready(function() {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'bar' + ' class="ui button"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chart' + ' class="ui button"><i class="pie chart icon"></i></button></div> <h4 class="title">Distribuzione Voti</h4> '
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button></div>'
                 }).appendTo(wrapperClasse);
 
                 var div = $('<ul/>', {
@@ -693,6 +786,7 @@ $(document).ready(function() {
                 // CHART BAR //
                 var canvasBarChart = $('<canvas/>',
                     {
+                        'id' :  nomeClasse + 'barChart',
                         'class': 'barChart',
                         'width': 200,
                         'height': 200
@@ -777,26 +871,36 @@ $(document).ready(function() {
                 barChartArray.push(barChart);
 
 
-                    // PIE CHART//
+                    // PIE CHART
+                    //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
+
                     var canvasPieChart = $('<canvas/>',
                         {
+                            'id' : nomeClasse + 'pieChart',
                             'class': 'pieChart',
-                            'width': 200,
-                            'height': 200
+                            'width': 150,
+                            'height': 150
                         }).appendTo(settingClasse).hide();
+
+
+
+                    var stranieri = getNationalityOfClass(nomeClasse);
+                    labels = []
+                    data = []
+                    for (var prop in stranieri){
+                        labels.push(flagTag(prop));
+                        data.push(stranieri[prop]);
+                    }
+
 
                     // For a pie chart
                     var pieChart = new Chart(canvasPieChart,{
                         type: 'pie',
                         data: {
-                            labels: [
-                                "Red",
-                                "Blue",
-                                "Yellow"
-                            ],
+                            labels: labels,
                             datasets: [
                                 {
-                                    data: [300, 50, 100],
+                                    data: data,
                                     backgroundColor: [
                                         "#FF6384",
                                         "#36A2EB",
@@ -810,7 +914,16 @@ $(document).ready(function() {
                                 }]
                         },
                         options: {
-                            responsive: true
+                            responsive: true,
+                            tooltips:{
+                                callbacks: {
+                                    label: function(tooltipItems, data) {
+                                        return data.datasets[0].data[tooltipItems.index] + ' -> naz: '+  nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
+                                    }
+
+                                }
+                            }
+
                         }
                     });
 
@@ -882,6 +995,24 @@ $(document).ready(function() {
             }).disableSelection();
 
             displayAllClass();
+
+            $(".barChartButton").on('click',function(e){
+                classe = $(this).parent().parent().parent().attr('id');
+
+                pieChart = $("#" + classe + "pieChart").hide();
+                barChart =  $("#" + classe + "barChart").show();
+
+            });
+
+            $(".pieChartButton").on('click',function(e){
+
+                classe = $(this).parent().parent().parent().attr('id');
+
+                barChart =  $("#" + classe + "barChart").hide();
+                pieChart = $("#" + classe + "pieChart").show();
+            });
+
+
         },
         type: 'GET'
     });
