@@ -504,6 +504,22 @@ function getColorOfNationalitiesByLabelArray(label) {
 }
 
 /**
+ * create dinamyc style for nazionalita filter
+ */
+function createDynamicStyle() {
+
+
+    jQuery.each(flagJson, function (i, val) {
+        $('<style>.' + i + '{' +
+            'border-color:' + val.color + '!important;' +
+            'border-style: solid!important;;' +
+            'border-width: 5px!important;;}</style>')
+            .appendTo('head');
+    });
+
+}
+
+/**
  * Data una nazionalità in italiano maiuscolo torna il codice iso relativo alla bandiera
  * @param nazionalita
  * @returns {*}
@@ -546,9 +562,8 @@ function setFilterNazionalita(elemento) {
     //         }).popup('show');
     //     }
     // });
-    var nazionalita = flagJson[elemento.attr('data-content')].color;
-    elemento.css("borderColor", nazionalita + '!important');
-    //todo:change nazionalità
+    elemento.addClass(elemento.attr('data-content'));
+
 }
 
 /**
@@ -565,9 +580,9 @@ function disableAllFilter() {
     }
 
     //todo : delete popup
-    for(var nazionalita = 0; nazionalita< nazionalitaPopup.length; nazionalita++)
+    for (var nazionalita = 0; nazionalita < nazionalitaPopup.length; nazionalita++)
     {
-        $(nazionalitaPopup[nazionalita]).popup('destroy');
+        $(nazionalitaPopup[nazionalita]).removeClass(nazionalitaPopup[nazionalita].attr('data-content'));
     }
 
     //todo:  delete desiderata
@@ -775,8 +790,8 @@ function setAllFilter() {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         var desiderata = getDesiderataNonRispettato(element);
                         if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase() && desiderata) {
-                            //setFilterNazionalita($(element));
-                            //nazionalitaPopup.push($(element));
+                            setFilterNazionalita($(element));
+                            nazionalitaPopup.push($(element));
                             setFilterDesiderataNonRispettato($(element));
                             desiderataPopup.push($(element));
                         }
@@ -1001,6 +1016,7 @@ $(document).ready(function () {
                 }
             );
             handleCheckBoxVoti();
+            createDynamicStyle();
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
 
