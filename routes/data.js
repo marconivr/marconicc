@@ -116,7 +116,10 @@ module.exports = function (app, passport, upload) {
         var listaClassi = [];
         var listaNomiClassi = [];
         var listaAlunniClasse = [];
-        alg.creaInsiemi(); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+        var insiemi = alg.creaInsiemi(); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        console.log(insiemi);
+
         query.getNumberAlunniClassi("prima", function (err, results) {
             if (err)
                 console.log(results);

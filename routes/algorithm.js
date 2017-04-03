@@ -24,7 +24,6 @@ var settings = {
     an_scol: "2017-2018"
 };
 var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "stranieri", "CAP", "voto"];
-var insiemi = [];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -91,6 +90,7 @@ module.exports = {
      * creaInsiemi genera i possibili insiemi dati gli alunni
      */
     creaInsiemi: function(){
+        var insiemi = [];
         for (var i = 0; i < priority.length; i++){
             if(priority[i] != "alunni" && priority[i] != "stranieri"){
                 if (priority[i] == "sesso" || priority[i] == "ripetenti" || priority[i] == "legge_104" || priority[i] == "legge_107"
@@ -110,7 +110,7 @@ module.exports = {
                 listaAlunni = results;
                 for (var i = 0; i < listaAlunni.length; i++){
                     for (var j = 0; j < priority.length; j++){
-                        var ins = module.exports.findInsiemeFromString(priority[j]);
+                        var ins = module.exports.findInsiemeFromString(priority[j],insiemi);
                         switch (priority[j]) {
                             case "sesso":
                                 if (listaAlunni[i].sesso == "F"){
@@ -161,7 +161,10 @@ module.exports = {
                     }
                 }
             }
+            return insiemi;
         });
+
+
     },
 
     /**
@@ -963,7 +966,7 @@ module.exports = {
      * @param nomeInsieme
      * @returns {*}
      */
-    findInsiemeFromString: function (nomeInsieme) {
+    findInsiemeFromString: function (nomeInsieme,insiemi) {
         for (var k = 0; k < insiemi.length; k++) {
             if (insiemi[k].nome == nomeInsieme) {
                 return insiemi[k];
