@@ -719,7 +719,7 @@ $(document).ready(function () {
                     if (arrayStudenti[j] !== undefined) {
                         var cognomeStudente = arrayStudenti[j].cognome;
                         var nomeStudente = arrayStudenti[j].nome;
-                        var sesso =  arrayStudenti[j].sesso;
+                        var sesso = arrayStudenti[j].sesso;
                         var cf = arrayStudenti[j].cf;
                         var nazionalita = arrayStudenti[j].nazionalita;
                         var desiderata = arrayStudenti[j].desiderata;
@@ -728,10 +728,10 @@ $(document).ready(function () {
                         var legge104 = "";
                         var legge107 = "";
 
-                        if (arrayStudenti[j].legge_104 != ""){
+                        if (arrayStudenti[j].legge_104 != "") {
                             legge104 = "104";
                         }
-                        if (arrayStudenti[j].legge_107 != ""){
+                        if (arrayStudenti[j].legge_107 != "") {
                             legge107 = "107";
                         }
 
@@ -749,50 +749,50 @@ $(document).ready(function () {
 
 
                         var container = $('<div/>',
-                                {
-                                    'width': $('.contenitoreClasse ').width(),
-                                    'height': 40
-                                })
-                                .addClass('ui segment tooltip ' + voto + " " + sesso + " " + legge104 + " " + legge107 + " " + cap + " " + nazionalita)
-                                .attr('id', cf)
-                                .html(anagrafica)
-                        }
-
-
-                        //aggiungo la classe desiderata se presente
-                        if (desiderata != "") container.addClass('desiderata');
-
-                        var tooltipValue = "";
-                        if (legge104 != "") {
-                            tooltipValue = "104"
-                        } else if (legge107 != "") {
-                            tooltipValue = "107";
-                        }
-
-                        if (legge107 != "" || legge104 != "") {
-                            //contiene il tag studente
-                            tag = $('<div/>')
-                                .addClass('floating ui grey label tiny')
-                                .html(tooltipValue)
-                                .appendTo(container)
-                        }
-
-                        //tooltip for handicap
-                        var handicapTooltip = "";
-                        if ((arrayStudenti[j])['legge_' + tooltipValue] !== undefined) {
-                            handicapTooltip = '<br>' + tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
-                        }
-
-                        var tooltip = $('<span/>')
-                            .addClass('tooltiptext')
-                            .html('media : ' + voto + '<br>naz : ' + nazionalita + handicapTooltip)
-                            .appendTo(container);
-
-                        var li = $('<li/>')
-                            .html(container)
-                            .appendTo(div);
+                            {
+                                'width': $('.contenitoreClasse ').width(),
+                                'height': 40
+                            })
+                            .addClass('ui segment tooltip ' + voto + " " + sesso + " " + legge104 + " " + legge107 + " " + cap + " " + nazionalita)
+                            .attr('id', cf)
+                            .html(anagrafica)
                     }
+
+
+                    //aggiungo la classe desiderata se presente
+                    if (desiderata != "") container.addClass('desiderata');
+
+                    var tooltipValue = "";
+                    if (legge104 != "") {
+                        tooltipValue = "104"
+                    } else if (legge107 != "") {
+                        tooltipValue = "107";
+                    }
+
+                    if (legge107 != "" || legge104 != "") {
+                        //contiene il tag studente
+                        tag = $('<div/>')
+                            .addClass('floating ui grey label tiny')
+                            .html(tooltipValue)
+                            .appendTo(container)
+                    }
+
+                    //tooltip for handicap
+                    var handicapTooltip = "";
+                    if ((arrayStudenti[j])['legge_' + tooltipValue] !== undefined) {
+                        handicapTooltip = '<br>' + tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
+                    }
+
+                    var tooltip = $('<span/>')
+                        .addClass('tooltiptext')
+                        .html('media : ' + voto + '<br>naz : ' + nazionalita + handicapTooltip)
+                        .appendTo(container);
+
+                    var li = $('<li/>')
+                        .html(container)
+                        .appendTo(div);
                 }
+
 
                 var jsonVotiPrima = totalVotiOfAllClass();
                 var jsonVoti = numerOfVotiOfClass(nomeClasse);
@@ -941,7 +941,7 @@ $(document).ready(function () {
                 //box informazioni
 
                 createBoxInformazioni(settingClasse, nomeClasse);
-
+            }
 
             var oldList, newList, item, desiderata, cfAmico;
             $(".contenitoreClasse").sortable({
