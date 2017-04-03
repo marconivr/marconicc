@@ -32,25 +32,25 @@ var iconJson = {
 };
 
 
-var flagJson = { ITALIANA: { iso: 'it', color: '#00ffff' },
-    CINGALESE: { iso: 'lk', color: '#f0ffff' },
-    BANGLADESE: { iso: 'bd', color: '#000000' },
-    ROMENA: { iso: 'ro', color: '#0000ff' },
-    CINESE: { iso: 'cn', color: '#a52a2a' },
+var flagJson = { ITALIANA: { iso: 'it', color: '#16db60' },
+    CINGALESE: { iso: 'lk', color: '#609C35' },
+    BANGLADESE: { iso: 'bd', color: '#B18F3C' },
+    ROMENA: { iso: 'ro', color: '#A03753' },
+    CINESE: { iso: 'cn', color: '#5C368D' },
     MAROCCHINA: { iso: 'ma', color: '#008b8b' },
-    PARAGUAIANA: { iso: 'py', color: '#a9a9a9' },
-    TUNISINA: { iso: 'tn', color: '#006400' },
+    PARAGUAIANA: { iso: 'py', color: '#C05F30' },
+    TUNISINA: { iso: 'tn', color: '#122D85' },
     FILIPPINA: { iso: 'ph', color: '#bdb76b' },
     ALBANESE: { iso: 'al', color: '#556b2f' },
-    MOLDAVA: { iso: 'md', color: '#8b0000' },
+    MOLDAVA: { iso: 'md', color: '#d90368' },
     LETTONE: { iso: 'lv', color: '#e9967a' },
-    BRASILIANA: { iso: 'br', color: '#008000' },
-    NIGERIANA: { iso: 'ng', color: '#4b0082' },
+    BRASILIANA: { iso: 'br', color: '#2e294e' },
+    NIGERIANA: { iso: 'ng', color: '#ffd400' },
     GHANESE: { iso: 'gh', color: '#f0e68c' },
-    PERUVIANA: { iso: 'pe', color: '#00ff00' },
-    CUBANA: { iso: 'cu', color: '#ff00ff' },
-    CROATA: { iso: 'hr', color: '#800000' },
-    SENEGALESE: { iso: 'sn', color: '#000080' } };
+    PERUVIANA: { iso: 'pe', color: '#a99985' },
+    CUBANA: { iso: 'cu', color: '#2F3F73' },
+    CROATA: { iso: 'hr', color: '#048ba8' },
+    SENEGALESE: { iso: 'sn', color: '#a4036f' } };
 
 function populate(listaClassi) {
     arrayClassi = listaClassi;
