@@ -269,6 +269,18 @@ module.exports = function (app, passport) {
         }, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
     });
 
+    /**
+     * inserisce le priorita
+     */
+    app.get('/insert-priorita', function (req, res) {
+        query.insertPriorita(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.priorita);
+    });
+
     function setValueOfArrayForSettings(rows, key) {
         dataInSettings[key] = rows[0].result;
     }

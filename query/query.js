@@ -106,6 +106,16 @@ module.exports = {
         });
     },
 
+    insertPriorita: function (callback, priorita) {
+        for (var i = 0; i < priorita.length; i++) {
+            connection.query("INSERT INTO priorita (scelta) VALUES (?)", [priorita[i]], function (err, row) {
+                if (err) {
+                    console.log(err, row, priorita);
+                }
+            });
+        }
+    },
+
     getClassi: function (callback) {
         connection.query("SELECT * from classi", function (err, rows) {
             if (err) {
