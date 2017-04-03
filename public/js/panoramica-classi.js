@@ -10,6 +10,7 @@ var votiCheckBoxArray = []; //array for filter voto
 var nazionalitaCheckBoxArray = [];//array for filter nazionalità
 var desiderataNonRispettato = false;
 var nazionalitaPopup = [];
+var desiderataPopup = [];
 
 //chart
 var informationArray = [];//reference to information
@@ -32,7 +33,8 @@ var iconJson = {
 };
 
 
-var flagJson = { ITALIANA: { iso: 'it', color: '#16db60' },
+var flagJson = {
+    ITALIANA: { iso: 'it', color: '#16db60' },
     CINGALESE: { iso: 'lk', color: '#609C35' },
     BANGLADESE: { iso: 'bd', color: '#B18F3C' },
     ROMENA: { iso: 'ro', color: '#A03753' },
@@ -531,19 +533,22 @@ function setFilterVoti(voto, elemento) {
 }
 
 function setFilterNazionalita(elemento) {
-    elemento.popup({
-        silent: true,
-        hoverable: true
-    }).popup('show');
-
-    elemento.visibility({
-        onTopVisible: function () {
-            elemento.popup({
-                silent: true,
-                hoverable: true
-            }).popup('show');
-        }
-    });
+    // elemento.popup({
+    //     silent: true,
+    //     hoverable: true
+    // }).popup('show');
+    //
+    // elemento.visibility({
+    //     onTopVisible: function () {
+    //         elemento.popup({
+    //             silent: true,
+    //             hoverable: true
+    //         }).popup('show');
+    //     }
+    // });
+    var nazionalita = flagJson[elemento.attr('data-content')].color;
+    elemento.css("borderColor", nazionalita + '!important');
+    //todo:change nazionalità
 }
 
 /**
@@ -566,7 +571,10 @@ function disableAllFilter() {
     }
 
     //todo:  delete desiderata
-
+    for(var desiderata = 0; desiderata< desiderataPopup.length; desiderata++)
+    {
+        $(desiderataPopup[desiderata]).popup('destroy');
+    }
 
 }
 
@@ -762,6 +770,7 @@ function setAllFilter() {
             if(desiderataNonRispettato)
             {
                 nazionalitaPopup = [];
+                desiderataPopup = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         var desiderata = getDesiderataNonRispettato(element);
@@ -769,6 +778,7 @@ function setAllFilter() {
                             //setFilterNazionalita($(element));
                             //nazionalitaPopup.push($(element));
                             setFilterDesiderataNonRispettato($(element));
+                            desiderataPopup.push($(element));
                         }
 
                     });
@@ -778,6 +788,7 @@ function setAllFilter() {
             //NON CI SONO FILTRI DESIDERATA
             else
             {
+                nazionalitaPopup = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
@@ -797,7 +808,16 @@ function setAllFilter() {
             //SOLO DESIDERATA
             if(desiderataNonRispettato)
             {
-                setFilterDesiderataNonRispettato();
+                    $('.ui.segment.tooltip').each(function (index, element) {
+                        var desiderata = getDesiderataNonRispettato(element);
+                        if (desiderata) {
+                            //setFilterNazionalita($(element));
+                            //nazionalitaPopup.push($(element));
+                            setFilterDesiderataNonRispettato($(element));
+                            desiderataPopup.push($(element));
+                        }
+
+                    });
             }
 
         }
@@ -1055,7 +1075,8 @@ $(document).ready(function () {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40,
                                     'data-content': nazionalita,
-                                    'data-variation': "tiny"
+                                    'data-variation': "tiny",
+                                    preserve: false
                                 })
                                 .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
@@ -1067,7 +1088,8 @@ $(document).ready(function () {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40,
                                     'data-content': nazionalita,
-                                    'data-variation': "tiny"
+                                    'data-variation': "tiny",
+                                    preserve: false
                                 })
                                 .addClass('ui segment tooltip girl ' + voto)
                                 .attr('id', cf)
