@@ -9,6 +9,7 @@ var pieChartArray = [];//reference to pieChart
 var votiCheckBoxArray = []; //array for filter voto
 var nazionalitaCheckBoxArray = [];//array for filter nazionalità
 var desiderataNonRispettato = false;
+var nazionalitaPopup = [];
 
 //chart
 var informationArray = [];//reference to information
@@ -559,10 +560,108 @@ function disableAllFilter() {
     }
 
     //todo : delete popup
+    for(var nazionalita = 0; nazionalita< nazionalitaPopup.length; nazionalita++)
+    {
+        $(nazionalitaPopup[nazionalita]).popup('destroy');
+    }
+
     //todo:  delete desiderata
 
 
 }
+
+
+/**
+ * ritorna true se non è rispettato la richiesta desiderata
+ * @param elemento
+ */
+function getDesiderataNonRispettato(elemento) {
+    var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
+    var cfAmico = getAlunnoDesiderataByCF(cf);
+    if(cfAmico != undefined)
+    {
+        var classe1 = getClassNameFromStudent(cf);
+        var classeAmico = getClassNameFromStudent(cfAmico);
+        if (classe1 != classeAmico)return true;
+        else return false;
+    }
+}
+
+function setFilterDesiderataNonRispettato(elemento) {
+    if(elemento === undefined)
+    {
+
+    $('.ui.segment.tooltip').each(function (index, element) {
+        var cf = $(element).attr("id"); //cf dell'alunno selezionato
+        var cfAmico = getAlunnoDesiderataByCF(cf);
+        if(cfAmico != undefined)
+        {
+            var classe1 = getClassNameFromStudent(cf);
+            var classeAmico = getClassNameFromStudent(cfAmico);
+            var nomealunno = getStudentByCF(cf);
+            var nomeAlunnoAmico = getStudentByCF(cfAmico);
+            if (classe1 != classeAmico)
+            {
+
+                $(element).popup({
+                    silent: true,
+                    hoverable: true,
+                    title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                }).popup('show');
+
+                $(element).visibility({
+                    onTopVisible: function () {
+                        $(element).popup({
+                            silent: true,
+                            hoverable: true,
+                            title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                        }).popup('show');
+                    }
+                });
+
+            }
+        }
+
+
+    });
+    }
+    else {
+            var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
+            var cfAmico = getAlunnoDesiderataByCF(cf);
+            if(cfAmico != undefined)
+            {
+                var classe1 = getClassNameFromStudent(cf);
+                var classeAmico = getClassNameFromStudent(cfAmico);
+                var nomealunno = getStudentByCF(cf);
+                var nomeAlunnoAmico = getStudentByCF(cfAmico);
+                if (classe1 != classeAmico)
+                {
+
+                    $(elemento).popup({
+                        silent: true,
+                        hoverable: true,
+                        title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                    }).popup('show');
+
+                    $(elemento).visibility({
+                        onTopVisible: function () {
+                            $(elemento).popup({
+                                silent: true,
+                                hoverable: true,
+                                title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                            }).popup('show');
+                        }
+                    });
+
+                }
+            }
+    }
+}
+
 
 
 /**
@@ -602,6 +701,7 @@ function setAllFilter() {
     //TODO: SET ALL FILTER
     //vedere queli filtri sono vuoti e comportarsi di conseguenza
 
+    //1 CASO
     //guardo se il checkbox dei voti è spuntanto,se no procedo con gli altri filtri
     if (votiCheckBoxArray.length != 0) {
         //controllo se il filtro delle nazionalità è attivo
@@ -618,6 +718,7 @@ function setAllFilter() {
             else {
 
                 var arrayStudentiVoti = [];
+                nazionalitaPopup = [];
 
                 for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
                     arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
@@ -626,6 +727,7 @@ function setAllFilter() {
                             if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
                                 setFilterVoti(votiCheckBoxArray[voto], $(element));
                                 setFilterNazionalita($(element));
+                                nazionalitaPopup.push($(element));
                             }
 
                         });
@@ -635,8 +737,8 @@ function setAllFilter() {
 
             }
         }
+        //filtri di voti ci sono, nazionalita no
         else {
-            //filtri di voti ci sono, nazionalita no
             if (desiderataNonRispettato) {
 
             }
@@ -649,6 +751,57 @@ function setAllFilter() {
                 }
             }
         }
+    }
+    //2 CASO - FILTRO VOTI NON CI SONO
+    else
+    {
+        //CI SONO NAZIONALITA
+        if (nazionalitaCheckBoxArray.length != 0)
+        {
+            //CI SONO I FILTRI DESIDERATA
+            if(desiderataNonRispettato)
+            {
+                nazionalitaPopup = [];
+                for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                    $('.ui.segment.tooltip').each(function (index, element) {
+                        var desiderata = getDesiderataNonRispettato(element);
+                        if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase() && desiderata) {
+                            //setFilterNazionalita($(element));
+                            //nazionalitaPopup.push($(element));
+                            setFilterDesiderataNonRispettato($(element));
+                        }
+
+                    });
+
+                }
+            }
+            //NON CI SONO FILTRI DESIDERATA
+            else
+            {
+                for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                    $('.ui.segment.tooltip').each(function (index, element) {
+                        if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
+                            setFilterNazionalita($(element));
+                            nazionalitaPopup.push($(element));
+                        }
+
+                    });
+
+                }
+            }
+
+        }
+        //NON CI SONO NAZIONALITA
+        else
+        {
+            //SOLO DESIDERATA
+            if(desiderataNonRispettato)
+            {
+                setFilterDesiderataNonRispettato();
+            }
+
+        }
+
     }
 
 
