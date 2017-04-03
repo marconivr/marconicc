@@ -92,7 +92,7 @@ module.exports = {
      */
     creaInsiemi: function(){
         for (var i = 0; i < priority.length; i++){
-            if(priority[i] != "alunni"){
+            if(priority[i] != "alunni" && priority[i] != "stranieri"){
                 if (priority[i] == "sesso" || priority[i] == "ripetenti" || priority[i] == "legge_104" || priority[i] == "legge_107"
                     || priority[i] == "desiderata") {
                     insiemi.push({nome:priority[i], alunni:[]});
@@ -114,6 +114,11 @@ module.exports = {
                         switch (priority[j]) {
                             case "sesso":
                                 if (listaAlunni[i].sesso == "F"){
+                                    ins.alunni.push(listaAlunni[i]);
+                                }
+                                break;
+                            case "ripetenti":
+                                if (listaAlunni[i].classe_precedente != ""){
                                     ins.alunni.push(listaAlunni[i]);
                                 }
                                 break;
