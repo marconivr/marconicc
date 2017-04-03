@@ -23,9 +23,10 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "stranieri", "CAP", "voto"];
+var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
-var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
+var insiemi = [];
+var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 module.exports = {
     /**
@@ -89,7 +90,7 @@ module.exports = {
     /**
      * creaInsiemi genera i possibili insiemi dati gli alunni
      */
-    creaInsiemi: function(){
+    creaInsiemi: function(callback){
         var insiemi = [];
         for (var i = 0; i < priority.length; i++){
             if(priority[i] != "alunni" && priority[i] != "stranieri"){
@@ -161,14 +162,12 @@ module.exports = {
                     }
                 }
             }
-            return insiemi;
+            callback(err,insiemi);
         });
-
-
     },
 
     /**
-     * generaListaClassi è una funzione che genera oggetti classe {nome: classe, proprieta:{}, alunni: []}
+     * generaListaClassi è una funzione che genera oggetti classe {nome: classe, propAttuali:{}, alunni: []}
      * in base agli alunni minimi
      * @param classe
      * @param callback
@@ -178,10 +177,20 @@ module.exports = {
             var num = Math.round(listaAlunni.length / (settings.min_al));
             for (i = 0; i < num; i++) {
                 var classe = "1" + String.fromCharCode(65 + i);
-                listaClassi.push({nome: classe, proprieta: {}, alunni: []});
+                listaClassi.push({nome: classe , propAttuali: {} , propIdeali : {} , alunni: []});
             }
+            module.exports.generaPropIdeali(listaClassi);
         }
         callback();
+    },
+
+
+    generaPropIdeali: function (listaClassi) {
+        for (var i in priority){
+            var prop = priority[i];
+            module.exports.count104(listaAlunni);
+        }
+
     },
 
     /**
@@ -202,7 +211,7 @@ module.exports = {
                         }
                     }
                     listaClassi[k].alunni = module.exports.removeUndefinedDaArray(listaClassi[k].alunni);
-                    listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
+                    listaClassi[k].propAttuali = module.exports.createProprietaClasse(listaClassi[k].alunni);
                 }
             }
             callback();
@@ -210,7 +219,7 @@ module.exports = {
     },
 
     /**
-     * createProprietaClasse crea le proprieta di una lista di alunni
+     * createProprietaClasse crea le propAttuali di una lista di alunni
      * @param listaAlunniClasse
      * @returns {{alunni: *, sesso: (*|Number), media: *, residenza: (*|Array), bocciati: (*|number), iniziale: *}}
      */
@@ -292,7 +301,7 @@ module.exports = {
                             break;
                     }
                 }
-                listaClassi[k].proprieta = module.exports.createProprietaClasse(listaClassi[k].alunni);
+                listaClassi[k].propAttuali = module.exports.createProprietaClasse(listaClassi[k].alunni);
             }
             //module.exports.fixRipetenti(listaClassi[k].nome);
             //console.log("Proprietà classe: " + listaClassi[k].nome);
@@ -318,7 +327,7 @@ module.exports = {
     printProprieta: function () {
         for (var k = 0; k < listaClassi.length; k++) {
             console.log("Proprieta classe: " + listaClassi[k].nome);
-            console.log(listaClassi[k].proprieta);
+            console.log(listaClassi[k].propAttuali);
         }
     },
 
@@ -572,11 +581,11 @@ module.exports = {
                     break;
                 case "iniziale":
                     /*
-                     if (proprieta.iniziale.length != 0) {
+                     if (propAttuali.iniziale.length != 0) {
                      ris["iniziale"] = [];
-                     for (var k = 0; k < proprieta.iniziale.length; k++) {
-                     if (proprieta.iniziale[k].num > settings.iniziale) {
-                     ris["iniziale"] = ris["iniziale"].push(proprieta.iniziale[k].lettera);
+                     for (var k = 0; k < propAttuali.iniziale.length; k++) {
+                     if (propAttuali.iniziale[k].num > settings.iniziale) {
+                     ris["iniziale"] = ris["iniziale"].push(propAttuali.iniziale[k].lettera);
                      }
                      }
                      }
@@ -915,6 +924,10 @@ module.exports = {
 
     setListaClassi: function (lC) {
         listaClassi = lC;
+    },
+
+    setInsiemi: function (ins) {
+        insiemi = ins;
     },
 
     getListaClassi: function () {

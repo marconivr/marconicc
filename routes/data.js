@@ -109,7 +109,6 @@ module.exports = function (app, passport, upload) {
         });
     });
 
-
     app.get('/get-classi-composte', middleware.isLoggedIn, function (req, res) {
         var classi;
         var nAlunniCompCl;
@@ -117,62 +116,72 @@ module.exports = function (app, passport, upload) {
         var listaNomiClassi = [];
         var listaAlunniClasse = [];
 
-        var insiemi = alg.creaInsiemi(); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        console.log(insiemi);
+        var insiemi = null;
 
-        query.getNumberAlunniClassi("prima", function (err, results) {
-            if (err)
-                console.log(results);
-            else {
-                nAlunniCompCl = results[0].result;
-                if (nAlunniCompCl == 0) {
-                    alg.firstGeneration("prima", function (err) {
-                        if (err)
-                            console.log(err);
-                        else {
-                            classi = alg.getListaClassi();
-                            query.insertClassi(alg.listaNomiClassi());
-                            for (var i = 0; i < classi.length; i++) {
-                                for (var k = 0; k < classi[i].alunni.length; k++) {
-                                    if (classi[i].alunni[k] !== undefined) {
-                                        query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
-                                    }
-                                }
-                            }
-                            alg.fixClassi();
-                            res.send(alg.getListaClassi());
-                        }
-                    });
-                } else {
-                    query.getClassi(function (err, results) {
-                        if (err)
-                            console.log(err);
-                        else {
-
-                            listaNomiClassi = results;
-                            var counter = 0;
-                            for (var i = 0; i < listaNomiClassi.length; i++) {
-                                query.getAlunniFromClassSync(listaNomiClassi[i].nome, counter, function (err, results, nomeCl, counter) {
-                                    if (err)
-                                        console.log(err);
-                                    else {
-                                        listaAlunniClasse = results;
-                                        listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse),  alunni: listaAlunniClasse});
-                                        if (counter  == listaNomiClassi.length - 1){
-                                            alg.setListaClassi(listaClassi);
-                                            alg.fixClassi();
-                                            alg.printProprieta();
-                                            res.send(alg.getListaClassi());
+        alg.creaInsiemi(function (err, result) {
+            if (err){
+                console.log(err)
+            }else {
+                insiemi = result;
+                alg.setInsiemi(insiemi);
+                query.getNumberAlunniClassi("prima", function (err, results) {
+                    if (err)
+                        console.log(results);
+                    else {
+                        nAlunniCompCl = results[0].result;
+                        if (nAlunniCompCl == 0) {
+                            alg.firstGeneration("prima", function (err) {
+                                if (err)
+                                    console.log(err);
+                                else {
+                                    classi = alg.getListaClassi();
+                                    query.insertClassi(alg.listaNomiClassi());
+                                    for (var i = 0; i < classi.length; i++) {
+                                        for (var k = 0; k < classi[i].alunni.length; k++) {
+                                            if (classi[i].alunni[k] !== undefined) {
+                                                query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
+                                            }
                                         }
                                     }
-                                });
-                                counter++;
-                            }
+                                    alg.fixClassi();
+                                    res.send(alg.getListaClassi());
+                                }
+                            });
+                        } else {
+                            query.getClassi(function (err, results) {
+                                if (err)
+                                    console.log(err);
+                                else {
+
+                                    listaNomiClassi = results;
+                                    var counter = 0;
+                                    for (var i = 0; i < listaNomiClassi.length; i++) {
+                                        query.getAlunniFromClassSync(listaNomiClassi[i].nome, counter, function (err, results, nomeCl, counter) {
+                                            if (err)
+                                                console.log(err);
+                                            else {
+                                                listaAlunniClasse = results;
+                                                listaClassi.push({nome: nomeCl, propAttuali:alg.createProprietaClasse(listaAlunniClasse),  alunni: listaAlunniClasse});
+                                                if (counter  == listaNomiClassi.length - 1){
+                                                    alg.setListaClassi(listaClassi);
+                                                    alg.fixClassi();
+                                                    alg.printProprieta();
+                                                    res.send(alg.getListaClassi());
+                                                }
+                                            }
+                                        });
+                                        counter++;
+                                    }
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                });
             }
         });
+
+
+
     });
 
 

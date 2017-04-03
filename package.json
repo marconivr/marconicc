@@ -5,6 +5,7 @@
     "start": "node ./server"
   },
   "dependencies": {
+    "async": "latest",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.13.1",
     "connect": "^3.5.0",
@@ -16,6 +17,7 @@
     "execsql": "0.0.3",
     "express": "^4.13.0",
     "express-session": "^1.11.3",
+    "futures": "latest",
     "morgan": "^1.6.0",
     "multer": "latest",
     "mysql": "^2.7.0",
@@ -23,7 +25,6 @@
     "passport-jwt": "latest",
     "passport-local": "^1.0.0",
     "request": "^2.79.0",
-    "futures": "latest",
-    "async": "latest"
+    "wait.for": "^0.6.6"
   }
 }
