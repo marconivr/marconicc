@@ -54,6 +54,7 @@ var flagJson = {
     CROATA: { iso: 'hr', color: '#048ba8' },
     SENEGALESE: { iso: 'sn', color: '#a4036f' } };
 
+
 function populate(listaClassi) {
     arrayClassi = listaClassi;
 }
