@@ -518,6 +518,40 @@ function createDynamicStyle() {
     });
 
 }
+/**
+ * create dynamic menu of nazionalita
+ */
+function createNazionalitaMenu() {
+
+    jQuery.each(flagJson, function (i, val) {
+        var item = $('<div/>')
+            .addClass('item');
+
+        var containerInput = $('<div/>')
+            .addClass('ui child  checkbox nazionalita')
+            .appendTo(item);
+
+        var input = $('<input/>', {
+            name: i,
+            type: 'checkbox',
+            align: 'left'
+        }).appendTo(containerInput);
+
+        var a = $('<a/>').addClass('ui mini label')
+            .html(i)
+            .css(
+                {
+                    'background-color': '#' + val.color,
+                    'color': 'white'
+                });
+
+        var label = $('<label/>')
+            .html(a)
+            .appendTo(containerInput);
+        item.appendTo('#nazionalita-menu');
+    });
+
+}
 
 /**
  * Data una nazionalità in italiano maiuscolo torna il codice iso relativo alla bandiera
@@ -1017,6 +1051,7 @@ $(document).ready(function () {
             );
             handleCheckBoxVoti();
             createDynamicStyle();
+            createNazionalitaMenu();
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
 
