@@ -23,7 +23,7 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "stranieri", "CAP", "voto"];
+var priority = [];
 var insiemi = [];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
@@ -929,6 +929,13 @@ module.exports = {
         if (salvoDB) {
             query.removeAlunnoInClass(veccCl.nome, objAl.cf);
             query.insertAlunnoInClass(nuovaCl.nome, objAl.cf);
+        }
+    },
+
+    createArrayPriorita: function (priorita){
+
+        for (var i = 0; i < priorita.length; i++){
+            priority.push(priorita[i].scelta);
         }
     },
 

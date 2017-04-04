@@ -116,6 +116,16 @@ module.exports = {
         }
     },
 
+    getPriorita: function (callback) {
+        connection.query("SELECT scelta from priorita", function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
     getClassi: function (callback) {
         connection.query("SELECT * from classi", function (err, rows) {
             if (err) {
