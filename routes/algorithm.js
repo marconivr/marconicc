@@ -253,20 +253,20 @@ module.exports = {
                 if (module.exports.isInsideProblemiClasse(objproblem, priority[j])) {
                     switch (priority[j]) {
                         case "alunni":
-                            //module.exports.fixAlunni(listaClassi[k].nome);
+                            module.exports.fixAlunni(listaClassi[k].nome);
                             break;
                         case "femmine":
-                            //module.exports.fixFemmine(listaClassi[k].nome);
+                            module.exports.fixFemmine(listaClassi[k].nome);
                             break;
                         case "stranieri":
                             //module.exports.fixStranieri(listaClassi[k].nome);
-                            //module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
+                            module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
                             break;
                         case "CAP":
 
                             break;
                         case "ripetenti":
-                            //module.exports.fixRipetenti(listaClassi[k].nome);
+                            module.exports.fixRipetenti(listaClassi[k].nome);
                         case "media":
                             //module.exports.fixMedia(listaClassi[k].nome);
                             break;
@@ -274,7 +274,7 @@ module.exports = {
 
                             break;
                         case "desiderata":
-                            //module.exports.fixDesiderata(listaClassi[k].nome);
+                            module.exports.fixDesiderata(listaClassi[k].nome);
                             break;
                         case "legge_104":
                             //module.exports.fix104(listaClassi[k].nome);
