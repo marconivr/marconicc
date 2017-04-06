@@ -104,8 +104,8 @@ CREATE TABLE `impostazioni_prime` (
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
   `stessa_iniziale` int(11) DEFAULT NULL,
-  `media_min` float DEFAULT NULL,
-  `media_max` float DEFAULT NULL,
+  `media_min` int(11)DEFAULT NULL,
+  `media_max` int(11) DEFAULT NULL,
   `bocciati` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -118,8 +118,8 @@ CREATE TABLE `impostazioni_terze` (
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
   `stessa_iniziale` int(11) DEFAULT NULL,
-  `media_min` float DEFAULT NULL,
-  `media_max` float DEFAULT NULL,
+  `media_min` int(11) DEFAULT NULL,
+  `media_max` int(11) DEFAULT NULL,
   `bocciati` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
