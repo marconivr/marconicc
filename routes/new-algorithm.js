@@ -231,7 +231,43 @@ module.exports = {
                 return 1;
             return 0;
         }
-    },
+    }
+    ,
+
+    checkPropietaClasse: function (objAlunni,prop) {
+
+        for (var i in listaClassi){
+
+        }
+
+
+
+
+    }
+    ,
+    popolaClassi: function () {
+        for (var i in listaClassi){
+            var classeInEsame = listaClassi[i];
+            var proprietaIdeali = classeInEsame.propIdeali;
+
+            //aggiungo 104 se c'è ne bisogno
+
+            for (var item in insiemi){
+                var prop = insiemi[item].nome;
+                switch (prop){
+                    case "legge_104":
+                        for (var j=0; j < proprietaIdeali[prop];j++){
+
+                        }
+
+                }
+            }
+
+        }
+
+    }
+
+    ,
 
     generaPropIdeali: function () {
         var insNaz = module.exports.getInsieme("nazionalita").alunni;
@@ -306,19 +342,17 @@ module.exports = {
         var media = module.exports.mediaClasse(listaAlunniClasse);
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
         var ripetenti = module.exports.countRipetenti(listaAlunniClasse);
-        var iniziale = module.exports.countTutteInizialiCognome(listaAlunniClasse);
-        var stranieri = module.exports.countStranieri(listaAlunniClasse);
+        var nazionalita = module.exports.countStranieri(listaAlunniClasse);
         var legge_104 = module.exports.count104(listaAlunniClasse);
         var legge_107 = module.exports.count107(listaAlunniClasse);
-        var desiderata = module.exports.countDesiderata(listaAlunniClasse);
+
         return {
             alunni: nAlunni,
-            sesso: nFemmine,
+            femmine: nFemmine,
             voto: media.toFixed(2),
-            residenza: residenza,
+            CAP: residenza,
             ripetenti: ripetenti,
-            iniziale: iniziale,
-            nazionalita: stranieri,
+            nazionalita: nazionalita,
             legge_104: legge_104,
             legge_107: legge_107
         };
