@@ -1,3 +1,4 @@
+@import url("menu.css");
 .pageBackground{
     background-image: url("../img/preview.jpg");
     -webkit-background-size: cover;
