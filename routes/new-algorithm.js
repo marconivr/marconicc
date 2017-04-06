@@ -201,7 +201,12 @@ module.exports = {
             var num = Math.round(listaAlunni.length / (settings.min_al));
             for (i = 0; i < num; i++) {
                 var classe = "1" + String.fromCharCode(65 + i);
-                listaClassi.push({nome: classe , propAttuali: {} , propIdeali : proprietaIdeali , alunni: []});
+                listaClassi.push({nome: classe , propAttuali: {} , propIdeali : {
+                    numAlunniMax : 0,
+                    numAlunniMin : 0,
+                    legge_104: 0,
+                    legge_107: 0
+                }, alunni: []});
             }
             module.exports.generaPropIdeali(listaClassi);
         }
@@ -217,27 +222,26 @@ module.exports = {
         callback();
     },
 
-
-    compare: function (a, b) {
-        if (a.propIdeali.legge_104 < b.propIdeali.legge_104)
-            return -1;
-        if (a.propIdeali.legge_104 > b.propIdeali.legge_104)
-            return 1;
-        return 0;
+    sortProprietaIdeali: function (prop) {
+        return function (a, b) {
+            if (a.propIdeali[prop] < b.propIdeali[prop])
+                return -1;
+            else if (a.propIdeali[prop] > b.propIdeali[prop])
+                return 1;
+            return 0;
         }
-    ,
+    },
 
     generaPropIdeali: function () {
-        var objNaz = module.exports.getInsieme("nazionalita").alunni;
+        var insNaz = module.exports.getInsieme("nazionalita").alunni;
 
-        var totaleClassi = listaClassi.length;
         var totaleAlunni = listaAlunni.length;
         var totale104 = module.exports.count104(listaAlunni);
         var totale107 = module.exports.count107(listaAlunni);
         var stranieri = {};
 
-        for (var naz in objNaz){
-            stranieri[naz] = objNaz[naz].length;
+        for (var naz in insNaz){
+            stranieri[naz] = insNaz[naz].length;
         }
 
         var flag = true;
@@ -248,28 +252,26 @@ module.exports = {
                     listaClassi[i].propIdeali["legge_104"] += 1;
                     listaClassi[i].propIdeali["numeroAlunniMax"] = settings.max_al_104;
                     totale104 -= 1;
+                } else{
+                    break;
+                }
+            }
+            listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
+
+            for (i in listaClassi){
+                if (totale107 > 0){
+                    listaClassi[i].propIdeali["legge_107"] += 1;
+                    totale107 -= 1;
+                } else{
+                    break;
                 }
             }
 
-            listaClassi.sort(module.exports.compare);
-
-            for (i in listaClassi){
-
-
-
-            }
-
-
-
-            if (totale104 == 0){
+            if (totale104 == 0 && totale107 == 0){
                 flag = false;
             }
         }
-
         console.log(listaClassi);
-
-
-
     },
 
 
