@@ -147,7 +147,7 @@ module.exports = {
                                 break;
                             case "nazionalita":
                                 if (listaAlunni[i].nazionalita.toLowerCase() != "italiana"){
-                                    if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].nazionalita.toLowerCase()))){
+                                    if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].nazionalita.toUpperCase()))){
                                         ins.alunni[listaAlunni[i].nazionalita] = [];
                                     }
                                     ins.alunni[listaAlunni[i].nazionalita].push(listaAlunni[i]);
