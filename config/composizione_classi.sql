@@ -104,8 +104,8 @@ CREATE TABLE `impostazioni_prime` (
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
   `stessa_iniziale` int(11) DEFAULT NULL,
-  `media_min` float DEFAULT NULL,
-  `media_max` float DEFAULT NULL,
+  `media_min` int(11)DEFAULT NULL,
+  `media_max` int(11) DEFAULT NULL,
   `bocciati` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -118,34 +118,22 @@ CREATE TABLE `impostazioni_terze` (
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
   `stessa_iniziale` int(11) DEFAULT NULL,
-  `media_min` float DEFAULT NULL,
-  `media_max` float DEFAULT NULL,
+  `media_min` int(11) DEFAULT NULL,
+  `media_max` int(11) DEFAULT NULL,
   `bocciati` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `priorita_scelta`
+-- Struttura della tabella `priorita`
 --
 
-DROP TABLE IF EXISTS `priorita_scelta`;
-CREATE TABLE `priorita_scelta` (
+DROP TABLE IF EXISTS `priorita`;
+CREATE TABLE `priorita` (
   `id` int(11) NOT NULL,
   `scelta` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dump dei dati per la tabella `priorita_scelta`
---
-
-INSERT INTO `priorita_scelta` (`id`, `scelta`) VALUES
-(1, 'femmine'),
-(2, 'stranieri'),
-(3, 'bocciati'),
-(4, 'alunni'),
-(5, 'stessa_nazionalita'),
-(6, 'media');
 
 -- --------------------------------------------------------
 
@@ -196,9 +184,9 @@ ALTER TABLE `impostazioni_terze`
 
 
 --
--- Indici per le tabelle `priorita_scelta`
+-- Indici per le tabelle `priorita`
 --
-ALTER TABLE `priorita_scelta`
+ALTER TABLE `priorita`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -217,10 +205,21 @@ ALTER TABLE `users`
 ALTER TABLE `amici`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT per la tabella `priorita_scelta`
+-- AUTO_INCREMENT per la tabella `priorita`
 --
-ALTER TABLE `priorita_scelta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE `priorita`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT per la tabella `impostazioni_prime`
+--
+ALTER TABLE `impostazioni_prime`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `impostazioni_terze`
+--
+ALTER TABLE `impostazioni_terze`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `users`
 --

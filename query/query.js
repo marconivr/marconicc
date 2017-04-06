@@ -87,7 +87,7 @@ module.exports = {
     },
 
     insertSettingsPrime: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni_prime VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+        connection.query("INSERT INTO impostazioni_prime (min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
@@ -97,11 +97,31 @@ module.exports = {
     },
 
     insertSettingsTerze: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni_terze VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+        connection.query("INSERT INTO impostazioni_terze (min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
                 callback(err, row, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati);
+            }
+        });
+    },
+
+    insertPriorita: function (callback, priorita) {
+        for (var i = 0; i < priorita.length; i++) {
+            connection.query("INSERT INTO priorita (scelta) VALUES (?)", [priorita[i]], function (err, row) {
+                if (err) {
+                    console.log(err, row, priorita);
+                }
+            });
+        }
+    },
+
+    getPriorita: function (callback) {
+        connection.query("SELECT scelta from priorita", function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
             }
         });
     },

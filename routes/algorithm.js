@@ -15,7 +15,7 @@ var settings = {
     iniziale: 3,
     stessa_pr: 4,
     nazionalita: 3,
-    media_min: 7.7,
+    media_min: 7.5,
     media_max: 8.0,
     max_al_104: 23,
     max_107: 2,
@@ -23,7 +23,8 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var priority = ["legge_104","alunni", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
+var priority = [];
+var insiemi = [];
 var listaAlunni = [];
 var listaClassi = []; //esempio [{nome:"1AI", proprieta:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -77,6 +78,87 @@ module.exports = {
         }
     },
 
+    isAttributeInsideObject: function (obj, attr) {
+        for (var o in obj){
+            if (o == attr){
+                return true;
+            }
+        }
+        return false;
+    },
+
+    /**
+     * creaInsiemi genera i possibili insiemi dati gli alunni
+     */
+    creaInsiemi: function(){
+        for (var i = 0; i < priority.length; i++){
+            if(priority[i] != "alunni"){
+                if (priority[i] == "sesso" || priority[i] == "ripetenti" || priority[i] == "legge_104" || priority[i] == "legge_107"
+                    || priority[i] == "desiderata") {
+                    insiemi.push({nome:priority[i], alunni:[]});
+                }
+                else{
+                    insiemi.push({nome:priority[i], alunni:{}});
+                }
+            }
+        }
+
+        query.getStudentiPrima(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                listaAlunni = results;
+                for (var i = 0; i < listaAlunni.length; i++){
+                    for (var j = 0; j < priority.length; j++){
+                        var ins = module.exports.findInsiemeFromString(priority[j]);
+                        switch (priority[j]) {
+                            case "sesso":
+                                if (listaAlunni[i].sesso == "F"){
+                                    ins.alunni.push(listaAlunni[i]);
+                                }
+                                break;
+                            case "nazionalita":
+                                if (listaAlunni[i].nazionalita.toLowerCase() != "italiana"){
+                                    if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].nazionalita.toLowerCase()))){
+                                        ins.alunni[listaAlunni[i].nazionalita] = [];
+                                    }
+                                    ins.alunni[listaAlunni[i].nazionalita].push(listaAlunni[i]);
+                                }
+                                break;
+                            case "CAP":
+                                if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].CAP))){
+                                    ins.alunni[listaAlunni[i].CAP] = [];
+                                }
+                                ins.alunni[listaAlunni[i].CAP].push(listaAlunni[i]);
+                                break;
+                            case "voto":
+                                if (!(module.exports.isAttributeInsideObject(ins.alunni, listaAlunni[i].voto))){
+                                    ins.alunni[listaAlunni[i].voto] = [];
+                                }
+                                ins.alunni[listaAlunni[i].voto].push(listaAlunni[i]);
+                                break;
+                            case "desiderata":
+                                if (listaAlunni[i].desiderata != ""){
+                                    ins.alunni.push(listaAlunni[i]);
+                                }
+                                break;
+                            case "legge_104":
+                                if (listaAlunni[i].legge_104 != ""){
+                                    ins.alunni.push(listaAlunni[i]);
+                                }
+                                break;
+                            case "legge_107":
+                                if (listaAlunni[i].legge_107 != ""){
+                                    ins.alunni.push(listaAlunni[i]);
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        });
+    },
+
     /**
      * generaListaClassi è una funzione che genera oggetti classe {nome: classe, proprieta:{}, alunni: []}
      * in base agli alunni minimi
@@ -122,7 +204,7 @@ module.exports = {
     /**
      * createProprietaClasse crea le proprieta di una lista di alunni
      * @param listaAlunniClasse
-     * @returns {{alunni: *, femmine: (*|Number), media: *, residenza: (*|Array), bocciati: (*|number), iniziale: *}}
+     * @returns {{alunni: *, sesso: (*|Number), media: *, residenza: (*|Array), bocciati: (*|number), iniziale: *}}
      */
     createProprietaClasse: function (listaAlunniClasse) {
         var nAlunni = listaAlunniClasse.length;
@@ -137,8 +219,8 @@ module.exports = {
         var desiderata = module.exports.countDesiderata(listaAlunniClasse);
         return {
             alunni: nAlunni,
-            femmine: nFemmine,
-            media: media.toFixed(2),
+            sesso: nFemmine,
+            voto: media.toFixed(2),
             residenza: residenza,
             ripetenti: ripetenti,
             iniziale: iniziale,
@@ -176,15 +258,17 @@ module.exports = {
                         case "femmine":
                             module.exports.fixFemmine(listaClassi[k].nome);
                             break;
-                        case "nazionalita":
+                        case "stranieri":
                             //module.exports.fixStranieri(listaClassi[k].nome);
                             module.exports.fixStranieriPerNaz(listaClassi[k].nome, objproblem["nazionalita"]);
                             break;
-                        case "stessa_provenienza":
+                        case "CAP":
 
                             break;
+                        case "ripetenti":
+                            module.exports.fixRipetenti(listaClassi[k].nome);
                         case "media":
-                            module.exports.fixMedia(listaClassi[k].nome);
+                            //module.exports.fixMedia(listaClassi[k].nome);
                             break;
                         case "iniziale":
 
@@ -193,10 +277,10 @@ module.exports = {
                             module.exports.fixDesiderata(listaClassi[k].nome);
                             break;
                         case "legge_104":
-                            module.exports.fix104(listaClassi[k].nome);
+                            //module.exports.fix104(listaClassi[k].nome);
                             break;
                         case "legge_107":
-                            module.exports.fix107(listaClassi[k].nome);
+                            //module.exports.fix107(listaClassi[k].nome);
                             break;
                     }
                 }
@@ -442,9 +526,10 @@ module.exports = {
                     }
                     break;
                 case "stranieri":
-                    /*if (proprieta.stranieri > settings.max_str) {
+                    if (proprieta.stranieri > settings.max_str) {
                         ris["stranieri"] = proprieta.stranieri;
-                    }*/
+                    }
+                    /*
                     var probl = {};
                     var divNaz = module.exports.diverseNazionalita(listaAlunniClasse);
 
@@ -457,7 +542,12 @@ module.exports = {
                     if (probl != {}){
                         ris["nazionalita"] = probl;
                     }
+                    */
                     break;
+                case "ripetenti":
+                    if (proprieta.ripetenti > Math.round(module.exports.countRipetentiTot()/listaClassi.length)){
+                        ris["ripetenti"] = proprieta.ripetenti;
+                    }
                 case "residenza":
                     if (proprieta.residenza.length != 0) {
                         for (var k = 0; k < proprieta.residenza.length; k++) {
@@ -663,22 +753,21 @@ module.exports = {
      * fixRipetenti
      * @param nomeClasse
      */
-    fixRipetenti: function () {
-        var ripetenti = [];
-        for (var k = 0; k < listaClassi.length; k++){
-            for (var i = 0; i < listaClassi[k].alunni.length; i++) {
-                if (listaClassi[k].alunni[i].classe_precedente != ""){
-                    var objAl = listaClassi[k].alunni[i];
-                    listaClassi[k].alunni.splice(k, 1);
-                    ripetenti.push(objAl);
+    fixRipetenti: function (nomeClasse) {
+        var num_ripetenti = Math.round(module.exports.countRipetentiTot()/listaClassi.length);
+        var classe = module.exports.findClasseFromString(nomeClasse);  //classe in esame
+        for (var i = 0; i < listaClassi.length; i++) {
+            if (listaClassi[i].nome != nomeClasse) {
+                if (module.exports.countRipetenti(classe.alunni) > num_ripetenti
+                    && module.exports.countRipetenti(classe.alunni) > module.exports.countRipetenti(listaClassi[i].alunni)) {
+                    var objal = module.exports.searchRipetente(classe.alunni);
+                    if (objal != null) {
+                        module.exports.addStundentInClss(objal, classe, listaClassi[i], true);
+                    }
                 }
             }
-        }
-        while (ripetenti.length != 0){
-            for (var i = 0; i < listaClassi.length; i++) {
-                var objAl2 = ripetenti[0];
-                ripetenti.splice(0, 1);
-                listaClassi[i].alunni.push(objAl2);
+            if (module.exports.countRipetenti(classe.alunni) == num_ripetenti) {
+                break;
             }
         }
     },
@@ -725,6 +814,7 @@ module.exports = {
                 }
             }
         }
+        /*
         var al104 = module.exports.get104Classe(classe.alunni);
 
         for (var k = 0; k < listaClassi.length; k++){
@@ -735,6 +825,7 @@ module.exports = {
                 if (al104.length == settings.max_107)   break;
             }
         }
+        */
     },
     
     get107Classe: function (listaAlunniClasse) {
@@ -807,6 +898,7 @@ module.exports = {
     searchRipetente: function (listaAlunniClasse) {
         for (var i = 0; i < listaAlunniClasse.length; i++) {
             if (listaAlunniClasse[i]["classe_precedente"] != "") {
+                console.log(listaAlunniClasse[i]["classe_precedente"]);
                 return listaAlunniClasse[i];
             }
         }
@@ -840,6 +932,13 @@ module.exports = {
         }
     },
 
+    createArrayPriorita: function (priorita){
+
+        for (var i = 0; i < priorita.length; i++){
+            priority.push(priorita[i].scelta);
+        }
+    },
+
     //##################################################################################################################
     /**--------------------------------------FINE FUNZIONI PER COMPORRE CLASSI----------------------------------------*/
     //##################################################################################################################
@@ -848,7 +947,7 @@ module.exports = {
     /**----------------------------------------------------UTILITY----------------------------------------------------*/
     //##################################################################################################################
     /**
-     * findClasseFromString data una stringa ritorna l'oggetto classe dato il nome
+     * findClasseFromString data una stringa ritorna l'oggetto classe corrispondente
      * @param nomeClasse stringa
      * @returns {object}
      */
@@ -856,6 +955,20 @@ module.exports = {
         for (var k = 0; k < listaClassi.length; k++) {
             if (listaClassi[k].nome == nomeClasse) {
                 return listaClassi[k];
+            }
+        }
+        return null;
+    },
+
+    /**
+     * findInsiemeFromString data una stringa ritorna l'oggetto insieme corrispondente
+     * @param nomeInsieme
+     * @returns {*}
+     */
+    findInsiemeFromString: function (nomeInsieme) {
+        for (var k = 0; k < insiemi.length; k++) {
+            if (insiemi[k].nome == nomeInsieme) {
+                return insiemi[k];
             }
         }
         return null;
