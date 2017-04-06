@@ -15,6 +15,7 @@ var settings = {
     iniziale: 3,
     stessa_pr: 4,
     nazionalita: 3,
+    naz_per_classe: 3,
     media_min: 7.5,
     media_max: 8.0,
     max_al_104: 23,
@@ -238,27 +239,30 @@ module.exports = {
         var totaleAlunni = listaAlunni.length;
         var totale104 = module.exports.count104(listaAlunni);
         var totale107 = module.exports.count107(listaAlunni);
-        var stranieri = {};
+        var totaleFem = module.exports.countFemmine(listaAlunni);
 
-        for (var naz in insNaz){
-            stranieri[naz] = insNaz[naz].length;
+        var naz = {};
+
+        for (var n in insNaz){
+            naz[n] = insNaz[n].length;
         }
 
         var flag = true;
 
         while (flag){
-            for (i in listaClassi){
+            for (var i in listaClassi){
                 if (totale104 > 0){
                     listaClassi[i].propIdeali["legge_104"] += 1;
-                    listaClassi[i].propIdeali["numeroAlunniMax"] = settings.max_al_104;
+                    listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
                     totale104 -= 1;
                 } else{
                     break;
                 }
+                listaClassi[i].propIdeali["nazionalita"] = {}; //creo l'oggetto per le nazionalità
             }
             listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
 
-            for (i in listaClassi){
+            for (var i in listaClassi){
                 if (totale107 > 0){
                     listaClassi[i].propIdeali["legge_107"] += 1;
                     totale107 -= 1;
@@ -267,7 +271,23 @@ module.exports = {
                 }
             }
 
-            if (totale104 == 0 && totale107 == 0){
+            for (var i in listaClassi){
+                for (var k in naz){
+                    if(naz[k] <= settings.nazionalita){
+                        listaClassi[i].propIdeali["nazionalita"][k] = naz[k];
+                        delete listaClassi[i].propIdeali["nazionalita"][k];
+                    } else{
+                        listaClassi[i].propIdeali["nazionalita"][k] = settings.nazionalita;
+                        listaClassi[i].propIdeali["nazionalita"][k] -= settings.nazionalita;
+                    }
+
+                    if (Object.keys(listaClassi[i].propIdeali["nazionalita"]).length == settings.naz_per_classe){
+                        break;
+                    }
+                }
+            }
+
+            if (totale104 == 0 && totale107 == 0 && naz == {}){
                 flag = false;
             }
         }
@@ -298,8 +318,7 @@ module.exports = {
             residenza: residenza,
             ripetenti: ripetenti,
             iniziale: iniziale,
-            stranieri: stranieri,
-            desiderata: desiderata,
+            nazionalita: stranieri,
             legge_104: legge_104,
             legge_107: legge_107
         };
@@ -316,7 +335,6 @@ module.exports = {
         }
         return listaNomi;
     },
-
 
 
     //##################################################################################################################
