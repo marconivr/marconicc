@@ -239,6 +239,10 @@ module.exports = {
         for (var i in listaClassi){
 
         }
+
+
+
+
     }
     ,
     popolaClassi: function () {
@@ -255,9 +259,12 @@ module.exports = {
                         for (var j=0; j < proprietaIdeali[prop];j++){
 
                         }
+
                 }
             }
+
         }
+
     }
 
     ,
@@ -272,74 +279,113 @@ module.exports = {
 
         var naz = {};
 
-        for (var n in insNaz){
+        for (var n in insNaz) {
             naz[n] = insNaz[n].length;
         }
 
         var flag = true;
 
-        while (flag){
-            for (var i in listaClassi){
-                if (totale104 > 0){
+        while (flag) {
+            for (var i in listaClassi) {
+                if (totale104 > 0) {
                     listaClassi[i].propIdeali["legge_104"] += 1;
                     listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
                     totale104 -= 1;
-                } else{
+                } else {
                     break;
                 }
+                listaClassi[i].propIdeali["nazionalita"] = {}; //creo l'oggetto per le nazionalità
             }
             listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
 
-            for (var i in listaClassi){
-                if (totale107 > 0){
+            for (var i in listaClassi) {
+                if (totale107 > 0) {
                     listaClassi[i].propIdeali["legge_107"] += 1;
                     totale107 -= 1;
-                } else{
+                } else {
                     break;
                 }
             }
 
-            for (var i in listaClassi){
-                for (var k in naz){
-                    if (listaClassi[i].propIdeali.nazionalita === undefined){
-                        listaClassi[i].propIdeali.nazionalita = {};
+            for (var i in listaClassi) {
+                for (var k in naz) {
+                    if (naz[k] <= settings.nazionalita) {
+                        listaClassi[i].propIdeali["nazionalita"][k] = naz[k];
+                        delete listaClassi[i].propIdeali["nazionalita"][k];
+                    } else {
+                        listaClassi[i].propIdeali["nazionalita"][k] = settings.nazionalita;
+                        listaClassi[i].propIdeali["nazionalita"][k] -= settings.nazionalita;
                     }
 
-                    if(listaClassi[i].propIdeali["nazionalita"][k] === undefined){
-                        listaClassi[i].propIdeali.nazionalita[k] = 0;
-                    }
-
-                    if(naz[k] <= settings.nazionalita){
-                        listaClassi[i].propIdeali["nazionalita"][k] += naz[k];
-                        delete naz[k];
-                    } else{
-                        listaClassi[i].propIdeali["nazionalita"][k] += settings.nazionalita;
-                        naz[k] -= settings.nazionalita;
-                    }
-
-                    if (Object.keys(listaClassi[i].propIdeali["nazionalita"]).length == settings.naz_per_classe){
+                    if (Object.keys(listaClassi[i].propIdeali["nazionalita"]).length == settings.naz_per_classe) {
                         break;
                     }
                 }
             }
 
-            if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0){
+            if (totale104 == 0 && totale107 == 0 && naz == {}) {
                 flag = false;
             }
         }
         console.log(listaClassi);
-    },
+    }
 
+    ,
 
     /**
-     * createProprietaClasse crea le propAttuali di una lista di alunni
-     * @param listaAlunniClasse
+     * Torna lista alunni di  una classe
+     * @param nomeClasse
+     * @returns {}
+     */
+    getListaAlunniByClasse: function (nomeClasse) {
+        for (var i in listaClassi){
+            if (listaClassi[i].nome == nomeClasse){
+                return listaClassi[i].alunni;
+            }
+        }
+    }
+
+    ,
+
+    /**
+     * Crea un oggetto che rappresenta la distribuzione dei voti della classe
+     * @param nomeClasse
+     * @returns {{}}
+     */
+     getDistribuzioneVotiOfClasse: function (nomeClasse) {
+
+         var jsonVoti = {};
+         var alunniOfClasse = getStudentsOfClass(className);
+
+         for (var studenti = 0; studenti < alunniOfClasse.length; studenti++) {
+             var voto = alunniOfClasse[studenti].voto;
+             if (jsonVoti[voto] === undefined) jsonVoti[voto] = 1;
+             else jsonVoti[voto] = jsonVoti[voto] + 1;
+         }
+
+
+         if (jsonVoti[6] === undefined) jsonVoti[6] = 0;
+         if (jsonVoti[7] === undefined) jsonVoti[7] = 0;
+         if (jsonVoti[8] === undefined) jsonVoti[8] = 0;
+         if (jsonVoti[9] === undefined) jsonVoti[9] = 0;
+         if (jsonVoti[10] === undefined) jsonVoti[10] = 0;
+
+         return jsonVoti;
+     }
+    ,
+
+    /**
+     * createProprietaClasse crea le propAttuali di una classe
+     * @param nomeClasse
      * @returns {{alunni: *, sesso: (*|Number), media: *, residenza: (*|Array), bocciati: (*|number), iniziale: *}}
      */
-    createProprietaClasse: function (listaAlunniClasse) {
+    createProprietaClasse: function (nomeClasse) {
+
+        var listaAlunniClasse = module.exports.getListaAlunniByClasse(nomeClasse);
+
         var nAlunni = listaAlunniClasse.length;
         var nFemmine = module.exports.countFemmine(listaAlunniClasse);
-        var media = module.exports.mediaClasse(listaAlunniClasse);
+        var voti = module.exports.getDistribuzioneVotiOfClasse(nomeClasse) ;
         var residenza = module.exports.countStessaResid(listaAlunniClasse);
         var ripetenti = module.exports.countRipetenti(listaAlunniClasse);
         var nazionalita = module.exports.countStranieri(listaAlunniClasse);
@@ -349,7 +395,7 @@ module.exports = {
         return {
             alunni: nAlunni,
             femmine: nFemmine,
-            voto: media.toFixed(2),
+            voti: voti,
             CAP: residenza,
             ripetenti: ripetenti,
             nazionalita: nazionalita,
