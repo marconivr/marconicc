@@ -98,7 +98,8 @@
                             <p>Le impostazioni sono state salvate</p>
                         </div>
                         <!--sematic button-->
-                        <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div>
+                        <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div></br></br>
+                        <div class="large ui button" tabindex="0" onclick="addPriority()">Add Priority</div>
                     </form>
                 </div>
             </div>
@@ -219,6 +220,35 @@
                 "mediaMin" : mediaMin,
                 "mediaMax" : mediaMax,
                 "bocciati" : bocciati
+            },
+            type: 'get',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    }
+
+    function addPriority() {
+        var priorita = [];
+        priorita.push("legge_104");
+        priorita.push("legge_107");
+        priorita.push("alunni");
+        priorita.push("desiderata");
+        priorita.push("ripetenti");
+        priorita.push("sesso");
+        priorita.push("nazionalita");
+        priorita.push("CAP");
+        priorita.push("voto");
+
+        $.ajax({
+            url: '/insert-priorita',
+            data: {
+                "priorita" : priorita
             },
             type: 'get',
             success: function (data) {
