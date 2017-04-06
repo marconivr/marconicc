@@ -93,11 +93,14 @@
                             <label>Ripetenti</label>
                             <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
                         </div>
-
-
+                        <div class="ui hidden success message" id="message">
+                            <div class="header">Form Completato</div>
+                            <p>Le impostazioni sono state salvate</p>
+                        </div>
 
                         <!--sematic button-->
-                        <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div>
+                        <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div></br></br>
+                        <div class="large ui button" tabindex="0" onclick="addPriority()">Add Priority</div>
                     </form>
                 </div>
             </div>
@@ -193,6 +196,7 @@
     }
 
     function addSettings() {
+        document.getElementById("message").className = "ui success message";
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
         var femmine = parseInt($("#femmine").val());
@@ -214,6 +218,35 @@
                 "mediaMin" : mediaMin,
                 "mediaMax" : mediaMax,
                 "bocciati" : bocciati
+            },
+            type: 'get',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    }
+
+    function addPriority() {
+        var priorita = [];
+        priorita.push("legge_104");
+        priorita.push("legge_107");
+        priorita.push("alunni");
+        priorita.push("desiderata");
+        priorita.push("ripetenti");
+        priorita.push("sesso");
+        priorita.push("nazionalita");
+        priorita.push("CAP");
+        priorita.push("voto");
+
+        $.ajax({
+            url: '/insert-priorita',
+            data: {
+                "priorita" : priorita
             },
             type: 'get',
             success: function (data) {
