@@ -6,6 +6,7 @@
 var query = require('./../query/query.js');
 var csv = require("csv");
 var middleware = require('./middleware/middleware');
+var newAlg = require("./new-algorithm.js");
 var alg = require("./algorithm.js");
 var async = require('async');
 
@@ -179,11 +180,13 @@ module.exports = function (app, passport, upload) {
                 });
             }
         });
-
-
-
     });
 
+
+    app.get('/generate-classi' ,middleware.isLoggedIn,function (req,res) {
+        newAlg.generaClassiPrima();
+        res.send('ok');
+    });
 
     app.post('/move-student', middleware.isLoggedIn, function (req, res) {
         console.log(req);
