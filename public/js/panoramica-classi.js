@@ -9,6 +9,8 @@ var pieChartArray = [];//reference to pieChart
 var votiCheckBoxArray = []; //array for filter voto
 var nazionalitaCheckBoxArray = [];//array for filter nazionalità
 var desiderataNonRispettato = false;
+var nazionalitaPopup = [];
+var desiderataPopup = [];
 
 //chart
 var informationArray = [];//reference to information
@@ -31,7 +33,8 @@ var iconJson = {
 };
 
 
-var flagJson = { ITALIANA: { iso: 'it', color: '#2F3F73' },
+var flagJson = {
+    ITALIANA: { iso: 'it', color: '#16db60' },
     CINGALESE: { iso: 'lk', color: '#609C35' },
     BANGLADESE: { iso: 'bd', color: '#B18F3C' },
     ROMENA: { iso: 'ro', color: '#A03753' },
@@ -47,9 +50,10 @@ var flagJson = { ITALIANA: { iso: 'it', color: '#2F3F73' },
     NIGERIANA: { iso: 'ng', color: '#ffd400' },
     GHANESE: { iso: 'gh', color: '#f0e68c' },
     PERUVIANA: { iso: 'pe', color: '#a99985' },
-    CUBANA: { iso: 'cu', color: '#16db93' },
+    CUBANA: { iso: 'cu', color: '#2F3F73' },
     CROATA: { iso: 'hr', color: '#048ba8' },
     SENEGALESE: { iso: 'sn', color: '#a4036f' } };
+
 
 function populate(listaClassi) {
     arrayClassi = listaClassi;
@@ -501,6 +505,56 @@ function getColorOfNationalitiesByLabelArray(label) {
 }
 
 /**
+ * create dinamyc style for nazionalita filter
+ */
+function createDynamicStyle() {
+
+
+    jQuery.each(flagJson, function (i, val) {
+        $('<style>.' + i + '{' +
+            'border-color:' + val.color + '!important;' +
+            'border-style: solid!important;;' +
+            'border-width: 5px!important;;}</style>')
+            .appendTo('head');
+    });
+
+}
+/**
+ * create dynamic menu of nazionalita
+ */
+function createNazionalitaMenu() {
+
+    jQuery.each(flagJson, function (i, val) {
+        var item = $('<div/>')
+            .addClass('item');
+
+        var containerInput = $('<div/>')
+            .addClass('ui child  checkbox nazionalita')
+            .appendTo(item);
+
+        var input = $('<input/>', {
+            name: i,
+            type: 'checkbox',
+            align: 'left'
+        }).appendTo(containerInput);
+
+        var a = $('<a/>').addClass('ui mini label')
+            .html(i)
+            .css(
+                {
+                    'background-color': '#' + val.color,
+                    'color': 'white'
+                });
+
+        var label = $('<label/>')
+            .html(a)
+            .appendTo(containerInput);
+        item.appendTo('#nazionalita-menu');
+    });
+
+}
+
+/**
  * Data una nazionalità in italiano maiuscolo torna il codice iso relativo alla bandiera
  * @param nazionalita
  * @returns {*}
@@ -530,19 +584,21 @@ function setFilterVoti(voto, elemento) {
 }
 
 function setFilterNazionalita(elemento) {
-    elemento.popup({
-        silent: true,
-        hoverable: true
-    }).popup('show');
+    // elemento.popup({
+    //     silent: true,
+    //     hoverable: true
+    // }).popup('show');
+    //
+    // elemento.visibility({
+    //     onTopVisible: function () {
+    //         elemento.popup({
+    //             silent: true,
+    //             hoverable: true
+    //         }).popup('show');
+    //     }
+    // });
+    elemento.addClass(elemento.attr('data-content'));
 
-    elemento.visibility({
-        onTopVisible: function () {
-            elemento.popup({
-                silent: true,
-                hoverable: true
-            }).popup('show');
-        }
-    });
 }
 
 /**
@@ -559,10 +615,111 @@ function disableAllFilter() {
     }
 
     //todo : delete popup
-    //todo:  delete desiderata
+    for (var nazionalita = 0; nazionalita < nazionalitaPopup.length; nazionalita++)
+    {
+        $(nazionalitaPopup[nazionalita]).removeClass(nazionalitaPopup[nazionalita].attr('data-content'));
+    }
 
+    //todo:  delete desiderata
+    for(var desiderata = 0; desiderata< desiderataPopup.length; desiderata++)
+    {
+        $(desiderataPopup[desiderata]).popup('destroy');
+    }
 
 }
+
+
+/**
+ * ritorna true se non è rispettato la richiesta desiderata
+ * @param elemento
+ */
+function getDesiderataNonRispettato(elemento) {
+    var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
+    var cfAmico = getAlunnoDesiderataByCF(cf);
+    if(cfAmico != undefined)
+    {
+        var classe1 = getClassNameFromStudent(cf);
+        var classeAmico = getClassNameFromStudent(cfAmico);
+        if (classe1 != classeAmico)return true;
+        else return false;
+    }
+}
+
+function setFilterDesiderataNonRispettato(elemento) {
+    if(elemento === undefined)
+    {
+
+    $('.ui.segment.tooltip').each(function (index, element) {
+        var cf = $(element).attr("id"); //cf dell'alunno selezionato
+        var cfAmico = getAlunnoDesiderataByCF(cf);
+        if(cfAmico != undefined)
+        {
+            var classe1 = getClassNameFromStudent(cf);
+            var classeAmico = getClassNameFromStudent(cfAmico);
+            var nomealunno = getStudentByCF(cf);
+            var nomeAlunnoAmico = getStudentByCF(cfAmico);
+            if (classe1 != classeAmico)
+            {
+
+                $(element).popup({
+                    silent: true,
+                    hoverable: true,
+                    title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                }).popup('show');
+
+                $(element).visibility({
+                    onTopVisible: function () {
+                        $(element).popup({
+                            silent: true,
+                            hoverable: true,
+                            title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                        }).popup('show');
+                    }
+                });
+
+            }
+        }
+
+
+    });
+    }
+    else {
+            var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
+            var cfAmico = getAlunnoDesiderataByCF(cf);
+            if(cfAmico != undefined)
+            {
+                var classe1 = getClassNameFromStudent(cf);
+                var classeAmico = getClassNameFromStudent(cfAmico);
+                var nomealunno = getStudentByCF(cf);
+                var nomeAlunnoAmico = getStudentByCF(cfAmico);
+                if (classe1 != classeAmico)
+                {
+
+                    $(elemento).popup({
+                        silent: true,
+                        hoverable: true,
+                        title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                    }).popup('show');
+
+                    $(elemento).visibility({
+                        onTopVisible: function () {
+                            $(elemento).popup({
+                                silent: true,
+                                hoverable: true,
+                                title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+
+                            }).popup('show');
+                        }
+                    });
+
+                }
+            }
+    }
+}
+
 
 
 /**
@@ -602,6 +759,7 @@ function setAllFilter() {
     //TODO: SET ALL FILTER
     //vedere queli filtri sono vuoti e comportarsi di conseguenza
 
+    //1 CASO
     //guardo se il checkbox dei voti è spuntanto,se no procedo con gli altri filtri
     if (votiCheckBoxArray.length != 0) {
         //controllo se il filtro delle nazionalità è attivo
@@ -618,6 +776,7 @@ function setAllFilter() {
             else {
 
                 var arrayStudentiVoti = [];
+                nazionalitaPopup = [];
 
                 for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
                     arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
@@ -626,6 +785,7 @@ function setAllFilter() {
                             if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
                                 setFilterVoti(votiCheckBoxArray[voto], $(element));
                                 setFilterNazionalita($(element));
+                                nazionalitaPopup.push($(element));
                             }
 
                         });
@@ -635,8 +795,8 @@ function setAllFilter() {
 
             }
         }
+        //filtri di voti ci sono, nazionalita no
         else {
-            //filtri di voti ci sono, nazionalita no
             if (desiderataNonRispettato) {
 
             }
@@ -649,6 +809,69 @@ function setAllFilter() {
                 }
             }
         }
+    }
+    //2 CASO - FILTRO VOTI NON CI SONO
+    else
+    {
+        //CI SONO NAZIONALITA
+        if (nazionalitaCheckBoxArray.length != 0)
+        {
+            //CI SONO I FILTRI DESIDERATA
+            if(desiderataNonRispettato)
+            {
+                nazionalitaPopup = [];
+                desiderataPopup = [];
+                for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                    $('.ui.segment.tooltip').each(function (index, element) {
+                        var desiderata = getDesiderataNonRispettato(element);
+                        if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase() && desiderata) {
+                            setFilterNazionalita($(element));
+                            nazionalitaPopup.push($(element));
+                            setFilterDesiderataNonRispettato($(element));
+                            desiderataPopup.push($(element));
+                        }
+
+                    });
+
+                }
+            }
+            //NON CI SONO FILTRI DESIDERATA
+            else
+            {
+                nazionalitaPopup = [];
+                for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                    $('.ui.segment.tooltip').each(function (index, element) {
+                        if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
+                            setFilterNazionalita($(element));
+                            nazionalitaPopup.push($(element));
+                        }
+
+                    });
+
+                }
+            }
+
+        }
+        //NON CI SONO NAZIONALITA
+        else
+        {
+            //SOLO DESIDERATA
+            if(desiderataNonRispettato)
+            {
+                    $('.ui.segment.tooltip').each(function (index, element) {
+                        var desiderata = getDesiderataNonRispettato(element);
+                        if (desiderata) {
+                            //setFilterNazionalita($(element));
+                            //nazionalitaPopup.push($(element));
+                            setFilterDesiderataNonRispettato($(element));
+                            desiderataPopup.push($(element));
+                        }
+
+                    });
+            }
+
+        }
+
     }
 
 
@@ -828,6 +1051,8 @@ $(document).ready(function () {
                 }
             );
             handleCheckBoxVoti();
+            createDynamicStyle();
+            createNazionalitaMenu();
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
 
@@ -900,9 +1125,10 @@ $(document).ready(function () {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 50,
+                                    'height': 40,
                                     'data-content': nazionalita,
                                     'data-variation': "tiny",
+                                    preserve: false
                                 })
                                 .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
@@ -914,7 +1140,8 @@ $(document).ready(function () {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40,
                                     'data-content': nazionalita,
-                                    'data-variation': "tiny"
+                                    'data-variation': "tiny",
+                                    preserve: false
                                 })
                                 .addClass('ui segment tooltip girl ' + voto)
                                 .attr('id', cf)

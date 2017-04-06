@@ -90,6 +90,10 @@
     .ui.menu .item>.floating.label{
         z-index: 0;
     }
+
+    .ui.floating.label{
+        z-index: 0;
+    }
 </style>
 
 
@@ -100,8 +104,10 @@
     <div class="ui dropdown settings item notSelectable">
         <span class="ui tiny header">Filtri</span>
        <!-- <i class="dropdown icon "></i>  occupa tanto spazio -->
-        <div class="menu">
-            <div class="item">Boo</div>
+        <div class="menu" style="width: 10%">
+            <div class="ui mini header">Download</div>
+            <div class="divider"></div>
+            <div class="item">Scarica excel</div>
             <div class="divider"></div>
             <div class="ui mini header">Filtri</div>
             <div class="item">
@@ -112,31 +118,37 @@
                         <div class="item">
                             <div class="ui  child checkbox voto">
                                 <input type="checkbox" name="6">
-                                <label>6 &nbsp</label>
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #FFCC80!important;">6</a></label>
+
                             </div>
                         </div>
                         <div class="item">
                             <div class="ui child   checkbox voto">
                                 <input type="checkbox" name="7">
-                                <label>7 &nbsp</label>
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #E6EE9C!important;">7</a></label>
                             </div>
                         </div>
                         <div class="item">
                             <div class="ui child  checkbox voto">
                                 <input type="checkbox" name="8">
-                                <label>8 &nbsp</label>
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #D4E157!important;">8</a></label>
                             </div>
                         </div>
                         <div class="item">
                             <div class="ui child  checkbox voto">
                                 <input type="checkbox" name="9">
-                                <label>9 &nbsp</label>
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #C5E1A5!important;">9</a></label>
                             </div>
                         </div>
                         <div class="item">
                             <div class="ui child  checkbox voto">
                                 <input type="checkbox" name="10">
-                                <label>10</label>
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #AED581!important;">10</a></label>
                             </div>
                         </div>
                     </div>
@@ -147,49 +159,8 @@
                 <i class="dropdown icon"></i>
                 Nazionalità
                 <div class="menu">
-                    <div class="list">
-                        <div class="item">
-                            <div class="ui child checkbox nazionalita">
-                                <input type="checkbox" name="Italiana">
-                                <label>Italiana</label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child   checkbox nazionalita">
-                                <input type="checkbox" name="Romena">
-                                <label>Romena</label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox nazionalita">
-                                <input type="checkbox" name="Albanese">
-                                <label>Albanese</label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox nazionalita">
-                                <input type="checkbox" name="Cingalese">
-                                <label>Cingalese</label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox nazionalita">
-                                <input type="checkbox" name="Senegalese">
-                                <label>Senegalese</label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox nazionalita">
-                                <input type="checkbox" name="Moldava">
-                                <label>Moldava</label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox nazionalita">
-                                <input type="checkbox" name="Nigeriana">
-                                <label>Nigeriana</label>
-                            </div>
-                        </div>
+                    <div class="list" id="nazionalita-menu" style="left: 2px;">
+
                     </div>
                 </div>
             </div>
