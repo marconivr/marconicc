@@ -184,8 +184,12 @@ module.exports = function (app, passport, upload) {
 
 
     app.get('/generate-classi' ,middleware.isLoggedIn,function (req,res) {
-        newAlg.generaClassiPrima();
-        res.send('ok');
+        newAlg.generaClassiPrima(function (err) {
+            if(!err){
+                res.send('ok');
+            }
+        });
+
     });
 
     app.post('/move-student', middleware.isLoggedIn, function (req, res) {

@@ -24,10 +24,12 @@ var settings = {
     an_scol: "2017-2018"
 };
 var proprietaIdeali = {
-    numAlunniMax : 28,
-    numAlunniMin : 25
-
+    numAlunniMax : 0,
+    numAlunniMin : 0,
+    legge_104: 0,
+    legge_107: 0
 }
+
 var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
 var insiemi = [];
@@ -199,7 +201,7 @@ module.exports = {
             var num = Math.round(listaAlunni.length / (settings.min_al));
             for (i = 0; i < num; i++) {
                 var classe = "1" + String.fromCharCode(65 + i);
-                listaClassi.push({nome: classe , propAttuali: {} , propIdeali : {} , alunni: []});
+                listaClassi.push({nome: classe , propAttuali: {} , propIdeali : proprietaIdeali , alunni: []});
             }
             module.exports.generaPropIdeali(listaClassi);
         }
@@ -216,7 +218,16 @@ module.exports = {
     },
 
 
-    generaPropIdeali: function (listaClassi) {
+    compare: function (a, b) {
+        if (a.propIdeali.legge_104 < b.propIdeali.legge_104)
+            return -1;
+        if (a.propIdeali.legge_104 > b.propIdeali.legge_104)
+            return 1;
+        return 0;
+        }
+    ,
+
+    generaPropIdeali: function () {
         var objNaz = module.exports.getInsieme("nazionalita").alunni;
 
         var totaleClassi = listaClassi.length;
@@ -229,13 +240,30 @@ module.exports = {
             stranieri[naz] = objNaz[naz].length;
         }
 
-        for(var i in listaClassi){
-            if (totale104 > 0){
-                listaClassi[i].propIdeali["legge_104"] === undefined ? 1 : listaClassi[i].propIdeali["legge_104"] + 1;
-                listaClassi[i].propIdeali["numeroAlunniMax"] = settings.max_al_104;
-                totale104 -= 1;
+        var flag = true;
+
+        while (flag){
+            for (i in listaClassi){
+                if (totale104 > 0){
+                    listaClassi[i].propIdeali["legge_104"] += 1;
+                    listaClassi[i].propIdeali["numeroAlunniMax"] = settings.max_al_104;
+                    totale104 -= 1;
+                }
             }
 
+            listaClassi.sort(module.exports.compare);
+
+            for (i in listaClassi){
+
+
+
+            }
+
+
+
+            if (totale104 == 0){
+                flag = false;
+            }
         }
 
         console.log(listaClassi);
