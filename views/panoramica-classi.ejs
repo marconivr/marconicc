@@ -94,6 +94,12 @@
     .ui.floating.label{
         z-index: 0;
     }
+
+    .bocciato{
+        border-color: #9c1500 !important;
+        border-style: solid!important;
+        border-width: 5px!important;
+    }
 </style>
 
 
@@ -174,6 +180,22 @@
                             <div class="ui child checkbox desiderata">
                                 <input type="checkbox" name="desiderata-not-respected">
                                 <label>Desiderata non rispettato</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--bocciati-->
+            <div class="item">
+                <i class="dropdown icon"></i>
+                Bocciati
+                <div class="menu">
+                    <div class="list">
+                        <div class="item">
+                            <div class="ui child checkbox bocciati">
+                                <input type="checkbox" name="bocciati">
+                                <label>Bocciati</label>
                             </div>
                         </div>
                     </div>

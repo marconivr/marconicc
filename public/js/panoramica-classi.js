@@ -7,10 +7,13 @@ var pieChartArray = [];//reference to pieChart
 
 //FILTER
 var votiCheckBoxArray = []; //array for filter voto
+var arrayStudentiVoti = [];
 var nazionalitaCheckBoxArray = [];//array for filter nazionalità
 var desiderataNonRispettato = false;
-var nazionalitaPopup = [];
-var desiderataPopup = [];
+var bocciati = false;
+var bocciatiItems = [];
+var nazionalitaItems = [];
+var desiderataItems = [];
 
 //chart
 var informationArray = [];//reference to information
@@ -580,25 +583,15 @@ function setFilterVoti(voto, elemento) {
     //trasformo il voto da intero a string
     var votoString = votoIntegerToDecimal(voto);
     $(elemento).addClass(votoString);
-
 }
 
-function setFilterNazionalita(elemento) {
-    // elemento.popup({
-    //     silent: true,
-    //     hoverable: true
-    // }).popup('show');
-    //
-    // elemento.visibility({
-    //     onTopVisible: function () {
-    //         elemento.popup({
-    //             silent: true,
-    //             hoverable: true
-    //         }).popup('show');
-    //     }
-    // });
-    elemento.addClass(elemento.attr('data-content'));
+function setFilterBocciati(elemento) {
+    elemento.addClass("bocciato");
+}
 
+function setFilterNazionalita(elemento)
+{
+    elemento.addClass(elemento.attr('data-content'));
 }
 
 /**
@@ -615,15 +608,20 @@ function disableAllFilter() {
     }
 
     //todo : delete popup
-    for (var nazionalita = 0; nazionalita < nazionalitaPopup.length; nazionalita++)
+    for (var nazionalita = 0; nazionalita < nazionalitaItems.length; nazionalita++)
     {
-        $(nazionalitaPopup[nazionalita]).removeClass(nazionalitaPopup[nazionalita].attr('data-content'));
+        $(nazionalitaItems[nazionalita]).removeClass(nazionalitaItems[nazionalita].attr('data-content'));
     }
 
     //todo:  delete desiderata
-    for(var desiderata = 0; desiderata< desiderataPopup.length; desiderata++)
+    for(var desiderata = 0; desiderata< desiderataItems.length; desiderata++)
     {
-        $(desiderataPopup[desiderata]).popup('destroy');
+        $(desiderataItems[desiderata]).popup('destroy');
+    }
+
+    for(var bocciati = 0; bocciati < bocciatiItems.length ; bocciati++)
+    {
+        $(bocciatiItems[bocciati]).removeClass("bocciato");
     }
 
 }
@@ -720,7 +718,19 @@ function setFilterDesiderataNonRispettato(elemento) {
     }
 }
 
-
+/**
+ * controlla se uno studente è bocciato
+ * @param cf
+ */
+function getIfStudentsIsBocciato(cf)
+{
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf == cf)
+               return arrayClassi[i].alunni[studente].classe_precedente  == "" ?  false :  true;
+        }
+    }
+}
 
 /**
  *
@@ -775,8 +785,8 @@ function setAllFilter() {
             //desiderata non è rispettato, filtro pe voto e per nazionalita
             else {
 
-                var arrayStudentiVoti = [];
-                nazionalitaPopup = [];
+                arrayStudentiVoti = [];
+                nazionalitaItems = [];
 
                 for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
                     arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
@@ -785,7 +795,7 @@ function setAllFilter() {
                             if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
                                 setFilterVoti(votiCheckBoxArray[voto], $(element));
                                 setFilterNazionalita($(element));
-                                nazionalitaPopup.push($(element));
+                                nazionalitaItems.push($(element));
                             }
 
                         });
@@ -795,18 +805,38 @@ function setAllFilter() {
 
             }
         }
-        //filtri di voti ci sono, nazionalita no
+        //VOTI SI, NAZIONALITA NO
         else {
             if (desiderataNonRispettato) {
 
             }
             else {
-                //ho solo i voti come filtro
-                for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
-                    $('.' + votiCheckBoxArray[voto]).each(function (index, element) {
-                        setFilterVoti(votiCheckBoxArray[voto], element)
-                    });
+                //VOTI E BOCCCIATI
+                if(bocciati)
+                {
+                    arrayStudentiVoti = [];
+                    for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                        arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
+                            arrayStudentiVoti.each(function (index, element) {
+                                if(getIfStudentsIsBocciato($(element).attr("id"))){
+                                    setFilterVoti(votiCheckBoxArray[voto], $(element));
+                                    setFilterBocciati($(element));
+                                    bocciatiItems.push($(element));
+                                }
+
+                            });
+                    }
                 }
+                else {
+                    //ho solo i voti come filtro
+                    arrayStudentiVoti = [];
+                    for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                        $('.' + votiCheckBoxArray[voto]).each(function (index, element) {
+                            setFilterVoti(votiCheckBoxArray[voto], element)
+                        });
+                    }
+                }
+
             }
         }
     }
@@ -819,16 +849,16 @@ function setAllFilter() {
             //CI SONO I FILTRI DESIDERATA
             if(desiderataNonRispettato)
             {
-                nazionalitaPopup = [];
-                desiderataPopup = [];
+                nazionalitaItems = [];
+                desiderataItems = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         var desiderata = getDesiderataNonRispettato(element);
                         if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase() && desiderata) {
                             setFilterNazionalita($(element));
-                            nazionalitaPopup.push($(element));
+                            nazionalitaItems.push($(element));
                             setFilterDesiderataNonRispettato($(element));
-                            desiderataPopup.push($(element));
+                            desiderataItems.push($(element));
                         }
 
                     });
@@ -838,12 +868,12 @@ function setAllFilter() {
             //NON CI SONO FILTRI DESIDERATA
             else
             {
-                nazionalitaPopup = [];
+                nazionalitaItems = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
                             setFilterNazionalita($(element));
-                            nazionalitaPopup.push($(element));
+                            nazionalitaItems.push($(element));
                         }
 
                     });
@@ -862,13 +892,30 @@ function setAllFilter() {
                         var desiderata = getDesiderataNonRispettato(element);
                         if (desiderata) {
                             //setFilterNazionalita($(element));
-                            //nazionalitaPopup.push($(element));
+                            //nazionalitaItems.push($(element));
                             setFilterDesiderataNonRispettato($(element));
-                            desiderataPopup.push($(element));
+                            desiderataItems.push($(element));
                         }
 
                     });
             }
+            else
+                //SOLO BOCCIATI
+                {
+                    if(bocciati){
+                    $('.ui.segment.tooltip').each(function (index, element) {
+
+                       if(getIfStudentsIsBocciato($(element).attr("id")))
+                       {
+                           setFilterBocciati($(element));
+                           bocciatiItems.push($(element));
+
+                       }
+
+                    });
+
+                    }
+                }
 
         }
 
@@ -1021,6 +1068,53 @@ function handleCheckBoxDesiderata() {
         });
 }
 
+
+function handleCheckBoxBocciati() {
+    $('.child.checkbox.bocciati')
+        .checkbox({
+            // Fire on load to set parent value
+            fireOnInit: true,
+            // Change parent state on each child checkbox change
+            onChange: function () {
+                var
+                    $listGroup = $(this).closest('.list'),
+                    $parentCheckbox = $listGroup.closest('.item').children('.checkbox'),
+                    $checkbox = $listGroup.find('.checkbox'),
+                    allChecked = true,
+                    allUnchecked = true
+                    ;
+                // check to see if all other siblings are checked or unchecked
+                disableAllFilter();
+                bocciati = false;
+                bocciatiItems = [];
+
+                var parent;
+                $checkbox.each(function (index, element) {
+                    if ($(this).checkbox('is checked')) {
+                        parent = $(this)[0];
+                        if (parent.innerText != "") bocciati = true;
+
+                    }
+                    else {
+                        allChecked = false;
+                        bocciati = false;
+                    }
+                });
+                // set parent checkbox state, but dont trigger its onChange callback
+                if (allChecked) {
+                    $parentCheckbox.checkbox('set checked');
+                }
+                else if (allUnchecked) {
+                    $parentCheckbox.checkbox('set unchecked');
+                }
+                else {
+                    $parentCheckbox.checkbox('set indeterminate');
+                }
+                setAllFilter();
+            }
+        });
+}
+
 ////////////////////////////////////////////////////
 //AJAX CALL//
 ////////////////////////////////////////////////////
@@ -1055,6 +1149,7 @@ $(document).ready(function () {
             createNazionalitaMenu();
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
+            handleCheckBoxBocciati()
 
 
             for (i = 0; i < listaClassi.length; i++) {
@@ -1090,6 +1185,8 @@ $(document).ready(function () {
                     'class': 'contenitoreClasse ui vertical menu'
                 }).appendTo(wrapperClasse);
 
+
+
                 jsonVoti = {};
                 for (var j = 0; j < arrayStudenti.length; j++) {
                     if (arrayStudenti[j] !== undefined) {
@@ -1120,9 +1217,10 @@ $(document).ready(function () {
                             .addClass('roboto')
                             .html(iconFlagElement + " " + cognomeStudente + " " + nomeStudente);
 
-
+                        //CREO GLI STUDENTI
+                        var container;
                         if (arrayStudenti[j].sesso == "M") {
-                            var container = $('<div/>',
+                             container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40,
@@ -1135,7 +1233,7 @@ $(document).ready(function () {
                                 .html(anagrafica)
                         }
                         else {
-                            var container = $('<div/>',
+                             container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
                                     'height': 40,
@@ -1147,6 +1245,8 @@ $(document).ready(function () {
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
+
+
 
                         //aggiungo la classe desiderata se presente
                         if (desiderata != "") container.addClass('desiderata');
@@ -1182,6 +1282,8 @@ $(document).ready(function () {
                             .appendTo(div);
                     }
                 }
+
+
 
                 var jsonVotiPrima = totalVotiOfAllClass();
                 var jsonVoti = numerOfVotiOfClass(nomeClasse);
