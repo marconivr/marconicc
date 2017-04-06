@@ -239,6 +239,128 @@
 <br>
 <br>
 
+<!--modal response -->
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        <span id="cognome"></span>
+        <span id="nome"></span>
+    </div>
+    <div class="image content">
+        <div class="ui medium image">
+            <div class="ui card">
+                <div class="content">
+                    <div class="header" id="nome-cognome"></div>
+                </div>
+                <div class="content">
+                    <h4 class="ui sub header" id="anno-nascita">Activity</h4>
+                    <div class="ui small feed">
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Nazionalità : <span id="nazionalita"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <p><span id="richiesta"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <a>Helen Troy</a> added two pictures
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="extra content">
+                    <button class="ui button">Join Project</button>
+                </div>
+            </div>
+        </div>
+        <div class="description">
+            <div class="ui header">Dati</div>
+
+            <!--table-->
+            <table class="ui very basic collapsing celled table">
+                <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Dato</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Media voti </b>
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="media-voti"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Codice catastale </b>
+
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="codice-catastale"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Codice fiscale </b>
+
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="cf"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Anno scolastico </b>
+
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="anno-scolastico"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Chiudi
+        </div>
+        <div class="ui positive right labeled icon button">
+            OK,fatto
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
 <% include sidebar-stop.ejs %>
 
 

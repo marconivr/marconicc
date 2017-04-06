@@ -717,6 +717,24 @@ function setFilterDesiderataNonRispettato(elemento) {
             }
     }
 }
+/**
+ * ritorna in oggetto con le infromazioni dello sudente
+ * @param cf
+ */
+function getStudentObject(cf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf == cf)
+                return arrayClassi[i].alunni[studente];
+        }
+    }
+}
+
+
+function populateModal(object) {
+    $("#nome-cognome").text(object.cognome + " " + object.nome);
+    $("#nazionalita").text(object.nazionalita);
+}
 
 /**
  * controlla se uno studente è bocciato
@@ -1157,8 +1175,6 @@ $(document).ready(function () {
             }
 
             populate(listaClassi);
-
-
             for (var i = 0; i < listaClassi.length; i++) {
 
                 var nomeClasse = listaClassi[i].nome;
@@ -1283,6 +1299,35 @@ $(document).ready(function () {
                     }
                 }
 
+                //create menu
+                div.contextMenu({
+                    selector: 'li',
+                    callback: function (key, options) {
+                        var object = getStudentObject($(this).children().attr("id"));
+                        $('.ui.modal').modal({
+                            onHide: function () {
+
+                            },
+                            onApprove: function () {
+
+
+                            },
+                            onShow: function () {
+
+                                populateModal(object);
+                            }
+                        }).modal('show');
+                    },
+                    items: {
+                        "informazioni": {name: "Informazioni", icon: "edit"},
+                        "cut": {name: "Spostamento", icon: "cut"},
+                        "quit": {
+                            name: "Quit", icon: function ($element, key, item) {
+                                return 'context-menu-icon context-menu-icon-quit';
+                            }
+                        }
+                    }
+                });
 
 
                 var jsonVotiPrima = totalVotiOfAllClass();
