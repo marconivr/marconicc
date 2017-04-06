@@ -162,6 +162,7 @@ module.exports = {
                     }
                 }
             }
+            console.log(insiemi);
             callback(err,insiemi);
         });
     },
