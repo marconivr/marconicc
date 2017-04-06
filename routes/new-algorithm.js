@@ -239,10 +239,6 @@ module.exports = {
         for (var i in listaClassi){
 
         }
-
-
-
-
     }
     ,
     popolaClassi: function () {
@@ -259,12 +255,9 @@ module.exports = {
                         for (var j=0; j < proprietaIdeali[prop];j++){
 
                         }
-
                 }
             }
-
         }
-
     }
 
     ,
@@ -294,7 +287,6 @@ module.exports = {
                 } else{
                     break;
                 }
-                listaClassi[i].propIdeali["nazionalita"] = {}; //creo l'oggetto per le nazionalità
             }
             listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
 
@@ -309,12 +301,20 @@ module.exports = {
 
             for (var i in listaClassi){
                 for (var k in naz){
+                    if (listaClassi[i].propIdeali.nazionalita === undefined){
+                        listaClassi[i].propIdeali.nazionalita = {};
+                    }
+
+                    if(listaClassi[i].propIdeali["nazionalita"][k] === undefined){
+                        listaClassi[i].propIdeali.nazionalita[k] = 0;
+                    }
+
                     if(naz[k] <= settings.nazionalita){
-                        listaClassi[i].propIdeali["nazionalita"][k] = naz[k];
-                        delete listaClassi[i].propIdeali["nazionalita"][k];
+                        listaClassi[i].propIdeali["nazionalita"][k] += naz[k];
+                        delete naz[k];
                     } else{
-                        listaClassi[i].propIdeali["nazionalita"][k] = settings.nazionalita;
-                        listaClassi[i].propIdeali["nazionalita"][k] -= settings.nazionalita;
+                        listaClassi[i].propIdeali["nazionalita"][k] += settings.nazionalita;
+                        naz[k] -= settings.nazionalita;
                     }
 
                     if (Object.keys(listaClassi[i].propIdeali["nazionalita"]).length == settings.naz_per_classe){
@@ -323,7 +323,7 @@ module.exports = {
                 }
             }
 
-            if (totale104 == 0 && totale107 == 0 && naz == {}){
+            if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0){
                 flag = false;
             }
         }
