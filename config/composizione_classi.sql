@@ -221,6 +221,18 @@ ALTER TABLE `amici`
 --
 ALTER TABLE `priorita_scelta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT per la tabella `impostazioni_prime`
+--
+ALTER TABLE `impostazioni_prime`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `impostazioni_terze`
+--
+ALTER TABLE `impostazioni_terze`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `users`
 --

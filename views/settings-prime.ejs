@@ -93,9 +93,9 @@
                             <label>Ripetenti</label>
                             <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
                         </div>
-                        <div class="ui success message">
-                            <div class="header">Form Completed</div>
-                            <p>You're all signed up for the newsletter.</p>
+                        <div class="ui hidden success message" id="message">
+                            <div class="header">Form Completato</div>
+                            <p>Le impostazioni sono state salvate</p>
                         </div>
                         <!--sematic button-->
                         <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div>
@@ -197,6 +197,7 @@
     }
 
     function addSettings() {
+        document.getElementById("message").className = "ui success message";
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
         var femmine = parseInt($("#femmine").val());

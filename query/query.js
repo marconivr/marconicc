@@ -87,7 +87,7 @@ module.exports = {
     },
 
     insertSettingsPrime: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni_prime VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+        connection.query("INSERT INTO impostazioni_prime VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
@@ -97,7 +97,7 @@ module.exports = {
     },
 
     insertSettingsTerze: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni_terze VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+        connection.query("INSERT INTO impostazioni_terze VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
