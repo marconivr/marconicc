@@ -900,9 +900,9 @@ $(document).ready(function () {
                             var container = $('<div/>',
                                 {
                                     'width': $('.contenitoreClasse ').width(),
-                                    'height': 40,
+                                    'height': 50,
                                     'data-content': nazionalita,
-                                    'data-variation': "tiny"
+                                    'data-variation': "tiny",
                                 })
                                 .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
