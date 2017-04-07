@@ -13,7 +13,7 @@ var settings = {
     fem: 4,
     max_str: 7,
     iniziale: 3,
-    stessa_pr: 4,
+    stessa_pr: 3,
     nazionalita: 3,
     naz_per_classe: 3,
     media_min: 7.5,
@@ -272,14 +272,15 @@ module.exports = {
     generaPropIdeali: function () {
         var insNaz = module.exports.getInsieme("nazionalita").alunni;
         var insVoti = module.exports.getInsieme("voto").alunni;
+        var insCAP = module.exports.getInsieme("CAP").alunni;
 
-        var totaleAlunni = listaAlunni.length;
         var totale104 = module.exports.count104(listaAlunni);
         var totale107 = module.exports.count107(listaAlunni);
         var totaleFem = module.exports.countFemmine(listaAlunni);
 
         var naz = {};
         var voti = {};
+        var cap = {};
 
         for (var n in insNaz){
             naz[n] = insNaz[n].length;
@@ -289,9 +290,17 @@ module.exports = {
             voti[n] = insVoti[n].length;
         }
 
+        for (var n in insCAP){
+            cap[n] = insCAP[n].length;
+        }
+
         var flag = true;
 
         while (flag){
+            for (var i in listaClassi){
+                listaClassi[i].propIdeali["alunni"] = settings.min_al;
+            }
+
             for (var i in listaClassi){
                 if (totale104 > 0){
                     listaClassi[i].propIdeali["legge_104"] += 1;
@@ -307,6 +316,25 @@ module.exports = {
                 if (totale107 > 0){
                     listaClassi[i].propIdeali["legge_107"] += 1;
                     totale107 -= 1;
+                } else{
+                    break;
+                }
+            }
+
+            for (var i in listaClassi){
+                if (totaleFem > 0){
+                    if (listaClassi[i].propIdeali.femmine === undefined){
+                        listaClassi[i].propIdeali.femmine = 0;
+                    }
+
+                    if (totaleFem <= settings.fem){
+                        listaClassi[i].propIdeali["femmine"] += totaleFem;
+                        totaleFem = 0;
+                        break;
+                    } else{
+                        listaClassi[i].propIdeali["femmine"] += settings.fem;
+                        totaleFem -= settings.fem;
+                    }
                 } else{
                     break;
                 }
@@ -335,7 +363,41 @@ module.exports = {
                     }
                 }
             }
+//-----------------------------------------------------------//-----------------------------------------------------------
+            for (var i in listaClassi){
+                var nAlCAP = 0;
+                var temp = 0;
+                for (var k in cap){
+                    if (listaClassi[i].propIdeali.CAP === undefined){
+                        listaClassi[i].propIdeali.CAP = {};
+                    }
 
+                    if(listaClassi[i].propIdeali["CAP"][k] === undefined){
+                        listaClassi[i].propIdeali.CAP[k] = 0;
+                    }
+
+                    if (nAlCAP + settings.stessa_pr > listaClassi[i].propIdeali["alunni"]){
+                        temp = (listaClassi[i].propIdeali["alunni"] - nAlCAP);
+                    } else{
+                        temp = settings.stessa_pr;
+                    }
+
+                    if(cap[k] <= settings.stessa_pr){
+                        listaClassi[i].propIdeali["CAP"][k] += cap[k];
+                        nAlCAP += cap[k];
+                        delete cap[k];
+                    } else{
+                        listaClassi[i].propIdeali["CAP"][k] += temp;
+                        cap[k] -= temp;
+                        nAlCAP += temp;
+                    }
+
+                    if (nAlCAP >= listaClassi[i].propIdeali["alunni"]){
+                        break;
+                    }
+                }
+            }
+//-----------------------------------------------------------//---------------------------------------------------------
             for (var k in voti){
                 var distrVoto = Math.round(voti[k] / listaClassi.length) > 0 ? Math.round(voti[k] / listaClassi.length) : 1;
 
@@ -359,7 +421,8 @@ module.exports = {
                 }
             }
 
-            if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0 && Object.keys(voti).length == 0){
+            if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0 && Object.keys(voti).length == 0 &&
+                totaleFem == 0 && Object.keys(cap).length == 0){
                 flag = false;
             }
         }
@@ -378,9 +441,7 @@ module.exports = {
                 return listaClassi[i].alunni;
             }
         }
-    }
-
-    ,
+    },
 
     /**
      * Crea un oggetto che rappresenta la distribuzione dei voti della classe
@@ -397,7 +458,6 @@ module.exports = {
              if (jsonVoti[voto] === undefined) jsonVoti[voto] = 1;
              else jsonVoti[voto] = jsonVoti[voto] + 1;
          }
-
 
          if (jsonVoti[6] === undefined) jsonVoti[6] = 0;
          if (jsonVoti[7] === undefined) jsonVoti[7] = 0;
