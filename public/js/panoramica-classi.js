@@ -529,7 +529,8 @@ function createNazionalitaMenu() {
 
     jQuery.each(flagJson, function (i, val) {
         var item = $('<div/>')
-            .addClass('item');
+            .addClass('item')
+            .addClass('temp');
 
         var containerInput = $('<div/>')
             .addClass('ui child  checkbox nazionalita')
