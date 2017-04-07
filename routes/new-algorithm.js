@@ -271,6 +271,7 @@ module.exports = {
 
     generaPropIdeali: function () {
         var insNaz = module.exports.getInsieme("nazionalita").alunni;
+        var insVoti = module.exports.getInsieme("voto").alunni;
 
         var totaleAlunni = listaAlunni.length;
         var totale104 = module.exports.count104(listaAlunni);
@@ -278,9 +279,14 @@ module.exports = {
         var totaleFem = module.exports.countFemmine(listaAlunni);
 
         var naz = {};
+        var voti = {};
 
         for (var n in insNaz){
             naz[n] = insNaz[n].length;
+        }
+
+        for (var n in insVoti){
+            voti[n] = insVoti[n].length;
         }
 
         var flag = true;
@@ -330,7 +336,30 @@ module.exports = {
                 }
             }
 
-            if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0){
+            for (var k in voti){
+                var distrVoto = Math.round(voti[k] / listaClassi.length) > 0 ? Math.round(voti[k] / listaClassi.length) : 1;
+
+                for (var i in listaClassi){
+                    if (listaClassi[i].propIdeali.voti === undefined){
+                        listaClassi[i].propIdeali.voti = {};
+                    }
+
+                    if(listaClassi[i].propIdeali["voti"][k] === undefined){
+                        listaClassi[i].propIdeali.voti[k] = 0;
+                    }
+
+                    if(voti[k] <= distrVoto){
+                        listaClassi[i].propIdeali["voti"][k] += voti[k];
+                        delete voti[k];
+                        break;
+                    } else{
+                        listaClassi[i].propIdeali["voti"][k] += distrVoto;
+                        voti[k] -= distrVoto;
+                    }
+                }
+            }
+
+            if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0 && Object.keys(voti).length == 0){
                 flag = false;
             }
         }
