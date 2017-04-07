@@ -735,6 +735,29 @@ function getStudentObject(cf) {
 function populateModal(object) {
     $("#nome-cognome").text(object.cognome + " " + object.nome);
     $("#nazionalita").text(object.nazionalita);
+    $("#sesso").text(object.sesso);
+
+    $("#cap").text(object.CAP);
+    $("#matricola").text(object.matricola);
+    $("#codice-fiscale").text(object.cf);
+
+
+    var date = object.data_di_nascita.split("-");
+    var day = parseInt(date[2].split("T")[0]) + 1 + "";
+    var month = date[1];
+    var year = date[0];
+    var finalDate = day + '/' + month + '/' + year;
+    $("#data-di-nascita").text(finalDate);
+
+
+    //table
+    $("#classe-precedente").text(object.classe_precedente);
+    $("#media-voti").text(object.voto);
+    $("#anno-scolastico").text(object.anno_scolastico);
+    $("#scelta-indirizzo").text(object.scelta_indirizzo);
+
+
+
 }
 
 /**
@@ -1243,7 +1266,7 @@ $(document).ready(function () {
                                     'height': 40,
                                     'data-content': nazionalita,
                                     'data-variation': "tiny",
-                                    preserve: false
+                                    preserve: true
                                 })
                                 .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
