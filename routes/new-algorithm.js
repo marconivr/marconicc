@@ -279,58 +279,64 @@ module.exports = {
 
         var naz = {};
 
-        for (var n in insNaz) {
+        for (var n in insNaz){
             naz[n] = insNaz[n].length;
         }
 
         var flag = true;
 
-        while (flag) {
-            for (var i in listaClassi) {
-                if (totale104 > 0) {
+        while (flag){
+            for (var i in listaClassi){
+                if (totale104 > 0){
                     listaClassi[i].propIdeali["legge_104"] += 1;
                     listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
                     totale104 -= 1;
-                } else {
+                } else{
                     break;
                 }
-                listaClassi[i].propIdeali["nazionalita"] = {}; //creo l'oggetto per le nazionalità
             }
             listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
 
-            for (var i in listaClassi) {
-                if (totale107 > 0) {
+            for (var i in listaClassi){
+                if (totale107 > 0){
                     listaClassi[i].propIdeali["legge_107"] += 1;
                     totale107 -= 1;
-                } else {
+                } else{
                     break;
                 }
             }
 
-            for (var i in listaClassi) {
-                for (var k in naz) {
-                    if (naz[k] <= settings.nazionalita) {
-                        listaClassi[i].propIdeali["nazionalita"][k] = naz[k];
-                        delete listaClassi[i].propIdeali["nazionalita"][k];
-                    } else {
-                        listaClassi[i].propIdeali["nazionalita"][k] = settings.nazionalita;
-                        listaClassi[i].propIdeali["nazionalita"][k] -= settings.nazionalita;
+            for (var i in listaClassi){
+                for (var k in naz){
+                    if (listaClassi[i].propIdeali.nazionalita === undefined){
+                        listaClassi[i].propIdeali.nazionalita = {};
                     }
 
-                    if (Object.keys(listaClassi[i].propIdeali["nazionalita"]).length == settings.naz_per_classe) {
+                    if(listaClassi[i].propIdeali["nazionalita"][k] === undefined){
+                        listaClassi[i].propIdeali.nazionalita[k] = 0;
+                    }
+
+                    if(naz[k] <= settings.nazionalita){
+                        listaClassi[i].propIdeali["nazionalita"][k] += naz[k];
+                        delete naz[k];
+                    } else{
+                        listaClassi[i].propIdeali["nazionalita"][k] += settings.nazionalita;
+                        naz[k] -= settings.nazionalita;
+                    }
+
+                    if (Object.keys(listaClassi[i].propIdeali["nazionalita"]).length == settings.naz_per_classe){
                         break;
                     }
                 }
             }
 
-            if (totale104 == 0 && totale107 == 0 && naz == {}) {
+            if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0){
                 flag = false;
             }
         }
         console.log(listaClassi);
-    }
+    },
 
-    ,
 
     /**
      * Torna lista alunni di  una classe
