@@ -323,7 +323,7 @@ module.exports = {
         for (var i in insiemi){
             if (insiemi[i].nome == "ripetenti"){
                 for (var j in insiemi[i].alunni){
-                    if (insiemi[i].alunni[j]["classe_precedente"].substring(0,2) == nomeClasse){
+                    if (insiemi[i].alunni[j]["classe_precedente"] == nomeClasse){
                         ripententi.push(insiemi[i].alunni[j]);
                     }
                 }
@@ -384,8 +384,41 @@ module.exports = {
                             propietaAttuali = classeInEsame.propAttuali;
                         }
                         break;
+
+                    //per i ripetenti non vado a mettere i loro desiderata nella classe! Questo è da chiedere e da definire
                     case "ripetenti":
                         var ripetenti = module.exports.getRipetentiOfClass(classeInEsame.nome);
+                        for (i in ripetenti){
+                            module.exports.removeStudenteFromInsiemi(ripetenti[i]);
+                            classeInEsame.alunni.push(ripetenti[i]);
+                        }
+
+                        module.exports.createProprietaClasse(listaClassi[i].nome);
+                        propietaAttuali = classeInEsame.propAttuali;
+
+                        break;
+
+                    case "voto":
+
+                        for (var voto in proprietaIdeali.voto){
+                            while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]){
+
+                                studente = insiemi[item][voto].alunni[0];
+                                module.exports.removeStudenteFromInsiemi(studente);
+                                classeInEsame.alunni.push(studente);//aggiungo lo studente alla classe
+
+                                amico = module.exports.checkDesiderata(studente);
+
+                                if(amico){
+                                    module.exports.removeStudenteFromInsiemi(amico);
+                                    classeInEsame.alunni.push(amico);
+                                }
+
+                                module.exports.createProprietaClasse(listaClassi[i].nome);
+                                propietaAttuali = classeInEsame.propAttuali;
+                            }
+                        }
+
                         break;
 
                 }
@@ -777,7 +810,7 @@ module.exports = {
         var count = 0;
 
         for (var i = 0; i < listaAlunniClasse.length; i++) {
-            if (listaAlunniClasse[i].classe_precedente[0] == "1"){
+            if (listaAlunniClasse[i].classe_precedente != ""){
                 count++;
             }
         }
