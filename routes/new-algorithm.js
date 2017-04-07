@@ -245,20 +245,148 @@ module.exports = {
 
     }
     ,
+    /**
+     * Funzione che rimuove da tutti gli insiemi uno studente partendo dal suo oggetto
+     * @param objStudente
+     */
+    removeStudenteFromInsiemi:function(objStudente){
+
+        for (var item in insiemi){
+            if (insiemi[item].nome == "nazionalita" || insiemi[item].nome == "CAP" || insiemi[item].nome == "voto"){
+                for (var i in insiemi[item].alunni){
+                    var studenti = insiemi[item].alunni[i];
+                    var posizione = studenti.indexOf(objStudente);
+                    if ( posizione != -1){
+                        studenti.splice(posizione , 1);
+                    }
+                }
+            }else{
+                var studenti = insiemi[item].alunni;
+                var posizione = studenti.indexOf(objStudente)
+                if ( posizione != -1){
+                    studenti.splice(posizione , 1);
+                }
+
+            }
+
+
+
+
+        }
+
+    }
+    ,
+    findAlunnoByCf: function (cf) {
+        for (var i in listaAlunni){
+            if (listaAlunni[i].cf == cf){
+                return listaAlunni[i];
+            }
+        }
+    }
+    ,
+    /**
+     * Controllo se uno studente ha un desiderata reciproco. Se si torno l'oggetto dell'amico se no torno null
+     * @param objStudente
+     * @returns {*}
+     */
+    checkDesiderata: function (objStudente) {
+
+        if (objStudente != undefined){
+            if (objStudente.desiderata != ""){
+
+
+                var cf = objStudente.cf;
+                var cfAmico = objStudente.desiderata;
+
+                var objAmico = module.exports.findAlunnoByCf(cfAmico);
+
+
+
+                if(objAmico.desiderata == cf){
+                    return objAmico;
+                }else{
+                    return null;
+                }
+
+
+
+            }else{
+                return null;
+            }
+        }
+        return null;
+    }
+    ,
+
+    getRipetentiOfClass: function (nomeClasse) {
+        var ripententi = [];
+        for (var i in insiemi){
+            if (insiemi[i].nome == "ripetenti"){
+                for (var j in insiemi[i].alunni){
+                    if (insiemi[i].alunni[j]["classe_precedente"].substring(0,2) == nomeClasse){
+                        ripententi.push(insiemi[i].alunni[j]);
+                    }
+                }
+            }
+        }
+        return ripententi;
+
+    }
+    ,
+    /**
+     * Funcione che popola le classi confrontando le proprietà ideali della classe con quelle che effettivamente ha
+     */
     popolaClassi: function () {
         for (var i in listaClassi){
+
+            module.exports.createProprietaClasse(listaClassi[i].nome); //genero le propietà attuali della classe
             var classeInEsame = listaClassi[i];
             var proprietaIdeali = classeInEsame.propIdeali;
+            var propietaAttuali = classeInEsame.propAttuali;
 
             //aggiungo 104 se c'è ne bisogno
-
             for (var item in insiemi){
                 var prop = insiemi[item].nome;
                 switch (prop){
                     case "legge_104":
-                        for (var j=0; j < proprietaIdeali[prop];j++){
+                        while (proprietaIdeali.legge_104 > propietaAttuali.legge_104){
 
+                            var studente = insiemi[item].alunni[0];
+                            module.exports.removeStudenteFromInsiemi(studente);
+                            classeInEsame.alunni.push(studente);//aggiungo lo studente alla classe
+
+                            var amico = module.exports.checkDesiderata(studente);
+
+                            if(amico){
+                                module.exports.removeStudenteFromInsiemi(amico);
+                                classeInEsame.alunni.push(amico);
+                            }
+
+                            module.exports.createProprietaClasse(listaClassi[i].nome);
+                            propietaAttuali = classeInEsame.propAttuali;
                         }
+                        break;
+                    case "legge_107":
+                        while (proprietaIdeali.legge_107 > propietaAttuali.legge_107){
+
+                            studente = insiemi[item].alunni[0];
+                            module.exports.removeStudenteFromInsiemi(studente);
+                            classeInEsame.alunni.push(studente);//aggiungo lo studente alla classe
+
+                            amico = module.exports.checkDesiderata(studente);
+
+                            if(amico){
+                                module.exports.removeStudenteFromInsiemi(amico);
+                                classeInEsame.alunni.push(amico);
+                            }
+
+                            module.exports.createProprietaClasse(listaClassi[i].nome);
+                            propietaAttuali = classeInEsame.propAttuali;
+                        }
+                        break;
+                    case "ripetenti":
+                        var ripetenti = module.exports.getRipetentiOfClass(classeInEsame.nome);
+                        break;
 
                 }
             }
@@ -426,6 +554,18 @@ module.exports = {
                 flag = false;
             }
         }
+
+
+        // //for test
+        // for (i=0; i < 20; i++){
+        //     listaClassi[0].alunni.push(listaAlunni[i]);
+        // }
+        //
+        // module.exports.createProprietaClasse("1G");
+
+
+        module.exports.popolaClassi();
+
         console.log(listaClassi);
     },
 
@@ -443,18 +583,55 @@ module.exports = {
         }
     },
 
+    getDistribuzioneProvenienzaOfClasse: function (className) {
+        var jsonProvenienza = {};
+        var alunniOfClasse = module.exports.getListaAlunniByClasse(className);
+
+        for (var studente = 0; studente < alunniOfClasse.length; studente++) {
+            var cap = alunniOfClasse[studente].CAP;
+            if (jsonProvenienza[cap] === undefined) {
+                jsonProvenienza[cap] = 1;
+            }
+            else jsonProvenienza[cap] = jsonProvenienza[cap] + 1;
+        }
+
+
+        return jsonProvenienza;
+    }
+
+    ,
+
+    getDistribuzioneStranieriOfClasse: function (className) {
+        var jsonStranieri = {};
+        var alunniOfClasse = module.exports.getListaAlunniByClasse(className);
+
+        for (var studente = 0; studente < alunniOfClasse.length; studente++) {
+            var nazionalita = alunniOfClasse[studente].nazionalita;
+            if (jsonStranieri[nazionalita] === undefined) {
+                jsonStranieri[nazionalita] = 1;
+            }
+            else jsonStranieri[nazionalita] = jsonStranieri[nazionalita] + 1;
+        }
+
+
+        return jsonStranieri;
+    }
+
+    ,
+
+
     /**
      * Crea un oggetto che rappresenta la distribuzione dei voti della classe
      * @param nomeClasse
      * @returns {{}}
      */
-     getDistribuzioneVotiOfClasse: function (nomeClasse) {
+     getDistribuzioneVotiOfClasse: function (className) {
 
          var jsonVoti = {};
-         var alunniOfClasse = getStudentsOfClass(className);
+         var alunniOfClasse = module.exports.getListaAlunniByClasse(className);
 
-         for (var studenti = 0; studenti < alunniOfClasse.length; studenti++) {
-             var voto = alunniOfClasse[studenti].voto;
+         for (var studente = 0; studente < alunniOfClasse.length; studente++) {
+             var voto = alunniOfClasse[studente].voto;
              if (jsonVoti[voto] === undefined) jsonVoti[voto] = 1;
              else jsonVoti[voto] = jsonVoti[voto] + 1;
          }
@@ -481,22 +658,27 @@ module.exports = {
         var nAlunni = listaAlunniClasse.length;
         var nFemmine = module.exports.countFemmine(listaAlunniClasse);
         var voti = module.exports.getDistribuzioneVotiOfClasse(nomeClasse) ;
-        var residenza = module.exports.countStessaResid(listaAlunniClasse);
+        var residenza = module.exports.getDistribuzioneProvenienzaOfClasse(nomeClasse);
         var ripetenti = module.exports.countRipetenti(listaAlunniClasse);
-        var nazionalita = module.exports.countStranieri(listaAlunniClasse);
+        var nazionalita = module.exports.getDistribuzioneStranieriOfClasse(nomeClasse);
         var legge_104 = module.exports.count104(listaAlunniClasse);
         var legge_107 = module.exports.count107(listaAlunniClasse);
 
-        return {
-            alunni: nAlunni,
-            femmine: nFemmine,
-            voti: voti,
-            CAP: residenza,
-            ripetenti: ripetenti,
-            nazionalita: nazionalita,
-            legge_104: legge_104,
-            legge_107: legge_107
-        };
+        for (var classe in listaClassi){
+            if (listaClassi[classe].nome == nomeClasse){
+                listaClassi[classe].propAttuali = {
+                    alunni: nAlunni,
+                    femmine: nFemmine,
+                    voti: voti,
+                    CAP: residenza,
+                    ripetenti: ripetenti,
+                    nazionalita: nazionalita,
+                    legge_104: legge_104,
+                    legge_107: legge_107
+                }
+            }
+        }
+
     },
 
     /**
