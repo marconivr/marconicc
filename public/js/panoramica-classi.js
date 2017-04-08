@@ -10,10 +10,13 @@ var votiCheckBoxArray = []; //array for filter voto
 var arrayStudentiVoti = [];
 var nazionalitaCheckBoxArray = [];//array for filter nazionalità
 var desiderataNonRispettato = false;
+var desiderataNotRespectedItems = [];
 var bocciati = false;
 var bocciatiItems = [];
 var nazionalitaItems = [];
-var desiderataItems = [];
+var nonDesiderata = false;
+var nonDesiderataItems = [];
+
 
 //chart
 var informationArray = [];//reference to information
@@ -615,9 +618,9 @@ function disableAllFilter() {
     }
 
     //todo:  delete desiderata
-    for(var desiderata = 0; desiderata< desiderataItems.length; desiderata++)
+    for(var desiderata = 0; desiderata< desiderataNotRespectedItems.length; desiderata++)
     {
-        $(desiderataItems[desiderata]).popup('destroy');
+        $(desiderataNotRespectedItems[desiderata]).popup('destroy');
     }
 
     for(var bocciati = 0; bocciati < bocciatiItems.length ; bocciati++)
@@ -892,7 +895,7 @@ function setAllFilter() {
             if(desiderataNonRispettato)
             {
                 nazionalitaItems = [];
-                desiderataItems = [];
+                desiderataNotRespectedItems = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         var desiderata = getDesiderataNonRispettato(element);
@@ -900,7 +903,7 @@ function setAllFilter() {
                             setFilterNazionalita($(element));
                             nazionalitaItems.push($(element));
                             setFilterDesiderataNonRispettato($(element));
-                            desiderataItems.push($(element));
+                            desiderataNotRespectedItems.push($(element));
                         }
 
                     });
@@ -936,7 +939,7 @@ function setAllFilter() {
                             //setFilterNazionalita($(element));
                             //nazionalitaItems.push($(element));
                             setFilterDesiderataNonRispettato($(element));
-                            desiderataItems.push($(element));
+                            desiderataNotRespectedItems.push($(element));
                         }
 
                     });
@@ -1082,6 +1085,7 @@ function handleCheckBoxDesiderata() {
                 // check to see if all other siblings are checked or unchecked
                 disableAllFilter();
                 desiderataNonRispettato = false;
+                nonDesiderata = false;
 
                 var parent;
                 $checkbox.each(function (index, element) {
@@ -1191,7 +1195,7 @@ $(document).ready(function () {
             createNazionalitaMenu();
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
-            handleCheckBoxBocciati()
+            handleCheckBoxBocciati();
 
 
             for (i = 0; i < listaClassi.length; i++) {
