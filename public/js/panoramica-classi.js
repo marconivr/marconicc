@@ -1326,24 +1326,34 @@ $(document).ready(function () {
                 div.contextMenu({
                     selector: 'li',
                     callback: function (key, options) {
-                        var object = getStudentObject($(this).children().attr("id"));
-                        $('.ui.modal').modal({
-                            onHide: function () {
 
-                            },
-                            onApprove: function () {
+                        switch (key){
+                            case "informazioni":
+                                //open modal
+                                var object = getStudentObject($(this).children().attr("id"));
+                                $('.ui.modal').modal({
+                                    onHide: function () {
+
+                                    },
+                                    onApprove: function () {
 
 
-                            },
-                            onShow: function () {
+                                    },
+                                    onShow: function () {
 
-                                populateModal(object);
-                            }
-                        }).modal('show');
+                                        populateModal(object);
+                                    }
+                                }).modal('show');
+
+                                break;
+                            case "spostamento" :
+
+                                break;
+                        }
                     },
                     items: {
                         "informazioni": {name: "Informazioni", icon: "edit"},
-                        "cut": {name: "Spostamento", icon: "cut"},
+                        "spostamento": {name: "Spostamento", icon: "cut"},
                         "quit": {
                             name: "Quit", icon: function ($element, key, item) {
                                 return 'context-menu-icon context-menu-icon-quit';
