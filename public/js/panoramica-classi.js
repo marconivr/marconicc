@@ -14,8 +14,6 @@ var desiderataNotRespectedItems = [];
 var bocciati = false;
 var bocciatiItems = [];
 var nazionalitaItems = [];
-var nonDesiderata = false;
-var nonDesiderataItems = [];
 
 
 //chart
@@ -965,8 +963,6 @@ function setAllFilter() {
         }
 
     }
-
-
 }
 
 
@@ -1085,7 +1081,6 @@ function handleCheckBoxDesiderata() {
                 // check to see if all other siblings are checked or unchecked
                 disableAllFilter();
                 desiderataNonRispettato = false;
-                nonDesiderata = false;
 
                 var parent;
                 $checkbox.each(function (index, element) {
