@@ -10,10 +10,11 @@ var votiCheckBoxArray = []; //array for filter voto
 var arrayStudentiVoti = [];
 var nazionalitaCheckBoxArray = [];//array for filter nazionalità
 var desiderataNonRispettato = false;
+var desiderataNotRespectedItems = [];
 var bocciati = false;
 var bocciatiItems = [];
 var nazionalitaItems = [];
-var desiderataItems = [];
+
 
 //chart
 var informationArray = [];//reference to information
@@ -529,7 +530,8 @@ function createNazionalitaMenu() {
 
     jQuery.each(flagJson, function (i, val) {
         var item = $('<div/>')
-            .addClass('item');
+            .addClass('item')
+            .addClass('temp');
 
         var containerInput = $('<div/>')
             .addClass('ui child  checkbox nazionalita')
@@ -614,9 +616,9 @@ function disableAllFilter() {
     }
 
     //todo:  delete desiderata
-    for(var desiderata = 0; desiderata< desiderataItems.length; desiderata++)
+    for(var desiderata = 0; desiderata< desiderataNotRespectedItems.length; desiderata++)
     {
-        $(desiderataItems[desiderata]).popup('destroy');
+        $(desiderataNotRespectedItems[desiderata]).popup('destroy');
     }
 
     for(var bocciati = 0; bocciati < bocciatiItems.length ; bocciati++)
@@ -734,6 +736,29 @@ function getStudentObject(cf) {
 function populateModal(object) {
     $("#nome-cognome").text(object.cognome + " " + object.nome);
     $("#nazionalita").text(object.nazionalita);
+    $("#sesso").text(object.sesso);
+
+    $("#cap").text(object.CAP);
+    $("#matricola").text(object.matricola);
+    $("#codice-fiscale").text(object.cf);
+
+
+    var date = object.data_di_nascita.split("-");
+    var day = parseInt(date[2].split("T")[0]) + 1 + "";
+    var month = date[1];
+    var year = date[0];
+    var finalDate = day + '/' + month + '/' + year;
+    $("#data-di-nascita").text(finalDate);
+
+
+    //table
+    $("#classe-precedente").text(object.classe_precedente);
+    $("#media-voti").text(object.voto);
+    $("#anno-scolastico").text(object.anno_scolastico);
+    $("#scelta-indirizzo").text(object.scelta_indirizzo);
+
+
+
 }
 
 /**
@@ -868,7 +893,7 @@ function setAllFilter() {
             if(desiderataNonRispettato)
             {
                 nazionalitaItems = [];
-                desiderataItems = [];
+                desiderataNotRespectedItems = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         var desiderata = getDesiderataNonRispettato(element);
@@ -876,7 +901,7 @@ function setAllFilter() {
                             setFilterNazionalita($(element));
                             nazionalitaItems.push($(element));
                             setFilterDesiderataNonRispettato($(element));
-                            desiderataItems.push($(element));
+                            desiderataNotRespectedItems.push($(element));
                         }
 
                     });
@@ -912,7 +937,7 @@ function setAllFilter() {
                             //setFilterNazionalita($(element));
                             //nazionalitaItems.push($(element));
                             setFilterDesiderataNonRispettato($(element));
-                            desiderataItems.push($(element));
+                            desiderataNotRespectedItems.push($(element));
                         }
 
                     });
@@ -938,8 +963,6 @@ function setAllFilter() {
         }
 
     }
-
-
 }
 
 
@@ -1167,7 +1190,7 @@ $(document).ready(function () {
             createNazionalitaMenu();
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
-            handleCheckBoxBocciati()
+            handleCheckBoxBocciati();
 
 
             for (i = 0; i < listaClassi.length; i++) {
@@ -1242,7 +1265,7 @@ $(document).ready(function () {
                                     'height': 40,
                                     'data-content': nazionalita,
                                     'data-variation': "tiny",
-                                    preserve: false
+                                    preserve: true
                                 })
                                 .addClass('ui segment tooltip guys ' + voto)
                                 .attr('id', cf)
@@ -1303,24 +1326,34 @@ $(document).ready(function () {
                 div.contextMenu({
                     selector: 'li',
                     callback: function (key, options) {
-                        var object = getStudentObject($(this).children().attr("id"));
-                        $('.ui.modal').modal({
-                            onHide: function () {
 
-                            },
-                            onApprove: function () {
+                        switch (key){
+                            case "informazioni":
+                                //open modal
+                                var object = getStudentObject($(this).children().attr("id"));
+                                $('.ui.modal').modal({
+                                    onHide: function () {
+
+                                    },
+                                    onApprove: function () {
 
 
-                            },
-                            onShow: function () {
+                                    },
+                                    onShow: function () {
 
-                                populateModal(object);
-                            }
-                        }).modal('show');
+                                        populateModal(object);
+                                    }
+                                }).modal('show');
+
+                                break;
+                            case "spostamento" :
+
+                                break;
+                        }
                     },
                     items: {
                         "informazioni": {name: "Informazioni", icon: "edit"},
-                        "cut": {name: "Spostamento", icon: "cut"},
+                        "spostamento": {name: "Spostamento", icon: "cut"},
                         "quit": {
                             name: "Quit", icon: function ($element, key, item) {
                                 return 'context-menu-icon context-menu-icon-quit';

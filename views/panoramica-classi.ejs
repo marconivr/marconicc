@@ -4,8 +4,8 @@
 
 <style>
     /*proprietà per il dropdown della nazionalità da implementare*/
-    /*
-    .ui.menu .item::before {
+
+    .ui.menu .temp::before {
         position: absolute;
         content: '';
         top: 0;
@@ -14,7 +14,7 @@
         width: 1px;
         background: rgba(255, 255, 255, 0.1);
     }
-*/
+
     .contenitoreClasse {
         list-style-type: none;
         padding-right: 10px !important;
@@ -188,7 +188,7 @@
                 Desiderata
                 <div class="menu">
                     <div class="list">
-                        <div class="item">
+                        <div class="item temp">
                             <div class="ui child checkbox desiderata">
                                 <input type="checkbox" name="desiderata-not-respected">
                                 <label>Desiderata non rispettato</label>
@@ -247,13 +247,12 @@
         <span id="nome"></span>
     </div>
     <div class="image content">
-        <div class="ui medium image">
-            <div class="ui card">
+        <div class="ui large image">
+            <div class="ui card max">
                 <div class="content">
                     <div class="header" id="nome-cognome"></div>
                 </div>
                 <div class="content">
-                    <h4 class="ui sub header" id="anno-nascita">Activity</h4>
                     <div class="ui small feed">
                         <div class="event">
                             <div class="content">
@@ -265,26 +264,44 @@
                         <div class="event">
                             <div class="content">
                                 <div class="summary">
-                                    <p><span id="richiesta"></span></p>
+                                    <span> Sesso : <span id="sesso"></span></span>
                                 </div>
                             </div>
                         </div>
                         <div class="event">
                             <div class="content">
                                 <div class="summary">
-                                    <a>Helen Troy</a> added two pictures
+                                    <span> Data di nascita : <span id="data-di-nascita"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Cap : <span id="cap"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Matricola : <span id="matricola"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Codice fiscale : <span id="codice-fiscale"></span></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="extra content">
-                    <button class="ui button">Join Project</button>
-                </div>
             </div>
         </div>
         <div class="description">
-            <div class="ui header">Dati</div>
+            <div class="ui header">Dati per la classe</div>
 
             <!--table-->
             <table class="ui very basic collapsing celled table">
@@ -311,26 +328,13 @@
                     <td>
                         <h4 class="ui image header">
                             <div class="content">
-                                <b>Codice catastale </b>
+                                <b>Classe precedente</b>
 
                             </div>
                         </h4>
                     </td>
                     <td>
-                        <span id="codice-catastale"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <h4 class="ui image header">
-                            <div class="content">
-                                <b>Codice fiscale </b>
-
-                            </div>
-                        </h4>
-                    </td>
-                    <td>
-                        <span id="cf"></span>
+                        <span id="classe-precedente"></span>
                     </td>
                 </tr>
                 <tr>
@@ -346,6 +350,19 @@
                         <span id="anno-scolastico"></span>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Scelta indirizzo </b>
+
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="scelta-indirizzo"></span>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -355,7 +372,7 @@
             Chiudi
         </div>
         <div class="ui positive right labeled icon button">
-            OK,fatto
+            OK
             <i class="checkmark icon"></i>
         </div>
     </div>

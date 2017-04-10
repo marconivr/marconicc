@@ -7,6 +7,10 @@
     background-size: cover;
 
 }
+
+.max {
+    width: 100% !important;
+}
 .map {
     height: 100%;
     width: 100%;

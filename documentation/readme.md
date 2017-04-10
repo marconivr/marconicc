@@ -12,10 +12,10 @@ Password: 5BFF9B615FBEDCD197BFB9371BB5A7D1
 ### Installazione
 Elenco passi da eseguire per installare il progetto:
 
-
 - cd composizione_classi
 - npm install
 - cd public
+- npm install bower -g
 - bower install
 
 ### Lancio
