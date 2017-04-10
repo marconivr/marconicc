@@ -15,7 +15,7 @@
 <div class="ui bottom attached tab active  segment" data-tab="first">
 
     <div class="tableContainer">
-            <table id="studenti" class="ui celled table" cellspacing="0" width="100%">
+            <table id="studenti" class="ui celled teal table" cellspacing="0" width="100%">
                 <thead>
                 <tr>
                     <th>Cognome</th>
@@ -29,7 +29,7 @@
                     <th>Classe precedente</th>
                     <th>Cap residenza</th>
                     <th>Anno scolastico</th>
-                    <th>Voto medie</th>
+                    <th>Voto</th>
 
                 </tr>
                 </thead>
@@ -55,9 +55,9 @@
                     <td><%= studentsPrima[i].stato %></td>
                     <td><%=studentsPrima[i].nazionalita %></td>
                     <td><%= studentsPrima[i].classe_precedente %></td>
-                    <td><%= studentsPrima[i].cap_provenienza %></td>
+                    <td><%= studentsPrima[i].CAP %></td>
                     <td><%= studentsPrima[i].anno_scolastico %></td>
-                    <td><%= studentsPrima[i].media_voti %></td>
+                    <td><%= studentsPrima[i].voto %></td>
 
                 </tr>
                 <% } %>
@@ -76,7 +76,7 @@
                     <th>Classe precedente</th>
                     <th>Cap residenza</th>
                     <th>Anno scolastico</th>
-                    <th>Voto medie</th>
+                    <th>Voto</th>
                 </tr>
                 </tfoot>
             </table>
