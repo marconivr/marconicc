@@ -176,7 +176,7 @@
         var classe = $('#classe').dropdown('get value');
         if (classe == "prima") {
             alunniPrima = $("#alunni-in-classe-prima").text();
-            maxNumberOfAlunni = $("#max-number-of-students").val();
+            maxNumberOfAlunni = $("#alunni-max").val();
             $("#classe-realtime").html(Math.floor(alunniPrima / maxNumberOfAlunni))
 
         }
@@ -206,6 +206,8 @@
 
     function addSettings() {
 
+        var d = new Date();
+        var data = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
         var femmine = parseInt($("#femmine").val());
@@ -218,6 +220,7 @@
         $.ajax({
             url: '/insert-settings-prime',
             data: {
+                "data" : data,
                 "alunniMin" : alunniMin,
                 "alunniMax": alunniMax ,
                 "femmine" : femmine ,

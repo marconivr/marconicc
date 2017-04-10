@@ -98,6 +98,7 @@ CREATE TABLE `amici` (
 DROP TABLE IF EXISTS `impostazioni_prime`;
 CREATE TABLE `impostazioni_prime` (
   `id` int(11) NOT NULL,
+  `data` date NOT NULL,
   `min_alunni` int(11) DEFAULT NULL,
   `max_alunni` int(11) DEFAULT NULL,
   `max_femmine` int(11) DEFAULT NULL,

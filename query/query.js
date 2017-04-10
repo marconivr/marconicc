@@ -86,12 +86,12 @@ module.exports = {
         });
     },
 
-    insertSettingsPrime: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni_prime (min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+    insertSettingsPrime: function (callback, data, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
+        connection.query("INSERT INTO impostazioni_prime (data, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
-                callback(err, row, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati);
+                callback(err, row, data, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati);
             }
         });
     },

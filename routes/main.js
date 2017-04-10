@@ -198,6 +198,7 @@ module.exports = function (app, passport) {
         res.render('settings-prime.ejs', {
             pageTitle: " Settings prime",
             data:JSON.stringify(dataInSettings)
+
         });
     });
 
@@ -261,7 +262,7 @@ module.exports = function (app, passport) {
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
+        }, req.query.data, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
     });
 
     /**
