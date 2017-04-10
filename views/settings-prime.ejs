@@ -3,6 +3,9 @@
 <body xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 
 <style>
+    .hiddenMessage{
+        visibility: hidden;
+    }
     #sortable1, #sortable2, #sortable3, #sortable4, #sortable5, #sortable6, #sortable7, #sortable8 {
         border: 1px solid #eee;
         width: 142px;
@@ -47,7 +50,7 @@
             <div class="ui centered grid">
                 <div class="six wide tablet ten wide computer column">
                     <!--sematic form-->
-                    <form class="ui form success" onsubmit='return onSubmit(this)'>
+                    <form class="ui form success" onsubmit='return onSubmit(this);return validateForm()'>
                         <h4 class="ui dividing header">Impostazioni prime</h4>
 
                         <!--sematic fields-->
@@ -97,8 +100,12 @@
                             <div class="header">Form Completato</div>
                             <p>Le impostazioni sono state salvate</p>
                         </div>
+                        <div class="ui hidden success message" id="negativeMessage">
+                            <div class="header">Errore</div>
+                            <p>Il form non è stato inviato</p>
+                        </div>
                         <!--sematic button-->
-                        <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div></br></br>
+                        <div><div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div><p id="messageCompila">Devi completare tutti i campi!</p></div></br></br>
                         <div class="large ui button" tabindex="0" onclick="addPriority()">Add Priority</div>
                     </form>
                 </div>
@@ -198,7 +205,7 @@
     }
 
     function addSettings() {
-        document.getElementById("message").className = "ui success message";
+
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
         var femmine = parseInt($("#femmine").val());
@@ -223,10 +230,10 @@
             },
             type: 'get',
             success: function (data) {
-
+                document.getElementById("message").className = "ui success message";
             },
             error: function (xhr, status, error) {
-
+                document.getElementById("negativeMessage").className = "ui warning message";
                 console.log('Error: ' + error.message);
 
             },
@@ -261,6 +268,31 @@
             },
         });
     }
+
+    //this function check that the form is compiled Strina release to check!!
+    $(document).ready(function() {
+        document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+        var $fields = $(".field :input");
+        $fields.keyup(function () {
+
+            var $emptyFields = $fields.filter(function () {
+
+                // remove the $.trim if whitespace is counted as filled
+                return $.trim(this.value) === "";
+            });
+
+            if (!$emptyFields.length) {
+                document.getElementById("sendButton").setAttribute("class", "ui button")
+                document.getElementById("messageCompila").setAttribute("class", "hiddenMessage")
+            } else {
+                document.getElementById("messageCompila").setAttribute("class", "")
+                document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+            }
+        });
+    });
+
+
+
 
 </script>
 
