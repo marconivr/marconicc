@@ -386,31 +386,51 @@ module.exports = {
                     proprietaAttuali = classeInEsame.propAttuali;
 
                 }
-                else if (prop == "voto") {
-                    for (var voto in proprietaIdeali.voto) {
-                        if (proprietaAttuali.voto === undefined) {
-                            proprietaAttuali.voto = {};
-                            proprietaAttuali.voto[voto] = 0;
-                        }
+                //
+                // else if (prop == "femmine") {
+                //     while (proprietaIdeali.femmine > proprietaAttuali.femmine) {
+                //
+                //         studente = insiemi[item].alunni[0];
+                //         module.exports.removeStudenteFromInsiemi(studente);
+                //         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
+                //
+                //         amico = module.exports.checkDesiderata(studente);
+                //
+                //         if (amico) {
+                //             module.exports.removeStudenteFromInsiemi(amico);
+                //             classeInEsame.alunni.push(amico);
+                //         }
+                //
+                //         module.exports.createProprietaClasse(listaClassi[i].nome);
+                //         proprietaAttuali = classeInEsame.propAttuali;
+                //     }
+                //
+                //     module.exports.createProprietaClasse(listaClassi[i].nome);
+                //     proprietaAttuali = classeInEsame.propAttuali;
+                //
+                // }
 
-                        while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]) {
-
-                            studente = insiemi[item].alunni[voto][0];
-                            module.exports.removeStudenteFromInsiemi(studente);
-                            classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
-
-                            amico = module.exports.checkDesiderata(studente);
-
-                            if (amico) {
-                                module.exports.removeStudenteFromInsiemi(amico);
-                                classeInEsame.alunni.push(amico);
-                            }
-
-                            module.exports.createProprietaClasse(listaClassi[i].nome);
-                            propietaAttuali = classeInEsame.propAttuali;
-                        }
-                    }
-                }
+                // else if (prop == "voto") {
+                //     for (var voto in proprietaIdeali.voto) {
+                //
+                //         while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]) {
+                //
+                //             studente = insiemi[item].alunni[voto][0];
+                //             module.exports.removeStudenteFromInsiemi(studente);
+                //             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
+                //
+                //             amico = module.exports.checkDesiderata(studente);
+                //
+                //             if (amico) {
+                //                 module.exports.removeStudenteFromInsiemi(amico);
+                //                 classeInEsame.alunni.push(amico);
+                //             }
+                //
+                //             module.exports.createProprietaClasse(listaClassi[i].nome);
+                //             propietaAttuali = classeInEsame.propAttuali;
+                //         }
+                //     }
+                // }
             }
         }
         console.log(listaClassi);
@@ -679,7 +699,7 @@ module.exports = {
                 listaClassi[classe].propAttuali = {
                     alunni: nAlunni,
                     femmine: nFemmine,
-                    voti: voti,
+                    voto: voti,
                     CAP: residenza,
                     ripetenti: ripetenti,
                     nazionalita: nazionalita,
