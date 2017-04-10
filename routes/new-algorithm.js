@@ -497,7 +497,7 @@ module.exports = {
                         totaleFem -= settings.fem;
                     }
                 } else {
-                    listaClassi[i].propIdeali.femmine = 0;
+                    if (!(listaClassi[i].propIdeali.femmine)) listaClassi[i].propIdeali.femmine = 0;
                 }
             }
 
