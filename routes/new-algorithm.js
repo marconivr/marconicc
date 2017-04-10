@@ -32,6 +32,7 @@ var proprietaIdeali = {
 }
 
 var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
+
 var listaAlunni = [];
 var insiemi = [];
 var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
@@ -50,6 +51,7 @@ module.exports = {
                 async.waterfall(
                     [
                         function (callback) {
+                            //pulisco gli array per chiamate successive
                             listaClassi = [];
                             listaAlunni = [];
                             insiemi = [];
@@ -325,8 +327,35 @@ module.exports = {
 
     }
     ,
+
+    findAlunnoIdeale: function (propIdeali, prop) {
+        if (prop === "legge_104" || prop === "legge_107" || prop === "femmine") {
+            for (var ins in insiemi){
+                if (insiemi[ins].nome === prop){
+                    var insieme = insiemi[ins];
+                    var studenti = insieme.alunni;
+                    var ris;
+                    for (var i in studenti) {
+                        ris = studenti[i];
+                        if (propIdeali[studenti[i].nazionalita] !== undefined || studenti[i].nazionalita === "ITALIANA") {
+                            ris = studenti[i];
+                            if (propIdeali[studenti[i].CAP] !== undefined) {
+                                ris = studenti[i];
+                                if (propIdeali[studenti[i].voto] !== undefined) {
+                                    ris = studenti[i];
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+    ,
     /**
-     * Funcione che popola le classi confrontando le proprietà ideali della classe con quelle che effettivamente ha
+     * Funzione che popola le classi confrontando le proprietà ideali della classe con quelle che effettivamente ha
      */
     popolaClassi: function () {
         for (var i in listaClassi) {
@@ -344,6 +373,7 @@ module.exports = {
                 if (prop == "legge_104") {
                     while (proprietaIdeali.legge_104 > proprietaAttuali.legge_104) {
 
+                        var test;
                         var studente = insiemi[item].alunni[0];
                         module.exports.removeStudenteFromInsiemi(studente);
                         classeInEsame.alunni.push(studente);//aggiungo lo studente alla classe
@@ -411,30 +441,32 @@ module.exports = {
 
                 }
 
-                else if (prop == "voto") {
-                    for (var voto in proprietaIdeali.voto) {
+                // else if (prop == "voto") {
+                //     for (var voto in proprietaIdeali.voto) {
+                //
+                //         while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]) {
+                //
+                //             studente = insiemi[item].alunni[voto][0];
+                //             module.exports.removeStudenteFromInsiemi(studente);
+                //             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
+                //
+                //             amico = module.exports.checkDesiderata(studente);
+                //
+                //             if (amico) {
+                //                 module.exports.removeStudenteFromInsiemi(amico);
+                //                 classeInEsame.alunni.push(amico);
+                //             }
+                //
+                //             module.exports.createProprietaClasse(listaClassi[i].nome);
+                //             proprietaAttuali = classeInEsame.propAttuali;
+                //         }
+                //     }
+                // }
 
-                        while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]) {
-
-                            studente = insiemi[item].alunni[voto][0];
-                            module.exports.removeStudenteFromInsiemi(studente);
-                            classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
-
-                            amico = module.exports.checkDesiderata(studente);
-
-                            if (amico) {
-                                module.exports.removeStudenteFromInsiemi(amico);
-                                classeInEsame.alunni.push(amico);
-                            }
-
-                            module.exports.createProprietaClasse(listaClassi[i].nome);
-                            proprietaAttuali = classeInEsame.propAttuali;
-                        }
-                    }
-                }
             }
+
         }
-        console.log(classeInEsame);
+        console.log(listaClassi);
     },
 
     generaPropIdeali: function () {
