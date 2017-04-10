@@ -618,7 +618,7 @@ function disableAllFilter() {
     //todo:  delete desiderata
     for(var desiderata = 0; desiderata< desiderataNotRespectedItems.length; desiderata++)
     {
-        $(desiderataNotRespectedItems[desiderata]).popup('destroy');
+        $(desiderataNotRespectedItems[desiderata]).children('.popuptext').remove();
     }
 
     for(var bocciati = 0; bocciati < bocciatiItems.length ; bocciati++)
@@ -645,8 +645,8 @@ function getDesiderataNonRispettato(elemento) {
     }
 }
 
-function setFilterDesiderataNonRispettato(elemento) {
-    if(elemento === undefined)
+function setFilterDesiderataNonRispettato(container) {
+    if(container === undefined)
     {
 
     $('.ui.segment.tooltip').each(function (index, element) {
@@ -661,22 +661,19 @@ function setFilterDesiderataNonRispettato(elemento) {
             if (classe1 != classeAmico)
             {
 
-                $(element).popup({
-                    silent: true,
-                    hoverable: true,
-                    title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
 
-                }).popup('show');
 
-                $(element).visibility({
-                    onTopVisible: function () {
-                        $(element).popup({
-                            silent: true,
-                            hoverable: true,
-                            title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+                var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' +  classeAmico;
+                var span = $('<span/>')
+                    .html(text)
+                    .addClass('popuptext');
 
-                        }).popup('show');
-                    }
+                span.appendTo($(container));
+                span.toggleClass( "show" );
+
+                $(container).mouseover(function()
+                {
+                    span.removeClass('show');
                 });
 
             }
@@ -686,7 +683,7 @@ function setFilterDesiderataNonRispettato(elemento) {
     });
     }
     else {
-            var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
+            var cf = $(container).attr("id"); //cf dell'alunno selezionato
             var cfAmico = getAlunnoDesiderataByCF(cf);
             if(cfAmico != undefined)
             {
@@ -697,22 +694,16 @@ function setFilterDesiderataNonRispettato(elemento) {
                 if (classe1 != classeAmico)
                 {
 
-                    $(elemento).popup({
-                        silent: true,
-                        hoverable: true,
-                        title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
+                    var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' +  classeAmico;
+                    var span = $('<span/>')
+                        .html(text)
+                        .addClass('popuptext');
 
-                    }).popup('show');
-
-                    $(elemento).visibility({
-                        onTopVisible: function () {
-                            $(elemento).popup({
-                                silent: true,
-                                hoverable: true,
-                                title : nomealunno + ' vuole stare con ' + nomeAlunnoAmico + ' che è in una classe diversa: ' + classeAmico
-
-                            }).popup('show');
-                        }
+                    span.appendTo($(container));
+                    span.toggleClass( "show" );
+                    $(container).mouseover(function()
+                    {
+                        span.removeClass('show');
                     });
 
                 }
@@ -1267,7 +1258,7 @@ $(document).ready(function () {
                                     'data-variation': "tiny",
                                     preserve: true
                                 })
-                                .addClass('ui segment tooltip guys ' + voto)
+                                .addClass('ui segment tooltip guys popup-information ' + voto)
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
@@ -1280,7 +1271,7 @@ $(document).ready(function () {
                                     'data-variation': "tiny",
                                     preserve: false
                                 })
-                                .addClass('ui segment tooltip girl ' + voto)
+                                .addClass('ui segment tooltip girl popup-information ' + voto)
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
