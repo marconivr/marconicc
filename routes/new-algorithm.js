@@ -237,12 +237,9 @@ module.exports = {
     ,
 
     checkPropietaClasse: function (objAlunni, prop) {
-
         for (var i in listaClassi) {
 
         }
-
-
     }
     ,
     /**
@@ -465,16 +462,13 @@ module.exports = {
 
         while (flag) {
             for (var i in listaClassi) {
-                listaClassi[i].propIdeali["alunni"] = settings.min_al;
-            }
-
-            for (var i in listaClassi) {
                 if (totale104 > 0) {
                     listaClassi[i].propIdeali["legge_104"] += 1;
-                    listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
+                    listaClassi[i].propIdeali["alunni"] = 23;//settings.max_al_104;
                     totale104 -= 1;
                 } else {
-                    break;
+                    if (!(listaClassi[i].propIdeali["alunni"])) listaClassi[i].propIdeali["alunni"] = settings.min_al;
+
                 }
             }
             listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
@@ -503,7 +497,7 @@ module.exports = {
                         totaleFem -= settings.fem;
                     }
                 } else {
-                    break;
+                    listaClassi[i].propIdeali.femmine = 0;
                 }
             }
 
