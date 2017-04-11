@@ -328,26 +328,42 @@ module.exports = {
     }
     ,
 
-    findAlunnoIdeale: function (propIdeali, prop) {
+    /**
+     * Funzione che trova l'alunno ideale date le proprietà ideali della classe e la propietà principale che può essere o legge_104 o legge_107 o femmine
+     * @param propIdeali
+     * @param prop
+     * @returns {alunno}
+     */
+        findAlunnoIdeale: function (propIdeali, prop) {
         if (prop === "legge_104" || prop === "legge_107" || prop === "femmine") {
             for (var ins in insiemi){
                 if (insiemi[ins].nome === prop){
                     var insieme = insiemi[ins];
                     var studenti = insieme.alunni;
-                    var ris;
+                    var ris = { alunno3 : null , alunno2 : null , alunno1 : null };
                     for (var i in studenti) {
-                        ris = studenti[i];
-                        if (propIdeali[studenti[i].nazionalita] !== undefined || studenti[i].nazionalita === "ITALIANA") {
-                            ris = studenti[i];
-                            if (propIdeali[studenti[i].CAP] !== undefined) {
-                                ris = studenti[i];
-                                if (propIdeali[studenti[i].voto] !== undefined) {
-                                    ris = studenti[i];
 
+                        if (propIdeali[studenti[i].nazionalita] !== undefined || studenti[i].nazionalita === "ITALIANA") {
+                            ris.alunno1 = studenti[i];
+                            if (propIdeali[studenti[i].CAP] !== undefined) {
+                                ris.alunno2 = studenti[i];
+                                if (propIdeali[studenti[i].voto] !== undefined) {
+                                    ris.alunno3 = studenti[i];
                                 }
                             }
                         }
                     }
+
+                    if (ris.alunno3 !== null){
+                        return ris.alunno3;
+                    }
+                    if (ris.alunno2 !== null){
+                        return ris.alunno2;
+                    }
+                    if (ris.alunno1 !== null){
+                        return ris.alunno1;
+                    }
+
                 }
             }
 
@@ -373,8 +389,7 @@ module.exports = {
                 if (prop == "legge_104") {
                     while (proprietaIdeali.legge_104 > proprietaAttuali.legge_104) {
 
-                        var test;
-                        var studente = insiemi[item].alunni[0];
+                        var studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
                         module.exports.removeStudenteFromInsiemi(studente);
                         classeInEsame.alunni.push(studente);//aggiungo lo studente alla classe
 
@@ -392,7 +407,8 @@ module.exports = {
                 else if (prop == "legge_107") {
                     while (proprietaIdeali.legge_107 > proprietaAttuali.legge_107) {
 
-                        studente = insiemi[item].alunni[0];
+
+                       studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
                         module.exports.removeStudenteFromInsiemi(studente);
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
@@ -424,7 +440,7 @@ module.exports = {
                 else if (prop == "femmine") {
 
                     while (proprietaIdeali.femmine > proprietaAttuali.femmine) {
-                        studente = insiemi[item].alunni[0];
+                        studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
                         module.exports.removeStudenteFromInsiemi(studente);
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
