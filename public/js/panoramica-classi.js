@@ -874,7 +874,7 @@ function setAllFilter() {
             }
         }
     }
-    //2 CASO - FILTRO VOTI NON CI SONO
+    //2 CASO - VOTI NO
     else
     {
         //CI SONO NAZIONALITA
@@ -922,6 +922,21 @@ function setAllFilter() {
             //SOLO DESIDERATA
             if(desiderataNonRispettato)
             {
+                //ANCHE BOCCIATI
+                if (bocciati) {
+                    $('.ui.segment.tooltip').each(function (index, element) {
+                        var desiderata = getDesiderataNonRispettato(element);
+                        if (desiderata && getIfStudentsIsBocciato($(element).attr("id"))) {
+                            setFilterDesiderataNonRispettato($(element));
+                            desiderataNotRespectedItems.push($(element));
+                            setFilterBocciati($(element));
+                            bocciatiItems.push($(element));
+                        }
+
+                    });
+                }
+                //SOLO DEISDERATA
+                else {
                     $('.ui.segment.tooltip').each(function (index, element) {
                         var desiderata = getDesiderataNonRispettato(element);
                         if (desiderata) {
@@ -932,6 +947,9 @@ function setAllFilter() {
                         }
 
                     });
+
+                }
+
             }
             else
                 //SOLO BOCCIATI
@@ -943,16 +961,13 @@ function setAllFilter() {
                        {
                            setFilterBocciati($(element));
                            bocciatiItems.push($(element));
-
                        }
 
                     });
 
                     }
                 }
-
         }
-
     }
 }
 
@@ -1252,11 +1267,11 @@ $(document).ready(function () {
                         if (arrayStudenti[j].sesso == "M") {
                              container = $('<div/>',
                                 {
-                                    'width': $('.contenitoreClasse ').width(),
+                                    'width': $(wrapperClasse).width() - 5,
                                     'height': 40,
                                     'data-content': nazionalita,
-                                    'data-variation': "tiny",
-                                    preserve: true
+                                    'data-variation': "tiny"
+
                                 })
                                 .addClass('ui segment tooltip guys popup-information ' + voto)
                                 .attr('id', cf)
@@ -1265,11 +1280,10 @@ $(document).ready(function () {
                         else {
                              container = $('<div/>',
                                 {
-                                    'width': $('.contenitoreClasse ').width(),
+                                    'width': $(wrapperClasse).width() - 5,
                                     'height': 40,
                                     'data-content': nazionalita,
-                                    'data-variation': "tiny",
-                                    preserve: false
+                                    'data-variation': "tiny"
                                 })
                                 .addClass('ui segment tooltip girl popup-information ' + voto)
                                 .attr('id', cf)
@@ -1288,10 +1302,11 @@ $(document).ready(function () {
                             tooltipValue = "107";
                         }
 
+
                         if (tooltipValue != "") {
                             //contiene il tag studente
                             tag = $('<div/>')
-                                .addClass('floating ui grey label tiny')
+                                .addClass('floating ui grey label mini')
                                 .html(tooltipValue)
                                 .appendTo(container)
                         }
