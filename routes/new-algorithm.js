@@ -340,20 +340,23 @@ module.exports = {
                 if (insiemi[ins].nome === prop){
                     var insieme = insiemi[ins];
                     var studenti = insieme.alunni;
-                    var ris = { alunno3 : null , alunno2 : null , alunno1 : null };
+                    var ris = { alunno4 : null , alunno3 : null , alunno2 : null, alunno1 : null };
                     for (var i in studenti) {
-
                         if (propIdeali[studenti[i].nazionalita] !== undefined || studenti[i].nazionalita === "ITALIANA") {
-                            ris.alunno1 = studenti[i];
+                            ris.alunno2 = studenti[i];
                             if (propIdeali[studenti[i].CAP] !== undefined) {
-                                ris.alunno2 = studenti[i];
+                                ris.alunno3 = studenti[i];
                                 if (propIdeali[studenti[i].voto] !== undefined) {
-                                    ris.alunno3 = studenti[i];
+                                    ris.alunno4 = studenti[i];
                                 }
                             }
                         }
+                        ris.alunno1 = studenti [i];
                     }
 
+                    if (ris.alunno4 !== null){
+                        return ris.alunno3;
+                    }
                     if (ris.alunno3 !== null){
                         return ris.alunno3;
                     }
@@ -407,8 +410,17 @@ module.exports = {
                 else if (prop == "legge_107") {
                     while (proprietaIdeali.legge_107 > proprietaAttuali.legge_107) {
 
+                        if (classeInEsame.nome == "1L"){
+                            console.log("");
+                        }
 
-                       studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
+                        studente = undefined;
+
+                        studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
+
+                        if (studente === undefined){
+                            console.log(proprietaIdeali)
+                        }
                         module.exports.removeStudenteFromInsiemi(studente);
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
@@ -482,7 +494,6 @@ module.exports = {
             }
 
         }
-        console.log(listaClassi);
     },
 
     generaPropIdeali: function () {
