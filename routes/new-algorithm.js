@@ -24,12 +24,6 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var proprietaIdeali = {
-    numAlunniMax : 0,
-    numAlunniMin : 0,
-    legge_104: 0,
-    legge_107: 0
-}
 
 var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "sesso", "nazionalita", "CAP", "voto"];
 var listaAlunni = [];
@@ -43,55 +37,55 @@ module.exports = {
      * @param callback
      */
     generaClassiPrima: function (callback) {
-            query.getStudentiPrima(function (err, results) {
-                if (err)
-                    throw err;
-                else {
-                    async.waterfall(
-                        [
-                            function (callback) {
-                                var string = JSON.stringify(results);
-                                callback(null, string);
-                            },
-                            function (string, callback) {
-                                var json = JSON.parse(string);
-                                callback(null, json);
-                            },
-                            function (json, callback) {
-                                listaAlunni = json;
+        query.getStudentiPrima(function (err, results) {
+            if (err)
+                throw err;
+            else {
+                async.waterfall(
+                    [
+                        function (callback) {
+                            var string = JSON.stringify(results);
+                            callback(null, string);
+                        },
+                        function (string, callback) {
+                            var json = JSON.parse(string);
+                            callback(null, json);
+                        },
+                        function (json, callback) {
+                            listaAlunni = json;
+                            callback();
+                        },
+                        function (callback) {
+                            module.exports.creaInsiemi(function (err, result) {
+                                if (err){
+                                    console.log(err)
+                                }else {
+                                    module.exports.setInsiemi(result);
+                                    callback();
+                                }
+                            });
+                        },
+                        function (callback) {
+                            module.exports.generaListaClassi("prima", function () {
                                 callback();
-                            },
-                            function (callback) {
-                                module.exports.creaInsiemi(function (err, result) {
-                                    if (err){
-                                        console.log(err)
-                                    }else {
-                                        module.exports.setInsiemi(result);
-                                        callback();
-                                    }
-                                });
-                            },
-                            function (callback) {
-                                module.exports.generaListaClassi("prima", function () {
-                                    callback();
-                                });
-                            },
-                            function (callback) {
-                                module.exports.popolaListaClassi("prima", function () {
-                                    callback();
-                                });
+                            });
+                        },
+                        function (callback) {
+                            module.exports.popolaListaClassi("prima", function () {
+                                callback();
+                            });
                         }
-                        ],
-                        function (err, succes) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                callback(err);
-                            }
+                    ],
+                    function (err, succes) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            callback(err);
                         }
-                    )
-                }
-            });
+                    }
+                )
+            }
+        });
     },
 
     isAttributeInsideObject: function (obj, attr) {
@@ -203,8 +197,6 @@ module.exports = {
             for (i = 0; i < num; i++) {
                 var classe = "1" + String.fromCharCode(65 + i);
                 listaClassi.push({nome: classe , propAttuali: {} , propIdeali : {
-                    numAlunniMax : 0,
-                    numAlunniMin : 0,
                     legge_104: 0,
                     legge_107: 0
                 }, alunni: []});
@@ -245,6 +237,7 @@ module.exports = {
 
     }
     ,
+
     popolaClassi: function () {
         for (var i in listaClassi){
             var classeInEsame = listaClassi[i];
@@ -265,9 +258,7 @@ module.exports = {
 
         }
 
-    }
-
-    ,
+    },
 
     generaPropIdeali: function () {
         var insNaz = module.exports.getInsieme("nazionalita").alunni;
@@ -277,6 +268,7 @@ module.exports = {
         var totale104 = module.exports.count104(listaAlunni);
         var totale107 = module.exports.count107(listaAlunni);
         var totaleFem = module.exports.countFemmine(listaAlunni);
+        var totaleRip = module.exports.countRipetenti(listaAlunni);
 
         var naz = {};
         var voti = {};
@@ -316,6 +308,27 @@ module.exports = {
                 if (totale107 > 0){
                     listaClassi[i].propIdeali["legge_107"] += 1;
                     totale107 -= 1;
+                } else{
+                    break;
+                }
+            }
+
+            var setRip = Math.round(totaleRip / listaClassi.length);
+
+            for (var i in listaClassi){
+                if (totaleRip > 0){
+                    if (listaClassi[i].propIdeali.ripetenti === undefined){
+                        listaClassi[i].propIdeali.ripetenti = 0;
+                    }
+
+                    if (totaleRip <= setRip){
+                        listaClassi[i].propIdeali["ripetenti"] += totaleRip;
+                        totaleRip = 0;
+                        break;
+                    } else{
+                        listaClassi[i].propIdeali["ripetenti"] += setRip;
+                        totaleRip -= setRip;
+                    }
                 } else{
                     break;
                 }
@@ -363,7 +376,7 @@ module.exports = {
                     }
                 }
             }
-//-----------------------------------------------------------//-----------------------------------------------------------
+
             for (var i in listaClassi){
                 var nAlCAP = 0;
                 var temp = 0;
@@ -397,7 +410,7 @@ module.exports = {
                     }
                 }
             }
-//-----------------------------------------------------------//---------------------------------------------------------
+
             for (var k in voti){
                 var distrVoto = Math.round(voti[k] / listaClassi.length) > 0 ? Math.round(voti[k] / listaClassi.length) : 1;
 
@@ -448,25 +461,25 @@ module.exports = {
      * @param nomeClasse
      * @returns {{}}
      */
-     getDistribuzioneVotiOfClasse: function (nomeClasse) {
+    getDistribuzioneVotiOfClasse: function (nomeClasse) {
 
-         var jsonVoti = {};
-         var alunniOfClasse = getStudentsOfClass(className);
+        var jsonVoti = {};
+        var alunniOfClasse = getStudentsOfClass(nomeClasse);
 
-         for (var studenti = 0; studenti < alunniOfClasse.length; studenti++) {
-             var voto = alunniOfClasse[studenti].voto;
-             if (jsonVoti[voto] === undefined) jsonVoti[voto] = 1;
-             else jsonVoti[voto] = jsonVoti[voto] + 1;
-         }
+        for (var studenti = 0; studenti < alunniOfClasse.length; studenti++) {
+            var voto = alunniOfClasse[studenti].voto;
+            if (jsonVoti[voto] === undefined) jsonVoti[voto] = 1;
+            else jsonVoti[voto] = jsonVoti[voto] + 1;
+        }
 
-         if (jsonVoti[6] === undefined) jsonVoti[6] = 0;
-         if (jsonVoti[7] === undefined) jsonVoti[7] = 0;
-         if (jsonVoti[8] === undefined) jsonVoti[8] = 0;
-         if (jsonVoti[9] === undefined) jsonVoti[9] = 0;
-         if (jsonVoti[10] === undefined) jsonVoti[10] = 0;
+        if (jsonVoti[6] === undefined) jsonVoti[6] = 0;
+        if (jsonVoti[7] === undefined) jsonVoti[7] = 0;
+        if (jsonVoti[8] === undefined) jsonVoti[8] = 0;
+        if (jsonVoti[9] === undefined) jsonVoti[9] = 0;
+        if (jsonVoti[10] === undefined) jsonVoti[10] = 0;
 
-         return jsonVoti;
-     }
+        return jsonVoti;
+    }
     ,
 
     /**
