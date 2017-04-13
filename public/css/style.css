@@ -72,6 +72,21 @@
     }
 }
 
+/*vertical scrollbar*/
+body::-webkit-scrollbar {
+    width: .5em;
+    background-color: white;
+}
+
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: #424242;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    outline: 1px solid #424242;
+}
+
  body > .grid {
     height: 100%;
 }
