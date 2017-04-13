@@ -34,6 +34,7 @@ var proprietaIdeali = {
 var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 
 var listaAlunni = [];
+var listaAlunniDeleted = [];
 var insiemi = [];
 var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
@@ -54,6 +55,7 @@ module.exports = {
                             //pulisco gli array per chiamate successive
                             listaClassi = [];
                             listaAlunni = [];
+                            listaAlunniDeleted = [];
                             insiemi = [];
                             callback();
                         },
@@ -67,6 +69,7 @@ module.exports = {
                         },
                         function (json, callback) {
                             listaAlunni = json;
+                            listaAlunniDeleted = json;
                             callback();
                         },
                         function (callback) {
@@ -223,15 +226,8 @@ module.exports = {
         }
     }
     ,
-
-    checkPropietaClasse: function (objAlunni, prop) {
-        for (var i in listaClassi) {
-
-        }
-    }
-    ,
     /**
-     * Funzione che rimuove da tutti gli insiemi uno studente partendo dal suo oggetto
+     * Funzione che rimuove da tutti gli insiemi ed lista studenti uno studente partendo dal suo oggetto
      * @param objStudente
      */
     removeStudenteFromInsiemi: function (objStudente) {
@@ -251,6 +247,11 @@ module.exports = {
                     studenti.splice(posizione, 1);
                 }
             }
+        }
+        //rimuovo dalla lista studenti
+        posizione = listaAlunniDeleted.indexOf(objStudente);
+        if (posizione != -1) {
+            listaAlunniDeleted.splice(posizione, 1);
         }
     }
     ,
@@ -370,13 +371,15 @@ module.exports = {
                 var prop = insiemi[item].nome;
 
                 if (prop == "legge_104") {
-                    while (proprietaIdeali.legge_104 > proprietaAttuali.legge_104) {
+                    while (proprietaIdeali.legge_104 > proprietaAttuali.legge_104 && proprietaIdeali.alunni > proprietaAttuali.alunni) {
 
                         var studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
+
                         if (studente === undefined){
                             break
                         }
                         module.exports.removeStudenteFromInsiemi(studente);
+
                         classeInEsame.alunni.push(studente);//aggiungo lo studente alla classe
 
                         var amico = module.exports.checkDesiderata(studente);
@@ -391,8 +394,7 @@ module.exports = {
                     }
                 }
                 else if (prop == "legge_107") {
-                    while (proprietaIdeali.legge_107 > proprietaAttuali.legge_107) {
-
+                    while (proprietaIdeali.legge_107 > proprietaAttuali.legge_107  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
 
                         studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
 
@@ -416,7 +418,7 @@ module.exports = {
                 }
 
                 //TODO per i ripetenti non vado a mettere i loro desiderata nella classe! Questo è da chiedere e da definire
-                else if (prop == "ripetenti") {
+                else if (prop == "ripetentiNONO") {
                     var ripetenti = module.exports.getRipetentiOfClass(classeInEsame.nome);
                     for (i in ripetenti) {
                         module.exports.removeStudenteFromInsiemi(ripetenti[i]);
@@ -430,8 +432,10 @@ module.exports = {
 
                 else if (prop == "femmine") {
 
-                    while (proprietaIdeali.femmine > proprietaAttuali.femmine) {
+                    while (proprietaIdeali.femmine > proprietaAttuali.femmine  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
+
                         studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
+
                         if (studente === undefined){
                             break
                         }
@@ -454,7 +458,7 @@ module.exports = {
                 else if (prop == "voto") {
                     for (var voto in proprietaIdeali.voto) {
 
-                        while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]) {
+                        while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
 
                             studente = insiemi[item].alunni[voto][0];
 
@@ -478,15 +482,44 @@ module.exports = {
                     }
                 }
 
-                else if (prop == "voto") {
-                    for (var nazionalita in proprietaIdeali.nazionalita) {
+                else if (prop == "nazionalita") {
+                    for (var nazionalita in proprietaIdeali.nazionalita  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
 
                         while (proprietaIdeali.nazionalita[nazionalita] > proprietaAttuali.nazionalita[nazionalita]) {
+
+                            studente = insiemi[item].alunni[nazionalita][0];
 
                             if (studente === undefined){
                                 break
                             }
-                            studente = insiemi[item].alunni[nazionalita][0];
+
+                            module.exports.removeStudenteFromInsiemi(studente);
+                            classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
+
+                            amico = module.exports.checkDesiderata(studente);
+
+                            if (amico) {
+                                module.exports.removeStudenteFromInsiemi(amico);
+                                classeInEsame.alunni.push(amico);
+                            }
+
+                            module.exports.createProprietaClasse(listaClassi[i].nome);
+                            proprietaAttuali = classeInEsame.propAttuali;
+                        }
+                    }
+                }
+
+                else if (prop == "CAP") {
+                    for (var CAP in proprietaIdeali.CAP  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
+
+                        while (proprietaIdeali.CAP[CAP] > proprietaAttuali.CAP[CAP]) {
+
+                            studente = insiemi[item].alunni[CAP][0];
+
+                            if (studente === undefined){
+                                break
+                            }
+
                             module.exports.removeStudenteFromInsiemi(studente);
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
@@ -665,8 +698,27 @@ module.exports = {
 
         module.exports.popolaClassi();
 
+        //todo
+        module.exports.fixEverithing();
+
+        console.log(listaAlunniDeleted);
+
         return listaClassi;
     },
+
+    /**
+     * Work in progess
+     */
+    fixEverithing : function () {
+        for (i in listaClassi){
+            var classe = listaClassi[i];
+            var propIdeali = classe.propIdeali;
+            var propAttuali = classe.propAttuali;
+            if (propAttuali.legge_104 == 0){}
+        }
+    }
+
+    ,
 
 
     /**
