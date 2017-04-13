@@ -410,7 +410,7 @@ module.exports = {
                 else if (prop == "legge_107") {
                     while (proprietaIdeali.legge_107 > proprietaAttuali.legge_107) {
 
-                        if (classeInEsame.nome == "1L"){
+                        if (classeInEsame.nome == "1F"){
                             console.log("");
                         }
 
@@ -469,27 +469,30 @@ module.exports = {
 
                 }
 
-                // else if (prop == "voto") {
-                //     for (var voto in proprietaIdeali.voto) {
-                //
-                //         while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]) {
-                //
-                //             studente = insiemi[item].alunni[voto][0];
-                //             module.exports.removeStudenteFromInsiemi(studente);
-                //             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
-                //
-                //             amico = module.exports.checkDesiderata(studente);
-                //
-                //             if (amico) {
-                //                 module.exports.removeStudenteFromInsiemi(amico);
-                //                 classeInEsame.alunni.push(amico);
-                //             }
-                //
-                //             module.exports.createProprietaClasse(listaClassi[i].nome);
-                //             proprietaAttuali = classeInEsame.propAttuali;
-                //         }
-                //     }
-                // }
+                else if (prop == "voto") {
+                    for (var voto in proprietaIdeali.voto) {
+
+                        while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]) {
+
+                            if (classeInEsame.nome == "1F"){
+                                console.log("")
+                            }
+                            studente = insiemi[item].alunni[voto][0];
+                            module.exports.removeStudenteFromInsiemi(studente);
+                            classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
+
+                            amico = module.exports.checkDesiderata(studente);
+
+                            if (amico) {
+                                module.exports.removeStudenteFromInsiemi(amico);
+                                classeInEsame.alunni.push(amico);
+                            }
+
+                            module.exports.createProprietaClasse(listaClassi[i].nome);
+                            proprietaAttuali = classeInEsame.propAttuali;
+                        }
+                    }
+                }
 
             }
 
