@@ -22,15 +22,15 @@ var cfArray = []; //serve per i desiderata e per non rompere i coglioni
 var arrayClassi = null;
 var iconJson = {
     'media': {
-        'color': 'floating ui green label',
+        'color': 'floating mini ui green label',
         'icon': 'write icon'
     },
     'bocciati': {
-        'color': 'floating ui red label',
+        'color': 'floating mini ui red label',
         'icon': 'configure icon'
     },
     'alunni': {
-        'color': 'floating ui blue  label',
+        'color': 'floating mini ui blue  label',
         'icon': 'student icon'
     }
 
@@ -332,11 +332,21 @@ function createBoxInformazioni(wrapperClasse, nomeClasse) {
 
     var proprieta = createProprietaForASpecificClass(nomeClasse);
     var array = [];
+    var container = $('<div/>')
+        .css(
+            {
+                'text-align': 'center',
+                'bottom': '10px',
+                'position': 'absolute',
+                'left': '20%'
+            })
+        .appendTo(wrapperClasse);
     for (var prop in proprieta) {
 
+
         var menu = $('<div/>')
-            .addClass('ui compact menu')
-            .appendTo(wrapperClasse);
+            .addClass('ui compact menu mini')
+            .appendTo(container);
 
         var item = $('<a/>')
             .addClass('item')
@@ -1439,7 +1449,7 @@ $(document).ready(function () {
                         'id': nomeClasse + 'barChart',
                         'class': 'barChart',
                         'width': 200,
-                        'height': 200
+                        'height': 250
                     }).appendTo(settingClasse);
 
                 var br = $('<br>', {
@@ -1533,7 +1543,7 @@ $(document).ready(function () {
                         'id': nomeClasse + 'pieChart',
                         'class': 'pieChart',
                         'width': 200,
-                        'height': 200
+                        'height': 250
                     }).appendTo(settingClasse).hide();
 
 
