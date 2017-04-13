@@ -723,6 +723,59 @@ function getStudentObject(cf) {
     }
 }
 
+/**
+ * nomeClasse: {"name": nomeClasse}
+ */
+function returnJsonOfClassName() {
+    var classNames = {};
+    for (var i = 0; i < arrayClassi.length; i++) {
+        classNames[arrayClassi[i].nome] = {"name": arrayClassi[i].nome}
+    }
+    return classNames
+}
+
+/**
+ * sposta lo studente in una classe utilizzando il contex menu
+ */
+function moveStudentFromContextMenu(classTo, studente) {
+    var cf = studente.cf;
+    var classFrom = getClassNameFromStudent(cf);
+
+    //student moved in array classi - data is update
+    moveStudent(cf, classFrom, classTo);
+
+    //update gui - remove from old class
+    var studentDiv = $('div[id=' + cf + ']');
+    //create ui-sortable-handle
+    var li = $('<li/>')
+        .addClass('ui-sortable-handle');
+
+    //delete context menu
+    studentDiv.parent('.ui-sortable-handle').remove()
+    studentDiv.remove();
+    //append student div
+    studentDiv.appendTo(li);
+
+    //wrapperClasse div and it's child
+    //here i have the student of classTO
+    var classToContainer = $('div.wrapperClasse[id=' + classTo + ']').children('ul');
+    //i choose the position to append the student in alphabetical order
+    classToContainer.children('li').each(function (index, element) {
+        //check the value of ascci of the student's cf
+        //studente va prima di quelli gia messi nella classe
+        if (studente.cognome.charCodeAt(0) < $(element).children('div').attr("cognome")[0].charCodeAt(0) || cf.charCodeAt(0) == $(element).children('div').attr("cognome")[0].charCodeAt(0)) {
+            // append li  to classContainer
+            li.insertBefore(classToContainer.children('li')[index]);
+            return false;
+        }
+
+
+    });
+
+    // li.appendTo(classToContainer);
+
+
+}
 
 function populateModal(object) {
     $("#nome-cognome").text(object.cognome + " " + object.nome);
@@ -1270,6 +1323,7 @@ $(document).ready(function () {
                                     'width': $(wrapperClasse).width() - 5,
                                     'height': 40,
                                     'data-content': nazionalita,
+                                    'cognome': cognomeStudente,
                                     'data-variation': "tiny"
 
                                 })
@@ -1283,6 +1337,7 @@ $(document).ready(function () {
                                     'width': $(wrapperClasse).width() - 5,
                                     'height': 40,
                                     'data-content': nazionalita,
+                                    'cognome': cognomeStudente,
                                     'data-variation': "tiny"
                                 })
                                 .addClass('ui segment tooltip girl popup-information ' + voto)
@@ -1332,11 +1387,10 @@ $(document).ready(function () {
                 div.contextMenu({
                     selector: 'li',
                     callback: function (key, options) {
-
+                        var studente = getStudentObject($(this).children().attr("id"));
                         switch (key){
                             case "informazioni":
                                 //open modal
-                                var object = getStudentObject($(this).children().attr("id"));
                                 $('.ui.modal').modal({
                                     onHide: function () {
 
@@ -1347,23 +1401,28 @@ $(document).ready(function () {
                                     },
                                     onShow: function () {
 
-                                        populateModal(object);
+                                        populateModal(studente);
                                     }
                                 }).modal('show');
 
                                 break;
+                            //for further case
                             case "spostamento" :
 
+                                moveStudentFromContextMenu(key, studente);
+                                break;
+                            //spostamento nelle classi
+                            default:
+                                moveStudentFromContextMenu(key, studente);
                                 break;
                         }
                     },
                     items: {
                         "informazioni": {name: "Informazioni", icon: "edit"},
-                        "spostamento": {name: "Spostamento", icon: "cut"},
-                        "quit": {
-                            name: "Quit", icon: function ($element, key, item) {
-                                return 'context-menu-icon context-menu-icon-quit';
-                            }
+                        "spostamento": {
+                            name: "Spostamento",
+                            icon: "cut",
+                            "items": returnJsonOfClassName()
                         }
                     }
                 });
@@ -1607,6 +1666,8 @@ $(document).ready(function () {
             });
 
 
+            //contents it's load, remove loader
+            $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
         },
         type: 'GET'
     });
