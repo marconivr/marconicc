@@ -810,7 +810,7 @@ $(document).ready(function () {
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
     $.ajax({
-        url: '/get-classi-composte',
+        url: '/generate-classi',
         data: {
             format: 'json'
         },
