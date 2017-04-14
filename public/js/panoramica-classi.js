@@ -203,7 +203,35 @@ function approxNum(num) {
 }
 
 /**
- * update a chart for a specific chart
+ * update a  pie chart for a specific chart
+ * @param newClassName
+ */
+function updateChartPie(className) {
+    var position = className[1].charCodeAt(0) - 65;//65 is the first ASCII letter
+    var chart = pieChartArray[position];
+
+    var stranieri = getNationalityOfClass(className);
+    var labels = [];
+    var data = [];
+
+
+    for (var prop in stranieri) {
+        labels.push(flagTag(prop));
+        data.push(stranieri[prop]);
+    }
+
+    var colorArray = getColorOfNationalitiesByLabelArray(labels);
+
+    chart.data.datasets[0].data = data;
+    chart.data.datasets[0].hoverBackgroundColor = colorArray;
+    chart.data.datasets[0].backgroundColor = colorArray;
+    chart.data.labels = labels;
+    chart.update();
+}
+
+
+/**
+ * update a  bar chart for a specific chart
  * @param newClassName
  */
 function updateChartBar(newClassName) {
@@ -504,7 +532,8 @@ function moveStudent(cf, fromClass, toClass) {
     updateChartBar(fromClass); //refresh the old chart
     updateInformation(toClass);
     updateInformation(fromClass);
-
+    updateChartPie(toClass);
+    updateChartPie(fromClass);
 }
 
 
@@ -1286,7 +1315,12 @@ $(document).ready(function () {
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a> <div class="ui icon buttons mini"><button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button><button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button></div>'
+                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>' +
+                    ' <div class="ui icon buttons mini">' +
+                    '<button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton">' +
+                    '<i class="bar chart icon"></i></button>' +
+                    '<button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button>' +
+                    '</div>'
                 }).appendTo(wrapperClasse);
 
                 var div = $('<ul/>', {
@@ -1372,6 +1406,11 @@ $(document).ready(function () {
                             //contiene il tag studente
                             tag = $('<div/>')
                                 .addClass('floating ui grey label mini')
+                                .css(
+                                    {
+                                        'top': '25%'
+                                    }
+                                )
                                 .html(tooltipValue)
                                 .appendTo(container)
                         }
@@ -1524,7 +1563,7 @@ $(document).ready(function () {
                                     stepValue: 6,
                                     max: 60,
                                     callback: function (value) {
-                                        return value + "%"   //mettendo questa per la percentuale il voto viene messo orizzontale
+                                        return value + "%";   //mettendo questa per la percentuale il voto viene messo orizzontale
                                     }
                                 }
                             }]
@@ -1681,9 +1720,6 @@ $(document).ready(function () {
         },
         type: 'GET'
     });
-
-    //TODO:FIX WHEN SELECTION WIDTH
-
 
     /**
      * Osservatore per gestire la visualizzazione delle classi
