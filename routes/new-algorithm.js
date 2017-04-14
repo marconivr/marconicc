@@ -24,14 +24,8 @@ var settings = {
     boc: 2,
     an_scol: "2017-2018"
 };
-var proprietaIdeali = {
-    numAlunniMax: 0,
-    numAlunniMin: 0,
-    legge_104: 0,
-    legge_107: 0
-}
 
-var priority = ["legge_104", "alunni", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
+var priority = ["alunni", "legge_104", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 
 var listaAlunni = [];
 var listaAlunniDeleted = [];
@@ -205,8 +199,6 @@ module.exports = {
                 var classe = "1" + String.fromCharCode(65 + i);
                 listaClassi.push({
                     nome: classe, propAttuali: {}, propIdeali: {
-                        numAlunniMax: 0,
-                        numAlunniMin: 0,
                         legge_104: 0,
                         legge_107: 0
                     }, alunni: []
@@ -224,8 +216,18 @@ module.exports = {
                 return 1;
             return 0;
         }
-    }
-    ,
+    },
+
+    sortClassiOrdAlf: function () {
+        return function (a, b) {
+            if (a.nome < b.nome)
+                return -1;
+            else if (a.nome > b.nome)
+                return 1;
+            return 0;
+        }
+    },
+
     /**
      * Funzione che rimuove da tutti gli insiemi ed lista studenti uno studente partendo dal suo oggetto
      * @param objStudente
@@ -305,7 +307,6 @@ module.exports = {
             }
         }
         return ripententi;
-
     }
     ,
 
@@ -316,7 +317,7 @@ module.exports = {
      * @returns {alunno}
      */
         findAlunnoIdeale: function (propIdeali, prop) {
-        if (prop === "legge_104" || prop === "legge_107" || prop === "femmine") {
+        if (prop === "legge_104" || prop === "legge_107" || prop === "femmine" || prop === "ripetenti" ) {
             for (var ins in insiemi){
                 if (insiemi[ins].nome === prop){
                     var insieme = insiemi[ins];
@@ -369,12 +370,10 @@ module.exports = {
             //aggiungo 104 se c'è ne bisogno
             for (var item in insiemi) {
                 var prop = insiemi[item].nome;
-
+                console.log(item + ", " + prop);
                 if (prop == "legge_104") {
                     while (proprietaIdeali.legge_104 > proprietaAttuali.legge_104 && proprietaIdeali.alunni > proprietaAttuali.alunni) {
-
-                        var studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
-
+                        var studente = module.exports.findAlunnoIdeale(proprietaIdeali, prop);
                         if (studente === undefined){
                             break
                         }
@@ -430,12 +429,27 @@ module.exports = {
 
                 }
 
+                else if (prop == "ripetenti") {
+                    while (proprietaIdeali.ripetenti > proprietaAttuali.ripetenti && proprietaIdeali.alunni > proprietaAttuali.alunni) {
+                        studente = module.exports.findAlunnoIdeale(proprietaIdeali, prop);
+
+                        if (studente === undefined) {
+                            break;
+                        }
+                        module.exports.removeStudenteFromInsiemi(studente);
+                        classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
+
+                        amico = module.exports.checkDesiderata(studente);
+
+                        module.exports.createProprietaClasse(classeInEsame.nome);
+                        proprietaAttuali = classeInEsame.propAttuali;
+                    }
+                }
+
                 else if (prop == "femmine") {
 
                     while (proprietaIdeali.femmine > proprietaAttuali.femmine  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
-
                         studente = module.exports.findAlunnoIdeale(proprietaIdeali,prop);
-
                         if (studente === undefined){
                             break
                         }
@@ -457,7 +471,6 @@ module.exports = {
 
                 else if (prop == "voto") {
                     for (var voto in proprietaIdeali.voto) {
-
                         while (proprietaIdeali.voto[voto] > proprietaAttuali.voto[voto]  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
 
                             studente = insiemi[item].alunni[voto][0];
@@ -511,15 +524,12 @@ module.exports = {
 
                 else if (prop == "CAP") {
                     for (var CAP in proprietaIdeali.CAP  && proprietaIdeali.alunni > proprietaAttuali.alunni) {
-
                         while (proprietaIdeali.CAP[CAP] > proprietaAttuali.CAP[CAP]) {
-
                             studente = insiemi[item].alunni[CAP][0];
 
                             if (studente === undefined){
                                 break
                             }
-
                             module.exports.removeStudenteFromInsiemi(studente);
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
@@ -535,10 +545,31 @@ module.exports = {
                         }
                     }
                 }
-
             }
-
         }
+
+        if (module.exports.thereIsStundentiInInsiemi()){
+            console.log("È true");
+            //module.exports.popolaClassiRimanente();
+        }
+        console.log(insiemi);
+    },
+
+    thereIsStundentiInInsiemi: function () {
+        for (var i in insiemi){
+            for (var k in insiemi[i].alunni){
+                if (Array.isArray(insiemi[i].alunni[k])){
+                    if (insiemi[i].alunni[k].length > 0){
+                        return true;
+                    }
+                } else{
+                    if (insiemi[i].alunni.length > 0){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     },
 
     generaPropIdeali: function () {
@@ -549,6 +580,7 @@ module.exports = {
         var totale104 = module.exports.count104(listaAlunni);
         var totale107 = module.exports.count107(listaAlunni);
         var totaleFem = module.exports.countFemmine(listaAlunni);
+        var totaleRip = module.exports.countRipetenti(listaAlunni);
 
         var naz = {};
         var voti = {};
@@ -572,7 +604,7 @@ module.exports = {
             for (var i in listaClassi) {
                 if (totale104 > 0) {
                     listaClassi[i].propIdeali["legge_104"] += 1;
-                    listaClassi[i].propIdeali["alunni"] = 23;//settings.max_al_104;
+                    listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
                     totale104 -= 1;
                 } else {
                     if (!(listaClassi[i].propIdeali["alunni"])) listaClassi[i].propIdeali["alunni"] = settings.min_al;
@@ -587,6 +619,26 @@ module.exports = {
                     totale107 -= 1;
                 } else {
                     break;
+                }
+            }
+
+            var setRip = Math.round(totaleRip / listaClassi.length) > 0 ? Math.round(totaleRip / listaClassi.length) : 1;
+            for (var i in listaClassi) {
+                if (totaleRip > 0) {
+                    if (listaClassi[i].propIdeali.ripetenti === undefined) {
+                        listaClassi[i].propIdeali.ripetenti = 0;
+                    }
+
+                    if (totaleRip <= settings.fem) {
+                        listaClassi[i].propIdeali["ripetenti"] += setRip;
+                        totaleRip = 0;
+                        break;
+                    } else {
+                        listaClassi[i].propIdeali["ripetenti"] += setRip;
+                        totaleRip -= setRip;
+                    }
+                } else {
+                    if (!(listaClassi[i].propIdeali.ripetenti)) listaClassi[i].propIdeali.ripetenti = 0;
                 }
             }
 
@@ -695,13 +747,14 @@ module.exports = {
                 flag = false;
             }
         }
+        listaClassi.sort(module.exports.sortClassiOrdAlf());
 
         module.exports.popolaClassi();
 
         //todo
         module.exports.fixEverithing();
 
-        console.log(listaAlunniDeleted);
+        //console.log(listaAlunniDeleted);
 
         return listaClassi;
     },
@@ -716,9 +769,7 @@ module.exports = {
             var propAttuali = classe.propAttuali;
             if (propAttuali.legge_104 == 0){}
         }
-    }
-
-    ,
+    },
 
 
     /**
