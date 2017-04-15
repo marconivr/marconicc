@@ -667,6 +667,21 @@ function disableAllFilter() {
 
 }
 
+/**
+ * ritorna true se uno studente ha un desiderata
+ * @param studentCf
+ */
+function hasDesiderata(studentCf) {
+    for (var i = 0; i < arrayClassi.length; i++) {
+        for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
+            if (arrayClassi[i].alunni[studente].cf == studentCf) {
+                if (arrayClassi[i].alunni[studente].desiderata != "")return true;
+                else return false;
+            }
+
+        }
+    }
+}
 
 /**
  * ritorna true se non è rispettato la richiesta desiderata
@@ -674,13 +689,34 @@ function disableAllFilter() {
  */
 function getDesiderataNonRispettato(elemento) {
     var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
-    var cfAmico = getAlunnoDesiderataByCF(cf);
-    if(cfAmico != undefined)
+    // var cfAmico = getAlunnoDesiderataByCF(cf);
+    // if(cf == "MNTRRT03L24G489W")
+    // {
+    //     var a = 3;
+    // }
+    // if(cfAmico != undefined)
+    // {
+    //     var classe1 = getClassNameFromStudent(cf);
+    //     var classeAmico = getClassNameFromStudent(cfAmico);
+    //     if (classe1 != classeAmico)return true;
+    //     else return false;
+    // }
+    if (cf == "CNTSML03B28L781K")
     {
-        var classe1 = getClassNameFromStudent(cf);
-        var classeAmico = getClassNameFromStudent(cfAmico);
-        if (classe1 != classeAmico)return true;
-        else return false;
+        var a = 3;
+    }
+    if (hasDesiderata(cf)) {
+        //verifico che la richiesta sia reciproca
+        var cfAmico = getAlunnoDesiderataByCF(cf);
+        if (cfAmico != undefined) {
+            var classe1 = getClassNameFromStudent(cf);
+            var classeAmico = getClassNameFromStudent(cfAmico);
+            if (classe1 != classeAmico)return true;
+            else return false;
+        }
+    }
+    else {
+        return false;
     }
 }
 
@@ -1654,8 +1690,9 @@ $(document).ready(function () {
                             cfArray.push(cf);
                             var amico = getStudentByCF(cfAmico);
                             var classeAmico = getClassNameFromStudent(cfAmico);
+                            var classeStudenteSelezionato = getClassNameFromStudent(cf);
                             //se la desiderata non è corrisposta
-                            if (!(cfAmico === undefined || classeAmico === undefined)) {
+                            if (!(cfAmico === undefined || classeAmico === undefined || classeAmico != classeStudenteSelezionato)) {
                                 if (confirm("Questo alunno vuole stare con un amico: " + amico + " della " + classeAmico + ", continuare?")) {
                                     newList = oldList = ui.item.parent().parent();
                                 }
