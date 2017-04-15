@@ -648,13 +648,11 @@ function disableAllFilter() {
         });
     }
 
-    //todo : delete popup
     for (var nazionalita = 0; nazionalita < nazionalitaItems.length; nazionalita++)
     {
         $(nazionalitaItems[nazionalita]).removeClass(nazionalitaItems[nazionalita].attr('data-content'));
     }
-
-    //todo:  delete desiderata
+    
     for(var desiderata = 0; desiderata< desiderataNotRespectedItems.length; desiderata++)
     {
         $(desiderataNotRespectedItems[desiderata]).children('.popuptext').remove();
@@ -689,18 +687,6 @@ function hasDesiderata(studentCf) {
  */
 function getDesiderataNonRispettato(elemento) {
     var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
-    // var cfAmico = getAlunnoDesiderataByCF(cf);
-    // if(cf == "MNTRRT03L24G489W")
-    // {
-    //     var a = 3;
-    // }
-    // if(cfAmico != undefined)
-    // {
-    //     var classe1 = getClassNameFromStudent(cf);
-    //     var classeAmico = getClassNameFromStudent(cfAmico);
-    //     if (classe1 != classeAmico)return true;
-    //     else return false;
-    // }
     if (cf == "CNTSML03B28L781K")
     {
         var a = 3;
