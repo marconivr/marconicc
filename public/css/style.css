@@ -177,9 +177,9 @@ body::-webkit-scrollbar-thumb {
     padding: 8px 0;
     position: absolute;
     z-index: 1;
-    bottom: 90%;
+    bottom: 80%;
     left: 50%;
-    font-size: 0.7em;
+    font-size: 0.65em;
     margin-left: -80px;
 }
 
