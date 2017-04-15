@@ -96,6 +96,16 @@ module.exports = {
         });
     },
 
+    getSettingsPrime: function (callback) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati from impostazioni_prime", function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
     insertSettingsTerze: function (callback, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
         connection.query("INSERT INTO impostazioni_terze (min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
             if (err) {

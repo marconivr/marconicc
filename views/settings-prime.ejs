@@ -1,5 +1,4 @@
 <% include header %>
-
 <body xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 
 <style>
@@ -35,9 +34,6 @@
 
 <% include sidebar-start.ejs %>
 
-<!--data-->
-<% var jsonData = JSON.parse(data) %>
-
 <div class="ui internally celled grid">
     <div class="row">
         <!--this section represent the relatime data-->
@@ -45,6 +41,14 @@
             <a class="ui teal tag label"> Statistiche RealTime</a><br>
             <b>Numero di classi:</b>
             <p id="classe-realtime"></p>
+
+            <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
+            <div id="rowForInsertDate">
+
+            </div>
+            <a onclick="createModal();">
+
+            </a>
         </div>
         <div class="ten wide column">
             <div class="ui centered grid">
@@ -120,7 +124,7 @@
                     <i class="student icon"></i> Studenti
                     <div class="floating ui yellow label">
                         <p id="alunni-in-classe-prima">
-                            <%= jsonData.numberOfStudentiPrima %>
+
                         </p>
                     </div>
                 </a>
@@ -129,7 +133,7 @@
                     <div class="floating ui pink label">
                         <p id="donne-in-classe-prima">
 
-                            <%= jsonData.numberOfGirlPrima %>
+
                         </p>
                     </div>
                 </a>
@@ -138,7 +142,7 @@
                     <div class="floating ui blue  label">
                         <p id="media-in-classe-prima">
 
-                            <%= jsonData.AVGOfStudentiPrima %>
+
                         </p>
                     </div>
                 </a>
@@ -161,6 +165,32 @@
     <!--</div>-->
 </div>
 
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        Profile Picture
+    </div>
+    <div class="image content">
+        <div class="ui medium image">
+            <img src="/images/avatar/large/chris.jpg">
+        </div>
+        <div class="description">
+            <div class="ui header">We've auto-chosen a profile image for you.</div>
+            <p>We've grabbed the following image from the <a href="https://www.gravatar.com" target="_blank">gravatar</a> image associated with your registered e-mail address.</p>
+            <p>Is it okay to use this photo?</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Nope
+        </div>
+        <div class="ui positive right labeled icon button">
+            Yep, that's me
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
 
@@ -171,6 +201,12 @@
 </script>
 
 <script>
+    function  createModal() {
+        $('.ui.modal')
+            .modal('show')
+        ;
+    }
+
     //this function set the number of student for class
     function setDataRealtimeNumberOfStudents() {
         var classe = $('#classe').dropdown('get value');
@@ -274,6 +310,33 @@
 
     //this function check that the form is compiled Strina release to check!!
     $(document).ready(function() {
+        var settings = [];
+        $.ajax({
+            type: "GET",
+            url: '/get-past-settings',
+            data: {
+                format: 'json'
+            },
+            error: function () {
+                alert('Errore di scaricamento dei dati /get-past-settings');
+            },
+            dataType: 'json',
+
+            success: function (listaSettings) {
+                settings = listaSettings;
+
+                var s = "";
+                s+= "<ul>";
+                for (var i = 0; i < settings.length; i++){
+                    s+= "<li><a onclick='createModal()' style='color: black'>" + settings[i].data + "</a></li>";
+                }
+                s+= "</ul>";
+                document.getElementById("rowForInsertDate").innerHTML = s;
+            }
+        });
+
+
+
         document.getElementById("sendButton").setAttribute("class", "ui disabled button")
         var $fields = $(".field :input");
         $fields.keyup(function () {
@@ -293,9 +356,6 @@
             }
         });
     });
-
-
-
 
 </script>
 
