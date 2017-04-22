@@ -16,8 +16,6 @@ var settings = {
     stessa_pr: 3,
     nazionalita: 3,
     naz_per_classe: 3,
-    media_min: 7.5,
-    media_max: 8.0,
     max_al_104: 23,
     max_107: 2,
     max_104: 1,
@@ -128,7 +126,7 @@ module.exports = {
             if (err)
                 console.log(err);
             else {
-                listaAlunni = results;
+                listaAlunni = module.exports.shuffleArray(results);
                 for (var i = 0; i < listaAlunni.length; i++) {
                     for (var j = 0; j < priority.length; j++) {
                         var ins = module.exports.findInsiemeFromString(priority[j], insiemi);
@@ -182,6 +180,7 @@ module.exports = {
                     }
                 }
             }
+
             callback(err, insiemi);
         });
     },
@@ -216,7 +215,25 @@ module.exports = {
                 return 1;
             return 0;
         }
-    },
+    }
+
+    ,
+
+    /**
+     * Randomize array element order in-place.
+     * Using Durstenfeld shuffle algorithm.
+     */
+    shuffleArray: function(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+    ,
+
 
     sortClassiOrdAlf: function () {
         return function (a, b) {
