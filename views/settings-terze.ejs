@@ -32,8 +32,6 @@
 
 <% include sidebar-start.ejs %>
 
-<!--data-->
-<% var jsonData = JSON.parse(data) %>
 
 <div class="ui internally celled grid">
     <div class="row">
@@ -42,12 +40,16 @@
             <a class="ui teal tag label"> Statistiche RealTime</a><br>
             <b>Numero di classi:</b>
             <p id="classe-realtime"></p>
+            <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
+            <div id="rowForInsertDate">
+
+            </div>
         </div>
         <div class="ten wide column">
             <div class="ui centered grid">
                 <div class="six wide tablet ten wide computer column">
                     <!--sematic form-->
-                    <form class="ui form" onsubmit='return onSubmit(this)'>
+                    <form class="ui form success" onsubmit='return onSubmit(this);return validateForm()'>
                         <h4 class="ui dividing header">Impostazioni prime</h4>
 
                         <!--sematic fields-->
@@ -93,13 +95,20 @@
                             <label>Ripetenti</label>
                             <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
                         </div>
+                        <div class="field">
+                            <label>Descrizione</label>
+                            <input name="descrizione" placeholder="Descrizione" type="text" id="descrizione">
+                        </div>
                         <div class="ui hidden success message" id="message">
                             <div class="header">Form Completato</div>
                             <p>Le impostazioni sono state salvate</p>
                         </div>
-
+                        <div class="ui hidden success message" id="negativeMessage">
+                            <div class="header">Errore</div>
+                            <p>Il form non è stato inviato</p>
+                        </div>
                         <!--sematic button-->
-                        <div class="large ui button" tabindex="0" onclick="addSettings()">Send</div></br></br>
+                        <div><div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div><p id="messageCompila">Devi completare tutti i campi!</p></div></br></br>
                         <div class="large ui button" tabindex="0" onclick="addPriority()">Add Priority</div>
                     </form>
                 </div>
@@ -115,7 +124,7 @@
                     <div class="floating ui yellow label">
                         <p id="alunni-in-classe-prima">
 
-                            <%= jsonData.numberOfStudentiTerza %>
+
                         </p>
                     </div>
                 </a>
@@ -123,7 +132,7 @@
                     <i class="female icon"></i> Donne
                     <div class="floating ui pink label">
                         <p id="donne-in-classe-prima">
-                            <%= jsonData.numberOfGirlTerza %>
+
                         </p>
                     </div>
                 </a>
@@ -132,7 +141,7 @@
                     <div class="floating ui blue  label">
                         <p id="media-in-classe-prima">
 
-                            <%= jsonData.AVGOfStudentiTerza %></p>
+
                     </div>
                 </a>
             </div>
@@ -152,6 +161,32 @@
     <!--</div>-->
 </div>
 
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        Profile Picture
+    </div>
+    <div class="image content">
+        <div class="ui medium image">
+            <img src="/images/avatar/large/chris.jpg">
+        </div>
+        <div class="description">
+            <div class="ui header">We've auto-chosen a profile image for you.</div>
+            <p>We've grabbed the following image from the <a href="https://www.gravatar.com" target="_blank">gravatar</a> image associated with your registered e-mail address.</p>
+            <p>Is it okay to use this photo?</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Nope
+        </div>
+        <div class="ui positive right labeled icon button">
+            Yep, that's me
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
 
@@ -162,6 +197,12 @@
 </script>
 
 <script>
+    function  createModal() {
+        $('.ui.modal')
+            .modal('show')
+        ;
+    }
+
     //this function set the number of student for class
     function setDataRealtimeNumberOfStudents() {
         var classe = $('#classe').dropdown('get value');
@@ -173,30 +214,10 @@
         }
     }
 
-    function addTag() {
-        var tag = $("#nome-tag").val();
-        var descrizione = $("#descrizione-tag").val();
-
-        $.ajax({
-            url: '/insert-tag',
-            data: {
-                "tag": tag,
-                "descrizione" : descrizione
-            },
-            type: 'get',
-            success: function (data) {
-
-            },
-            error: function (xhr, status, error) {
-
-                console.log('Error: ' + error.message);
-
-            },
-        });
-    }
-
     function addSettings() {
-        document.getElementById("message").className = "ui success message";
+        var d = new Date();
+        var data = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+        var descrizione = $("#descrizione").val()
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
         var femmine = parseInt($("#femmine").val());
@@ -209,6 +230,8 @@
         $.ajax({
             url: '/insert-settings-terze',
             data: {
+                "data" : data,
+                "descrizione" : descrizione,
                 "alunniMin" : alunniMin,
                 "alunniMax": alunniMax ,
                 "femmine" : femmine ,
@@ -221,10 +244,10 @@
             },
             type: 'get',
             success: function (data) {
-
+                document.getElementById("message").className = "ui success message";
             },
             error: function (xhr, status, error) {
-
+                document.getElementById("negativeMessage").className = "ui warning message";
                 console.log('Error: ' + error.message);
 
             },
@@ -259,6 +282,55 @@
             },
         });
     }
+
+    //this function check that the form is compiled Strina release to check!!
+    $(document).ready(function() {
+        var settings = [];
+        $.ajax({
+            type: "GET",
+            url: '/get-past-settings-terze',
+            data: {
+                format: 'json'
+            },
+            error: function () {
+
+            },
+            dataType: 'json',
+
+            success: function (listaSettings) {
+                settings = listaSettings;
+
+                var s = "";
+                s+= "<ul>";
+                for (var i = 0; i < settings.length; i++){
+                    s+= "<li><a onclick='createModal()' style='color: black'>" + settings[i].data + "</a></li>";
+                }
+                s+= "</ul>";
+                document.getElementById("rowForInsertDate").innerHTML = s;
+            }
+        });
+
+
+
+        document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+        var $fields = $(".field :input");
+        $fields.keyup(function () {
+
+            var $emptyFields = $fields.filter(function () {
+
+                // remove the $.trim if whitespace is counted as filled
+                return $.trim(this.value) === "";
+            });
+
+            if (!$emptyFields.length) {
+                document.getElementById("sendButton").setAttribute("class", "ui button")
+                document.getElementById("messageCompila").setAttribute("class", "hiddenMessage")
+            } else {
+                document.getElementById("messageCompila").setAttribute("class", "")
+                document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+            }
+        });
+    });
 
 </script>
 
