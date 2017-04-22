@@ -399,7 +399,7 @@ module.exports = {
                         classeInEsame.alunni.push(studente);//aggiungo lo studente alla classe
 
                         var amico = module.exports.checkDesiderata(studente);
-
+                        amico = null;
                         if (amico) {
                             module.exports.removeStudenteFromInsiemi(amico);
                             classeInEsame.alunni.push(amico);
@@ -422,7 +422,7 @@ module.exports = {
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                         amico = module.exports.checkDesiderata(studente);
-
+                        amico = null;
                         if (amico) {
                             module.exports.removeStudenteFromInsiemi(amico);
                             classeInEsame.alunni.push(amico);
@@ -457,7 +457,7 @@ module.exports = {
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                         amico = module.exports.checkDesiderata(studente);
-
+                        amico = null;
                         module.exports.createProprietaClasse(classeInEsame.nome);
                         proprietaAttuali = classeInEsame.propAttuali;
                     }
@@ -474,7 +474,7 @@ module.exports = {
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                         amico = module.exports.checkDesiderata(studente);
-
+                        amico = null;
                         if (amico) {
                             module.exports.removeStudenteFromInsiemi(amico);
                             classeInEsame.alunni.push(amico);
@@ -500,7 +500,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
-
+                            amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
                                 classeInEsame.alunni.push(amico);
@@ -527,7 +527,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
-
+                            amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
                                 classeInEsame.alunni.push(amico);
@@ -551,7 +551,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
-
+                            amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
                                 classeInEsame.alunni.push(amico);
@@ -567,9 +567,12 @@ module.exports = {
 
         if (module.exports.thereIsStundentiInInsiemi()){
             console.log("È true");
+            for (var lista in listaClassi){
+                console.log(listaClassi[lista].propIdeali);
+            }
             //module.exports.popolaClassiRimanente();
         }
-        console.log(insiemi);
+        //console.log(insiemi);
     },
 
     thereIsStundentiInInsiemi: function () {
@@ -587,6 +590,28 @@ module.exports = {
             }
         }
         return false;
+    },
+
+    inizializzaPropIdeali: function(){
+        for (var i = 0; i < listaClassi.length; i++){
+            listaClassi[i].propIdeali["alunni"] = settings.min_al;
+            listaClassi[i].propIdeali["legge_104"] = 0;
+            listaClassi[i].propIdeali.femmine = 0;
+        }
+    },
+
+    distribuisciSe104: function (numAlunniCl) {
+        var num = numAlunniCl - settings.max_al_104;
+        for (var i = 0; i < listaClassi.length; i++){
+            if (num > 0){
+                if (listaClassi[i].propIdeali["legge_104"] == 0){
+                    listaClassi[i].propIdeali["alunni"] += 1;
+                    num -= 1;
+                }
+            } else{
+                break;
+            }
+        }
     },
 
     generaPropIdeali: function () {
@@ -616,16 +641,19 @@ module.exports = {
         }
 
         var flag = true;
+        module.exports.inizializzaPropIdeali();
 
         while (flag) {
             for (var i in listaClassi) {
+                var flag104 = true;
                 if (totale104 > 0) {
                     listaClassi[i].propIdeali["legge_104"] += 1;
-                    listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
+                    if (flag104){
+                        module.exports.distribuisciSe104(listaClassi[i].propIdeali["alunni"]);
+                        listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
+                        flag104 = false;
+                    }
                     totale104 -= 1;
-                } else {
-                    if (!(listaClassi[i].propIdeali["alunni"])) listaClassi[i].propIdeali["alunni"] = settings.min_al;
-
                 }
             }
             listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
