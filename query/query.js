@@ -86,18 +86,18 @@ module.exports = {
         });
     },
 
-    insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+    insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {
+        connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
-                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati);
+                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti);
             }
         });
     },
 
     getSettingsPrime: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati from impostazioni_prime", function (err, rows) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti from impostazioni_prime", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -106,18 +106,18 @@ module.exports = {
         });
     },
 
-    insertSettingsTerze: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati) {
-        connection.query("INSERT INTO impostazioni_terze(data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati], function (err, row) {
+    insertSettingsTerze: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {
+        connection.query("INSERT INTO impostazioni_terze(data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
-                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, mediaMin, mediaMax, bocciati);
+                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti);
             }
         });
     },
 
     getSettingsTerze: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, media_min, media_max, bocciati from impostazioni_terze", function (err, rows) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti from impostazioni_terze", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {

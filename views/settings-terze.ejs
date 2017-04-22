@@ -81,19 +81,8 @@
                             <input name="stessa_iniziale" placeholder="Residenza" type="number" id="iniziale">
                         </div>
                         <div class="field">
-                            <label>Media</label>
-                            <div class="two fields">
-                                <div class="field">
-                                    <input type="number" name="media_min" placeholder="Media minima" id="media-min">
-                                </div>
-                                <div class="field">
-                                    <input type="number" name="media_max" placeholder="Media massima" id="media-max">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field">
                             <label>Ripetenti</label>
-                            <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
+                            <input name="ripetenti" placeholder="Ripetenti" type="number" id="ripetenti">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
@@ -224,9 +213,7 @@
         var stranieri = parseInt($("#stranieri").val());
         var residenza = parseInt($("#residenza").val());
         var iniziale = parseInt($("#iniziale").val());
-        var mediaMin = parseFloat($("#mediaMin").val());
-        var mediaMax = parseFloat($("#mediaMax").val());
-        var bocciati = parseInt($("#bocciati").val());
+        var ripetenti = parseInt($("#ripetenti").val());
         $.ajax({
             url: '/insert-settings-terze',
             data: {
@@ -238,9 +225,7 @@
                 "stranieri" : stranieri,
                 "residenza" : residenza,
                 "iniziale" : iniziale,
-                "mediaMin" : mediaMin,
-                "mediaMax" : mediaMax,
-                "bocciati" : bocciati
+                "ripetenti" : ripetenti
             },
             type: 'get',
             success: function (data) {

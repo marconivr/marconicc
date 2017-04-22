@@ -174,7 +174,7 @@ module.exports = function (app, passport) {
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
+        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.ripetenti);
     });
 
     /**
@@ -186,7 +186,7 @@ module.exports = function (app, passport) {
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
+        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.ripetenti);
     });
 
     /**
@@ -200,12 +200,4 @@ module.exports = function (app, passport) {
                 res.send(JSON.stringify(results));
         }, req.query.priorita);
     });
-
-    function setValueOfArrayForSettings(rows, key) {
-        if (key == "listOfPreviousSettings"){
-            dataInSettings[key] = rows[0].data;
-        }else {
-            dataInSettings[key] = rows[0].result;
-        }
-    }
 };

@@ -83,19 +83,8 @@
                             <input name="stessa_iniziale" placeholder="Residenza" type="number" id="iniziale">
                         </div>
                         <div class="field">
-                            <label>Media</label>
-                            <div class="two fields">
-                                <div class="field">
-                                    <input type="number" name="media_min" placeholder="Media minima" id="media-min">
-                                </div>
-                                <div class="field">
-                                    <input type="number" name="media_max" placeholder="Media massima" id="media-max">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field">
                             <label>Ripetenti</label>
-                            <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
+                            <input name="ripetenti" placeholder="Ripetenti" type="number" id="ripetenti">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
@@ -169,17 +158,10 @@
 <div class="ui modal">
     <i class="close icon"></i>
     <div class="header">
-        Profile Picture
+
     </div>
-    <div class="image content">
-        <div class="ui medium image">
-            <img src="/images/avatar/large/chris.jpg">
-        </div>
-        <div class="description">
-            <div class="ui header">We've auto-chosen a profile image for you.</div>
-            <p>We've grabbed the following image from the <a href="https://www.gravatar.com" target="_blank">gravatar</a> image associated with your registered e-mail address.</p>
-            <p>Is it okay to use this photo?</p>
-        </div>
+    <div class="rowForInsertSettings">
+
     </div>
     <div class="actions">
         <div class="ui black deny button">
@@ -202,7 +184,10 @@
 </script>
 
 <script>
+    var settings = [];
     function  createModal() {
+
+
         $('.ui.modal')
             .modal('show')
         ;
@@ -222,7 +207,7 @@
     function addSettings() {
 
         var d = new Date();
-        var data = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+        var data = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
         var descrizione = $("#descrizione").val()
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
@@ -230,9 +215,7 @@
         var stranieri = parseInt($("#stranieri").val());
         var residenza = parseInt($("#residenza").val());
         var iniziale = parseInt($("#iniziale").val());
-        var mediaMin = parseFloat($("#mediaMin").val());
-        var mediaMax = parseFloat($("#mediaMax").val());
-        var bocciati = parseInt($("#bocciati").val());
+        var ripetenti = parseInt($("#ripetenti").val());
         $.ajax({
             url: '/insert-settings-prime',
             data: {
@@ -244,9 +227,7 @@
                 "stranieri" : stranieri,
                 "residenza" : residenza,
                 "iniziale" : iniziale,
-                "mediaMin" : mediaMin,
-                "mediaMax" : mediaMax,
-                "bocciati" : bocciati
+                "ripetenti" : ripetenti
             },
             type: 'get',
             success: function (data) {
@@ -291,7 +272,6 @@
 
     //this function check that the form is compiled Strina release to check!!
     $(document).ready(function() {
-        var settings = [];
         $.ajax({
             type: "GET",
             url: '/get-past-settings-prime',
