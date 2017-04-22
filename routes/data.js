@@ -180,8 +180,18 @@ module.exports = function (app, passport, upload) {
         res.send("ok arrivato al db");
     });
 
-    app.get('/get-past-settings', middleware.isLoggedIn, function (req, res) {
+    app.get('/get-past-settings-prime', middleware.isLoggedIn, function (req, res) {
         query.getSettingsPrime(function (err, results) {
+            if (err)
+                err
+            else {
+                res.send(results);
+            }
+        });
+    });
+
+    app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
+        query.getSettingsTerze(function (err, results) {
             if (err)
                 err
             else {

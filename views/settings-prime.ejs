@@ -46,9 +46,6 @@
             <div id="rowForInsertDate">
 
             </div>
-            <a onclick="createModal();">
-
-            </a>
         </div>
         <div class="ten wide column">
             <div class="ui centered grid">
@@ -99,6 +96,10 @@
                         <div class="field">
                             <label>Ripetenti</label>
                             <input name="bocciati" placeholder="Bocciati" type="number" id="ripetenti">
+                        </div>
+                        <div class="field">
+                            <label>Descrizione</label>
+                            <input name="descrizione" placeholder="Descrizione" type="text" id="descrizione">
                         </div>
                         <div class="ui hidden success message" id="message">
                             <div class="header">Form Completato</div>
@@ -218,32 +219,11 @@
         }
     }
 
-    function addTag() {
-        var tag = $("#nome-tag").val();
-        var descrizione = $("#descrizione-tag").val();
-
-        $.ajax({
-            url: '/insert-tag',
-            data: {
-                "tag": tag,
-                "descrizione" : descrizione
-            },
-            type: 'get',
-            success: function (data) {
-
-            },
-            error: function (xhr, status, error) {
-
-                console.log('Error: ' + error.message);
-
-            },
-        });
-    }
-
     function addSettings() {
 
         var d = new Date();
         var data = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+        var descrizione = $("#descrizione").val()
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
         var femmine = parseInt($("#femmine").val());
@@ -257,6 +237,7 @@
             url: '/insert-settings-prime',
             data: {
                 "data" : data,
+                "descrizione" : descrizione,
                 "alunniMin" : alunniMin,
                 "alunniMax": alunniMax ,
                 "femmine" : femmine ,
@@ -313,12 +294,12 @@
         var settings = [];
         $.ajax({
             type: "GET",
-            url: '/get-past-settings',
+            url: '/get-past-settings-prime',
             data: {
                 format: 'json'
             },
             error: function () {
-                alert('Errore di scaricamento dei dati /get-past-settings');
+
             },
             dataType: 'json',
 

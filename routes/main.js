@@ -158,49 +158,6 @@ module.exports = function (app, passport) {
     });
 
     app.get('/settings-terze', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        query.getNumerOfStudentiPrima(function (err, results) {
-            if (err)
-                throw err;
-            else
-                setValueOfArrayForSettings(results,"numberOfStudentiPrima");
-        });
-
-        query.getNumerOfStudentiTerza(function (err, results) {
-            if (err)
-                throw err;
-            else
-                setValueOfArrayForSettings(results,"numberOfStudentiTerza");
-
-        });
-
-        query.getNumberGirl(function (err, results) {
-            if (err)
-                throw err;
-            else
-                setValueOfArrayForSettings(results,"numberOfGirlPrima");
-        }, "PRIMA");
-
-        query.getAVGOfStudentiPrima(function (err, results) {
-            if (err)
-                throw err;
-            else
-                setValueOfArrayForSettings(results,"AVGOfStudentiPrima");
-        });
-
-        query.getNumberOfGirlTerza(function (err, results) {
-            if (err)
-                throw err;
-            else
-                setValueOfArrayForSettings(results,"numberOfGirlTerza");
-        });
-
-
-        query.getAVGOfStudentiTerza(function (err, results) {
-            if (err)
-                throw err;
-            else
-                setValueOfArrayForSettings(results,"AVGOfStudentiTerza");
-        });
 
         res.render('settings-terze.ejs', {
             pageTitle: " Settings terze",
@@ -217,7 +174,7 @@ module.exports = function (app, passport) {
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.data, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
+        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
     });
 
     /**
@@ -229,7 +186,7 @@ module.exports = function (app, passport) {
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
+        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.mediaMin, req.query.mediaMax, req.query.bocciati);
     });
 
     /**
