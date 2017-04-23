@@ -385,7 +385,7 @@ module.exports = {
             //aggiungo 104 se c'è ne bisogno
             for (var item in insiemi) {
                 var prop = insiemi[item].nome;
-                console.log(item + ", " + prop);
+                //console.log(item + ", " + prop);
                 if (prop == "legge_104") {
                     while (proprietaIdeali.legge_104 > proprietaAttuali.legge_104 && proprietaIdeali.alunni > proprietaAttuali.alunni) {
                         var studente = module.exports.findAlunnoIdeale(proprietaIdeali, prop);
@@ -566,8 +566,15 @@ module.exports = {
         if (module.exports.thereIsStundentiInInsiemi()){
             //console.log("È true");
             for (var lista in listaClassi){
-                //console.log(listaClassi[lista].nome + ": ideale --> " + listaClassi[lista].propIdeali.voto['10'] + " attuale--> " + listaClassi[lista].propAttuali.voto['10']);
-                //console.log(listaClassi[lista].propIdeali.alunni)
+                console.log("######################################");
+                console.log(listaClassi[lista].nome + " alunni ideali: " + listaClassi[lista].propIdeali.alunni + " alunni attuali: " + listaClassi[lista].propAttuali.alunni)
+                console.log("10 ideale : " + listaClassi[lista].propIdeali.voto['10'] + ", 10 attuale : " + listaClassi[lista].propAttuali.voto['10']);
+                console.log("9  ideale : " + listaClassi[lista].propIdeali.voto['9'] + ", 9  attuale : " + listaClassi[lista].propAttuali.voto['9']);
+                console.log("8  ideale : " + listaClassi[lista].propIdeali.voto['8'] + ", 8  attuale : " + listaClassi[lista].propAttuali.voto['8']);
+                console.log("7  ideale : " + listaClassi[lista].propIdeali.voto['7'] + ", 7  attuale : " + listaClassi[lista].propAttuali.voto['7']);
+                console.log("6  ideale : " + listaClassi[lista].propIdeali.voto['6'] + ", 6  attuale : " + listaClassi[lista].propAttuali.voto['6']);
+                console.log("######################################");
+
             }
             //module.exports.popolaClassiRimanente();
         }
