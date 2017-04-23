@@ -215,9 +215,7 @@ module.exports = {
                 return 1;
             return 0;
         }
-    }
-
-    ,
+    },
 
     /**
      * Randomize array element order in-place.
@@ -594,9 +592,14 @@ module.exports = {
 
     inizializzaPropIdeali: function(){
         for (var i = 0; i < listaClassi.length; i++){
-            listaClassi[i].propIdeali["alunni"] = settings.min_al;
-            listaClassi[i].propIdeali["legge_104"] = 0;
+            listaClassi[i].propIdeali.alunni = settings.min_al;
+            listaClassi[i].propIdeali.legge_104 = 0;
+            listaClassi[i].propIdeali.legge_107 = 0;
+            listaClassi[i].propIdeali.ripetenti = 0;
             listaClassi[i].propIdeali.femmine = 0;
+            listaClassi[i].propIdeali.CAP = {};
+            listaClassi[i].propIdeali.voto = {};
+            listaClassi[i].propIdeali.nazionalita = {};
         }
     },
 
@@ -612,6 +615,49 @@ module.exports = {
                 break;
             }
         }
+    },
+
+    validaPropIdeali: function (voti) {
+        for (var i in listaClassi){
+            var nvoti = 0;
+
+            for (var k in listaClassi[i].propIdeali.voto){
+                nvoti +=  listaClassi[i].propIdeali.voto[k];
+            }
+
+            if (nvoti > listaClassi[i].propIdeali.alunni){
+                listaClassi[i].propIdeali.voto['7'] = nvoti - listaClassi[i].propIdeali.alunni;
+                voti['7'] += nvoti - listaClassi[i].propIdeali.alunni;
+            }
+        }
+        if (Object.keys(voti).length > 0){
+            module.exports.sortProprietaIdeali("alunni");
+
+            for (var i = listaClassi.length - 1; i >= 0; i--){
+
+                var numVotiClasse = function(voti) {
+                    var ris = 0;
+                    for (var v in voti){
+                        ris += voti[v];
+                    }
+                    return ris;
+                }
+
+                for (var v = Object.keys(voti).length - 1; v >= 0; v--){
+                    var nVC = numVotiClasse(listaClassi[i].propIdeali.voto);
+                    if (listaClassi[i].propIdeali.alunni > nVC){
+                        if (voti[Object.keys(voti)[v]] > listaClassi[i].propIdeali.alunni - nVC){
+                            listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += listaClassi[i].propIdeali.alunni - nVC;
+                            voti[Object.keys(voti)[v]] -= listaClassi[i].propIdeali.alunni - nVC;
+                        } else{
+                            listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += voti[Object.keys(voti)[v]];
+                            delete voti[Object.keys(voti)[v]];
+                        }
+                    }
+                }
+            }
+        }
+        return voti;
     },
 
     generaPropIdeali: function () {
@@ -647,10 +693,10 @@ module.exports = {
             for (var i in listaClassi) {
                 var flag104 = true;
                 if (totale104 > 0) {
-                    listaClassi[i].propIdeali["legge_104"] += 1;
+                    listaClassi[i].propIdeali.legge_104 += 1;
                     if (flag104){
-                        module.exports.distribuisciSe104(listaClassi[i].propIdeali["alunni"]);
-                        listaClassi[i].propIdeali["alunni"] = settings.max_al_104;
+                        module.exports.distribuisciSe104(listaClassi[i].propIdeali.alunni);
+                        listaClassi[i].propIdeali.alunni = settings.max_al_104;
                         flag104 = false;
                     }
                     totale104 -= 1;
@@ -660,7 +706,7 @@ module.exports = {
 
             for (var i in listaClassi) {
                 if (totale107 > 0) {
-                    listaClassi[i].propIdeali["legge_107"] += 1;
+                    listaClassi[i].propIdeali.legge_107 += 1;
                     totale107 -= 1;
                 } else {
                     break;
@@ -670,61 +716,45 @@ module.exports = {
             var setRip = Math.round(totaleRip / listaClassi.length) > 0 ? Math.round(totaleRip / listaClassi.length) : 1;
             for (var i in listaClassi) {
                 if (totaleRip > 0) {
-                    if (listaClassi[i].propIdeali.ripetenti === undefined) {
-                        listaClassi[i].propIdeali.ripetenti = 0;
-                    }
-
                     if (totaleRip <= settings.fem) {
-                        listaClassi[i].propIdeali["ripetenti"] += setRip;
+                        listaClassi[i].propIdeali.ripetenti += setRip;
                         totaleRip = 0;
                         break;
                     } else {
-                        listaClassi[i].propIdeali["ripetenti"] += setRip;
+                        listaClassi[i].propIdeali.ripetenti += setRip;
                         totaleRip -= setRip;
                     }
-                } else {
-                    if (!(listaClassi[i].propIdeali.ripetenti)) listaClassi[i].propIdeali.ripetenti = 0;
                 }
             }
 
             for (var i in listaClassi) {
                 if (totaleFem > 0) {
-                    if (listaClassi[i].propIdeali.femmine === undefined) {
-                        listaClassi[i].propIdeali.femmine = 0;
-                    }
-
                     if (totaleFem <= settings.fem) {
-                        listaClassi[i].propIdeali["femmine"] += totaleFem;
+                        listaClassi[i].propIdeali.femmine += totaleFem;
                         totaleFem = 0;
                         break;
                     } else {
-                        listaClassi[i].propIdeali["femmine"] += settings.fem;
+                        listaClassi[i].propIdeali.femmine  += settings.fem;
                         totaleFem -= settings.fem;
                     }
-                } else {
-                    if (!(listaClassi[i].propIdeali.femmine)) listaClassi[i].propIdeali.femmine = 0;
                 }
             }
 
             for (var i in listaClassi) {
                 for (var k in naz) {
-                    if (listaClassi[i].propIdeali.nazionalita === undefined) {
-                        listaClassi[i].propIdeali.nazionalita = {};
-                    }
-
-                    if (listaClassi[i].propIdeali["nazionalita"][k] === undefined) {
+                    if (listaClassi[i].propIdeali.nazionalita[k] === undefined) {
                         listaClassi[i].propIdeali.nazionalita[k] = 0;
                     }
 
                     if (naz[k] <= settings.nazionalita) {
-                        listaClassi[i].propIdeali["nazionalita"][k] += naz[k];
+                        listaClassi[i].propIdeali.nazionalita[k] += naz[k];
                         delete naz[k];
                     } else {
-                        listaClassi[i].propIdeali["nazionalita"][k] += settings.nazionalita;
+                        listaClassi[i].propIdeali.nazionalita[k] += settings.nazionalita;
                         naz[k] -= settings.nazionalita;
                     }
 
-                    if (Object.keys(listaClassi[i].propIdeali["nazionalita"]).length == settings.naz_per_classe) {
+                    if (Object.keys(listaClassi[i].propIdeali.nazionalita).length == settings.naz_per_classe) {
                         break;
                     }
                 }
@@ -734,31 +764,27 @@ module.exports = {
                 var nAlCAP = 0;
                 var temp = 0;
                 for (var k in cap) {
-                    if (listaClassi[i].propIdeali.CAP === undefined) {
-                        listaClassi[i].propIdeali.CAP = {};
-                    }
-
-                    if (listaClassi[i].propIdeali["CAP"][k] === undefined) {
+                    if (listaClassi[i].propIdeali.CAP[k] === undefined) {
                         listaClassi[i].propIdeali.CAP[k] = 0;
                     }
 
-                    if (nAlCAP + settings.stessa_pr > listaClassi[i].propIdeali["alunni"]) {
-                        temp = (listaClassi[i].propIdeali["alunni"] - nAlCAP);
+                    if (nAlCAP + settings.stessa_pr > listaClassi[i].propIdeali.alunni) {
+                        temp = (listaClassi[i].propIdeali.alunni - nAlCAP);
                     } else {
                         temp = settings.stessa_pr;
                     }
 
                     if (cap[k] <= settings.stessa_pr) {
-                        listaClassi[i].propIdeali["CAP"][k] += cap[k];
+                        listaClassi[i].propIdeali.CAP[k] += cap[k];
                         nAlCAP += cap[k];
                         delete cap[k];
                     } else {
-                        listaClassi[i].propIdeali["CAP"][k] += temp;
+                        listaClassi[i].propIdeali.CAP[k] += temp;
                         cap[k] -= temp;
                         nAlCAP += temp;
                     }
 
-                    if (nAlCAP >= listaClassi[i].propIdeali["alunni"]) {
+                    if (nAlCAP >= listaClassi[i].propIdeali.alunni) {
                         break;
                     }
                 }
@@ -768,24 +794,22 @@ module.exports = {
                 var distrVoto = Math.round(voti[k] / listaClassi.length) > 0 ? Math.round(voti[k] / listaClassi.length) : 1;
 
                 for (var i in listaClassi) {
-                    if (listaClassi[i].propIdeali.voto === undefined) {
-                        listaClassi[i].propIdeali.voto = {};
-                    }
-
-                    if (listaClassi[i].propIdeali["voto"][k] === undefined) {
+                    if (listaClassi[i].propIdeali.voto[k] === undefined) {
                         listaClassi[i].propIdeali.voto[k] = 0;
                     }
 
                     if (voti[k] <= distrVoto) {
-                        listaClassi[i].propIdeali["voto"][k] += voti[k];
+                        listaClassi[i].propIdeali.voto[k] += voti[k];
                         delete voti[k];
                         break;
                     } else {
-                        listaClassi[i].propIdeali["voto"][k] += distrVoto;
+                        listaClassi[i].propIdeali.voto[k] += distrVoto;
                         voti[k] -= distrVoto;
                     }
                 }
             }
+            //voti, cap, ... =  module.exports.validaPropIdeali(voti, cap, ...);
+            voti = module.exports.validaPropIdeali(voti);
 
             if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0 && Object.keys(voti).length == 0 &&
                 totaleFem == 0 && Object.keys(cap).length == 0) {
