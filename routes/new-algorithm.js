@@ -604,7 +604,7 @@ module.exports = {
             listaClassi[i].propIdeali.voto = {};
             listaClassi[i].propIdeali.nazionalita = {};
             if (count < listaAlunni.length){
-                listaClassi[0].propIdeali.alunni += listaAlunni.length - count;
+                listaClassi[listaClassi.length - 1].propIdeali.alunni += listaAlunni.length - count;
             }
         }
     },
