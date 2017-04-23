@@ -1,5 +1,5 @@
 var debug = false;
-var saveRealTimeOnDb = false;
+var saveRealTimeOnDb = true;
 
 
 var barChartArray = [];//reference to barChart
@@ -463,16 +463,13 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
         cf: cf,
         fromClass: fromClass,
         toClass: toClass
-    }
+    };
 
     if (saveRealTimeOnDb) {
         $.ajax({
             type: "POST",
             url: "/move-student",
-
             data: jsonToSend,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
             success: function (data) {
                 console.log(data);
             },
@@ -1276,6 +1273,13 @@ function handleCheckBoxBocciati() {
         });
 }
 
+
+function history() {
+
+
+    $('.ui.modal.history').modal('show');
+}
+
 ////////////////////////////////////////////////////
 //AJAX CALL//
 ////////////////////////////////////////////////////
@@ -1311,6 +1315,11 @@ $(document).ready(function () {
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
             handleCheckBoxBocciati();
+
+            //handle history click
+            $('#history').click(function (e) {
+                history();
+            });
 
 
             for (i = 0; i < listaClassi.length; i++) {
@@ -1462,7 +1471,7 @@ $(document).ready(function () {
                         switch (key){
                             case "informazioni":
                                 //open modal
-                                $('.ui.modal').modal({
+                                $('.ui.modal.informazioni').modal({
                                     onHide: function () {
 
                                     },

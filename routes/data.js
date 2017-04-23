@@ -174,8 +174,7 @@ module.exports = function (app, passport, upload) {
 
 
     app.post('/move-student', middleware.isLoggedIn, function (req, res) {
-        console.log(req);
-        alg.addStundentInClss(req.cf, req.fromClass, req.toClass, true);
+        alg.addStundentInClss(req.body.cf, req.body.fromClass, req.body.toClass, true);
         console.log("Salvo sul db");
         res.send("ok arrivato al db");
     });

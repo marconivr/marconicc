@@ -267,3 +267,13 @@ primary key(nome_classe, cf_alunno),
 foreign key (nome_classe) references classi(nome),
 foreign key (cf_alunno) references alunni(cf)
 );
+
+CREATE TABLE `history` (
+  `id` int(11) NOT NULL,
+  `cf` varchar(16) NOT NULL,
+  `classe_precedente` varchar(10) NOT NULL,
+  `classe_successiva` varchar(10) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id_utente` varchar(8) NOT NULL,
+    CONSTRAINT `cf` FOREIGN key(`cf`) REFERENCES alunni(`cf`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

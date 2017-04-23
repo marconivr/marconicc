@@ -137,6 +137,9 @@
             <div class="divider"></div>
             <div class="item" id="scarica-excel">Scarica excel</div>
             <div class="divider"></div>
+            <div class="ui mini header">History</div>
+            <div class="item" id="history">History</div>
+            <div class="divider"></div>
             <div class="ui mini header">Filtri</div>
             <div class="item">
                 <i class="dropdown icon"></i>
@@ -250,7 +253,7 @@
 <br>
 
 <!--modal response -->
-<div class="ui modal">
+<div class="ui modal informazioni">
     <i class="close icon"></i>
     <div class="header">
         <span id="cognome"></span>
@@ -383,6 +386,36 @@
         </div>
         <div class="ui positive right labeled icon button">
             OK
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+
+<!--modal for history-->
+<div class="ui modal history">
+    <i class="close icon"></i>
+    <div class="header">
+        Profile Picture
+    </div>
+    <div class="image content">
+        <div class="ui medium image">
+            <img src="/images/avatar/large/chris.jpg">
+        </div>
+        <div class="description">
+            <div class="ui header">We've auto-chosen a profile image for you.</div>
+            <p>We've grabbed the following image from the <a href="https://www.gravatar.com"
+                                                             target="_blank">gravatar</a> image associated with your
+                registered e-mail address.</p>
+            <p>Is it okay to use this photo?</p>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Nope
+        </div>
+        <div class="ui positive right labeled icon button">
+            Yep, that's me
             <i class="checkmark icon"></i>
         </div>
     </div>
