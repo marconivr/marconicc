@@ -564,9 +564,10 @@ module.exports = {
         }
 
         if (module.exports.thereIsStundentiInInsiemi()){
-            console.log("È true");
+            //console.log("È true");
             for (var lista in listaClassi){
-                console.log(listaClassi[lista].propIdeali);
+                console.log(listaClassi[lista].nome + ": ideale --> " + listaClassi[lista].propIdeali.voto['10'] + " attuale--> " + listaClassi[lista].propAttuali.voto['10']);
+                console.log(listaClassi[lista].propIdeali.alunni)
             }
             //module.exports.popolaClassiRimanente();
         }
@@ -807,6 +808,7 @@ module.exports = {
                         voti[k] -= distrVoto;
                     }
                 }
+
             }
             //voti, cap, ... =  module.exports.validaPropIdeali(voti, cap, ...);
             voti = module.exports.validaPropIdeali(voti);
@@ -816,6 +818,7 @@ module.exports = {
                 flag = false;
             }
         }
+
         listaClassi.sort(module.exports.sortClassiOrdAlf());
 
         module.exports.popolaClassi();
