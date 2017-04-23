@@ -566,12 +566,12 @@ module.exports = {
         if (module.exports.thereIsStundentiInInsiemi()){
             //console.log("È true");
             for (var lista in listaClassi){
-                console.log(listaClassi[lista].nome + ": ideale --> " + listaClassi[lista].propIdeali.voto['10'] + " attuale--> " + listaClassi[lista].propAttuali.voto['10']);
-                console.log(listaClassi[lista].propIdeali.alunni)
+                //console.log(listaClassi[lista].nome + ": ideale --> " + listaClassi[lista].propIdeali.voto['10'] + " attuale--> " + listaClassi[lista].propAttuali.voto['10']);
+                //console.log(listaClassi[lista].propIdeali.alunni)
             }
             //module.exports.popolaClassiRimanente();
         }
-        console.log(insiemi);
+        //console.log(insiemi);
     },
 
     thereIsStundentiInInsiemi: function () {
@@ -665,43 +665,48 @@ module.exports = {
             }
         }
         //#########################################################################################################
-        // for (var i in listaClassi){
-        //     var ncap = 0;
-        //
-        //     for (var k in listaClassi[i].propIdeali.CAP){
-        //         ncap +=  listaClassi[i].propIdeali.CAP[k];
-        //     }
-        //
-        //     if (ncap > listaClassi[i].propIdeali.alunni){
-        //         for (var k in listaClassi[i].propIdeali.CAP){
-        //             listaClassi[i].propIdeali.CAP -= 1;
-        //
-        //             if (cap[k] === undefined)   cap[k] = 1;
-        //             else    cap[k] += 1;
-        //             ncap -= 1;
-        //             if (ncap == listaClassi[i].propIdeali.alunni) break;
-        //         }
-        //     }
-        // }
-        //
-        // if (Object.keys(cap).length > 0){
-        //     for (var i = 0; i < listaClassi.length; i++){
-        //
-        //         for (var v = Object.keys(cap).length - 1; v >= 0; v--){
-        //             var nCAP = countInObject(listaClassi[i].propIdeali.CAP);
-        //             // if (listaClassi[i].propIdeali.alunni > nCAP){
-        //             //     if (cap[Object.keys(cap)[v]] > listaClassi[i].propIdeali.alunni - nCAP){
-        //             //         listaClassi[i].propIdeali.cap[Object.keys(cap)[v]] += listaClassi[i].propIdeali.alunni - nCAP;
-        //             //         cap[Object.keys(cap)[v]] -= listaClassi[i].propIdeali.alunni - nCAP;
-        //             //     } else{
-        //             //         listaClassi[i].propIdeali.voto[Object.keys(cap)[v]] += cap[Object.keys(cap)[v]];
-        //             //         delete cap[Object.keys(cap)[v]];
-        //             //     }
-        //             // }
-        //         }
-        //     }
-        // }
+        for (var i in listaClassi){
+            var ncap = 0;
+
+            for (var k in listaClassi[i].propIdeali.CAP){
+                ncap +=  listaClassi[i].propIdeali.CAP[k];
+            }
+
+            if (ncap > listaClassi[i].propIdeali.alunni){
+                for (var k in listaClassi[i].propIdeali.CAP){
+                    listaClassi[i].propIdeali.CAP[k] -= 1;
+
+                    if (cap[k] === undefined)   cap[k] = 1;
+                    else    cap[k] += 1;
+                    ncap -= 1;
+                    if (ncap == listaClassi[i].propIdeali.alunni) break;
+                }
+            }
+        }
+
+        if (Object.keys(cap).length > 0){
+            module.exports.sortProprietaIdeali("alunni");
+
+            for (var i = listaClassi.length - 1; i >= 0; i--){
+                var nCAP = countInObject(listaClassi[i].propIdeali.CAP);
+                if (listaClassi[i].propIdeali.alunni > nCAP){
+                    for (var v = Object.keys(cap).length - 1; v >= 0; v--){
+                        if (listaClassi[i].propIdeali.CAP[Object.keys(cap)[v]] === undefined){
+                            listaClassi[i].propIdeali.CAP[Object.keys(cap)[v]] = 0;
+                        }
+                        if (cap[Object.keys(cap)[v]] > listaClassi[i].propIdeali.alunni - nCAP){
+                            listaClassi[i].propIdeali.CAP[Object.keys(cap)[v]] += listaClassi[i].propIdeali.alunni - nCAP;
+                            cap[Object.keys(cap)[v]] -= listaClassi[i].propIdeali.alunni - nCAP;
+                        } else{
+                            listaClassi[i].propIdeali.CAP[Object.keys(cap)[v]] += cap[Object.keys(cap)[v]];
+                            delete cap[Object.keys(cap)[v]];
+                        }
+                    }
+                }
+            }
+        }
         //#########################################################################################################
+        console.log(insiemi);
         return voti, cap;
     },
 
