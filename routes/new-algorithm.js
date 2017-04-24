@@ -421,7 +421,7 @@ module.exports = {
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                         amico = module.exports.checkDesiderata(studente);
-                        amico = null;
+                        //amico = null;
                         if (amico) {
                             module.exports.removeStudenteFromInsiemi(amico);
                             classeInEsame.alunni.push(amico);
@@ -456,7 +456,7 @@ module.exports = {
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                         amico = module.exports.checkDesiderata(studente);
-                        amico = null;
+                        //amico = null;
                         module.exports.createProprietaClasse(classeInEsame.nome);
                         proprietaAttuali = classeInEsame.propAttuali;
                     }
@@ -473,7 +473,7 @@ module.exports = {
                         classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                         amico = module.exports.checkDesiderata(studente);
-                        amico = null;
+                        //amico = null;
                         if (amico) {
                             module.exports.removeStudenteFromInsiemi(amico);
                             classeInEsame.alunni.push(amico);
@@ -499,7 +499,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
-                            amico = null;
+                            //amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
                                 classeInEsame.alunni.push(amico);
@@ -526,7 +526,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
-                            amico = null;
+                            //amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
                                 classeInEsame.alunni.push(amico);
@@ -550,7 +550,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
-                            amico = null;
+                            //amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
                                 classeInEsame.alunni.push(amico);
