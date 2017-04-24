@@ -86,6 +86,45 @@ module.exports = {
         });
     },
 
+    /**
+     * aggiorna la classe di uno studente, serve per salvare su db
+     * @param cf
+     * @param classe
+     */
+    updateAlunnoClass: function (callback, cf, classe) {
+        connection.query("UPDATE comp_classi SET nome_classe = '" + classe + "' WHERE cf_alunno = '" + cf + "'", function (err, row) {
+            if (err) {
+                console.error(err);
+            }
+        });
+    },
+
+    insertHistory: function (callback, cf, toClass, fromClass, idUtente) {
+        connection.query(
+            "INSERT INTO HISTORY (cf, classe_precedente, classe_successiva, id_utente) VALUES (?,?,?,?)",
+            [cf, fromClass, toClass, idUtente],
+            function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
+    },
+
+    getHistory: function (callback) {
+        connection.query(
+            "SELECT * FROM `history` order by timestamp DESC",
+            function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
+    },
+    
+
     insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {
         connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
             if (err) {

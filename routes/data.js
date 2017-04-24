@@ -174,13 +174,36 @@ module.exports = function (app, passport, upload) {
 
 
     app.post('/move-student', middleware.isLoggedIn, function (req, res) {
-        alg.addStundentInClss(req.body.cf, req.body.fromClass, req.body.toClass, true);
-        console.log("Salvo sul db");
-        res.send("ok arrivato al db");
+
+        //update student class
+        query.updateAlunnoClass(function (err, results) {
+            if (err)
+                res.send(err);
+            else
+                console.log("Salvo sul db");
+        }, req.body.cf, req.body.toClass);
+
+        //populate history
+        query.insertHistory(function (err, results) {
+            if (err)
+                console.log(err);
+            else
+                res.send(err);
+        }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente);
     });
 
     app.get('/get-past-settings-prime', middleware.isLoggedIn, function (req, res) {
         query.getSettingsPrime(function (err, results) {
+            if (err)
+                err
+            else {
+                res.send(results);
+            }
+        });
+    });
+
+    app.get('/get-history', middleware.isLoggedIn, function (req, res) {
+        query.getHistory(function (err, results) {
             if (err)
                 err
             else {
