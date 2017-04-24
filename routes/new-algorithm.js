@@ -658,7 +658,7 @@ module.exports = {
             }
 
             if (nvoti > listaClassi[i].propIdeali.alunni){
-                listaClassi[i].propIdeali.voto['7'] = nvoti - listaClassi[i].propIdeali.alunni;
+                listaClassi[i].propIdeali.voto['7'] -= nvoti - listaClassi[i].propIdeali.alunni;
                 voti['7'] += nvoti - listaClassi[i].propIdeali.alunni;
             }
         }
