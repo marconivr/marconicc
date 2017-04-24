@@ -599,10 +599,8 @@ module.exports = {
     },
 
     inizializzaPropIdeali: function(){
-        var count = 0;
         for (var i = 0; i < listaClassi.length; i++){
             listaClassi[i].propIdeali.alunni = settings.min_al;
-            count += settings.min_al;
             listaClassi[i].propIdeali.legge_104 = 0;
             listaClassi[i].propIdeali.legge_107 = 0;
             listaClassi[i].propIdeali.ripetenti = 0;
@@ -610,29 +608,32 @@ module.exports = {
             listaClassi[i].propIdeali.CAP = {};
             listaClassi[i].propIdeali.voto = {};
             listaClassi[i].propIdeali.nazionalita = {};
-            if (count < listaAlunni.length){
-                for (var i = listaClassi.length - 1; i >= 0; i--){
-                    if (count > 0){
-                        if (listaClassi[i].propIdeali.alunni < settings.max_al){
-                            listaClassi[i].propIdeali.alunni += 1;
-                            count -= 1;
-                        }
-                    } else{
-                        break;
-                    }
-                }
+        }
+    },
+
+    getClassiAlunniMin: function () {
+        var ris = [];
+        var min = settings.max_al;
+        for (var i = 0; i < listaClassi.length; i++){
+            if (listaClassi[i].propIdeali.legge_104 == 0 && listaClassi[i].propIdeali.alunni < min){
+                ris = [];
+                ris.push(listaClassi[i]);
+                min = listaClassi[i].propIdeali.alunni;
+            }
+            else if (listaClassi[i].propIdeali.legge_104 == 0 && listaClassi[i].propIdeali.alunni == min){
+                ris.push(listaClassi[i]);
             }
         }
+        return ris;
     },
 
     distribuisciSe104: function (numAlunniCl) {
         var num = numAlunniCl - settings.max_al_104;
-        for (var i = 0; i < listaClassi.length; i++){
-            if (num > 0){
-                if (listaClassi[i].propIdeali["legge_104"] == 0){
-                    listaClassi[i].propIdeali["alunni"] += 1;
-                    num -= 1;
-                }
+        var clMin = module.exports.getClassiAlunniMin();
+        for (var i = 0; i < clMin.length; i++){
+            if (num > 0) {
+                clMin[i].propIdeali.alunni += 1;
+                num -= 1;
             } else{
                 break;
             }
@@ -662,8 +663,6 @@ module.exports = {
             }
         }
         if (Object.keys(voti).length > 0){
-            //module.exports.sortProprietaIdeali("alunni");
-
             for (var i = 0; i < listaClassi.length; i++){
 
                 for (var v = Object.keys(voti).length - 1; v >= 0; v--){
@@ -680,7 +679,6 @@ module.exports = {
                 }
             }
         }
-        //#########################################################################################################
         for (var i in listaClassi){
             var ncap = 0;
 
@@ -721,7 +719,6 @@ module.exports = {
                 }
             }
         }
-        //#########################################################################################################
         console.log(insiemi);
         return voti, cap;
     },
@@ -756,16 +753,31 @@ module.exports = {
         module.exports.inizializzaPropIdeali();
 
         while (flag) {
+            var count = 0;
+            for (var i = 0; i < listaClassi.length; i++){
+                count += settings.min_al;
+                if (count < listaAlunni.length && i == listaClassi.length - 1){
+                    for (var k = listaClassi.length - 1; k >= 0; k--){
+                        if (count < listaAlunni.length){
+                            if (listaClassi[k].propIdeali.alunni < settings.max_al){
+                                listaClassi[k].propIdeali.alunni += 1;
+                                count += 1;
+                            }
+                        } else{
+                            break;
+                        }
+                    }
+                }
+            }
             for (var i in listaClassi) {
-                var flag104 = true;
                 if (totale104 > 0) {
                     listaClassi[i].propIdeali.legge_104 += 1;
-                    if (flag104){
-                        module.exports.distribuisciSe104(listaClassi[i].propIdeali.alunni);
-                        listaClassi[i].propIdeali.alunni = settings.max_al_104;
-                        flag104 = false;
-                    }
+                    module.exports.distribuisciSe104(listaClassi[i].propIdeali.alunni);
+                    listaClassi[i].propIdeali.alunni = settings.max_al_104;
                     totale104 -= 1;
+                }
+                else{
+                    break;
                 }
             }
             listaClassi.sort(module.exports.sortProprietaIdeali("legge_104"));
@@ -875,7 +887,6 @@ module.exports = {
                 }
 
             }
-            //voti, cap, ... =  module.exports.validaPropIdeali(voti, cap, ...);
             voti, cap = module.exports.validaPropIdeali(voti, cap);
 
             if (totale104 == 0 && totale107 == 0 && Object.keys(naz).length == 0 && Object.keys(voti).length == 0 &&
