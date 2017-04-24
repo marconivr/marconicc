@@ -665,7 +665,7 @@ module.exports = {
         if (Object.keys(voti).length > 0){
             for (var i = 0; i < listaClassi.length; i++){
 
-                for (var v = Object.keys(voti).length - 1; v >= 0; v--){
+                for (var v = 0; v < Object.keys(voti).length; v++){
                     var nVC = countInObject(listaClassi[i].propIdeali.voto);
                     if (listaClassi[i].propIdeali.alunni > nVC){
                         if (voti[Object.keys(voti)[v]] > listaClassi[i].propIdeali.alunni - nVC){
