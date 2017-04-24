@@ -611,7 +611,16 @@ module.exports = {
             listaClassi[i].propIdeali.voto = {};
             listaClassi[i].propIdeali.nazionalita = {};
             if (count < listaAlunni.length){
-                listaClassi[listaClassi.length - 1].propIdeali.alunni += listaAlunni.length - count;
+                for (var i = listaClassi.length - 1; i >= 0; i--){
+                    if (count > 0){
+                        if (listaClassi[i].propIdeali.alunni < settings.max_al){
+                            listaClassi[i].propIdeali.alunni += 1;
+                            count -= 1;
+                        }
+                    } else{
+                        break;
+                    }
+                }
             }
         }
     },
@@ -653,9 +662,9 @@ module.exports = {
             }
         }
         if (Object.keys(voti).length > 0){
-            module.exports.sortProprietaIdeali("alunni");
+            //module.exports.sortProprietaIdeali("alunni");
 
-            for (var i = listaClassi.length - 1; i >= 0; i--){
+            for (var i = 0; i < listaClassi.length; i++){
 
                 for (var v = Object.keys(voti).length - 1; v >= 0; v--){
                     var nVC = countInObject(listaClassi[i].propIdeali.voto);
