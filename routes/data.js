@@ -4,10 +4,12 @@
 
 
 var query = require('./../query/query.js');
-var csv = require("csv");
+var csv_post = require("csv");
 var middleware = require('./middleware/middleware');
+var newAlg = require("./new-algorithm.js");
 var alg = require("./algorithm.js");
 var async = require('async');
+var csv = require('express-csv');
 
 module.exports = function (app, passport, upload) {
 
@@ -16,7 +18,7 @@ module.exports = function (app, passport, upload) {
 
         var data = req.file; //information about data uploaded (post method)
 
-        csv().from.path(data.path, {
+        csv_post().from.path(data.path, {
             delimiter: ";",
             escape: ''
         })
@@ -109,79 +111,118 @@ module.exports = function (app, passport, upload) {
         });
     });
 
-
     app.get('/get-classi-composte', middleware.isLoggedIn, function (req, res) {
         var classi;
         var nAlunniCompCl;
         var listaClassi = [];
         var listaNomiClassi = [];
         var listaAlunniClasse = [];
-        alg.creaInsiemi(); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        query.getNumberAlunniClassi("prima", function (err, results) {
-            if (err)
-                console.log(results);
-            else {
-                nAlunniCompCl = results[0].result;
-                if (nAlunniCompCl == 0) {
-                    alg.firstGeneration("prima", function (err) {
-                        if (err)
-                            console.log(err);
-                        else {
-                            classi = alg.getListaClassi();
-                            query.insertClassi(alg.listaNomiClassi());
-                            for (var i = 0; i < classi.length; i++) {
-                                for (var k = 0; k < classi[i].alunni.length; k++) {
-                                    if (classi[i].alunni[k] !== undefined) {
-                                        query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
-                                    }
-                                }
-                            }
-                            alg.fixClassi();
-                            res.send(alg.getListaClassi());
-                        }
-                    });
-                } else {
-                    query.getClassi(function (err, results) {
-                        if (err)
-                            console.log(err);
-                        else {
 
-                            listaNomiClassi = results;
-                            var counter = 0;
-                            for (var i = 0; i < listaNomiClassi.length; i++) {
-                                query.getAlunniFromClassSync(listaNomiClassi[i].nome, counter, function (err, results, nomeCl, counter) {
-                                    if (err)
-                                        console.log(err);
-                                    else {
-                                        listaAlunniClasse = results;
-                                        listaClassi.push({nome: nomeCl, proprieta:alg.createProprietaClasse(listaAlunniClasse),  alunni: listaAlunniClasse});
-                                        if (counter  == listaNomiClassi.length - 1){
-                                            alg.setListaClassi(listaClassi);
-                                            alg.fixClassi();
-                                            alg.printProprieta();
-                                            res.send(alg.getListaClassi());
+        var insiemi = null;
+
+        alg.creaInsiemi(function (err, result) {
+            if (err){
+                console.log(err)
+            }else {
+                insiemi = result;
+                alg.setInsiemi(insiemi);
+                query.getNumberAlunniClassi("prima", function (err, results) {
+                    if (err)
+                        console.log(results);
+                    else {
+                        nAlunniCompCl = results[0].result;
+                        if (nAlunniCompCl == 0) {
+                            alg.firstGeneration("prima", function (err) {
+                                if (err)
+                                    console.log(err);
+                                else {
+                                    classi = alg.getListaClassi();
+                                    query.insertClassi(alg.listaNomiClassi());
+                                    for (var i = 0; i < classi.length; i++) {
+                                        for (var k = 0; k < classi[i].alunni.length; k++) {
+                                            if (classi[i].alunni[k] !== undefined) {
+                                                query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
+                                            }
                                         }
                                     }
-                                });
-                                counter++;
-                            }
+                                    alg.fixClassi();
+                                    res.send(alg.getListaClassi());
+                                }
+                            });
+                        } else {
+                            query.getClassi(function (err, results) {
+                                if (err)
+                                    console.log(err);
+                                else {
+
+                                    listaNomiClassi = results;
+                                    var counter = 0;
+                                    for (var i = 0; i < listaNomiClassi.length; i++) {
+                                        query.getAlunniFromClassSync(listaNomiClassi[i].nome, counter, function (err, results, nomeCl, counter) {
+                                            if (err)
+                                                console.log(err);
+                                            else {
+                                                listaAlunniClasse = results;
+                                                listaClassi.push({nome: nomeCl, propAttuali:alg.createProprietaClasse(listaAlunniClasse),  alunni: listaAlunniClasse});
+                                                if (counter  == listaNomiClassi.length - 1){
+                                                    alg.setListaClassi(listaClassi);
+                                                    alg.fixClassi();
+                                                    alg.printProprieta();
+                                                    res.send(alg.getListaClassi());
+                                                }
+                                            }
+                                        });
+                                        counter++;
+                                    }
+                                }
+                            });
                         }
-                    });
-                }
+                    }
+                });
             }
         });
     });
 
 
+    app.get('/generate-classi' ,middleware.isLoggedIn,function (req,res) {
+        newAlg.generaClassiPrima(function (classi) {
+                res.send(classi);
+        });
+
+    });
+
     app.post('/move-student', middleware.isLoggedIn, function (req, res) {
-        alg.addStundentInClss(req.body.cf, req.body.fromClass, req.body.toClass, true);
-        console.log("Salvo sul db");
-        res.send("ok arrivato al db");
+
+        //update student class
+        query.updateAlunnoClass(function (err, results) {
+            if (err)
+                res.send(err);
+            else
+                console.log("Salvo sul db");
+        }, req.body.cf, req.body.toClass);
+
+        //populate history
+        query.insertHistory(function (err, results) {
+            if (err)
+                console.log(err);
+            else
+                res.send(err);
+        }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente);
     });
 
     app.get('/get-past-settings-prime', middleware.isLoggedIn, function (req, res) {
         query.getSettingsPrime(function (err, results) {
             if (err)
+                console.log(err);
+            else {
+                res.send(results);
+            }
+        });
+    });
+
+    app.get('/get-history', middleware.isLoggedIn, function (req, res) {
+        query.getHistory(function (err, results) {
+            if (err)
                 err
             else {
                 res.send(results);
@@ -189,14 +230,41 @@ module.exports = function (app, passport, upload) {
         });
     });
 
-    app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
-        query.getSettingsTerze(function (err, results) {
+    app.get('/remove-student-from-history', middleware.isLoggedIn, function (req, res) {
+        query.deleteStudentFromHistory(function (err, results) {
             if (err)
                 err
             else {
                 res.send(results);
             }
+        }, req.query.cf);
+    });
+    
+    
+
+    app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
+        query.getSettingsTerze(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                res.send(results);
+            }
         });
+    });
+
+    app.get('/export-single-csv',middleware.isLoggedIn,function (req,res){
+        query.getClassiComposteForExport(function (err, results) {
+            if(err){
+                console.log(err);
+                res.send("errore");
+            }
+            else{
+                res.setHeader('Content-disposition', 'attachment; filename=export.csv');
+                res.set('Content-Type', 'text/csv');
+                res.csv(results);
+            }
+        })
+
     });
 };
 
