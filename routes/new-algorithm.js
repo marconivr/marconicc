@@ -565,10 +565,11 @@ module.exports = {
             }
         }
 
-        if (module.exports.thereIsStundentiInInsiemi()) {
+        if (!module.exports.thereIsStundentiInInsiemi()) {
             //console.log("È true");
             var debuggerVoti = false;
-            var debuggerNazionalita = true;
+            var debuggerNazionalita = false;
+            var debuggetCAP = true;
 
             if (debuggerVoti){
                 for (var lista in listaClassi) {
@@ -595,10 +596,17 @@ module.exports = {
                 }
             }
 
-
-
-
-
+            if (debuggetCAP){
+                for (var classe in listaClassi){
+                    console.log("######################################");
+                    console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propIdeali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+                    var objCAPIdeali = listaClassi[classe].propIdeali.CAP;
+                    var objCAPAttuali = listaClassi[classe].propAttuali.CAP;
+                    for (var cap in objCAPIdeali){
+                        console.log(cap + "-->" + objCAPIdeali[cap])
+                    }
+                }
+            }
 
         }
 
