@@ -893,6 +893,12 @@ module.exports = {
                         listaClassi[i].propIdeali.CAP[k] += temp;
                         cap[k] -= temp;
                         nAlCAP += temp;
+
+                        if (cap[k] == 1){
+                            listaClassi[i].propIdeali.CAP[k] += cap[k];
+                            nAlCAP += cap[k];
+                            delete cap[k];
+                        }
                     }
 
                     if (nAlCAP >= listaClassi[i].propIdeali.alunni) {
