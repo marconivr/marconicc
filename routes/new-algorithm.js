@@ -567,20 +567,41 @@ module.exports = {
 
         if (module.exports.thereIsStundentiInInsiemi()) {
             //console.log("È true");
-            for (var lista in listaClassi) {
+            var debuggerVoti = false;
+            var debuggerNazionalita = true;
+
+            if (debuggerVoti){
+                for (var lista in listaClassi) {
                 console.log("######################################");
-                console.log(listaClassi[lista].nome + " alunni ideali: " + listaClassi[lista].propIdeali.alunni + " alunni attuali: " + listaClassi[lista].propAttuali.alunni)
+                console.log(listaClassi[lista].nome + " alunni ideali: " + listaClassi[lista].propIdeali.alunni + " alunni attuali: " + listaClassi[lista].propAttuali.alunni);
                 console.log("10 ideale : " + listaClassi[lista].propIdeali.voto['10'] + ", 10 attuale : " + listaClassi[lista].propAttuali.voto['10']);
                 console.log("9  ideale : " + listaClassi[lista].propIdeali.voto['9'] + ", 9  attuale : " + listaClassi[lista].propAttuali.voto['9']);
                 console.log("8  ideale : " + listaClassi[lista].propIdeali.voto['8'] + ", 8  attuale : " + listaClassi[lista].propAttuali.voto['8']);
                 console.log("7  ideale : " + listaClassi[lista].propIdeali.voto['7'] + ", 7  attuale : " + listaClassi[lista].propAttuali.voto['7']);
                 console.log("6  ideale : " + listaClassi[lista].propIdeali.voto['6'] + ", 6  attuale : " + listaClassi[lista].propAttuali.voto['6']);
                 console.log("######################################");
-
+                }
             }
-            //module.exports.popolaClassiRimanente();
+
+            if (debuggerNazionalita){
+                for (var classe in listaClassi){
+                    console.log("######################################");
+                    console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propIdeali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+                    var objNazIdeali = listaClassi[classe].propIdeali.nazionalita;
+                    var objNazAttuali = listaClassi[classe].propAttuali.nazionalita;
+                    for (var naz in objNazIdeali){
+                        console.log(naz + "-->" + objNazIdeali[naz])
+                    }
+                }
+            }
+
+
+
+
+
+
         }
-        //console.log(insiemi);
+
     },
 
     thereIsStundentiInInsiemi: function () {
@@ -686,7 +707,7 @@ module.exports = {
                             listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += listaClassi[i].propIdeali.alunni - nVC;
                             voti[Object.keys(voti)[v]] -= listaClassi[i].propIdeali.alunni - nVC;
                         } else {
-                            listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += voti[Object.keys(voti)[v]];
+                             listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += voti[Object.keys(voti)[v]];
                             delete voti[Object.keys(voti)[v]];
                         }
                     }
