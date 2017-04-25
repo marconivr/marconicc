@@ -1491,7 +1491,7 @@ $(document).ready(function () {
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
     $.ajax({
-        url: '/get-classi-composte',
+        url: '/generate-classi',
         data: {
             format: 'json'
         },
@@ -1530,7 +1530,6 @@ $(document).ready(function () {
             for (var i = 0; i < listaClassi.length; i++) {
 
                 var nomeClasse = listaClassi[i].nome;
-                var proprieta = listaClassi[i].proprieta;
                 var arrayStudenti = listaClassi[i].alunni;
 
                 var wrapperClasse = $('<div/>', {
