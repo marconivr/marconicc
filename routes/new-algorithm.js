@@ -550,6 +550,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
+
                             amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
@@ -659,8 +660,20 @@ module.exports = {
             }
 
             if (nvoti > listaClassi[i].propIdeali.alunni) {
-                listaClassi[i].propIdeali.voto['7'] -= nvoti - listaClassi[i].propIdeali.alunni;
-                voti['7'] += nvoti - listaClassi[i].propIdeali.alunni;
+                var diff = nvoti - listaClassi[i].propIdeali.alunni;
+                var n = 6;
+                while (n <= 10 || diff == 0){
+                    listaClassi[i].propIdeali.voto[n] -= 1;
+                    if (voti[n] === undefined){
+                        voti[n] = 0;
+                    }else{
+                        voti[n] += 1;
+                    }
+                    n++;
+                    diff--;
+                }
+
+
             }
         }
         if (Object.keys(voti).length > 0) {
