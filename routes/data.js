@@ -4,11 +4,12 @@
 
 
 var query = require('./../query/query.js');
-var csv = require("csv");
+var csv_post = require("csv");
 var middleware = require('./middleware/middleware');
 var newAlg = require("./new-algorithm.js");
 var alg = require("./algorithm.js");
 var async = require('async');
+var csv = require('express-csv');
 
 module.exports = function (app, passport, upload) {
 
@@ -17,7 +18,7 @@ module.exports = function (app, passport, upload) {
 
         var data = req.file; //information about data uploaded (post method)
 
-        csv().from.path(data.path, {
+        csv_post().from.path(data.path, {
             delimiter: ";",
             escape: ''
         })
@@ -212,7 +213,7 @@ module.exports = function (app, passport, upload) {
     app.get('/get-past-settings-prime', middleware.isLoggedIn, function (req, res) {
         query.getSettingsPrime(function (err, results) {
             if (err)
-                err
+                console.log(err);
             else {
                 res.send(results);
             }
@@ -244,11 +245,26 @@ module.exports = function (app, passport, upload) {
     app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
         query.getSettingsTerze(function (err, results) {
             if (err)
-                err
+                console.log(err);
             else {
                 res.send(results);
             }
         });
+    });
+
+    app.get('/export-single-csv',middleware.isLoggedIn,function (req,res){
+        query.getClassiComposteForExport(function (err, results) {
+            if(err){
+                console.log(err);
+                res.send("errore");
+            }
+            else{
+                res.setHeader('Content-disposition', 'attachment; filename=export.csv');
+                res.set('Content-Type', 'text/csv');
+                res.csv(results);
+            }
+        })
+
     });
 };
 

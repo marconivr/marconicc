@@ -405,4 +405,20 @@ module.exports = {
             }
         });
     }
+    ,
+
+    getClassiComposteForExport: function (callback) {
+        var query = "SELECT alunni.matricola, alunni.cf, alunni.cognome, alunni.nome, alunni.data_di_nascita, alunni.sesso,alunni.CAP, alunni.nazionalita, " +
+            "alunni.legge_107, alunni.legge_104, alunni.classe_precedente, alunni.anno_scolastico,alunni.voto,alunni.tag,alunni.desiderata from alunni " +
+            "INNER JOIN comp_classi as m1 on alunni.cf = m1.cf_alunno";
+
+        connection.query(query, function (err, rows) {
+            if (err) {
+                throw err;
+            } else {
+                callback(err, rows);
+            }
+        });
+
+    }
 };
