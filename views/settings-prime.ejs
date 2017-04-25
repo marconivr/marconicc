@@ -157,18 +157,18 @@
 
 <div class="ui modal">
     <i class="close icon"></i>
-    <div class="header">
+    <div class="header" id = modal-header>
 
     </div>
-    <div class="rowForInsertSettings">
+    <div class="content" id="settings">
 
     </div>
     <div class="actions">
         <div class="ui black deny button">
-            Nope
+            No
         </div>
         <div class="ui positive right labeled icon button">
-            Yep, that's me
+            Sì
             <i class="checkmark icon"></i>
         </div>
     </div>
@@ -185,10 +185,50 @@
 
 <script>
     var settings = [];
-    function  createModal() {
+    function  createModal(index) {
+        var s = "";
 
+        document.getElementById("modal-header").innerHTML = settings[index].data;
+
+        for (setting in settings[index]){
+            s+= "<p><b>" + setting + ": </b>" + settings[index][setting] + "</p>";
+        }
+        document.getElementById("settings").innerHTML = s;
 
         $('.ui.modal')
+            .modal({
+                closable  : false,
+                onApprove : function() {
+                    for (setting in settings[index]){
+                        switch (setting){
+                            case "descrizione":
+                                document.getElementById("descrizione").value = settings[index][setting];
+                                break;
+                            case "min_alunni":
+                                document.getElementById("alunni-min").value = settings[index][setting];
+                                break;
+                            case "max_alunni":
+                                document.getElementById("alunni-max").value = settings[index][setting];
+                                break;
+                            case "max_femmine":
+                                document.getElementById("femmine").value = settings[index][setting];
+                                break;
+                            case "max_stranieri":
+                                document.getElementById("stranieri").value = settings[index][setting];
+                                break;
+                            case "stessa_provenienza":
+                                document.getElementById("residenza").value = settings[index][setting];
+                                break;
+                            case "stessa_iniziale":
+                                document.getElementById("iniziale").value = settings[index][setting];
+                                break;
+                            case "ripetenti":
+                                document.getElementById("ripetenti").value = settings[index][setting];
+                                break;
+                        }
+                    }
+                }
+            })
             .modal('show')
         ;
     }
@@ -289,7 +329,7 @@
                 var s = "";
                 s+= "<ul>";
                 for (var i = 0; i < settings.length; i++){
-                    s+= "<li><a onclick='createModal()' style='color: black'>" + settings[i].data + "</a></li>";
+                    s+= '<li><a onclick="createModal(\'' + i + '\')" style="color: black">' + settings[i].data + '</a></li>';
                 }
                 s+= "</ul>";
                 document.getElementById("rowForInsertDate").innerHTML = s;
