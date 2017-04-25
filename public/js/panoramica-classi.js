@@ -486,8 +486,9 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
  * @param cf
  * @param fromClass
  * @param toClass
+ * @param saveToDB : salva nella history
  */
-function moveStudent(cf, fromClass, toClass) {
+function moveStudent(cf, fromClass, toClass, saveToDB) {
 
     var removedStudent = null;
 
@@ -524,7 +525,7 @@ function moveStudent(cf, fromClass, toClass) {
         }
     }
 
-    saveStudentMovementOnDb(cf, fromClass, toClass);
+    if (saveToDB)saveStudentMovementOnDb(cf, fromClass, toClass);
     updateChartBar(toClass);//refresh the new chart
     updateChartBar(fromClass); //refresh the old chart
     updateInformation(toClass);
@@ -787,8 +788,22 @@ function moveStudentFromContextMenu(classTo, studente) {
     var classFrom = getClassNameFromStudent(cf);
 
     //student moved in array classi - data is update
-    moveStudent(cf, classFrom, classTo);
+    moveStudent(cf, classFrom, classTo, true);
+    updateStudentGUI(cf, classFrom, classTo);
 
+
+}
+
+/**
+ * aggiorna la grafica di uno studente
+ * usata ad esemio nel context menu e nella history
+ * ricolloca lo studente in una classe nuova
+ * @param cf
+ * @param classFrom
+ * @param classTo
+ */
+function updateStudentGUI(cf, classFrom, classTo) {
+    var studente = getStudentObject(cf);
     //update gui - remove from old class
     var studentDiv = $('div[id=' + cf + ']');
     //create ui-sortable-handle
@@ -816,10 +831,6 @@ function moveStudentFromContextMenu(classTo, studente) {
 
 
     });
-
-    // li.appendTo(classToContainer);
-
-
 }
 
 function populateModal(object) {
@@ -1276,6 +1287,67 @@ function returnFormatDate(date) {
     return year + "/" + month + "/" + day;
 }
 
+/**
+ * create button for one row of the table
+ * handle button onclick
+ * @param element
+ */
+function buttonRevertForHistory(element) {
+    var td = $('<td/>');
+
+
+    var button = $('<button/>')
+        .addClass('ui labeled mini icon button')
+        .html('<i class="left chevron icon"></i>Revert');
+    button.appendTo(td);
+    element.append(td);
+
+    //button onclick
+    button.click(function () {
+        var cf = $(this).closest("tr").children(':first').attr('id');
+        var classePrecendente = $(this).closest("tr").children("td#cp").text();
+        var classeSuccessiva = $(this).closest("tr").children("td#cs").text();
+        var tr = $(this).closest("tr");
+
+
+        //remove from history
+        $.ajax({
+            url: '/remove-student-from-history',
+            data: {"cf": cf},
+            type: 'get',
+            success: function (data) {
+                //eliminare dalla tabella
+                //la tabella ha un unico elemento
+                if (tr.prev().length == 0 && tr.next('tr').length == 0) {
+                    //elimino la il div title,content e la tabella
+                    var divContent = tr.closest("div");
+                    var divTitle = divContent.prev();
+                    //remove
+                    divContent.remove();
+                    divTitle.remove();
+
+                }
+                else {
+                    tr.remove();
+                }
+
+                //aggiorno la grafica
+                moveStudent(cf, classeSuccessiva, classePrecendente, false);
+                updateStudentGUI(cf, classeSuccessiva, classePrecendente);
+
+
+                alertify.success('Alunno spostato correttamente');
+
+            },
+
+            error: function (xhr, status, error) {
+                alertify.error("Opps, ci deve essere stato un problema" + "\n" + error)
+            }
+        });
+    });
+        
+}
+
 function history() {
 
     //clear modal
@@ -1329,28 +1401,29 @@ function history() {
 
                     tr = $('<tr/>');
                     var th =
-                        '<td>' + getStudentByCF(data[history].cf) + '</td> ' +
-                        '<td>' + data[history].classe_precedente + '</td> ' +
-                        '<td>' + data[history].classe_successiva + '</td> ' +
-                        '<td>' + data[history].id_utente + '</td> ' +
-                        '<td>' + +'</td> ';
+                        '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                        '<td id="cp">' + data[history].classe_precedente + '</td> ' +
+                        '<td id="cs">' + data[history].classe_successiva + '</td> ' +
+                        '<td>' + data[history].id_utente + '</td> ';
+
                     tr.html(th);
+                    buttonRevertForHistory($(tr));
                     tbody.append(tr).appendTo(table);
 
                 }
 
                 else {
-                    //qualcosa ce
+
                     if (isTheSameDate(date, lastDate)) {
 
                         tr = $('<tr/>');
                         var th =
-                            '<td>' + getStudentByCF(data[history].cf) + '</td> ' +
-                            '<td>' + data[history].classe_precedente + '</td> ' +
-                            '<td>' + data[history].classe_successiva + '</td> ' +
-                            '<td>' + data[history].id_utente + '</td> ' +
-                            '<td>' + +'</td> ';
+                            '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
+                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
+                            '<td>' + data[history].id_utente + '</td> ';
                         tr.html(th);
+                        buttonRevertForHistory($(tr));
                         tbody.append(tr).appendTo(table);
 
                     }
@@ -1382,12 +1455,13 @@ function history() {
 
                         tr = $('<tr/>');
                         var th =
-                            '<td>' + getStudentByCF(data[history].cf) + '</td> ' +
-                            '<td>' + data[history].classe_precedente + '</td> ' +
-                            '<td>' + data[history].classe_successiva + '</td> ' +
-                            '<td>' + data[history].id_utente + '</td> ' +
-                            '<td>' + +'</td> ';
+                            '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
+                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
+                            '<td>' + data[history].id_utente + '</td> ';
+
                         tr.html(th);
+                        buttonRevertForHistory($(tr));
                         tbody.append(tr).appendTo(table);
                     }
                 }
@@ -1841,7 +1915,7 @@ $(document).ready(function () {
                     var classFrom = oldList.attr('id');
                     var classTo = newList.attr('id');
 
-                    moveStudent(cf_studente_spostato, classFrom, classTo);
+                    moveStudent(cf_studente_spostato, classFrom, classTo, true);
 
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
 

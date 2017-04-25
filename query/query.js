@@ -123,6 +123,19 @@ module.exports = {
                 }
             });
     },
+
+    deleteStudentFromHistory: function (callback, cf) {
+        connection.query(
+            "DELETE FROM history WHERE cf = ?",
+            [cf],
+            function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
+    },
     
 
     insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {

@@ -212,6 +212,18 @@ module.exports = function (app, passport, upload) {
         });
     });
 
+    app.get('/remove-student-from-history', middleware.isLoggedIn, function (req, res) {
+        query.deleteStudentFromHistory(function (err, results) {
+            if (err)
+                err
+            else {
+                res.send(results);
+            }
+        }, req.query.cf);
+    });
+    
+    
+
     app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
         query.getSettingsTerze(function (err, results) {
             if (err)
