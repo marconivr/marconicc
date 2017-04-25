@@ -686,15 +686,13 @@ module.exports = {
                 while (n <= 10 || diff == 0){
                     listaClassi[i].propIdeali.voto[n] -= 1;
                     if (voti[n] === undefined){
-                        voti[n] = 0;
+                        voti[n] = 1;
                     }else{
                         voti[n] += 1;
                     }
                     n++;
                     diff--;
                 }
-
-
             }
         }
         if (Object.keys(voti).length > 0) {
