@@ -201,12 +201,15 @@ module.exports = function (app, passport, upload) {
         }, req.body.cf, req.body.toClass);
 
         //populate history
-        query.insertHistory(function (err, results) {
+        var saveHistory = (req.body.saveHistory == 'true');
+        if (saveHistory) {
+            query.insertHistory(function (err, results) {
             if (err)
                 console.log(err);
             else
                 res.send(err);
         }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente);
+        }
     });
 
     app.get('/get-past-settings-prime', middleware.isLoggedIn, function (req, res) {

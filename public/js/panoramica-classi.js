@@ -456,13 +456,23 @@ function getClassNameFromStudent(stundentCf) {
     }
 }
 
-function saveStudentMovementOnDb(cf, fromClass, toClass) {
+/**
+ * save movements to db
+ * if savehistory is true,  also save history
+ * @param cf
+ * @param fromClass
+ * @param toClass
+ * @param saveHistory
+ */
+function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory) {
 
     var jsonToSend = {
         cf: cf,
         fromClass: fromClass,
         toClass: toClass,
-        id_utente: null //todo:insert id_utente
+        id_utente: null,//todo:insert id_utente
+        saveHistory: saveHistory
+
     };
 
     if (saveRealTimeOnDb) {
@@ -478,7 +488,6 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
             }
         });
     }
-
 }
 
 /**
@@ -486,9 +495,9 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
  * @param cf
  * @param fromClass
  * @param toClass
- * @param saveToDB : salva nella history
+ * @param saveHistory : salva nella history
  */
-function moveStudent(cf, fromClass, toClass, saveToDB) {
+function moveStudent(cf, fromClass, toClass, saveHistory) {
 
     var removedStudent = null;
 
@@ -525,7 +534,7 @@ function moveStudent(cf, fromClass, toClass, saveToDB) {
         }
     }
 
-    if (saveToDB)saveStudentMovementOnDb(cf, fromClass, toClass);
+    saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory);
     updateChartBar(toClass);//refresh the new chart
     updateChartBar(fromClass); //refresh the old chart
     updateInformation(toClass);
@@ -1332,11 +1341,15 @@ function buttonRevertForHistory(element) {
                 }
 
                 //aggiorno la grafica
-                moveStudent(cf, classeSuccessiva, classePrecendente, false);
-                updateStudentGUI(cf, classeSuccessiva, classePrecendente);
+                try {
+                    moveStudent(cf, classeSuccessiva, classePrecendente, false);
+                    updateStudentGUI(cf, classeSuccessiva, classePrecendente);
+                    alertify.success('Alunno spostato correttamente');
+                }
+                catch (e) {
+                    alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
+                }
 
-
-                alertify.success('Alunno spostato correttamente');
 
             },
 
