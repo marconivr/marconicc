@@ -269,7 +269,7 @@ foreign key (cf_alunno) references alunni(cf)
 );
 
 CREATE TABLE `history` (
-  `id` int(11) NOT NULL,
+  `id` int(11) AUTO_INCREMENT PRIMARY KEY,
   `cf` varchar(16) NOT NULL,
   `classe_precedente` varchar(10) NOT NULL,
   `classe_successiva` varchar(10) NOT NULL,

@@ -4,11 +4,12 @@
 
 
 var query = require('./../query/query.js');
-var csv = require("csv");
+var csv_post = require("csv");
 var middleware = require('./middleware/middleware');
 var newAlg = require("./new-algorithm.js");
 var alg = require("./algorithm.js");
 var async = require('async');
+var csv = require('express-csv');
 
 module.exports = function (app, passport, upload) {
 
@@ -17,7 +18,7 @@ module.exports = function (app, passport, upload) {
 
         var data = req.file; //information about data uploaded (post method)
 
-        csv().from.path(data.path, {
+        csv_post().from.path(data.path, {
             delimiter: ";",
             escape: ''
         })
@@ -191,14 +192,40 @@ module.exports = function (app, passport, upload) {
     });
 
     app.post('/move-student', middleware.isLoggedIn, function (req, res) {
-        alg.addStundentInClss(req.body.cf, req.body.fromClass, req.body.toClass, true);
-        console.log("Salvo sul db");
-        res.send("ok arrivato al db");
+
+        //update student class
+        query.updateAlunnoClass(function (err, results) {
+            if (err)
+                res.send(err);
+            else
+                console.log("Salvo sul db");
+        }, req.body.cf, req.body.toClass);
+
+        //populate history
+        var saveHistory = (req.body.saveHistory == 'true');
+        if (saveHistory) {
+            query.insertHistory(function (err, results) {
+            if (err)
+                console.log(err);
+            else
+                res.send(err);
+        }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente);
+        }
     });
 
     app.get('/get-past-settings-prime', middleware.isLoggedIn, function (req, res) {
         query.getSettingsPrime(function (err, results) {
             if (err)
+                console.log(err);
+            else {
+                res.send(results);
+            }
+        });
+    });
+
+    app.get('/get-history', middleware.isLoggedIn, function (req, res) {
+        query.getHistory(function (err, results) {
+            if (err)
                 err
             else {
                 res.send(results);
@@ -206,14 +233,41 @@ module.exports = function (app, passport, upload) {
         });
     });
 
-    app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
-        query.getSettingsTerze(function (err, results) {
+    app.get('/remove-student-from-history', middleware.isLoggedIn, function (req, res) {
+        query.deleteStudentFromHistory(function (err, results) {
             if (err)
                 err
             else {
                 res.send(results);
             }
+        }, req.query.cf);
+    });
+    
+    
+
+    app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
+        query.getSettingsTerze(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                res.send(results);
+            }
         });
+    });
+
+    app.get('/export-single-csv',middleware.isLoggedIn,function (req,res){
+        query.getClassiComposteForExport(function (err, results) {
+            if(err){
+                console.log(err);
+                res.send("errore");
+            }
+            else{
+                res.setHeader('Content-disposition', 'attachment; filename=export.csv');
+                res.set('Content-Type', 'text/csv');
+                res.csv(results);
+            }
+        })
+
     });
 };
 
