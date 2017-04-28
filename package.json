@@ -19,6 +19,7 @@
     "express-csv": "^0.6.0",
     "express-session": "^1.11.3",
     "futures": "latest",
+    "google-closure-compiler": "^20170409.0.0",
     "morgan": "^1.6.0",
     "multer": "latest",
     "mysql": "^2.7.0",

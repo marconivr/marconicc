@@ -138,18 +138,28 @@ module.exports = {
     },
     
 
-    insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {
-        connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
+    insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe, max_al_104) {
+        connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, nazionalita, naz_per_classe , max_al_104) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe , max_al_104], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
-                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti);
+                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe, max_al_104);
             }
         });
     },
 
     getSettingsPrime: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti from impostazioni_prime", function (err, rows) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, nazionalita, naz_per_classe, max_al_104 from impostazioni_prime", function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getSettingsPrimeForAlgorithm: function (callback) {
+        connection.query("select id, DATE_FORMAT(data, '%d-%m-%Y') as data, min_alunni as min_al, max_alunni as max_al, max_femmine as fem, max_stranieri as max_str, stessa_provenienza as stessa_pr, nazionalita, naz_per_classe, max_al_104 from impostazioni_prime order by id desc limit 1", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {

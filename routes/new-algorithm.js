@@ -7,21 +7,7 @@ var query = require('./../query/query.js');
 var async = require('async');
 
 //settings var
-var settings = {
-    max_al: 28,
-    min_al: 25,
-    fem: 4,
-    max_str: 7,
-    iniziale: 3,
-    stessa_pr: 3,
-    nazionalita: 3,
-    naz_per_classe: 3,
-    max_al_104: 23,
-    max_107: 2,
-    max_104: 1,
-    boc: 2,
-    an_scol: "2017-2018"
-};
+var settings = {}; //data, min_al, max_al, fem, max_str, stessa_pr, nazionalita, naz_per_classe, max_al_104
 
 var priority = ["alunni", "legge_104", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 
@@ -550,6 +536,7 @@ module.exports = {
                             classeInEsame.alunni.push(studente); //aggiungo lo studente alla classe
 
                             amico = module.exports.checkDesiderata(studente);
+
                             amico = null;
                             if (amico) {
                                 module.exports.removeStudenteFromInsiemi(amico);
@@ -564,22 +551,51 @@ module.exports = {
             }
         }
 
-        if (module.exports.thereIsStundentiInInsiemi()) {
+        if (!module.exports.thereIsStundentiInInsiemi()) {
             //console.log("È true");
-            for (var lista in listaClassi) {
+            var debuggerVoti = false;
+            var debuggerNazionalita = false;
+            var debuggetCAP = true;
+
+            if (debuggerVoti){
+                for (var lista in listaClassi) {
                 console.log("######################################");
-                console.log(listaClassi[lista].nome + " alunni ideali: " + listaClassi[lista].propIdeali.alunni + " alunni attuali: " + listaClassi[lista].propAttuali.alunni)
+                console.log(listaClassi[lista].nome + " alunni ideali: " + listaClassi[lista].propIdeali.alunni + " alunni attuali: " + listaClassi[lista].propAttuali.alunni);
                 console.log("10 ideale : " + listaClassi[lista].propIdeali.voto['10'] + ", 10 attuale : " + listaClassi[lista].propAttuali.voto['10']);
                 console.log("9  ideale : " + listaClassi[lista].propIdeali.voto['9'] + ", 9  attuale : " + listaClassi[lista].propAttuali.voto['9']);
                 console.log("8  ideale : " + listaClassi[lista].propIdeali.voto['8'] + ", 8  attuale : " + listaClassi[lista].propAttuali.voto['8']);
                 console.log("7  ideale : " + listaClassi[lista].propIdeali.voto['7'] + ", 7  attuale : " + listaClassi[lista].propAttuali.voto['7']);
                 console.log("6  ideale : " + listaClassi[lista].propIdeali.voto['6'] + ", 6  attuale : " + listaClassi[lista].propAttuali.voto['6']);
                 console.log("######################################");
-
+                }
             }
-            //module.exports.popolaClassiRimanente();
+
+            if (debuggerNazionalita){
+                for (var classe in listaClassi){
+                    console.log("######################################");
+                    console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propIdeali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+                    var objNazIdeali = listaClassi[classe].propIdeali.nazionalita;
+                    var objNazAttuali = listaClassi[classe].propAttuali.nazionalita;
+                    for (var naz in objNazIdeali){
+                        console.log(naz + "-->" + objNazIdeali[naz])
+                    }
+                }
+            }
+
+            if (debuggetCAP){
+                for (var classe in listaClassi){
+                    console.log("######################################");
+                    console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propIdeali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+                    var objCAPIdeali = listaClassi[classe].propIdeali.CAP;
+                    var objCAPAttuali = listaClassi[classe].propAttuali.CAP;
+                    for (var cap in objCAPIdeali){
+                        console.log(cap + "-->" + objCAPIdeali[cap])
+                    }
+                }
+            }
+
         }
-        //console.log(insiemi);
+
     },
 
     thereIsStundentiInInsiemi: function () {
@@ -659,8 +675,18 @@ module.exports = {
             }
 
             if (nvoti > listaClassi[i].propIdeali.alunni) {
-                listaClassi[i].propIdeali.voto['7'] -= nvoti - listaClassi[i].propIdeali.alunni;
-                voti['7'] += nvoti - listaClassi[i].propIdeali.alunni;
+                var diff = nvoti - listaClassi[i].propIdeali.alunni;
+                var n = 6;
+                while (n <= 10 || diff == 0){
+                    listaClassi[i].propIdeali.voto[n] -= 1;
+                    if (voti[n] === undefined){
+                        voti[n] = 1;
+                    }else{
+                        voti[n] += 1;
+                    }
+                    n++;
+                    diff--;
+                }
             }
         }
         if (Object.keys(voti).length > 0) {
@@ -673,7 +699,7 @@ module.exports = {
                             listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += listaClassi[i].propIdeali.alunni - nVC;
                             voti[Object.keys(voti)[v]] -= listaClassi[i].propIdeali.alunni - nVC;
                         } else {
-                            listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += voti[Object.keys(voti)[v]];
+                             listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += voti[Object.keys(voti)[v]];
                             delete voti[Object.keys(voti)[v]];
                         }
                     }
@@ -861,6 +887,12 @@ module.exports = {
                         listaClassi[i].propIdeali.CAP[k] += temp;
                         cap[k] -= temp;
                         nAlCAP += temp;
+
+                        if (cap[k] == 1){
+                            listaClassi[i].propIdeali.CAP[k] += cap[k];
+                            nAlCAP += cap[k];
+                            delete cap[k];
+                        }
                     }
 
                     if (nAlCAP >= listaClassi[i].propIdeali.alunni) {
@@ -1584,6 +1616,15 @@ module.exports = {
             query.removeAlunnoInClass(veccCl.nome, objAl.cf);
             query.insertAlunnoInClass(nuovaCl.nome, objAl.cf);
         }
+    },
+
+    createSettingsArray: function (objSettings) {
+        for (prop in objSettings[0]){
+            if (prop != "id"){
+                settings[prop] = objSettings[0][prop];
+            }
+        }
+
     },
 
     //##################################################################################################################

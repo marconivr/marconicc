@@ -75,16 +75,20 @@
                             <input name="max_stranieri" placeholder="Stranieri" type="number" id="stranieri">
                         </div>
                         <div class="field">
+                            <label>Numero persone con la stessa nazionalità</label>
+                            <input name="nazionalita" placeholder="Nazionalita" type="number" id="nazionalita">
+                        </div>
+                        <div class="field">
+                            <label>Numero nazionalità per classe</label>
+                            <input name="naz_per_classe" placeholder="Naz_per_classe" type="number" id="naz_per_classe">
+                        </div>
+                        <div class="field">
                             <label>Stessa residenza</label>
                             <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza">
                         </div>
                         <div class="field">
-                            <label>Stessa iniziale</label>
-                            <input name="stessa_iniziale" placeholder="Residenza" type="number" id="iniziale">
-                        </div>
-                        <div class="field">
-                            <label>Ripetenti</label>
-                            <input name="ripetenti" placeholder="Ripetenti" type="number" id="ripetenti">
+                            <label>Numero massimo di alunni in una classe in presenza di un 104</label>
+                            <input name="max_al_104" placeholder="Max_al_104" type="number" id="max_al_104">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
@@ -219,11 +223,14 @@
                             case "stessa_provenienza":
                                 document.getElementById("residenza").value = settings[index][setting];
                                 break;
-                            case "stessa_iniziale":
-                                document.getElementById("iniziale").value = settings[index][setting];
+                            case "nazionalita":
+                                document.getElementById("nazionalita").value = settings[index][setting];
                                 break;
-                            case "ripetenti":
-                                document.getElementById("ripetenti").value = settings[index][setting];
+                            case "naz_per_classe":
+                                document.getElementById("naz_per_classe").value = settings[index][setting];
+                                break;
+                            case "max_al_104":
+                                document.getElementById("max_al_104").value = settings[index][setting];
                                 break;
                         }
                     }
@@ -254,8 +261,9 @@
         var femmine = parseInt($("#femmine").val());
         var stranieri = parseInt($("#stranieri").val());
         var residenza = parseInt($("#residenza").val());
-        var iniziale = parseInt($("#iniziale").val());
-        var ripetenti = parseInt($("#ripetenti").val());
+        var nazionalita = parseInt($("#nazionalita").val());
+        var naz_per_classe = parseInt($("#naz_per_classe").val());
+        var max_al_104 = parseInt($("#max_al_104").val());
         $.ajax({
             url: '/insert-settings-prime',
             data: {
@@ -266,8 +274,9 @@
                 "femmine" : femmine ,
                 "stranieri" : stranieri,
                 "residenza" : residenza,
-                "iniziale" : iniziale,
-                "ripetenti" : ripetenti
+                "nazionalita" : nazionalita,
+                "naz_per_classe" : naz_per_classe,
+                "max_al_104" : max_al_104
             },
             type: 'get',
             success: function (data) {
