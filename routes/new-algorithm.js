@@ -782,6 +782,52 @@ module.exports = {
 
     },
 
+    inizializzaPropIdealiCorradi: function () {
+        for (classe in listaClassi){
+
+        }
+    }
+
+    ,
+
+    generaPropIdealiCorradi: function () {
+        var insNaz = module.exports.getInsieme("nazionalita").alunni;
+        var insVoti = module.exports.getInsieme("voto").alunni;
+        var insCAP = module.exports.getInsieme("CAP").alunni;
+
+        var totale104 = module.exports.count104(listaAlunni);
+        var totale107 = module.exports.count107(listaAlunni);
+        var totaleFem = module.exports.countFemmine(listaAlunni);
+        var totaleRip = module.exports.countRipetenti(listaAlunni);
+
+        var naz = {};
+        var voti = {};
+        var cap = {};
+
+        for (var n in insNaz) {
+            naz[n] = insNaz[n].length;
+        }
+
+        for (var n in insVoti) {
+            voti[n] = insVoti[n].length;
+        }
+
+        for (var n in insCAP) {
+            cap[n] = insCAP[n].length;
+        }
+
+
+
+        for (i in priority){
+            switch (priority[i]){
+                case "legge_104":
+
+            }
+        }
+    }
+
+    ,
+
     generaPropIdeali: function () {
         var insNaz = module.exports.getInsieme("nazionalita").alunni;
         var insVoti = module.exports.getInsieme("voto").alunni;
