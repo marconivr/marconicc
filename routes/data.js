@@ -185,6 +185,15 @@ module.exports = function (app, passport, upload) {
 
 
     app.get('/generate-classi' ,middleware.isLoggedIn,function (req,res) {
+
+        query.getSettingsPrimeForAlgorithm(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                newAlg.createSettingsArray(results);
+            }
+        });
+
         newAlg.generaClassiPrima(function (classi) {
                 res.send(classi);
         });

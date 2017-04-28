@@ -23,6 +23,8 @@ var settings = {
     an_scol: "2017-2018"
 };
 
+var newSettings = {};
+
 var priority = ["alunni", "legge_104", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 
 var listaAlunni = [];
@@ -1630,6 +1632,15 @@ module.exports = {
             query.removeAlunnoInClass(veccCl.nome, objAl.cf);
             query.insertAlunnoInClass(nuovaCl.nome, objAl.cf);
         }
+    },
+
+    createSettingsArray: function (objSettings) {
+        for (prop in objSettings[0]){
+            if (prop != "id"){
+                newSettings[prop] = objSettings[0][prop];
+            }
+        }
+
     },
 
     //##################################################################################################################

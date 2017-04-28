@@ -105,7 +105,8 @@ CREATE TABLE `impostazioni_prime` (
   `max_femmine` int(11) DEFAULT NULL,
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
-  `stessa_iniziale` int(11) DEFAULT NULL,
+  `nazionalita` int(11) DEFAULT NULL,
+  `naz_per_classe` int(11) DEFAULT NULL,
   `ripetenti` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

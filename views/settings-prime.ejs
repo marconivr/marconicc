@@ -75,12 +75,16 @@
                             <input name="max_stranieri" placeholder="Stranieri" type="number" id="stranieri">
                         </div>
                         <div class="field">
-                            <label>Stessa residenza</label>
-                            <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza">
+                            <label>Numero persone con la stessa nazionalità</label>
+                            <input name="nazionalita" placeholder="Nazionalita" type="number" id="nazionalita">
                         </div>
                         <div class="field">
-                            <label>Stessa iniziale</label>
-                            <input name="stessa_iniziale" placeholder="Residenza" type="number" id="iniziale">
+                            <label>Numero nazionalità per classe</label>
+                            <input name="naz_per_classe" placeholder="Naz_per_classe" type="number" id="naz_per_classe">
+                        </div>
+                        <div class="field">
+                            <label>Stessa residenza</label>
+                            <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza">
                         </div>
                         <div class="field">
                             <label>Ripetenti</label>
@@ -219,8 +223,11 @@
                             case "stessa_provenienza":
                                 document.getElementById("residenza").value = settings[index][setting];
                                 break;
-                            case "stessa_iniziale":
-                                document.getElementById("iniziale").value = settings[index][setting];
+                            case "nazionalita":
+                                document.getElementById("nazionalita").value = settings[index][setting];
+                                break;
+                            case "naz_per_classe":
+                                document.getElementById("naz_per_classe").value = settings[index][setting];
                                 break;
                             case "ripetenti":
                                 document.getElementById("ripetenti").value = settings[index][setting];
@@ -254,7 +261,8 @@
         var femmine = parseInt($("#femmine").val());
         var stranieri = parseInt($("#stranieri").val());
         var residenza = parseInt($("#residenza").val());
-        var iniziale = parseInt($("#iniziale").val());
+        var nazionalita = parseInt($("#nazionalita").val());
+        var naz_per_classe = parseInt($("#naz_per_classe").val());
         var ripetenti = parseInt($("#ripetenti").val());
         $.ajax({
             url: '/insert-settings-prime',
@@ -266,7 +274,8 @@
                 "femmine" : femmine ,
                 "stranieri" : stranieri,
                 "residenza" : residenza,
-                "iniziale" : iniziale,
+                "nazionalita" : nazionalita,
+                "naz_per_classe" : naz_per_classe,
                 "ripetenti" : ripetenti
             },
             type: 'get',
