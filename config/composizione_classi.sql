@@ -105,8 +105,9 @@ CREATE TABLE `impostazioni_prime` (
   `max_femmine` int(11) DEFAULT NULL,
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
-  `stessa_iniziale` int(11) DEFAULT NULL,
-  `ripetenti` int(11) DEFAULT NULL
+  `nazionalita` int(11) DEFAULT NULL,
+  `naz_per_classe` int(11) DEFAULT NULL,
+  `max_al_104` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `impostazioni_terze`;
@@ -269,7 +270,7 @@ foreign key (cf_alunno) references alunni(cf)
 );
 
 CREATE TABLE `history` (
-  `id` int(11) NOT NULL,
+  `id` int(11) AUTO_INCREMENT PRIMARY KEY,
   `cf` varchar(16) NOT NULL,
   `classe_precedente` varchar(10) NOT NULL,
   `classe_successiva` varchar(10) NOT NULL,

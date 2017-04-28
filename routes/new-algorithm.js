@@ -7,21 +7,7 @@ var query = require('./../query/query.js');
 var async = require('async');
 
 //settings var
-var settings = {
-    max_al: 28,
-    min_al: 25,
-    fem: 4,
-    max_str: 7,
-    iniziale: 3,
-    stessa_pr: 3,
-    nazionalita: 3,
-    naz_per_classe: 3,
-    max_al_104: 23,
-    max_107: 2,
-    max_104: 1,
-    boc: 2,
-    an_scol: "2017-2018"
-};
+var settings = {}; //data, min_al, max_al, fem, max_str, stessa_pr, nazionalita, naz_per_classe, max_al_104
 
 var priority = ["alunni", "legge_104", "legge_107", "desiderata", "ripetenti", "femmine", "nazionalita", "CAP", "voto"];
 
@@ -1754,6 +1740,15 @@ module.exports = {
             query.removeAlunnoInClass(veccCl.nome, objAl.cf);
             query.insertAlunnoInClass(nuovaCl.nome, objAl.cf);
         }
+    },
+
+    createSettingsArray: function (objSettings) {
+        for (prop in objSettings[0]){
+            if (prop != "id"){
+                settings[prop] = objSettings[0][prop];
+            }
+        }
+
     },
 
     //##################################################################################################################

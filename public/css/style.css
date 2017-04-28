@@ -87,6 +87,32 @@ body::-webkit-scrollbar-thumb {
     outline: 1px solid #424242;
 }
 
+/*history*/
+
+.history-container {
+    overflow-y: scroll;
+    max-height: 300px;
+    padding-left: 0.8em !Important;
+    padding-bottom: 0.8em;
+    padding-right: 0.8em !important
+}
+
+.history-container::-webkit-scrollbar {
+    width: .5em;
+    background-color: white;
+}
+
+.history-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: #424242;
+    margin-left: 5px;
+}
+
+.history-container::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    outline: 1px solid #424242;
+}
+
+
  body > .grid {
     height: 100%;
 }

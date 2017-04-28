@@ -38,25 +38,26 @@ var iconJson = {
 
 
 var flagJson = {
-    ITALIANA: { iso: 'it', color: '#16db60' },
-    CINGALESE: { iso: 'lk', color: '#609C35' },
-    BANGLADESE: { iso: 'bd', color: '#B18F3C' },
-    ROMENA: { iso: 'ro', color: '#A03753' },
-    CINESE: { iso: 'cn', color: '#5C368D' },
-    MAROCCHINA: { iso: 'ma', color: '#008b8b' },
-    PARAGUAIANA: { iso: 'py', color: '#C05F30' },
-    TUNISINA: { iso: 'tn', color: '#122D85' },
-    FILIPPINA: { iso: 'ph', color: '#bdb76b' },
-    ALBANESE: { iso: 'al', color: '#556b2f' },
-    MOLDAVA: { iso: 'md', color: '#d90368' },
-    LETTONE: { iso: 'lv', color: '#e9967a' },
-    BRASILIANA: { iso: 'br', color: '#2e294e' },
-    NIGERIANA: { iso: 'ng', color: '#ffd400' },
-    GHANESE: { iso: 'gh', color: '#f0e68c' },
-    PERUVIANA: { iso: 'pe', color: '#a99985' },
-    CUBANA: { iso: 'cu', color: '#2F3F73' },
-    CROATA: { iso: 'hr', color: '#048ba8' },
-    SENEGALESE: { iso: 'sn', color: '#a4036f' } };
+    ITALIANA: {iso: 'it', color: '#16db60'},
+    CINGALESE: {iso: 'lk', color: '#609C35'},
+    BANGLADESE: {iso: 'bd', color: '#B18F3C'},
+    ROMENA: {iso: 'ro', color: '#A03753'},
+    CINESE: {iso: 'cn', color: '#5C368D'},
+    MAROCCHINA: {iso: 'ma', color: '#008b8b'},
+    PARAGUAIANA: {iso: 'py', color: '#C05F30'},
+    TUNISINA: {iso: 'tn', color: '#122D85'},
+    FILIPPINA: {iso: 'ph', color: '#bdb76b'},
+    ALBANESE: {iso: 'al', color: '#556b2f'},
+    MOLDAVA: {iso: 'md', color: '#d90368'},
+    LETTONE: {iso: 'lv', color: '#e9967a'},
+    BRASILIANA: {iso: 'br', color: '#2e294e'},
+    NIGERIANA: {iso: 'ng', color: '#ffd400'},
+    GHANESE: {iso: 'gh', color: '#f0e68c'},
+    PERUVIANA: {iso: 'pe', color: '#a99985'},
+    CUBANA: {iso: 'cu', color: '#2F3F73'},
+    CROATA: {iso: 'hr', color: '#048ba8'},
+    SENEGALESE: {iso: 'sn', color: '#a4036f'}
+};
 
 
 function populate(listaClassi) {
@@ -249,7 +250,6 @@ function updateChartBar(newClassName) {
 }
 
 
-
 /**
  * count bocciati of one class
  * @param className
@@ -299,7 +299,6 @@ function getMediaOfClass(nomeClasse) {
     var approx = approxNum(result);
     return approx;
 }
-
 
 
 function getVotesDistributionOfClass(nomeClasse) {
@@ -457,12 +456,23 @@ function getClassNameFromStudent(stundentCf) {
     }
 }
 
-function saveStudentMovementOnDb(cf, fromClass, toClass) {
+/**
+ * save movements to db
+ * if savehistory is true,  also save history
+ * @param cf
+ * @param fromClass
+ * @param toClass
+ * @param saveHistory
+ */
+function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory) {
 
     var jsonToSend = {
         cf: cf,
         fromClass: fromClass,
-        toClass: toClass
+        toClass: toClass,
+        id_utente: null,//todo:insert id_utente
+        saveHistory: saveHistory
+
     };
 
     if (saveRealTimeOnDb) {
@@ -471,14 +481,13 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
             url: "/move-student",
             data: jsonToSend,
             success: function (data) {
-                console.log(data);
+
             },
-            failure: function (errMsg) {
-                alert(errMsg);
+            error: function (errMsg) {
+                alertify.error('Opss, ci deve essere stato un problema');
             }
         });
     }
-
 }
 
 /**
@@ -486,8 +495,9 @@ function saveStudentMovementOnDb(cf, fromClass, toClass) {
  * @param cf
  * @param fromClass
  * @param toClass
+ * @param saveHistory : salva nella history
  */
-function moveStudent(cf, fromClass, toClass) {
+function moveStudent(cf, fromClass, toClass, saveHistory) {
 
     var removedStudent = null;
 
@@ -524,7 +534,7 @@ function moveStudent(cf, fromClass, toClass) {
         }
     }
 
-    saveStudentMovementOnDb(cf, fromClass, toClass);
+    saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory);
     updateChartBar(toClass);//refresh the new chart
     updateChartBar(fromClass); //refresh the old chart
     updateInformation(toClass);
@@ -627,8 +637,7 @@ function setFilterBocciati(elemento) {
     elemento.addClass("bocciato");
 }
 
-function setFilterNazionalita(elemento)
-{
+function setFilterNazionalita(elemento) {
     elemento.addClass(elemento.attr('data-content'));
 }
 
@@ -645,18 +654,15 @@ function disableAllFilter() {
         });
     }
 
-    for (var nazionalita = 0; nazionalita < nazionalitaItems.length; nazionalita++)
-    {
+    for (var nazionalita = 0; nazionalita < nazionalitaItems.length; nazionalita++) {
         $(nazionalitaItems[nazionalita]).removeClass(nazionalitaItems[nazionalita].attr('data-content'));
     }
-    
-    for(var desiderata = 0; desiderata< desiderataNotRespectedItems.length; desiderata++)
-    {
+
+    for (var desiderata = 0; desiderata < desiderataNotRespectedItems.length; desiderata++) {
         $(desiderataNotRespectedItems[desiderata]).children('.popuptext').remove();
     }
 
-    for(var bocciati = 0; bocciati < bocciatiItems.length ; bocciati++)
-    {
+    for (var bocciati = 0; bocciati < bocciatiItems.length; bocciati++) {
         $(bocciatiItems[bocciati]).removeClass("bocciato");
     }
 
@@ -684,8 +690,7 @@ function hasDesiderata(studentCf) {
  */
 function getDesiderataNonRispettato(elemento) {
     var cf = $(elemento).attr("id"); //cf dell'alunno selezionato
-    if (cf == "CNTSML03B28L781K")
-    {
+    if (cf == "CNTSML03B28L781K") {
         var a = 3;
     }
     if (hasDesiderata(cf)) {
@@ -704,68 +709,60 @@ function getDesiderataNonRispettato(elemento) {
 }
 
 function setFilterDesiderataNonRispettato(container) {
-    if(container === undefined)
-    {
+    if (container === undefined) {
 
-    $('.ui.segment.tooltip').each(function (index, element) {
-        var cf = $(element).attr("id"); //cf dell'alunno selezionato
-        var cfAmico = getAlunnoDesiderataByCF(cf);
-        if(cfAmico != undefined)
-        {
-            var classe1 = getClassNameFromStudent(cf);
-            var classeAmico = getClassNameFromStudent(cfAmico);
-            var nomealunno = getStudentByCF(cf);
-            var nomeAlunnoAmico = getStudentByCF(cfAmico);
-            if (classe1 != classeAmico)
-            {
-
-
-
-                var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' +  classeAmico;
-                var span = $('<span/>')
-                    .html(text)
-                    .addClass('popuptext');
-
-                span.appendTo($(container));
-                span.toggleClass( "show" );
-
-                $(container).mouseover(function()
-                {
-                    span.removeClass('show');
-                });
-
-            }
-        }
-
-
-    });
-    }
-    else {
-            var cf = $(container).attr("id"); //cf dell'alunno selezionato
+        $('.ui.segment.tooltip').each(function (index, element) {
+            var cf = $(element).attr("id"); //cf dell'alunno selezionato
             var cfAmico = getAlunnoDesiderataByCF(cf);
-            if(cfAmico != undefined)
-            {
+            if (cfAmico != undefined) {
                 var classe1 = getClassNameFromStudent(cf);
                 var classeAmico = getClassNameFromStudent(cfAmico);
                 var nomealunno = getStudentByCF(cf);
                 var nomeAlunnoAmico = getStudentByCF(cfAmico);
-                if (classe1 != classeAmico)
-                {
+                if (classe1 != classeAmico) {
 
-                    var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' +  classeAmico;
+
+                    var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' + classeAmico;
                     var span = $('<span/>')
                         .html(text)
                         .addClass('popuptext');
 
                     span.appendTo($(container));
-                    span.toggleClass( "show" );
-                    $(container).mouseover(function()
-                    {
+                    span.toggleClass("show");
+
+                    $(container).mouseover(function () {
                         span.removeClass('show');
                     });
 
                 }
             }
+
+
+        });
+    }
+    else {
+        var cf = $(container).attr("id"); //cf dell'alunno selezionato
+        var cfAmico = getAlunnoDesiderataByCF(cf);
+        if (cfAmico != undefined) {
+            var classe1 = getClassNameFromStudent(cf);
+            var classeAmico = getClassNameFromStudent(cfAmico);
+            var nomealunno = getStudentByCF(cf);
+            var nomeAlunnoAmico = getStudentByCF(cfAmico);
+            if (classe1 != classeAmico) {
+
+                var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' + classeAmico;
+                var span = $('<span/>')
+                    .html(text)
+                    .addClass('popuptext');
+
+                span.appendTo($(container));
+                span.toggleClass("show");
+                $(container).mouseover(function () {
+                    span.removeClass('show');
+                });
+
+            }
+        }
     }
 }
 /**
@@ -800,8 +797,22 @@ function moveStudentFromContextMenu(classTo, studente) {
     var classFrom = getClassNameFromStudent(cf);
 
     //student moved in array classi - data is update
-    moveStudent(cf, classFrom, classTo);
+    moveStudent(cf, classFrom, classTo, true);
+    updateStudentGUI(cf, classFrom, classTo);
 
+
+}
+
+/**
+ * aggiorna la grafica di uno studente
+ * usata ad esemio nel context menu e nella history
+ * ricolloca lo studente in una classe nuova
+ * @param cf
+ * @param classFrom
+ * @param classTo
+ */
+function updateStudentGUI(cf, classFrom, classTo) {
+    var studente = getStudentObject(cf);
     //update gui - remove from old class
     var studentDiv = $('div[id=' + cf + ']');
     //create ui-sortable-handle
@@ -829,10 +840,6 @@ function moveStudentFromContextMenu(classTo, studente) {
 
 
     });
-
-    // li.appendTo(classToContainer);
-
-
 }
 
 function populateModal(object) {
@@ -860,19 +867,17 @@ function populateModal(object) {
     $("#scelta-indirizzo").text(object.scelta_indirizzo);
 
 
-
 }
 
 /**
  * controlla se uno studente è bocciato
  * @param cf
  */
-function getIfStudentsIsBocciato(cf)
-{
+function getIfStudentsIsBocciato(cf) {
     for (var i = 0; i < arrayClassi.length; i++) {
         for (var studente = 0; studente < arrayClassi[i].alunni.length; studente++) {
             if (arrayClassi[i].alunni[studente].cf == cf)
-               return arrayClassi[i].alunni[studente].classe_precedente  == "" ?  false :  true;
+                return arrayClassi[i].alunni[studente].classe_precedente == "" ? false : true;
         }
     }
 }
@@ -957,19 +962,18 @@ function setAllFilter() {
             }
             else {
                 //VOTI E BOCCCIATI
-                if(bocciati)
-                {
+                if (bocciati) {
                     arrayStudentiVoti = [];
                     for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
                         arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
-                            arrayStudentiVoti.each(function (index, element) {
-                                if(getIfStudentsIsBocciato($(element).attr("id"))){
-                                    setFilterVoti(votiCheckBoxArray[voto], $(element));
-                                    setFilterBocciati($(element));
-                                    bocciatiItems.push($(element));
-                                }
+                        arrayStudentiVoti.each(function (index, element) {
+                            if (getIfStudentsIsBocciato($(element).attr("id"))) {
+                                setFilterVoti(votiCheckBoxArray[voto], $(element));
+                                setFilterBocciati($(element));
+                                bocciatiItems.push($(element));
+                            }
 
-                            });
+                        });
                     }
                 }
                 else {
@@ -986,14 +990,11 @@ function setAllFilter() {
         }
     }
     //2 CASO - VOTI NO
-    else
-    {
+    else {
         //CI SONO NAZIONALITA
-        if (nazionalitaCheckBoxArray.length != 0)
-        {
+        if (nazionalitaCheckBoxArray.length != 0) {
             //CI SONO I FILTRI DESIDERATA
-            if(desiderataNonRispettato)
-            {
+            if (desiderataNonRispettato) {
                 nazionalitaItems = [];
                 desiderataNotRespectedItems = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
@@ -1011,8 +1012,7 @@ function setAllFilter() {
                 }
             }
             //NON CI SONO FILTRI DESIDERATA
-            else
-            {
+            else {
                 nazionalitaItems = [];
                 for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
                     $('.ui.segment.tooltip').each(function (index, element) {
@@ -1028,11 +1028,9 @@ function setAllFilter() {
 
         }
         //NON CI SONO NAZIONALITA
-        else
-        {
+        else {
             //SOLO DESIDERATA
-            if(desiderataNonRispettato)
-            {
+            if (desiderataNonRispettato) {
                 //ANCHE BOCCIATI
                 if (bocciati) {
                     $('.ui.segment.tooltip').each(function (index, element) {
@@ -1063,21 +1061,20 @@ function setAllFilter() {
 
             }
             else
-                //SOLO BOCCIATI
-                {
-                    if(bocciati){
+            //SOLO BOCCIATI
+            {
+                if (bocciati) {
                     $('.ui.segment.tooltip').each(function (index, element) {
 
-                       if(getIfStudentsIsBocciato($(element).attr("id")))
-                       {
-                           setFilterBocciati($(element));
-                           bocciatiItems.push($(element));
-                       }
+                        if (getIfStudentsIsBocciato($(element).attr("id"))) {
+                            setFilterBocciati($(element));
+                            bocciatiItems.push($(element));
+                        }
 
                     });
 
-                    }
                 }
+            }
         }
     }
 }
@@ -1274,10 +1271,225 @@ function handleCheckBoxBocciati() {
 }
 
 
+/**
+ * return true if two date is the same
+ * @param date
+ * @param dateToCompare
+ */
+function isTheSameDate(date, dateToCompare) {
+
+    if (date.getUTCDate() == dateToCompare.getUTCDate()
+        && date.getMonth() + 1 == dateToCompare.getMonth() + 1
+        && date.getUTCFullYear() == dateToCompare.getUTCFullYear())return true;
+    else  return false;
+
+}
+
+/**
+ * return year,month, day from a js Date
+ * @param date
+ */
+function returnFormatDate(date) {
+    var day = date.getUTCDate();
+    var month = date.getMonth() + 1;
+    var year = date.getUTCFullYear();
+    return year + "/" + month + "/" + day;
+}
+
+/**
+ * create button for one row of the table
+ * handle button onclick
+ * @param element
+ */
+function buttonRevertForHistory(element) {
+    var td = $('<td/>');
+
+
+    var button = $('<button/>')
+        .addClass('ui labeled mini icon button')
+        .html('<i class="left chevron icon"></i>Revert');
+    button.appendTo(td);
+    element.append(td);
+
+    //button onclick
+    button.click(function () {
+        var cf = $(this).closest("tr").children(':first').attr('id');
+        var classePrecendente = $(this).closest("tr").children("td#cp").text();
+        var classeSuccessiva = $(this).closest("tr").children("td#cs").text();
+        var tr = $(this).closest("tr");
+
+
+        //remove from history
+        $.ajax({
+            url: '/remove-student-from-history',
+            data: {"cf": cf},
+            type: 'get',
+            success: function (data) {
+                //eliminare dalla tabella
+                //la tabella ha un unico elemento
+                if (tr.prev().length == 0 && tr.next('tr').length == 0) {
+                    //elimino la il div title,content e la tabella
+                    var divContent = tr.closest("div");
+                    var divTitle = divContent.prev();
+                    //remove
+                    divContent.remove();
+                    divTitle.remove();
+
+                }
+                else {
+                    tr.remove();
+                }
+
+                //aggiorno la grafica
+                try {
+                    moveStudent(cf, classeSuccessiva, classePrecendente, false);
+                    updateStudentGUI(cf, classeSuccessiva, classePrecendente);
+                    alertify.success('Alunno spostato correttamente');
+                }
+                catch (e) {
+                    alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
+                }
+
+
+            },
+
+            error: function (xhr, status, error) {
+                alertify.error("Opps, ci deve essere stato un problema" + "\n" + error)
+            }
+        });
+    });
+        
+}
+
 function history() {
 
+    //clear modal
+    $('.ui.styled.fluid.accordion').children('div').remove();
+    //download history
+    $.ajax({
+        url: '/get-history',
+        type: 'get',
+        success: function (data) {
+            var thead = $('<thead/>')
+                .html('<tr> ' +
+                    '<th>Alunno</th> ' +
+                    '<th>Classe Precedente</th> ' +
+                    '<th>Classe Successiva</th> ' +
+                    '<th>Utente</th> ' +
+                    '<th>Azione</th> ' +
+                    '</tr>');
 
-    $('.ui.modal.history').modal('show');
+            //create accordion
+            var lastDate, date, container, content, p, table, tbody, tr;
+            var accordion = $('.ui.styled.fluid.accordion');
+            for (var history = 0; history < data.length; history++) {
+                date = new Date(data[history].timestamp);
+
+                if (history == 0) {
+                    //creo tutto
+                    content = $('<div/>')
+                        .addClass("content");
+
+                    var thead = $('<thead/>')
+                        .html('<tr> ' +
+                            '<th>Alunno</th> ' +
+                            '<th>Classe Precedente</th> ' +
+                            '<th>Classe Successiva</th> ' +
+                            '<th>Utente</th> ' +
+                            '<th>Azione</th> ' +
+                            '</tr>');
+
+                    table = $('<table/>')
+                        .addClass("ui very basic table")
+                        .appendTo(content)
+                        .html(thead);
+
+                    tbody = $('<tbody/>').appendTo(table);
+
+                    title = $('<div/>')
+                        .addClass('title')
+                        .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
+                        .appendTo(accordion);
+                    content.appendTo(accordion);
+
+                    tr = $('<tr/>');
+                    var th =
+                        '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                        '<td id="cp">' + data[history].classe_precedente + '</td> ' +
+                        '<td id="cs">' + data[history].classe_successiva + '</td> ' +
+                        '<td>' + data[history].id_utente + '</td> ';
+
+                    tr.html(th);
+                    buttonRevertForHistory($(tr));
+                    tbody.append(tr).appendTo(table);
+
+                }
+
+                else {
+
+                    if (isTheSameDate(date, lastDate)) {
+
+                        tr = $('<tr/>');
+                        var th =
+                            '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
+                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
+                            '<td>' + data[history].id_utente + '</td> ';
+                        tr.html(th);
+                        buttonRevertForHistory($(tr));
+                        tbody.append(tr).appendTo(table);
+
+                    }
+                    else {
+                        content = $('<div/>')
+                            .addClass("content");
+
+                        var thead = $('<thead/>')
+                            .html('<tr> ' +
+                                '<th>Alunno</th> ' +
+                                '<th>Classe Precedente</th> ' +
+                                '<th>Classe Successiva</th> ' +
+                                '<th>Utente</th> ' +
+                                '<th>Azione</th> ' +
+                                '</tr>');
+
+                        table = $('<table/>')
+                            .addClass("ui very basic table")
+                            .appendTo(content)
+                            .html(thead);
+
+                        tbody = $('<tbody/>').appendTo(table);
+
+                        title = $('<div/>')
+                            .addClass('title')
+                            .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
+                            .appendTo(accordion);
+                        content.appendTo(accordion);
+
+                        tr = $('<tr/>');
+                        var th =
+                            '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
+                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
+                            '<td>' + data[history].id_utente + '</td> ';
+
+                        tr.html(th);
+                        buttonRevertForHistory($(tr));
+                        tbody.append(tr).appendTo(table);
+                    }
+                }
+                lastDate = date;
+
+            }
+            $('.ui.accordion').accordion();
+            $('.ui.modal.history').modal('show');
+        },
+        error: function (xhr, status, error) {
+            alertify.error('Opss, ci deve essere stato un problema');
+        }
+    });
+
+
 }
 
 ////////////////////////////////////////////////////
@@ -1309,6 +1521,7 @@ $(document).ready(function () {
                     action: 'nothing'
                 }
             );
+            $('.ui.accordion').accordion();
             handleCheckBoxVoti();
             createDynamicStyle();
             createNazionalitaMenu();
@@ -1358,7 +1571,6 @@ $(document).ready(function () {
                 }).appendTo(wrapperClasse);
 
 
-
                 jsonVoti = {};
                 for (var j = 0; j < arrayStudenti.length; j++) {
                     if (arrayStudenti[j] !== undefined) {
@@ -1392,7 +1604,7 @@ $(document).ready(function () {
                         //CREO GLI STUDENTI
                         var container;
                         if (arrayStudenti[j].sesso == "M") {
-                             container = $('<div/>',
+                            container = $('<div/>',
                                 {
                                     'width': $(wrapperClasse).width() - 5,
                                     'height': 40,
@@ -1406,7 +1618,7 @@ $(document).ready(function () {
                                 .html(anagrafica)
                         }
                         else {
-                             container = $('<div/>',
+                            container = $('<div/>',
                                 {
                                     'width': $(wrapperClasse).width() - 5,
                                     'height': 40,
@@ -1418,7 +1630,6 @@ $(document).ready(function () {
                                 .attr('id', cf)
                                 .html(anagrafica)
                         }
-
 
 
                         //aggiungo la classe desiderata se presente
@@ -1467,7 +1678,7 @@ $(document).ready(function () {
                     selector: 'li',
                     callback: function (key, options) {
                         var studente = getStudentObject($(this).children().attr("id"));
-                        switch (key){
+                        switch (key) {
                             case "informazioni":
                                 //open modal
                                 $('.ui.modal.informazioni').modal({
@@ -1716,7 +1927,7 @@ $(document).ready(function () {
                     var classFrom = oldList.attr('id');
                     var classTo = newList.attr('id');
 
-                    moveStudent(cf_studente_spostato, classFrom, classTo);
+                    moveStudent(cf_studente_spostato, classFrom, classTo, true);
 
                     console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
 

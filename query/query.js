@@ -86,18 +86,80 @@ module.exports = {
         });
     },
 
-    insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {
-        connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
+    /**
+     * aggiorna la classe di uno studente, serve per salvare su db
+     * @param cf
+     * @param classe
+     */
+    updateAlunnoClass: function (callback, cf, classe) {
+        connection.query("UPDATE comp_classi SET nome_classe = '" + classe + "' WHERE cf_alunno = '" + cf + "'", function (err, row) {
+            if (err) {
+                console.error(err);
+            }
+        });
+    },
+
+    insertHistory: function (callback, cf, toClass, fromClass, idUtente) {
+        connection.query(
+            "INSERT INTO HISTORY (cf, classe_precedente, classe_successiva, id_utente) VALUES (?,?,?,?)",
+            [cf, fromClass, toClass, idUtente],
+            function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
+    },
+
+    getHistory: function (callback) {
+        connection.query(
+            "SELECT * FROM `history` order by timestamp DESC",
+            function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
+    },
+
+    deleteStudentFromHistory: function (callback, cf) {
+        connection.query(
+            "DELETE FROM history WHERE cf = ?",
+            [cf],
+            function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
+    },
+    
+
+    insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe, max_al_104) {
+        connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, nazionalita, naz_per_classe , max_al_104) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe , max_al_104], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
-                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti);
+                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe, max_al_104);
             }
         });
     },
 
     getSettingsPrime: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti from impostazioni_prime", function (err, rows) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, nazionalita, naz_per_classe, max_al_104 from impostazioni_prime", function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getSettingsPrimeForAlgorithm: function (callback) {
+        connection.query("select id, DATE_FORMAT(data, '%d-%m-%Y') as data, min_alunni as min_al, max_alunni as max_al, max_femmine as fem, max_stranieri as max_str, stessa_provenienza as stessa_pr, nazionalita, naz_per_classe, max_al_104 from impostazioni_prime order by id desc limit 1", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -352,5 +414,21 @@ module.exports = {
                 callback(err, rows);
             }
         });
+    }
+    ,
+
+    getClassiComposteForExport: function (callback) {
+        var query = "SELECT alunni.matricola, alunni.cf, alunni.cognome, alunni.nome, alunni.data_di_nascita, alunni.sesso,alunni.CAP, alunni.nazionalita, " +
+            "alunni.legge_107, alunni.legge_104, alunni.classe_precedente, alunni.anno_scolastico,alunni.voto,alunni.tag,alunni.desiderata from alunni " +
+            "INNER JOIN comp_classi as m1 on alunni.cf = m1.cf_alunno";
+
+        connection.query(query, function (err, rows) {
+            if (err) {
+                throw err;
+            } else {
+                callback(err, rows);
+            }
+        });
+
     }
 };
