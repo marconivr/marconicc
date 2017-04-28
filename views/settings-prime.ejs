@@ -87,8 +87,8 @@
                             <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza">
                         </div>
                         <div class="field">
-                            <label>Ripetenti</label>
-                            <input name="ripetenti" placeholder="Ripetenti" type="number" id="ripetenti">
+                            <label>Numero massimo di alunni in una classe in presenza di un 104</label>
+                            <input name="max_al_104" placeholder="Max_al_104" type="number" id="max_al_104">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
@@ -229,8 +229,8 @@
                             case "naz_per_classe":
                                 document.getElementById("naz_per_classe").value = settings[index][setting];
                                 break;
-                            case "ripetenti":
-                                document.getElementById("ripetenti").value = settings[index][setting];
+                            case "max_al_104":
+                                document.getElementById("max_al_104").value = settings[index][setting];
                                 break;
                         }
                     }
@@ -263,7 +263,7 @@
         var residenza = parseInt($("#residenza").val());
         var nazionalita = parseInt($("#nazionalita").val());
         var naz_per_classe = parseInt($("#naz_per_classe").val());
-        var ripetenti = parseInt($("#ripetenti").val());
+        var max_al_104 = parseInt($("#max_al_104").val());
         $.ajax({
             url: '/insert-settings-prime',
             data: {
@@ -276,7 +276,7 @@
                 "residenza" : residenza,
                 "nazionalita" : nazionalita,
                 "naz_per_classe" : naz_per_classe,
-                "ripetenti" : ripetenti
+                "max_al_104" : max_al_104
             },
             type: 'get',
             success: function (data) {
