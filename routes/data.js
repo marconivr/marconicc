@@ -212,7 +212,7 @@ module.exports = function (app, passport, upload) {
 
         //populate history
         var saveHistory = (req.body.saveHistory == 'true');
-        if (saveHistory) {
+        if (saveHistory && req.body.toClass != req.body.fromClass) {
             query.insertHistory(function (err, results) {
             if (err)
                 console.log(err);
