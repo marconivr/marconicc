@@ -14,6 +14,7 @@ var priority = ["alunni", "legge_104", "legge_107", "desiderata", "ripetenti", "
 var listaAlunni = [];
 var listaAlunniDeleted = [];
 var insiemi = [];
+var insiemi_finali = [];
 var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 module.exports = {
@@ -35,6 +36,7 @@ module.exports = {
                             listaAlunni = [];
                             listaAlunniDeleted = [];
                             insiemi = [];
+                            insiemi_finali = [];
                             callback();
                         },
                         function (callback) {
@@ -189,7 +191,7 @@ module.exports = {
                     }, alunni: []
                 });
             }
-            return module.exports.generaPropIdeali(listaClassi);
+            return module.exports.generaPropIdealiCorradi(listaClassi);
         }
     },
 
@@ -783,22 +785,71 @@ module.exports = {
     },
 
     inizializzaPropIdealiCorradi: function () {
-        for (classe in listaClassi){
-
+        for (var i = 0; i < listaClassi.length; i++) {
+            listaClassi[i].propIdeali.alunni = 0;
+            listaClassi[i].propIdeali.legge_104 = 0;
+            listaClassi[i].propIdeali.legge_107 = 0;
+            listaClassi[i].propIdeali.ripetenti = 0;
+            listaClassi[i].propIdeali.femmine = 0;
+            listaClassi[i].propIdeali.CAP = {};
+            listaClassi[i].propIdeali.voto = {};
+            listaClassi[i].propIdeali.nazionalita = {};
+            listaClassi[i].propIdeali.amici = 0;
+            listaClassi[i].propIdeali.amici_femmine = 0;
         }
     }
 
     ,
 
+    updatePropIdealiCorradi: function (alunno,propIdeali) {
+        var naz = alunno.nazionalita;
+        var sesso = alunno.sesso;
+        var voto = alunno.voto;
+        var cap = alunno.CAP;
+
+        if (propIdeali.nazionalita[alunno.nazionalita] === undefined){
+            propIdeali.nazionalita[alunno.nazionalita] = 1;
+        }else{
+            propIdeali.nazionalita[alunno.nazionalita] += 1;
+        }
+
+        if(sesso === "F"){
+            propIdeali.femmine += 1;
+        }
+
+        if (propIdeali.voto[alunno.voto] === undefined){
+            propIdeali.voto[alunno.voto] = 1;
+        }else{
+            propIdeali.voto[alunno.voto] += 1;
+        }
+
+        if (propIdeali.CAP[alunno.CAP] === undefined){
+            propIdeali.CAP[alunno.CAP] = 1;
+        }else{
+            propIdeali.CAP[alunno.CAP] += 1;
+        }
+
+        module.exports.removeStudenteFromInsiemi(alunno);
+        return propIdeali;
+
+
+    }
+    ,
+
     generaPropIdealiCorradi: function () {
+        var ins104 = module.exports.getInsieme("legge_104").alunni;
+        var ins107 = module.exports.getInsieme("legge_107").alunni;
         var insNaz = module.exports.getInsieme("nazionalita").alunni;
         var insVoti = module.exports.getInsieme("voto").alunni;
         var insCAP = module.exports.getInsieme("CAP").alunni;
+        var insFemmine = module.exports.getInsieme("femmine").alunni;
+
+
 
         var totale104 = module.exports.count104(listaAlunni);
         var totale107 = module.exports.count107(listaAlunni);
         var totaleFem = module.exports.countFemmine(listaAlunni);
-        var totaleRip = module.exports.countRipetenti(listaAlunni);
+        //var totaleRip = module.exports.countRipetenti(listaAlunni);
 
         var naz = {};
         var voti = {};
@@ -817,13 +868,214 @@ module.exports = {
         }
 
 
-
+        module.exports.inizializzaPropIdealiCorradi();
         for (i in priority){
             switch (priority[i]){
                 case "legge_104":
+                    var j = 0;
+                    while (totale104 !== 0){
+                        listaClassi[j].propIdeali.legge_104 += 1;
+
+                        var alunno = ins104[0];
+                        ins104.shift(); //rimuovo il primo elemento
+
+                        listaClassi[j].alunni.push(alunno);
+                        listaClassi[j].propIdeali = module.exports.updatePropIdealiCorradi(alunno,listaClassi[j].propIdeali);
+
+                        var amico = module.exports.checkDesiderata(alunno);
+                        if (amico) {
+                            module.exports.removeStudenteFromInsiemi(amico);
+                            listaClassi[j].alunni.push(amico);
+                            listaClassi[j].propIdeali = module.exports.updatePropIdealiCorradi(alunno,listaClassi[j].propIdeali);
+                            listaClassi[j].propIdeali.amici += 1;
+                            if (amico.sesso === "F"){
+                                istaClassi[j].propIdeali.amici_femmine += 1;
+                            }
+                        }
+
+
+
+                        listaClassi[j].propIdeali.alunni = 23;
+
+                        totale104--;
+                        j++;
+
+                        if (j >= listaClassi.length){
+                            j = 0;
+                        }
+                    }
+                    break;
+                case "legge_107":
+                    var j = 0;
+                    var x = 0;
+                    while (totale107 !== 0){
+                        //salto le classi che hanno già un 104 e aggiungo solo alle altre
+                        while (listaClassi[j].propIdeali.legge_104 > 0){
+                            j++;
+                            if (j >= listaClassi.length){
+                                j = x;
+                                x ++;
+                                if (x >= listaClassi.length){
+                                    x = 0;
+                                }
+                                break;
+                            }
+                        }
+                        listaClassi[j].propIdeali.legge_107 += 1;
+
+                        var alunno = ins107[0];
+                        ins107.shift(); //rimuovo il primo elemento
+                        listaClassi[j].alunni.push(alunno);
+                        listaClassi[j].propIdeali = module.exports.updatePropIdealiCorradi(alunno,listaClassi[j].propIdeali);
+
+                        var amico = module.exports.checkDesiderata(alunno);
+                        if (amico) {
+                            module.exports.removeStudenteFromInsiemi(amico);
+                            listaClassi[j].alunni.push(amico);
+                            listaClassi[j].propIdeali = module.exports.updatePropIdealiCorradi(alunno,listaClassi[j].propIdeali);
+                            listaClassi[j].propIdeali.amici += 1;
+                            if (amico.sesso === "F"){
+                                istaClassi[j].propIdeali.amici_femmine += 1;
+                            }
+                        }
+
+
+                        totale107--;
+                        j++;
+
+                        if (j >= listaClassi.length){
+                            j = 0;
+                        }
+                    }
+                    break;
+                case "femmine":
+                    var j = 0;
+                    var arrayGruppiFemmine = [];
+                    var gruppoFemmine = settings.fem;
+                    var resto = totaleFem % gruppoFemmine;
+                    if (resto != 0){
+
+                        n_gruppi = Math.floor(totaleFem/gruppoFemmine);
+                        for (var z=0 ; z<n_gruppi ; z++){
+                            arrayGruppiFemmine.push(gruppoFemmine);
+                        }
+                        var i=0;
+                        while (resto != 0){
+                            arrayGruppiFemmine[i] += 1;
+                            resto--;
+                            i++;
+                            if (i >= arrayGruppiFemmine.length){
+                                i = 0;
+                            }
+                        }
+
+                    }
+
+                    while (totaleFem !== 0){
+                        for (var i in listaClassi){
+                            if (listaClassi[i].propIdeali.femmine > 0){
+                                arrayGruppiFemmine[i] -= listaClassi[i].propIdeali.femmine;
+                                totaleFem -= listaClassi[i].propIdeali.femmine;
+                            }
+                        }
+
+                        for (var i in arrayGruppiFemmine){
+
+                            while (arrayGruppiFemmine[i] != 0) {
+                                var alunno = insFemmine[0];
+                                insFemmine.shift(); //rimuovo il primo elemento
+
+                                listaClassi[j].alunni.push(alunno);
+                                listaClassi[j].propIdeali = module.exports.updatePropIdealiCorradi(alunno,listaClassi[j].propIdeali);
+
+                                var amico = module.exports.checkDesiderata(alunno);
+                                if (amico) {
+                                    module.exports.removeStudenteFromInsiemi(amico);
+                                    listaClassi[j].alunni.push(amico);
+                                    listaClassi[j].propIdeali = module.exports.updatePropIdealiCorradi(alunno,listaClassi[j].propIdeali);
+                                    listaClassi[j].propIdeali.amici += 1;
+                                    if (amico.sesso === "F"){
+                                        istaClassi[j].propIdeali.amici_femmine += 1;
+                                    }
+                                }
+
+
+
+                                totaleFem--;
+                                arrayGruppiFemmine[i] --;
+                            }
+                            j++;
+
+                            if (j >= listaClassi.length){
+                                j = 0;
+                            }
+                        }
+
+                    }
+                    break;
+
+                case "nazionalita":
+
+                    for (var i in listaClassi){
+                        var classe = listaClassi[i];
+                        var naz_per_classe = settings.naz_per_classe;
+                        var num_stranieri = settings.max_stranieri;
+                        var objNaz = classe.propIdeali.nazionalita;
+                        //conto quante nazionalità ci sono nella classe
+                        var cont = 0
+                        for (var prop in objNaz){
+                            if (prop.toLowerCase() != "italiana"){
+                                cont++;
+                            }
+                        }
+                        if (cont > naz_per_classe){
+                            break;
+                        }else{
+                            //vuol dire che la classe è sotto il limite massima di nazionalità per classe
+                            var diff = naz_per_classe - cont;
+                            while (diff !== 0){
+                                var random_naz = module.exports.pickRandomProperty(insNaz);
+                                //controllo che non siano già finite
+                                if (random_naz !== undefined){
+                                    while((insNaz[random_naz] - num_stranieri) <= 0){
+                                        delete insNaz[random_naz]; //la elimino perchè non ha più stranieri dentro
+                                    }
+                                }else{
+
+                                }
+
+                                if (objNaz[random_naz] === undefined){
+                                    objNaz[random_naz] = 0;
+                                }
+                                diff--;
+                            }
+
+                        }
+                    }
+
+
+                    // for (var i in listaClassi) {
+                    //     for (var k in insNaz) {
+                    //     }
+                    // }
+                    break;
+
 
             }
+
+
         }
+        console.log(listaClassi);
+    }
+    ,
+
+    pickRandomProperty: function(obj) {
+        var result;
+        var count = 0;
+        for (var prop in obj)
+            if (Math.random() < 1/++count)
+                result = prop;
+        return result;
     }
 
     ,
@@ -1763,6 +2015,7 @@ module.exports = {
 
     setInsiemi: function (ins) {
         insiemi = ins;
+        insiemi_finali = JSON.parse(JSON.stringify(ins)); //metodo veloce per copiare oggetto
     },
 
     getListaClassi: function () {
