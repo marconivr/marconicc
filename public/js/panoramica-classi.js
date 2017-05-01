@@ -1358,7 +1358,7 @@ function buttonRevertForHistory(element) {
             }
         });
     });
-        
+
 }
 
 function history() {
@@ -1528,6 +1528,7 @@ $(document).ready(function () {
             handleCheckBoxNazionalita();
             handleCheckBoxDesiderata();
             handleCheckBoxBocciati();
+            var selezioneClassi = $('#selezioneClassi');
 
             //handle history click
             $('#history').click(function (e) {
@@ -1550,11 +1551,20 @@ $(document).ready(function () {
                     'class': 'wrapperClasse',
                 }).appendTo('#rowForInsertClasses').hide();
 
-                $('<a/>', {
+                var classButton = $('<a/>', {
                     'class': 'item',
                     'text': nomeClasse
-                }).appendTo($('#selezioneClassi'));
+                });
 
+                $('<div/>')
+                    .css
+                    ({
+                        top: '15%',
+                        position: 'relative'
+                    })
+                    .html(classButton)
+                    .addClass('classi')
+                    .appendTo(selezioneClassi);
 
                 var settingClasse = $('<div/>', {
                     'class': 'ui raised segment wrapperSettingClasse',
@@ -2001,10 +2011,10 @@ $(document).ready(function () {
         },
         onUnchecked: function () {
             //prima di pulire tutto controllo gli item già attivi per portare alla situazione precendente le visualizzazioni
-            $('#selezioneClassi > .item').each(function (i, obj) {
-                if (!$(this).hasClass('active')) {
+            $('#selezioneClassi > .classi').each(function (i, obj) {
+                if (!$(this).children().hasClass('active')) {
                     try {
-                        var id = $(this).text();
+                        var id = $(this).children().text();
                         $('#' + id).hide();
                     } catch (e) {
                         //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe

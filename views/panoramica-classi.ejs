@@ -123,122 +123,139 @@
 </style>
 
 
-<% include sidebar-start.ejs %>
-
 <div class="ui text loader active medium"> Download classi</div>
 
-<div id="selezioneClassi" class="ui labeled icon menu">
-    <!--filter and settings-->
-    <div class="ui dropdown settings item notSelectable">
-        <span class="ui tiny header">Settings</span>
-       <!-- <i class="dropdown icon "></i>  occupa tanto spazio -->
-        <div class="menu" style="width: 10%">
-            <div class="ui mini header">Download</div>
-            <div class="divider"></div>
-            <div class="item" id="scarica-excel">Scarica excel</div>
-            <div class="divider"></div>
-            <div class="ui mini header">History</div>
-            <div class="item" id="history">History</div>
-            <div class="divider"></div>
-            <div class="ui mini header">Filtri</div>
-            <div class="item">
-                <i class="dropdown icon"></i>
-                Voto
-                <div class="menu">
-                    <div class="list">
-                        <div class="item">
-                            <div class="ui  child checkbox voto">
-                                <input type="checkbox" name="6">
-                                <label><a class="ui circular label mini"
-                                          style="background-color: #FFCC80!important;">6</a></label>
+<!-- sidebar menu-->
+<div class="ui inverted left vertical sidebar menu" id="left-menu">
+    <a class="item" href="/insert-from-csv">Caricamento studenti</a>
+    <a class="item" href="/studenti">Elenco Studenti</a>
+    <a class="item" href="/settings">Configurazione</a>
+    <a class="item" href="/panoramica-classi">Panoramica classi</a>
+    <br>
+    <a class="item" href="/logout">Esci</a>
 
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child   checkbox voto">
-                                <input type="checkbox" name="7">
-                                <label><a class="ui circular label mini"
-                                          style="background-color: #E6EE9C!important;">7</a></label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox voto">
-                                <input type="checkbox" name="8">
-                                <label><a class="ui circular label mini"
-                                          style="background-color: #D4E157!important;">8</a></label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox voto">
-                                <input type="checkbox" name="9">
-                                <label><a class="ui circular label mini"
-                                          style="background-color: #C5E1A5!important;">9</a></label>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="ui child  checkbox voto">
-                                <input type="checkbox" name="10">
-                                <label><a class="ui circular label mini"
-                                          style="background-color: #AED581!important;">10</a></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--nazionalita-->
-            <div class="item">
-                <i class="dropdown icon"></i>
-                Nazionalità
-                <div class="menu">
-                    <div class="list" id="nazionalita-menu" style="width:10%; border-color:white !important;">
 
-                    </div>
-                </div>
-            </div>
-            <!--desiderata-->
-            <div class="item">
-                <i class="dropdown icon"></i>
-                Desiderata
-                <div class="menu">
-                    <div class="list">
-                        <div class="item temp">
-                            <div class="ui child checkbox desiderata">
-                                <input type="checkbox" name="desiderata-not-respected">
-                                <label>Desiderata non rispettato</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--bocciati-->
-            <div class="item">
-                <i class="dropdown icon"></i>
-                Bocciati
-                <div class="menu">
-                    <div class="list">
-                        <div class="item">
-                            <div class="ui child checkbox bocciati">
-                                <input type="checkbox" name="bocciati">
-                                <label>Bocciati</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="contenitoreCheckBox" class="item notSelectable" >
-        <div id="checkBox" class="ui toggle checkbox">
-            <input id="check" type="checkbox" name="public" checked>
-            <label>Mostra tutte</label>
-        </div>
-    </div>
 </div>
 
+<!--site content-->
+<div class="pusher">
 
-<div id="wrapper">
+    <div class="ui sticky menu" id="top-menu">
+        <a class="item mobile-button">Menu</a>
+
+        <div id="selezioneClassi" class="ui labeled icon menu">
+            <!--filter and settings-->
+            <div class="ui dropdown settings item notSelectable">
+                <p class="ui tiny header" style="top:25%;position:relative">Settings</p>
+                <!-- <i class="dropdown icon "></i>  occupa tanto spazio -->
+                <div class="menu" style="width: 10%">
+                    <div class="ui mini header">Download</div>
+                    <div class="divider"></div>
+                    <div class="item" id="scarica-excel">Scarica excel</div>
+                    <div class="divider"></div>
+                    <div class="ui mini header">History</div>
+                    <div class="item" id="history">History</div>
+                    <div class="divider"></div>
+                    <div class="ui mini header">Filtri</div>
+                    <div class="item">
+                        <i class="dropdown icon"></i>
+                        Voto
+                        <div class="menu">
+                            <div class="list">
+                                <div class="item">
+                                    <div class="ui  child checkbox voto">
+                                        <input type="checkbox" name="6">
+                                        <label><a class="ui circular label mini"
+                                                  style="background-color: #FFCC80!important;">6</a></label>
+
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="ui child   checkbox voto">
+                                        <input type="checkbox" name="7">
+                                        <label><a class="ui circular label mini"
+                                                  style="background-color: #E6EE9C!important;">7</a></label>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="ui child  checkbox voto">
+                                        <input type="checkbox" name="8">
+                                        <label><a class="ui circular label mini"
+                                                  style="background-color: #D4E157!important;">8</a></label>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="ui child  checkbox voto">
+                                        <input type="checkbox" name="9">
+                                        <label><a class="ui circular label mini"
+                                                  style="background-color: #C5E1A5!important;">9</a></label>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="ui child  checkbox voto">
+                                        <input type="checkbox" name="10">
+                                        <label><a class="ui circular label mini"
+                                                  style="background-color: #AED581!important;">10</a></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--nazionalita-->
+                    <div class="item">
+                        <i class="dropdown icon"></i>
+                        Nazionalità
+                        <div class="menu">
+                            <div class="list" id="nazionalita-menu" style="width:10%; border-color:white !important;">
+
+                            </div>
+                        </div>
+                    </div>
+                    <!--desiderata-->
+                    <div class="item">
+                        <i class="dropdown icon"></i>
+                        Desiderata
+                        <div class="menu">
+                            <div class="list">
+                                <div class="item temp">
+                                    <div class="ui child checkbox desiderata">
+                                        <input type="checkbox" name="desiderata-not-respected">
+                                        <label>Desiderata non rispettato</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--bocciati-->
+                    <div class="item">
+                        <i class="dropdown icon"></i>
+                        Bocciati
+                        <div class="menu">
+                            <div class="list">
+                                <div class="item">
+                                    <div class="ui child checkbox bocciati">
+                                        <input type="checkbox" name="bocciati">
+                                        <label>Bocciati</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contenitoreCheckBox" class="item notSelectable">
+                <div id="checkBox" class="ui toggle checkbox" style="top:25%;position:relative">
+                    <input id="check" type="checkbox" name="public" checked>
+                    <label>Mostra tutte</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="wrapper">
     <div class="table">
         <div id="rowForInsertClasses" class="tr">
 
