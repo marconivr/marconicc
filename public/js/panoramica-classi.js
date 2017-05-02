@@ -1512,7 +1512,7 @@ $(document).ready(function () {
             format: 'json'
         },
         error: function () {
-            alert('Errore di scaricamento dei dati /get-classi-composte');
+            alertify.error('Errore di scaricamento dei dati');
         },
         dataType: 'json',
 
