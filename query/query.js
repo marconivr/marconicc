@@ -99,10 +99,10 @@ module.exports = {
         });
     },
 
-    insertHistory: function (callback, cf, toClass, fromClass, idUtente) {
+    insertHistory: function (callback, cf, toClass, fromClass, idUtente, anno_scolastico) {
         connection.query(
-            "INSERT INTO HISTORY (cf, classe_precedente, classe_successiva, id_utente) VALUES (?,?,?,?)",
-            [cf, fromClass, toClass, idUtente],
+            "INSERT INTO history (cf, classe_precedente, classe_successiva, id_utente, anno_scolastico) VALUES (?,?,?,?,?)",
+            [cf, fromClass, toClass, idUtente,anno_scolastico],
             function (err, rows) {
                 if (err) {
                     throw err;
@@ -431,4 +431,10 @@ module.exports = {
         });
 
     }
+    ,
+
+    generazioneAvvenuta: function (callback) {
+        var query = "SELECT alunni.matricola FROM c"
+    }
+
 };

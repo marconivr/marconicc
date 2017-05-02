@@ -186,13 +186,6 @@ module.exports = function (app, passport, upload) {
 
     app.get('/generate-classi' ,middleware.isLoggedIn,function (req,res) {
 
-        query.getSettingsPrimeForAlgorithm(function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                newAlg.createSettingsArray(results);
-            }
-        });
 
         newAlg.generaClassiPrima(function (classi) {
                 res.send(classi);
@@ -218,7 +211,7 @@ module.exports = function (app, passport, upload) {
                 console.log(err);
             else
                 res.send(err);
-        }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente);
+        }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.anno_scolastico);
         }
     });
 

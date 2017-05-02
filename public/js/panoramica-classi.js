@@ -464,13 +464,14 @@ function getClassNameFromStudent(stundentCf) {
  * @param toClass
  * @param saveHistory
  */
-function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory) {
+function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory, anno_scolastico) {
 
     var jsonToSend = {
         cf: cf,
         fromClass: fromClass,
         toClass: toClass,
         id_utente: null,//todo:insert id_utente
+        anno_scolastico: anno_scolastico,
         saveHistory: saveHistory
 
     };
@@ -500,6 +501,7 @@ function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory) {
 function moveStudent(cf, fromClass, toClass, saveHistory) {
 
     var removedStudent = null;
+    var anno_scolastico = null;
 
     for (var i = 0; i < arrayClassi.length; i++) {
         if (arrayClassi[i].nome == fromClass) {
@@ -507,6 +509,7 @@ function moveStudent(cf, fromClass, toClass, saveHistory) {
             for (var j = 0; i < alunni.length; j++) {
                 if (alunni[j].cf == cf) {
                     removedStudent = alunni.splice(alunni.indexOf(alunni[j]), 1)[0];
+                    anno_scolastico = removedStudent.anno_scolastico;
                     if (debug) {
                         console.log(fromClass);
                         console.log(getNumberOfFemmineOfClass(fromClass));
@@ -534,7 +537,7 @@ function moveStudent(cf, fromClass, toClass, saveHistory) {
         }
     }
 
-    saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory);
+    saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory,anno_scolastico);
     updateChartBar(toClass);//refresh the new chart
     updateChartBar(fromClass); //refresh the old chart
     updateInformation(toClass);
