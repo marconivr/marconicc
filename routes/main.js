@@ -6,6 +6,7 @@ var middleware = require('./middleware/middleware');
 var query = require('./../query/query.js');
 var alg = require("./algorithm.js");
 var dataInSettings = new Object();
+var async = require('async');
 module.exports = function (app, passport) {
 
     /**
@@ -152,8 +153,41 @@ module.exports = function (app, passport) {
     
     app.get('/settings-prime', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
-        res.render('settings-prime.ejs', {
-            pageTitle: " Settings prime"
+        async.parallel({
+            studentiPrima: function (callback) {
+                query.getNumberOfStudentiPrima(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'studenti': results})
+                });
+            },
+
+            femminePrima: function (callback) {
+                query.getNumberGirl(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'femmine': results})
+                },"PRIMA");
+            },
+            mediaPrima: function (callback) {
+                query.getAVGOfStudentiPrima(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'media': results})
+                });
+            }
+        }, function (err, results) {
+            res.render('settings-prime.ejs', {
+                user: req.user,
+                pageTitle: " Settings prime ",
+                studentiPrima: results.studentiPrima.studenti,
+                femminePrima: results.femminePrima.femmine,
+                mediaPrima: results.mediaPrima.media
+            });
+
         });
     });
 

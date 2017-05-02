@@ -232,6 +232,36 @@ module.exports = function (app, passport, upload) {
         });
     });
 
+    app.get('/get-dati-prime', middleware.isLoggedIn, function (req, res) {
+        var dati = {};
+
+        query.getNumberOfStudentiPrima(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                dati["alunni"] = results[0]["result"];
+            }
+        });
+
+        query.getNumberGirl(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                dati["femmine"] = results[0]["result"];
+            }
+        }, "PRIMA");
+
+        query.getAVGOfStudentiPrima(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                dati["media"] = results[0]["result"];
+            }
+        });
+
+        res.send(dati);
+    });
+
     app.get('/get-history', middleware.isLoggedIn, function (req, res) {
         query.getHistory(function (err, results) {
             if (err)
