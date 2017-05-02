@@ -591,7 +591,8 @@
         //tag default has change, so i save it to db
         if (tag == 'nessuno') tag = 'none';
 
-
+        if (!(tag == ""))
+        {
             $.ajax({
                 url: '/update-tag',
                 data: {
@@ -609,6 +610,7 @@
 
                 },
             });
+        }
     }
 </script>
 
