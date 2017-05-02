@@ -191,7 +191,7 @@ module.exports = {
                     }, alunni: []
                 });
             }
-            return module.exports.generaPropIdealiCorradi(listaClassi);
+            module.exports.generaPropIdealiCorradi(listaClassi);
         }
     },
 
@@ -888,7 +888,7 @@ module.exports = {
                             listaClassi[j].propIdeali = module.exports.updatePropIdealiCorradi(alunno, listaClassi[j].propIdeali);
                             listaClassi[j].propIdeali.amici += 1;
                             if (amico.sesso === "F") {
-                                istaClassi[j].propIdeali.amici_femmine += 1;
+                                listaClassi[j].propIdeali.amici_femmine += 1;
                             }
                         }
 
@@ -1203,7 +1203,7 @@ module.exports = {
                     //fine switch case NAZIONALITA
                     break;
 
-                case "CAP":
+                case "CAPL":
 
                     rimanenti = {};
 
