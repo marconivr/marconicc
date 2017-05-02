@@ -967,6 +967,11 @@ module.exports = {
                             }
                         }
 
+                    } else{
+                        n_gruppi = Math.floor(totaleFem / gruppoFemmine);
+                        for (var z = 0; z < n_gruppi; z++) {
+                            arrayGruppiFemmine.push(gruppoFemmine);
+                        }
                     }
 
                     while (totaleFem !== 0) {
