@@ -1345,7 +1345,7 @@ function buttonRevertForHistory(element) {
 
                 //aggiorno la grafica
                 try {
-                    moveStudent(cf, classeSuccessiva, classePrecendente, false);
+                    moveStudent(cf, classeSuccessiva, classePrecendente, false,getStudentObject(cf).anno_scolastico);
                     updateStudentGUI(cf, classeSuccessiva, classePrecendente);
                     alertify.success('Alunno spostato correttamente');
                 }
