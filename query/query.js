@@ -303,7 +303,7 @@ module.exports = {
         });
     },
 
-    getNumerOfStudentiPrima: function (callback) {
+    getNumberOfStudentiPrima: function (callback) {
 
         connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'PRIMA'", function (err, rows) {
             if (err) {
@@ -327,7 +327,7 @@ module.exports = {
 
     getAVGOfStudentiPrima: function (callback) {
 
-        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'PRIMA' ", function (err, rows) {
+        connection.query("SELECT ROUND( AVG(voto),2 ) as result FROM alunni WHERE classe_futura = 'PRIMA' ", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
