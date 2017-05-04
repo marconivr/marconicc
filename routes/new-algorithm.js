@@ -891,13 +891,9 @@ module.exports = {
                                 listaClassi[j].propIdeali.amici_femmine += 1;
                             }
                         }
-
-
                         listaClassi[j].propIdeali.alunni = 23;
-
                         totale104--;
                         j++;
-
                         if (j >= listaClassi.length) {
                             j = 0;
                         }
@@ -1025,7 +1021,7 @@ module.exports = {
                         var num_stranieri = settings.max_str;
                         var objNaz = classe.propIdeali.nazionalita;
                         //conto quante nazionalità ci sono nella classe
-                        var cont = 0
+                        var cont = 0;
                         for (var prop in objNaz) {
                             if (prop.toLowerCase() != "italiana") {
                                 cont++;
@@ -1045,7 +1041,7 @@ module.exports = {
                                 var modifiche = false;
                                 var snap1 = JSON.stringify(insNaz);
 
-                                if (random_naz != undefined) {
+                                if (random_naz !== undefined) {
                                     if (insNaz[random_naz].length >= num_stranieri) {
                                         if (objNaz[random_naz] === undefined) {
                                             for (var i = 0; i < num_stranieri; i++) {
@@ -1056,7 +1052,7 @@ module.exports = {
                                             modifiche = true;
 
                                         }
-                                        if (objNaz[random_naz] > 0 && objNaz[random_naz] < num_stranieri) {
+                                        else if (objNaz[random_naz] > 0 && objNaz[random_naz] < num_stranieri) {
                                             var app = num_stranieri - objNaz[random_naz];
 
                                             for (var i = 0; i < app; i++) {
@@ -1067,10 +1063,29 @@ module.exports = {
                                             modifiche = true;
 
                                         }
-
-
                                     }
-                                    if (insNaz[random_naz].length == 0) {
+                                    else if (insNaz[random_naz].length < num_stranieri && insNaz[random_naz].length !== 0) {
+                                        var num_str = num_stranieri - insNaz[random_naz].length;
+                                        if (objNaz[random_naz] === undefined) {
+                                            for (var i = 0; i < num_str; i++) {
+                                                insNaz[random_naz].shift();
+                                            }
+                                            objNaz[random_naz] = num_str;
+                                            diff--;
+                                            modifiche = true;
+
+                                        }
+                                        else if (objNaz[random_naz] > 0 && objNaz[random_naz] < num_str) {
+                                            var app = num_str - objNaz[random_naz];
+                                            for (var i = 0; i < app; i++) {
+                                                insNaz[random_naz].shift();
+                                            }
+                                            objNaz[random_naz] += app;
+                                            diff--;
+                                            modifiche = true;
+                                        }
+                                    }
+                                    else if (insNaz[random_naz].length == 0) {
                                         delete insNaz[random_naz];
                                         modifiche = true;
                                     }
@@ -1117,7 +1132,7 @@ module.exports = {
                         var arrayNaz = [];
                         for (var i in listaClassi) {
                             var nAlunniNaz = listaClassi[i].propIdeali.nazionalita[prop];
-                            if (nAlunniNaz != undefined) {
+                            if (nAlunniNaz !== undefined) {
                                 arrayNaz.push(Number(nAlunniNaz));
                             } else {
                                 arrayNaz.push(6786968);//numero a caso impossibile che esca
@@ -1151,14 +1166,13 @@ module.exports = {
                                     indexMinValue = i;
                                 }
                             }
-
-
                         }
-
-                        listaClassi[indexMinValue].propIdeali.nazionalita[prop] += valore;
-                        rimanenti[prop] = 0;
-
-
+                        if (listaClassi[indexMinValue].propIdeali.nazionalita[prop] === undefined){
+                            listaClassi[indexMinValue].propIdeali.nazionalita[prop] = valore;
+                        } else{
+                            listaClassi[indexMinValue].propIdeali.nazionalita[prop] += valore;
+                        }
+                        delete rimanenti[prop];
                     }
 
                     //smisto i gruppi di insNaz
@@ -1176,8 +1190,6 @@ module.exports = {
                             if (i >= listaClassi.length) {
                                 i = 0;
                             }
-
-
                         }
                     }
 
@@ -1222,7 +1234,7 @@ module.exports = {
                         var modifiche = false;
                         var snap1 = JSON.stringify(insCAP);
 
-                        if (random_cap != undefined) {
+                        if (random_cap !== undefined) {
                             if (insCAP[random_cap].length >= cap_per_classe) {
                                 if (objCap[random_cap] === undefined) {
                                     for (var i = 0; i < cap_per_classe; i++) {
@@ -1274,7 +1286,8 @@ module.exports = {
                         }
 
                     }
-        //fine switch case CAP
+                case "CAP":
+
         break;
     }
 
