@@ -953,7 +953,7 @@ module.exports = {
                     var resto = totaleFem % gruppoFemmine;
                     if (resto != 0) {
 
-                        n_gruppi = Math.floor(totaleFem / gruppoFemmine);
+                        var n_gruppi = Math.floor(totaleFem / gruppoFemmine);
                         for (var z = 0; z < n_gruppi; z++) {
                             arrayGruppiFemmine.push(gruppoFemmine);
                         }
@@ -968,7 +968,7 @@ module.exports = {
                         }
 
                     } else{
-                        n_gruppi = Math.floor(totaleFem / gruppoFemmine);
+                        var n_gruppi = Math.floor(totaleFem / gruppoFemmine);
                         for (var z = 0; z < n_gruppi; z++) {
                             arrayGruppiFemmine.push(gruppoFemmine);
                         }
