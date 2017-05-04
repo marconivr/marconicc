@@ -33,9 +33,9 @@ Elenco passi da eseguire per lanciare il progetto:
 ### WBS
 ### GANTT
 ### Matrice responsabilità
-![Matrice di responsabilità](/img/matrice_responsabilita.PNG)
-### Unità organizzative
-![Unità organizzative](/img/unita_organizzative.PNG)
+![Matrice di responsabilità ](/img/matrice_responsabilita.PNG)
+### Unità  organizzative
+![Unità  organizzative](/img/unita_organizzative.PNG)
 ### Strumenti utilizzati
 - WebStorm
 - NodeJs
@@ -63,5 +63,12 @@ Elenco passi da eseguire per lanciare il progetto:
 - Creazione interfacce web principali
 - Implementazione algoritmo che genera casualmente classi
 - Pagina 'Elenco alunni' con possibilità di ricerca
-- Aggiunta proprietà principali di ogni classe (numero Alunni, femmine, media, bocciati)
-- Possibilità di aggiungere tag agli alunni(dsa...)
+- Aggiunta proprietà  principali di ogni classe (numero Alunni, femmine, media, bocciati)
+- Possibilita  di aggiungere tag agli alunni(dsa...)
+
+### Sprint 2
+
+- Creare classi utilizzando la logica degli insiemi
+- Pagina impostazioni nella quale inserire delle caratteristiche che deve avere una classe ideale
+- Importare impostazioni passate
+- Statistiche real time
