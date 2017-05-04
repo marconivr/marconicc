@@ -1193,7 +1193,7 @@ module.exports = {
                         }
                     }
 
-                    var debugNazionalita = false;
+                    /**var debugNazionalita = false;
 
                     if (debugNazionalita) {
                         for (var i in listaClassi) {
@@ -1214,14 +1214,13 @@ module.exports = {
                         for (var prop in rimanenti) {
                             console.log(prop + " : " + rimanenti[prop].length);
                         }
-                    }
+                    }*/
 
 
                     //fine switch case NAZIONALITA
                     break;
 
-                case "CAPL":
-
+                case "CAP":
                     rimanenti = {};
 
                     for (var i in listaClassi) {
@@ -1230,7 +1229,6 @@ module.exports = {
                         var objCap = classe.propIdeali.CAP;
 
                         var random_cap = module.exports.pickRandomProperty(insCAP);
-
                         var modifiche = false;
                         var snap1 = JSON.stringify(insCAP);
 
@@ -1254,19 +1252,37 @@ module.exports = {
                                     objCap[cap_per_classe] += app;
                                     diff--;
                                     modifiche = true;
+                                }
+                            }
+                            else if (insCAP[random_cap].length < cap_per_classe && insCAP[random_cap].length !== 0) {
+                                var num_CAP = cap_per_classe - insCAP[random_cap].length;
+                                if (objCap[random_cap] === undefined) {
+                                    for (var i = 0; i < num_CAP; i++) {
+                                        insCAP[random_cap].shift();
+                                    }
+                                    objCap[random_cap] = num_CAP;
+                                    diff--;
+                                    modifiche = true;
 
                                 }
-
-
+                                else if (objCap[random_cap] > 0 && objCap[random_cap] < num_CAP) {
+                                    var app = num_CAP - num_CAP[random_cap];
+                                    for (var i = 0; i < app; i++) {
+                                        insCAP[random_cap].shift();
+                                    }
+                                    objCap[random_cap] += app;
+                                    diff--;
+                                    modifiche = true;
+                                }
                             }
-                            if (insCAP[random_cap].length == 0) {
+                            else if (insCAP[random_cap].length == 0) {
                                 delete insCAP[random_cap];
                                 modifiche = true;
                             }
 
                             try {
                                 if (insCAP[random_cap].length == 1) {
-                                    rimanenti[random_cap] = insNaz[random_cap];
+                                    rimanenti[random_cap] = insCAP[random_cap];
 
                                     delete insCAP[random_cap];
                                     modifiche = true;
@@ -1284,11 +1300,76 @@ module.exports = {
                         } else {
                             break;
                         }
-
                     }
-                case "CAP":
 
-        break;
+                    //smisto i rimanenti dell'oggetto rimanenti
+                    for (var prop in rimanenti) {
+                        var valore = rimanenti[prop].length;  //sarà = 1 sempre
+
+                        var arrayCAP = [];
+                        for (var i in listaClassi) {
+                            var nAlunniCAP = listaClassi[i].propIdeali.CAP[prop];
+                            if (nAlunniCAP !== undefined) {
+                                arrayCAP.push(Number(nAlunniCAP));
+                            } else {
+                                arrayCAP.push(6786968);//numero a caso impossibile che esca
+                            }
+                        }
+
+                        var indexMinValue;
+                        var minValue = arrayCAP[0];
+                        for (var i = 0; i < arrayCAP.length; i++) {
+                            if (arrayCAP[i] < minValue) {
+                                minValue = arrayCAP[i];
+                                indexMinValue = i;
+                            }
+
+                        }
+                        if (indexMinValue === undefined) {
+                            var arrayNumberCAP = [];
+                            for (var i = 0; i < listaClassi.length; i++) {
+                                var objCAP = listaClassi[i].propIdeali.CAP;
+                                var count = 0;
+                                for (prop in objCAP) {
+                                    count++;
+                                }
+                                arrayNumberCAP.push(count);
+                            }
+                            var indexMinValue;
+                            var minValue = arrayNumberCAP[0];
+                            for (var i = 0; i < arrayNumberCAP.length; i++) {
+                                if (arrayNumberCAP[i] < minValue) {
+                                    minValue = arrayNumberCAP[i];
+                                    indexMinValue = i;
+                                }
+                            }
+                        }
+                        if (listaClassi[indexMinValue].propIdeali.CAP[prop] === undefined){
+                            listaClassi[indexMinValue].propIdeali.CAP[prop] = valore;
+                        } else{
+                            listaClassi[indexMinValue].propIdeali.CAP[prop] += valore;
+                        }
+                        delete rimanenti[prop];
+                    }
+
+                    //smisto i gruppi di insNaz
+
+                    for (var cap in insCAP) {
+                        var rimanenti = insCAP[cap].length;
+                        var i = 0;
+                        while (rimanenti !== 0) {
+                            if (listaClassi[i].propIdeali.CAP[cap] !== undefined) {
+                                rimanenti--;
+                                listaClassi[i].propIdeali.CAP[cap] += 1;
+
+                            }
+                            i++;
+                            if (i >= listaClassi.length) {
+                                i = 0;
+                            }
+                        }
+                    }
+                    break;
     }
 
 
