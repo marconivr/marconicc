@@ -14,8 +14,8 @@ Elenco passi da eseguire per installare il progetto:
 
 - cd composizione_classi
 - npm install
-- cd public
 - npm install bower -g
+- cd public
 - bower install
 
 ### Lancio
@@ -33,9 +33,9 @@ Elenco passi da eseguire per lanciare il progetto:
 ### WBS
 ### GANTT
 ### Matrice responsabilità
-![](img\matrice_responsabilita.png)
+![Matrice di responsabilità](/img/matrice_responsabilita.PNG)
 ### Unità organizzative
-![](img\unita_organizzative.png)
+![Unità organizzative](/img/unita_organizzative.PNG)
 ### Strumenti utilizzati
 - WebStorm
 - NodeJs
