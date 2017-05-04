@@ -12,7 +12,6 @@ var multer = require('multer');
 var upload = multer({ dest: 'files/' });
 
 
-
 // configurazione passport
 require('./config/passport')(passport);
 
