@@ -121,9 +121,9 @@ module.exports = function (app, passport, upload) {
         var insiemi = null;
 
         alg.creaInsiemi(function (err, result) {
-            if (err){
+            if (err) {
                 console.log(err)
-            }else {
+            } else {
                 insiemi = result;
                 alg.setInsiemi(insiemi);
                 query.getNumberAlunniClassi("prima", function (err, results) {
@@ -163,8 +163,12 @@ module.exports = function (app, passport, upload) {
                                                 console.log(err);
                                             else {
                                                 listaAlunniClasse = results;
-                                                listaClassi.push({nome: nomeCl, propAttuali:alg.createProprietaClasse(listaAlunniClasse),  alunni: listaAlunniClasse});
-                                                if (counter  == listaNomiClassi.length - 1){
+                                                listaClassi.push({
+                                                    nome: nomeCl,
+                                                    propAttuali: alg.createProprietaClasse(listaAlunniClasse),
+                                                    alunni: listaAlunniClasse
+                                                });
+                                                if (counter == listaNomiClassi.length - 1) {
                                                     alg.setListaClassi(listaClassi);
                                                     alg.fixClassi();
                                                     alg.printProprieta();
@@ -184,104 +188,39 @@ module.exports = function (app, passport, upload) {
     });
 
 
-    app.get('/generate-classi' ,middleware.isLoggedIn,function (req,res) {
+    app.get('/generate-classi', middleware.isLoggedIn, function (req, res) {
 
 
         newAlg.generaClassiPrima(function (classi) {
-                res.send(classi);
+            res.send(classi);
         });
 
     });
 
-                                                                                    //TRY
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Dummy users
-    var users = [
-        { id: 0, name: 'tj', email: 'tj@vision-media.ca', role: 'member' }
-        , { id: 1, name: 'ciaran', email: 'ciaranj@gmail.com', role: 'member' }
-        , { id: 2, name: 'aaron', email: 'aaron.heckmann+github@gmail.com', role: 'admin' }
-    ];
 
-    function loadUser(req, res, next) {
-        // You would fetch your user from the db
-        var user = users[req.params.id];
-        if (user) {
-            req.user = user;
-            next();
-        } else {
-            next(new Error('Failed to load user ' + req.params.id));
-        }
-    }
+    /**
+     * this function allow or block api call based on user id
+     * if the current user has the id passed in the params, it allow the call
+     * possible id -> 0,1,2
+     * @param role array of id
+     * @returns {Function}
+     */
+    function restrictTo(role) {
+        return function (req, res, next) {
+            //var userId = todo: insert user id
+            var userId = 2;
+            for (var index = 0; index < role.length; index++) {
+                if (userId == role[index]) {
+                    next();
 
-
-
-    function andRestrictToSelf(req, res, next) {
-        // If our authenticated user is the user we are viewing
-        // then everything is fine :)
-        if (req.authenticatedUser.id == req.user.id) {
-            next();
-        } else {
-            // You may want to implement specific exceptions
-            // such as UnauthorizedError or similar so that you
-            // can handle these can be special-cased in an error handler
-            // (view ./examples/pages for this)
-            next(new Error('Unauthorized'));
-        }
-    }
-
-    function andRestrictTo(role) {
-        return function(req, res, next) {
-            res.locals.user = "aa";
-            if (middleware.globalVar.id == role) {
-                next();
-            } else {
-                next(new Error('Unauthorized'));
+                } else {
+                    console.log('call deny')
+                }
             }
         }
     }
 
-// Middleware for faux authentication
-// you would of course implement something real,
-// but this illustrates how an authenticated user
-// may interact with middleware
-
-    app.use(function(req, res, next){
-        req.authenticatedUser = users[0];
-        next();
-    });
-
-    app.get('/', function(req, res){
-        res.redirect('/user/0');
-    });
-
-    app.get('/user/:id', loadUser,  andRestrictTo('admin'),  function(req, res){
-        res.send('Viewing user ' + req.user.name);
-    });
-
-    app.get('/user/:id/edit', loadUser, andRestrictToSelf, function(req, res){
-        res.send('Editing user ' + req.user.name);
-    });
-
-    app.delete('/user/:id', loadUser, andRestrictTo('admin'), function(req, res){
-        res.send('Deleted user ' + req.user.name);
-    });
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    app.post('/move-student', middleware.isLoggedIn, function (req, res) {
-
+    app.post('/move-student', middleware.isLoggedIn, restrictTo([0, 1]), function (req, res) {
         //update student class
         query.updateAlunnoClass(function (err, results) {
             if (err)
@@ -294,11 +233,11 @@ module.exports = function (app, passport, upload) {
         var saveHistory = (req.body.saveHistory == 'true');
         if (saveHistory && req.body.toClass != req.body.fromClass) {
             query.insertHistory(function (err, results) {
-            if (err)
-                console.log(err);
-            else
-                res.send(err);
-        }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.anno_scolastico);
+                if (err)
+                    console.log(err);
+                else
+                    res.send(err);
+            }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.anno_scolastico);
         }
     });
 
@@ -361,8 +300,7 @@ module.exports = function (app, passport, upload) {
             }
         }, req.query.cf);
     });
-    
-    
+
 
     app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
         query.getSettingsTerze(function (err, results) {
@@ -374,13 +312,13 @@ module.exports = function (app, passport, upload) {
         });
     });
 
-    app.get('/export-single-csv',middleware.isLoggedIn,function (req,res){
+    app.get('/export-single-csv', middleware.isLoggedIn, function (req, res) {
         query.getClassiComposteForExport(function (err, results) {
-            if(err){
+            if (err) {
                 console.log(err);
                 res.send("errore");
             }
-            else{
+            else {
                 res.setHeader('Content-disposition', 'attachment; filename=export.csv');
                 res.set('Content-Type', 'text/csv');
                 res.csv(results);
