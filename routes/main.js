@@ -86,7 +86,7 @@ module.exports = function (app, passport) {
         });
     });
 
-    app.get('/all-tag', function (req, res) {
+    app.get('/all-tag', middleware.isLoggedIn, function (req, res) {
         query.getAllTag(function (err, results) {
             if (err)
                 throw err;
@@ -95,7 +95,7 @@ module.exports = function (app, passport) {
         });
     });
 
-    app.get('/update-tag', function (req, res) {
+    app.get('/update-tag', middleware.isLoggedIn, function (req, res) {
 
         query.updateTagFromCF(function (err, results) {
             if (err)
@@ -117,7 +117,7 @@ module.exports = function (app, passport) {
     });
 
 
-    app.get('/student-by-cf', function (req, res) {
+    app.get('/student-by-cf', middleware.isLoggedIn, function (req, res) {
         query.getStudentByCf(function (err, results) {
             if (err)
                 throw err;
@@ -136,6 +136,13 @@ module.exports = function (app, passport) {
 
         res.render('panoramica-classi.ejs',{
             pageTitle: "Panoramica classi   "
+        })
+    });
+
+    app.get('/crea-utente', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+
+        res.render('crea-utente.ejs', {
+            pageTitle: "Creazione utente "
         })
     });
 

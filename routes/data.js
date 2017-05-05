@@ -208,7 +208,7 @@ module.exports = function (app, passport, upload) {
     function restrictTo(role) {
         return function (req, res, next) {
             //var userId = todo: insert user id
-            var userId = 2;
+            var userId = 1;
             for (var index = 0; index < role.length; index++) {
                 if (userId == role[index]) {
                     next();
