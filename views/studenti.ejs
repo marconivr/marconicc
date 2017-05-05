@@ -89,7 +89,7 @@
 
 
     <div class="tableContainer">
-    <table id="studenti-terza" class="ui celled table" cellspacing="0" width="100%">
+    <table id="studenti-terza" class="ui celled teal table" cellspacing="0" width="100%">
         <thead>
         <tr>
             <th>Cognome</th>
@@ -429,28 +429,26 @@
             onResults: function (response) {
 
                 var html = '';
-                if (response !== undefined) {
+                if (response.length != 0) {
                     $.each(response, function (index, result) {
-                        //TODO:FIX  NO RESULT
-                        if(result.cf != '')
-                        {
+
                             html += '<a onclick="setStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
                             html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
-                            html += '<i> Media voti: ' + result.media_voti + '</i>';
+                            html += '<i> Media voti: ' + result.voto + '</i>';
 
                             html += '' + '</div></a>';
                             return index < 6;
-                        }
-                        else
-                        {
-                            html += '<div class="title"<b>Oops, nessun risultato' + '</div>';
-                            return index<1;
-
-                        }
 
                     });
                     $('.ui.search div.results').html(html);
                 }
+                else{
+                    html += '<div class="content">' +
+                        '<div class="title">' +
+                        '<b> Nessun risultato, riprovare con un altro nome' + '' +
+                        '</div></div>';
+                }
+                $('.ui.search div.results').html(html);
                 return false;
             }
         });
@@ -469,11 +467,11 @@
                 $('#cognome').text(ret[0].cognome);
                 $('#nome').text(ret[0].nome);
                 $('#codice-catastale').text(ret[0].cod_cat);
-                $('#media-voti').text(ret[0].media_voti);
+                $('#media-voti').text(ret[0].voto);
                 $('#anno-scolastico').text(ret[0].anno_scolastico);
                 $('#cf').text(ret[0].cf);
                 existing_tag = ret[0].tag;
-                var postal_code = ret[0].cap_provenienza
+                var postal_code = ret[0].CAP
                 setDropdownData();
 
                 //save to db if the dropdown has change
@@ -593,7 +591,8 @@
         //tag default has change, so i save it to db
         if (tag == 'nessuno') tag = 'none';
 
-
+        if (!(tag == ""))
+        {
             $.ajax({
                 url: '/update-tag',
                 data: {
@@ -611,6 +610,7 @@
 
                 },
             });
+        }
     }
 </script>
 

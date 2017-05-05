@@ -59,10 +59,10 @@
                             <label>Alunni</label>
                             <div class="two fields">
                                 <div class="field">
-                                    <input type="number" name="alunni_min" placeholder="Alunni minimi" id="alunni-min">
+                                    <input type="number" name="alunni_min" placeholder="Alunni minimi" onkeyup="setDataRealtimeNumberOfStudents()" id="alunni-min">
                                 </div>
                                 <div class="field">
-                                    <input type="number" name="alunni_max" placeholder="Alunni massimi" onchange="setDataRealtimeNumberOfStudents()" id="alunni-max">
+                                    <input type="number" name="alunni_max" placeholder="Alunni massimi" id="alunni-max">
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                     <i class="student icon"></i> Studenti
                     <div class="floating ui yellow label">
                         <p id="alunni-in-classe-prima">
-
+                            <%= studentiPrima[0].result%>
                         </p>
                     </div>
                 </a>
@@ -126,8 +126,7 @@
                     <i class="female icon"></i> Donne
                     <div class="floating ui pink label">
                         <p id="donne-in-classe-prima">
-
-
+                            <%= femminePrima[0].result%>
                         </p>
                     </div>
                 </a>
@@ -135,8 +134,7 @@
                     <i class="write icon"></i> Media
                     <div class="floating ui blue  label">
                         <p id="media-in-classe-prima">
-
-
+                            <%= mediaPrima[0].result%>
                         </p>
                     </div>
                 </a>
@@ -242,13 +240,9 @@
 
     //this function set the number of student for class
     function setDataRealtimeNumberOfStudents() {
-        var classe = $('#classe').dropdown('get value');
-        if (classe == "prima") {
-            alunniPrima = $("#alunni-in-classe-prima").text();
-            maxNumberOfAlunni = $("#alunni-max").val();
-            $("#classe-realtime").html(Math.floor(alunniPrima / maxNumberOfAlunni))
-
-        }
+        var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML;
+        var alunniMin = $("#alunni-min").val();
+        $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
     }
 
     function addSettings() {
@@ -344,8 +338,6 @@
                 document.getElementById("rowForInsertDate").innerHTML = s;
             }
         });
-
-
 
         document.getElementById("sendButton").setAttribute("class", "ui disabled button")
         var $fields = $(".field :input");

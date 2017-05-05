@@ -35,6 +35,7 @@ module.exports = {
                             listaAlunni = [];
                             listaAlunniDeleted = [];
                             insiemi = [];
+                            module.exports.scaricaSettings();
                             callback();
                         },
                         function (callback) {
@@ -91,6 +92,17 @@ module.exports = {
         return null;
     },
 
+    scaricaSettings:function () {
+        query.getSettingsPrimeForAlgorithm(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                module.exports.createSettingsArray(results);
+            }
+        });
+    }
+
+    ,
     /**
      * creaInsiemi genera i possibili insiemi dati gli alunni
      */

@@ -1,9 +1,15 @@
 <!--menu-->
+<!--diritto 0 -> tutto-->
+<!--diritto 1 -> tutto tranne creare utenti-->
+<!--diritto 2 -> panoramica classi elenco studenti e export-->
 <div class="ui inverted left vertical sidebar menu" id="left-menu">
+
     <a class="item" href="/insert-from-csv">Caricamento studenti</a>
     <a class="item" href="/studenti">Elenco Studenti</a>
     <a class="item" href="/settings">Configurazione</a>
     <a class="item" href="/panoramica-classi">Panoramica classi</a>
+
+    <a class="item" href="/panoramica-classi">Crea un utente</a>
     <br>
     <a class="item" href="/logout">Esci</a>
 
@@ -13,6 +19,7 @@
 <!--site content-->
 <div class="pusher">
 
-    <div class="ui sticky menu" id="top-menu">
+    <div class="ui sticky menu" id="top-menu" style="top:0px">
         <a class="item mobile-button">Menu</a>
+
     </div>
