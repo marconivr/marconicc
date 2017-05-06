@@ -249,8 +249,15 @@ module.exports = {
         });
     },
 
-    getStudentiPrima: function (callback) {
-        connection.query("SELECT * from alunni WHERE classe_futura = 'PRIMA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+    /**
+     * Ritorna gli studenti data la scuola, l'anno scolastico e la classe futura(prima o terza ad esempio)
+     * @param callback
+     * @param scuola
+     * @param anno_scolastico
+     * @param classe
+     */
+    getStudentiOfschool: function (callback,scuola,annoScolastico,classeFutura) {
+        connection.query("SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ? AND classe_futura = ?", [scuola,annoScolastico, classeFutura],function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -259,16 +266,6 @@ module.exports = {
         });
     },
 
-    getStudentiTerza: function (callback) {
-
-        connection.query("SELECT * from alunni WHERE classe_futura = 'TERZA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
 
     getNumberGirl: function (callback, classe) {
 
