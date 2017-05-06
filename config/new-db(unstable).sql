@@ -354,7 +354,7 @@ CREATE TABLE `classi_composte` (
 
 CREATE TABLE `configurazione` (
   `id` int(11) NOT NULL,
-  `scuola` int(11) DEFAULT NULL,
+  `scuola` int(11),
   `anno_scolastico` varchar(15) DEFAULT NULL,
   `data` date NOT NULL,
   `nome` varchar(100) NOT NULL,
@@ -365,7 +365,7 @@ CREATE TABLE `configurazione` (
   `gruppo_nazionalita` int(11) DEFAULT NULL,
   `nazionalita_per_classe` int(11) DEFAULT NULL,
   `numero_alunni_con_104` int(11) DEFAULT NULL,
-  `classe` int(11) NOT NULL COMMENT '0 = prime , 1 = terze'
+  `classe` varchar(25) NOT NULL COMMENT 'PRIMA = prime , TERZA = terze'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `history` (
@@ -473,4 +473,4 @@ ALTER TABLE `utenti`
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;s
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -174,12 +174,14 @@ module.exports = function (app) {
      * inserisce le impostazioni delle prime
      */
     app.get('/insert-settings-prime', function (req, res) {
+        const scuola = req.user.id_scuola;
         query.insertSettingsPrime(function (err, results) {
             if (err)
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.nazionalita, req.query.naz_per_classe, req.query.max_al_104);
+        }, scuola, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.residenza, req.query.nazionalita, req.query.naz_per_classe, req.query.max_al_104);
+
     });
 
     /**

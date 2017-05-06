@@ -131,18 +131,19 @@ module.exports = {
     },
     
 
-    insertSettingsPrime: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe, max_al_104) {
-        connection.query("INSERT INTO impostazioni_prime (data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, nazionalita, naz_per_classe , max_al_104) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe , max_al_104], function (err, row) {
+    insertSettingsPrime: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
+        var query = connection.query("INSERT INTO configurazione (scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe , max_al_104, "PRIMA"], function (err, row) {
             if (err) {
                 console.log(err);
             }else {
-                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, nazionalita, naz_per_classe, max_al_104);
+                callback(err, row, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104);
             }
         });
+        console.log(query.sql);
     },
 
     getSettingsPrime: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, nazionalita, naz_per_classe, max_al_104 from impostazioni_prime", function (err, rows) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'Prima';", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -172,7 +173,7 @@ module.exports = {
     },
 
     getSettingsTerze: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti from impostazioni_terze", function (err, rows) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'Terza';", function (err, rows) {
             if (err) {
                 console.log('error');
             } else {

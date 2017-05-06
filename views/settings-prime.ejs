@@ -57,23 +57,20 @@
 
                         <!--sematic fields-->
                         <div class="field">
-                            <label>Alunni</label>
                             <div class="two fields">
                                 <div class="field">
+                                    <label>Alunni minimi</label>
                                     <input type="number" name="alunni_min" placeholder="Alunni minimi" onkeyup="setDataRealtimeNumberOfStudents()" id="alunni-min">
                                 </div>
                                 <div class="field">
+                                    <label>Alunni massimi</label>
                                     <input type="number" name="alunni_max" placeholder="Alunni massimi" id="alunni-max">
                                 </div>
                             </div>
                         </div>
                         <div class="field">
-                            <label>Femmine</label>
+                            <label>Numero femmine in una classe</label>
                             <input name="max_femmine" placeholder="Femmine" type="number" id="femmine">
-                        </div>
-                        <div class="field">
-                            <label>Stranieri</label>
-                            <input name="max_stranieri" placeholder="Stranieri" type="number" id="stranieri">
                         </div>
                         <div class="field">
                             <label>Numero persone con la stessa nazionalità</label>
@@ -84,7 +81,7 @@
                             <input name="naz_per_classe" placeholder="Naz_per_classe" type="number" id="naz_per_classe">
                         </div>
                         <div class="field">
-                            <label>Stessa residenza</label>
+                            <label>Numero persone che hanno residenza simile</label>
                             <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza">
                         </div>
                         <div class="field">
@@ -204,7 +201,7 @@
                 onApprove : function() {
                     for (setting in settings[index]){
                         switch (setting){
-                            case "descrizione":
+                            case "nome":
                                 document.getElementById("descrizione").value = settings[index][setting];
                                 break;
                             case "min_alunni":
@@ -213,22 +210,19 @@
                             case "max_alunni":
                                 document.getElementById("alunni-max").value = settings[index][setting];
                                 break;
-                            case "max_femmine":
+                            case "gruppo_femmine":
                                 document.getElementById("femmine").value = settings[index][setting];
                                 break;
-                            case "max_stranieri":
-                                document.getElementById("stranieri").value = settings[index][setting];
-                                break;
-                            case "stessa_provenienza":
+                            case "gruppo_cap":
                                 document.getElementById("residenza").value = settings[index][setting];
                                 break;
-                            case "nazionalita":
+                            case "gruppo_nazionalita":
                                 document.getElementById("nazionalita").value = settings[index][setting];
                                 break;
-                            case "naz_per_classe":
+                            case "nazionalita_per_classe":
                                 document.getElementById("naz_per_classe").value = settings[index][setting];
                                 break;
-                            case "max_al_104":
+                            case "numero_alunni_con_104":
                                 document.getElementById("max_al_104").value = settings[index][setting];
                                 break;
                         }
@@ -254,7 +248,6 @@
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
         var femmine = parseInt($("#femmine").val());
-        var stranieri = parseInt($("#stranieri").val());
         var residenza = parseInt($("#residenza").val());
         var nazionalita = parseInt($("#nazionalita").val());
         var naz_per_classe = parseInt($("#naz_per_classe").val());
@@ -267,7 +260,6 @@
                 "alunniMin" : alunniMin,
                 "alunniMax": alunniMax ,
                 "femmine" : femmine ,
-                "stranieri" : stranieri,
                 "residenza" : residenza,
                 "nazionalita" : nazionalita,
                 "naz_per_classe" : naz_per_classe,
