@@ -1,43 +1,209 @@
 /**
- * Created by matti on 10/11/2016.
+ * Created by mattia on 05/05/17.
  */
 
 
-var query = require('./../query/query.js');
-var csv_post = require("csv");
-var middleware = require('./middleware/middleware');
-var newAlg = require("./new-algorithm.js");
-var alg = require("./algorithm.js");
-var async = require('async');
-var csv = require('express-csv');
+const query = require('./../query/query.js');
+const csv_post = require("csv");
+const middleware = require('./middleware/middleware');
+const newAlg = require("./new-algorithm.js");
+const alg = require("./algorithm.js");
+const async = require('async');
+const csv = require('express-csv');
+const endpoint = require('./endpoint/endpoint');
 
-module.exports = function (app, passport, upload) {
+
+const multer = require('multer');
+const upload = multer({ dest: 'files/' });
+
+module.exports = function (app) {
 
 
-    app.post('/upload-csv', upload.single('csv'), middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
+        res.render('insert-from-csv.ejs', {
+            pageTitle: " main "
+        });
+    });
 
-        var data = req.file; //information about data uploaded (post method)
+    app.post(endpoint.alunni.uploadAlunniCsv, upload.single('csv'), middleware.isLoggedIn, function (req, res) {
 
-        csv_post().from.path(data.path, {
+        const data = req.file;
+        const pathFile = data.path;
+        const scuola = req.user.id_scuola;
+        const utente = req.user.id;
+
+        csv_post().from.path(pathFile, {
             delimiter: ";",
             escape: ''
-        })
 
-            .on("record", function (row, index) {
+        }).on("record", function (row, index) {
 
-                query.insertRecordFromCSV(row);
-
-            }).on("error", function (error) {
-
-            console.log(error);
+                query.insertRecordFromCSV(row,scuola,utente);
 
         }).on("end", function () {
 
-            console.log("Finita lettura file");
+            console.log("LETTURA FILE RIUSCITA");
             res.redirect('/studenti');
+
+        }).on("error", function (error) {
+
+            console.error(error);
         });
+    });
+
+    app.get(endpoint.alunni.allTag, middleware.isLoggedIn, function (req, res) {
+        query.getAllTag(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        });
+    });
+
+    app.get('/update-tag', middleware.isLoggedIn, function (req, res) {
+
+        query.updateTagFromCF(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.tag, req.query.cf);
+    });
 
 
+    app.get('/all-students', function (req, res) {
+        query.getAllStudents(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.q);
+    });
+
+
+    app.get('/student-by-cf', middleware.isLoggedIn, function (req, res) {
+        query.getStudentByCf(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.cf);
+    });
+
+    app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        query.getPriorita(function (err, results) {
+            if (err)
+                throw err;
+            else
+                alg.createArrayPriorita(results);
+        })
+
+        res.render('panoramica-classi.ejs', {
+            pageTitle: "Panoramica classi   "
+        })
+    });
+
+    app.get('/crea-utente', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+
+        res.render('crea-utente.ejs', {
+            pageTitle: "Creazione utente "
+        })
+    });
+
+    app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('panoramica-classi.ejs', {
+            pageTitle: "Panoramica classi   "
+        })
+    });
+
+    app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+        res.render('settings.ejs', {
+            pageTitle: "Settings   "
+        })
+    });
+
+    app.get('/settings-prime', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+
+        async.parallel({
+            studentiPrima: function (callback) {
+                query.getNumberOfStudentiPrima(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'studenti': results})
+                });
+            },
+
+            femminePrima: function (callback) {
+                query.getNumberGirl(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'femmine': results})
+                }, "PRIMA");
+            },
+            mediaPrima: function (callback) {
+                query.getAVGOfStudentiPrima(function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'media': results})
+                });
+            }
+        }, function (err, results) {
+            res.render('settings-prime.ejs', {
+                user: req.user,
+                pageTitle: " Settings prime ",
+                studentiPrima: results.studentiPrima.studenti,
+                femminePrima: results.femminePrima.femmine,
+                mediaPrima: results.mediaPrima.media
+            });
+
+        });
+    });
+
+    app.get('/settings-terze', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+
+        res.render('settings-terze.ejs', {
+            pageTitle: " Settings terze",
+            data: JSON.stringify(dataInSettings)
+        });
+    });
+
+    /**
+     * inserisce le impostazioni delle prime
+     */
+    app.get('/insert-settings-prime', function (req, res) {
+        query.insertSettingsPrime(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.nazionalita, req.query.naz_per_classe, req.query.max_al_104);
+    });
+
+    /**
+     * inserisce le impostazioni delle prime
+     */
+    app.get('/insert-settings-terze', function (req, res) {
+        query.insertSettingsTerze(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.ripetenti);
+    });
+
+    /**
+     * inserisce le priorita
+     */
+    app.get('/insert-priorita', function (req, res) {
+        query.insertPriorita(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.priorita);
     });
 
 
@@ -131,7 +297,7 @@ module.exports = function (app, passport, upload) {
                         console.log(results);
                     else {
                         nAlunniCompCl = results[0].result;
-                        if (nAlunniCompCl == 0) {
+                        if (nAlunniCompCl === 0) {
                             alg.firstGeneration("prima", function (err) {
                                 if (err)
                                     console.log(err);
@@ -168,7 +334,7 @@ module.exports = function (app, passport, upload) {
                                                     propAttuali: alg.createProprietaClasse(listaAlunniClasse),
                                                     alunni: listaAlunniClasse
                                                 });
-                                                if (counter == listaNomiClassi.length - 1) {
+                                                if (counter === listaNomiClassi.length - 1) {
                                                     alg.setListaClassi(listaClassi);
                                                     alg.fixClassi();
                                                     alg.printProprieta();
@@ -210,7 +376,7 @@ module.exports = function (app, passport, upload) {
             //var userId = todo: insert user id
             var userId = 1;
             for (var index = 0; index < role.length; index++) {
-                if (userId == role[index]) {
+                if (userId === role[index]) {
                     next();
 
                 } else {
@@ -230,8 +396,8 @@ module.exports = function (app, passport, upload) {
         }, req.body.cf, req.body.toClass);
 
         //populate history
-        var saveHistory = (req.body.saveHistory == 'true');
-        if (saveHistory && req.body.toClass != req.body.fromClass) {
+        var saveHistory = (req.body.saveHistory === 'true');
+        if (saveHistory && req.body.toClass !== req.body.fromClass) {
             query.insertHistory(function (err, results) {
                 if (err)
                     console.log(err);
@@ -284,7 +450,7 @@ module.exports = function (app, passport, upload) {
     app.get('/get-history', middleware.isLoggedIn, function (req, res) {
         query.getHistory(function (err, results) {
             if (err)
-                err
+                console.log(err);
             else {
                 res.send(results);
             }
@@ -294,7 +460,7 @@ module.exports = function (app, passport, upload) {
     app.get('/remove-student-from-history', middleware.isLoggedIn, function (req, res) {
         query.deleteStudentFromHistory(function (err, results) {
             if (err)
-                err
+                console.log(err);
             else {
                 res.send(results);
             }
@@ -326,8 +492,5 @@ module.exports = function (app, passport, upload) {
         })
 
     });
+
 };
-
-
-
-

@@ -16,6 +16,7 @@ var listaAlunniDeleted = [];
 var insiemi = [];
 var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
+
 module.exports = {
     /**
      * GeneraClassi prima generazione con le operazioni che seguono

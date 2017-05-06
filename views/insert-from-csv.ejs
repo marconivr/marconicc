@@ -6,7 +6,8 @@
     <div class="ui raised very padded text container segment">
         <h2 class="ui header">Inserisci studenti da un csv</h2>
 
-        <form method="post" enctype="multipart/form-data" action="/upload-csv">
+        <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniCsv %>">
+            <input type="text" name="anno_scolastico"><!--todo fa fatto bene-->
             <input type="file" name="csv">
             <input type="submit">
         </form>

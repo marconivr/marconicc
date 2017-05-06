@@ -21,7 +21,7 @@ module.exports = {
     /*
      * Function for insert students into db having an array of data
      */
-    insertRecordFromCSV: function (arrayRow) {
+    insertRecordFromCSV: function (arrayRow,scuola,utente) {
         var cognome = arrayRow[0];
         var nome = arrayRow[1];
         var matricola = arrayRow[2];
@@ -29,32 +29,25 @@ module.exports = {
         var desiderata = arrayRow[4];
         var sesso = arrayRow[5];
         var dataDiNascita = arrayRow[6];
-        var statoRichiesta = arrayRow[7];
-        var CAP = arrayRow[8];
-        var nazionalita = arrayRow[9];
-        var legge_107 = arrayRow[10];
-        var legge_104 = arrayRow[11];
-        var classe_precedente = arrayRow[12];
-        var indirizzo = arrayRow[13];
-        var annoScolastico = arrayRow[14];
-        var anno = arrayRow[15];
-        var codice_cat = arrayRow[16];
-        var voto = arrayRow[17];
-        var condotta = arrayRow[18];
-        var classe_futura = arrayRow[19];
-        var tag = arrayRow[20];
-        connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], statoRichiesta, CAP, nazionalita, legge_107, legge_104, classe_precedente,indirizzo , annoScolastico, anno, codice_cat, voto, condotta, classe_futura,tag], function (err, row) {
+        var cap = arrayRow[7];
+        var nazionalita = arrayRow[8];
+        var legge_107 = arrayRow[9];
+        var legge_104 = arrayRow[10];
+        var classe_precedente = arrayRow[11];
+        var sceltaIndirizzo = arrayRow[12];
+        var annoScolastico = arrayRow[13];
+        var codiceCatastale = arrayRow[14];
+        var voto = arrayRow[15];
+        var classe_futura = arrayRow[16];
+        var descrizione = arrayRow[17];
+
+        var query = connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?);", ['', cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], cap, nazionalita, legge_107, legge_104, classe_precedente,sceltaIndirizzo , annoScolastico, codiceCatastale, voto, classe_futura,scuola,utente,descrizione], function (err) {
             if (err) {
-                console.log(err);
+                throw err;
             }
+
         });
-        if (desiderata != ""){
-            connection.query("INSERT INTO amici (cf_1, cf_2) VALUES (?,?)", [cf, desiderata], function (err, row) {
-                if (err) {
-                    console.log(err);
-                }
-            });
-        }
+
     },
 
     /*

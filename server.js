@@ -5,11 +5,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var app = express();
-var port = process.env.PORT || 8080;
+var port = 8080;
 var passport = require('passport');
 var flash = require('connect-flash');
-var multer = require('multer');
-var upload = multer({ dest: 'files/' });
+
+
+const middleware = require('./routes/middleware/middleware');
+const endpoint = require('./routes/endpoint/endpoint');
 
 
 // configurazione passport
@@ -34,11 +36,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(express.static(__dirname + '/public'));
+app.locals.endpoint = endpoint;
 
+
+middleware.setApp(app);
 
 // routes ======================================================================
-require('./routes/main.js')(app, passport); // import routes users
-require('./routes/data.js')(app, passport,upload);
+require('./routes/utenti.js')(app, passport);
+require('./routes/alunni.js')(app);
 
 
 // launch ======================================================================

@@ -72,3 +72,9 @@ Elenco passi da eseguire per lanciare il progetto:
 - Pagina impostazioni nella quale inserire delle caratteristiche che deve avere una classe ideale
 - Importare impostazioni passate
 - Statistiche real time
+- Modifica barra del menu
+- Gestione history e possibilità di restore delle modifiche
+
+### Sprint 3
+- Aggiunta possibilità di creazione di altre scuole
+- Aggiunta diritti per gli utenti(0 admin, 1 modifica, 2 visualizza)
