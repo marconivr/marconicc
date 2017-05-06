@@ -379,7 +379,7 @@ CREATE TABLE `history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `scuole` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255) NOT NULL,
   `descrizione` varchar(255) DEFAULT NULL,
   `indirizzo` varchar(255) NOT NULL,
@@ -429,8 +429,7 @@ ALTER TABLE `history`
   ADD KEY `scuola` (`scuola`),
   ADD KEY `utente` (`utente`);
 
-ALTER TABLE `scuole`
-  ADD PRIMARY KEY (`id`);
+
 
 ALTER TABLE `utenti`
   ADD PRIMARY KEY (`id`),
@@ -474,3 +473,17 @@ ALTER TABLE `utenti`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+CREATE TABLE tag (
+  id int(11) PRIMARY KEY AUTO_INCREMENT,
+  nome varchar(50) NOT NULL,
+  scuola int(11) NOT NULL,
+  FOREIGN KEY(scuola) REFERENCES scuole(id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+INSERT INTO tag (id, nome, scuola) VALUES
+(1, 'religione sikh', 0),
+(4, 'buddista', 0);

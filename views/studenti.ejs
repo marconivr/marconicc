@@ -6,8 +6,7 @@
 <% include finish-menu.ejs %>
 <!--tabs-->
 <div class="ui top attached tabular menu">
-    <a class="item active" data-tab="first">Prime</a>
-    <a class="item " data-tab="third">Terze</a>
+    <a class="item active" data-tab="first">Studenti</a>
     <a class="item " data-tab="tags">Tags</a>
 </div>
 <div class="ui bottom attached tab active  segment" data-tab="first">
@@ -22,25 +21,27 @@
                     <th>Codice fiscale</th>
                     <th>Sesso</th>
                     <th>Data di nascita</th>
-                    <th>Nazionalita</th>
-                    <th>Classe precedente</th>
                     <th>Cap residenza</th>
-                    <th>Anno scolastico</th>
+                    <th>Nazionalita</th>
+                    <th>Legge 107</th>
+                    <th>Legge 104</th>
+                    <th>Classe precedente</th>
+                    <th>Indirizzo di studio</th>
                     <th>Voto</th>
 
                 </tr>
                 </thead>
 
                 <tbody>
-                <% for(var i = 0; i < studentsPrima.length; i++){ %>
+                <% for(var i = 0; i < studenti.length; i++){ %>
                 <tr>
-                    <td><%= studentsPrima[i].cognome %></td>
-                    <td><%= studentsPrima[i].nome %></td>
-                    <td><%= studentsPrima[i].matricola %></td>
-                    <td><%= studentsPrima[i].cf %></td>
-                    <td><%= studentsPrima[i].sesso %></td>
+                    <td><%= studenti[i].cognome %></td>
+                    <td><%= studenti[i].nome %></td>
+                    <td><%= studenti[i].matricola %></td>
+                    <td><%= studenti[i].cf %></td>
+                    <td><%= studenti[i].sesso %></td>
 
-                    <% var mySQLDate = studentsPrima[i].data_di_nascita + '' %>
+                    <% var mySQLDate = studenti[i].data_di_nascita + '' %>
 
                     <% var date = new Date(Date.parse(mySQLDate.replace('-', '/', 'g'))); %>
                     <% var day = date.getUTCDate() + 1 %>
@@ -49,12 +50,14 @@
                     <% var finalDate = day + '/' + month + '/' + year %>
                     <td><%= finalDate %></td>
 
-                    <td><%= studentsPrima[i].stato %></td>
-                    <td><%=studentsPrima[i].nazionalita %></td>
-                    <td><%= studentsPrima[i].classe_precedente %></td>
-                    <td><%= studentsPrima[i].CAP %></td>
-                    <td><%= studentsPrima[i].anno_scolastico %></td>
-                    <td><%= studentsPrima[i].voto %></td>
+                    <td><%= studenti[i].cap %></td>
+                    <td><%=studenti[i].nazionalita %></td>
+                    <td><%= studenti[i].legge_107 %></td>
+                    <td><%= studenti[i].legge_104 %></td>
+                    <td><%= studenti[i].classe_precedente %></td>
+                    <% scelta = (studenti[i].scelta_indirizzo).split(' - ').pop(-1)%>
+                    <td><%=  scelta %></td>
+                    <td><%= studenti[i].voto %></td>
 
                 </tr>
                 <% } %>
@@ -68,12 +71,14 @@
                     <th>Codice fiscale</th>
                     <th>Sesso</th>
                     <th>Data di nascita</th>
-                    <th>Stato</th>
-                    <th>Nazionalita</th>
-                    <th>Classe precedente</th>
                     <th>Cap residenza</th>
-                    <th>Anno scolastico</th>
+                    <th>Nazionalita</th>
+                    <th>Legge 107</th>
+                    <th>Legge 104</th>
+                    <th>Classe precedente</th>
+                    <th>Indirizzo di studio</th>
                     <th>Voto</th>
+
                 </tr>
                 </tfoot>
             </table>
@@ -81,84 +86,6 @@
     <!--close first tabs-->
 </div>
 
-<!--third tabs-->
-<div class="ui bottom attached tab segment" data-tab="third">
-
-
-    <div class="tableContainer">
-    <table id="studenti-terza" class="ui celled teal table" cellspacing="0" width="100%">
-        <thead>
-        <tr>
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Codice fiscale</th>
-            <th>Sesso</th>
-            <th>Data di nascita</th>
-            <th>Stato</th>
-            <th>Cap provenienza</th>
-            <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
-            <th>Anno scolastico</th>
-            <th>Anno</th>
-            <th>Cod_cat</th>
-            <th>media_voti</th>
-            <th>classe_futura</th>
-
-        </tr>
-        </thead>
-
-        <tbody>
-        <% for(var i = 0; i < studentsTerza.length; i++){ %>
-        <tr>
-            <td><%= studentsTerza[i].cognome %></td>
-            <td><%= studentsTerza[i].nome %></td>
-            <td><%= studentsTerza[i].cf %></td>
-            <td><%= studentsTerza[i].sesso %></td>
-
-            <% var mySQLDate = studentsTerza[i].data_di_nascita + '' %>
-
-            <% var date = new Date(Date.parse(mySQLDate.replace('-', '/', 'g'))); %>
-            <% var day = date.getUTCDate() + 1 %>
-            <% var month = date.getMonth() + 1 %>
-            <% var year = date.getUTCFullYear() %>
-            <% var finalDate = day + '/' + month + '/' + year %>
-            <td><%= finalDate %></td>
-
-            <td><%= studentsTerza[i].stato %></td>
-            <td><%= studentsTerza[i].cap_provenienza %></td>
-            <!--<td><%= studentsTerza[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
-            <td><%= studentsTerza[i].anno_scolastico %></td>
-            <td><%= studentsTerza[i].anno %></td>
-            <td><%= studentsTerza[i].cod_cat %></td>
-            <td><%= studentsTerza[i].media_voti %></td>
-            <td><%= studentsTerza[i].classe_futura %></td>
-
-        </tr>
-        <% } %>
-
-        </tbody>
-        <tfoot>
-        <tr>
-            <th>cognome</th>
-            <th>nome</th>
-            <th>cf</th>
-            <th>sesso</th>
-            <th>data_di_nascita</th>
-            <th>stato</th>
-            <th>cap_provenienza</th>
-            <!-- <th>scelta_indirizzo</th> ho commentato perchè troppo largo e rompe layout tabella -->
-            <th>anno_scolastico</th>
-            <th>anno</th>
-            <th>cod_cat</th>
-            <th>media_voti</th>
-            <th>classe_futura</th>
-
-        </tr>
-        </tfoot>
-    </table>
-    </div>
-
-
-</div>
 
 <!--tags and insert-->
 <div class="ui bottom attached tab segment" data-tab="tags">
@@ -328,44 +255,6 @@
             .appendTo($('div.eight.column:eq(0)', table.table().container()));
         $('.sixteen').removeClass().addClass('tableContainer');
 
-    });
-</script>
-
-<!--first class table-->
-<script>
-    $(document).ready(function () {
-        var table = $('#studenti-terza').DataTable({
-
-            language: {
-                searchPlaceholder: "Studente",
-                search: "Cerca:",
-                    EmptyTable: "Nessun alunno presente, vai nella sezione caricamento studenti per aggiungere degli studenti.",
-                paginate: { "sFirst": "Primo", "sLast": "Ultimo", "sNext": "Avanti", "sPrevious": "Indietro" }
-
-
-            },
-            processing: true,
-            lengthChange: false,
-            buttons: ['excel'],
-            "columns": [
-                {"data": "cognome"},
-                {"data": "nome"},
-                {"data": "cf"},
-                {"data": "sesso"},
-                {"data": "data_di_nascita"},
-                {"data": "stato"},
-                {"data": "cap_provenienza"},
-                //{ "data": "scelta_indirizzo" },
-                {"data": "anno_scolastico"},
-                {"data": "anno"},
-                {"data": "cod_cat"},
-                {"data": "media_voti"},
-                {"data": "classe_futura"}
-            ]
-        });
-        table.buttons().container()
-                .appendTo($('div.eight.column:eq(0)', table.table().container()));
-        $('.sixteen').removeClass().addClass('tableContainer');
     });
 </script>
 
@@ -547,8 +436,8 @@
                 {
                     $('<div/>', {
                         'class':'item',
-                        'data-value':TAG[i].tag,
-                        'text':TAG[i].tag
+                        'data-value':TAG[i].nome,
+                        'text':TAG[i].nome
                     }).appendTo($('#tag'));
                 }
 

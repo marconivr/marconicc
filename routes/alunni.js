@@ -16,7 +16,9 @@ const endpoint = require('./endpoint/endpoint');
 const multer = require('multer');
 const upload = multer({ dest: 'files/' });
 
+
 module.exports = function (app) {
+
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
@@ -52,9 +54,11 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.allTag, middleware.isLoggedIn, function (req, res) {
-        query.getAllTag(function (err, results) {
+        const scuola = req.user.id_scuola
+
+        query.getAllTag(scuola, function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else
                 res.send(JSON.stringify(results));
         });
@@ -71,13 +75,18 @@ module.exports = function (app) {
     });
 
 
-    app.get(endpoint.alunni.allStudents, function (req, res) {
-        query.getAllStudents(function (err, results) {
+    app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIME";
+
+        const param = req.query.q;
+        query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
-                throw err;
+               console.log(err);
             else
                 res.send(JSON.stringify(results));
-        }, req.query.q);
+        });
     });
 
 
@@ -237,6 +246,7 @@ module.exports = function (app) {
      */
     app.get('/numero-stesso-cap', middleware.isLoggedIn, function (req, res) {
 
+
         query.getNumberSameResidence(function (err, results) {
             if (err)
                 console.log(err);
@@ -250,34 +260,26 @@ module.exports = function (app) {
      */
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
 
-        async.parallel({
-            studentiPrima: function (callback) {
-                query.getStudentiPrima(function (err, results) {
-                    if (err)
-                        console.log(err);
-                    else
-                        callback(null, {'prima': results})
-                });
-            },
+        const anno_scolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
+        const scuola = req.user.id_scuola;
+        const classe_futura = "PRIMA";
 
-            studentiTerza: function (callback) {
-                query.getStudentiTerza(function (err, results) {
-                    if (err)
-                        console.log(err);
-                    else
-                        callback(null, {'terza': results})
+        query.getStudentiOfschool(scuola,anno_scolastico,classe_futura,function (err, studenti) {
+            if(err){
+                console.log(err);
+            }else{
+                console.log(studenti);
+                res.render('studenti.ejs', {
+                    pageTitle: " Studenti ",
+                    studenti: studenti
                 });
             }
-        }, function (err, results) {
-            res.render('studenti.ejs', {
-                user: req.user,
-                pageTitle: " Studenti ",
-                studentsPrima: results.studentiPrima.prima,
-                studentsTerza: results.studentiTerza.terza
-            });
-
         });
     });
+
+
+
+
 
     app.get('/get-classi-composte', middleware.isLoggedIn, function (req, res) {
         var classi;

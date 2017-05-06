@@ -250,20 +250,27 @@ module.exports = {
     },
 
     /**
-     * Ritorna gli studenti data la scuola, l'anno scolastico e la classe futura(prima o terza ad esempio)
+     * Torna tutti gli alunni di una scuola
      * @param callback
      * @param scuola
-     * @param anno_scolastico
-     * @param classe
+     * @param annoScolastico
+     * @param classeFutura (opzionale, li torna tutti se non passata)
      */
-    getStudentiOfschool: function (callback,scuola,annoScolastico,classeFutura) {
-        connection.query("SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ? AND classe_futura = ?", [scuola,annoScolastico, classeFutura],function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
+    getStudentiOfschool: function (scuola, annoScolastico, classeFutura, callback) {
+
+        var query = undefined;
+
+        if (classeFutura === undefined){
+            query = "SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ?";
+        }else{
+            query = "SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ? AND classe_futura = ?";
+        }
+
+        var ris = connection.query(query, [scuola, annoScolastico, classeFutura],function (err, rows) {
+            callback(err,rows);
         });
+
+        console.log(ris.sql);
     },
 
 
@@ -350,24 +357,23 @@ module.exports = {
     },
 
     /**
-     * return students from the search service
-     * @param callback
+     * Cerca uno studente per nome o cognome data una stringa
      * @param identifier
+     * @param scuola
+     * @param annoScolastico
+     * @param classeFutura
+     * @param callback
      */
-    getAllStudents: function (callback,identifier) {
+    getAllStudents: function (identifier,scuola, annoScolastico, classeFutura, callback) {
         var nome, cognome;
         nome = identifier.split(" ")[1];
         cognome = identifier.split(" ")[0];
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?)",
-            ["%" + identifier + "%", "%" + identifier + "%", "%" + cognome + nome + "%"],
+            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?) AND scuola = ? AND anno_scolastico = ? AND classe_futura = ?",
+            ["%" + identifier + "%", "%" + identifier + "%", "%" + cognome + nome + "%", scuola, annoScolastico, classeFutura],
             function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
                 callback(err, rows);
-            }
         });
     },
 
@@ -382,14 +388,11 @@ module.exports = {
         });
     },
 
-    getAllTag: function (callback,cf) {
+        getAllTag: function (scuola, callback) {
 
-        connection.query("SELECT * FROM tag", function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
-                callback(err, rows);
-            }
+        connection.query("SELECT nome FROM tag WHERE scuola = ?",[scuola], function (err, rows) {
+            callback(err, rows);
+
         });
     },
 

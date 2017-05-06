@@ -10,7 +10,7 @@
     <a class="item" href="/panoramica-classi">Panoramica classi</a>
     <a class="item" href="/crea-utente">Crea un utente</a>
     <br>
-    <a class="item" href="/logout">Esci</a>
+    <a class="item" href="/logout">Disconnetti <%=user.username%></a>
 
 
 </div>
@@ -21,4 +21,26 @@
     <div class="ui sticky menu fixed top" id="top-menu" style="top:0px!important;">
         <a class="item mobile-button">Menu</a>
 
-        <p><%=user.username%></p>
+        <div class="right menu">
+                    <div class="ui dropdown item">
+                        Classi <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="ui dropdown item">
+                                PRIME
+                                <i class="dropdown icon left"></i>
+                                <div class="menu left">
+                                    <a class="item"> 2017-2018</a>
+
+
+                                </div>
+                            </div>
+                            <div class="ui dropdown item">
+                                TERZE
+                                <i class="dropdown icon left"></i>
+                                <div class="menu left">
+                                    <a class="item">2017-2018</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </div>

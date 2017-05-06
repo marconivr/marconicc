@@ -12,19 +12,16 @@ connection.query('USE ' + dbconfig.database);
 module.exports = {
 
     /**
-     * Passato lo username torna un oggetto che contiene (username,diritti,id_scuola,nome_scuola)
+     * Torna un oggetto {PRIME:2017-2018} che rappresenta il settaggio di default che poi verrà salvato globalmente.
      * @param username
      * @param callback
      */
-    sessioneDati: function (username,callback) {
-        connection.query("select username,diritti,scuole.id as id_scuola,scuole.nome as nome_scuola from utenti INNER JOIN scuole ON utenti.scuola = scuole.id where username = '?' ", [username], function (err, row) {
-                if (err) {
-                    console.log(err);
-                } else{
-                    callback(JSON.stringify(row));
-                }
-            });
-        }
+    classiSettaggiDefault: function (scuola,callback) {
+        connection.query("SELECT DISTINCT classe_futura,anno_scolastico FROM alunni WHERE scuola = ?", [scuola], function (err, row) {
+            callback(JSON.stringify(row));
+        });
+    }
+
 };
 
 
