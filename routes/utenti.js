@@ -8,6 +8,7 @@
 const middleware = require('./middleware/middleware');
 const query = require('./../query/query.js');
 const async = require('async');
+const endpoint = require('./endpoint/endpoint');
 
 module.exports = function (app, passport) {
 
@@ -24,7 +25,7 @@ module.exports = function (app, passport) {
     /**
      * login page
      */
-    app.get('/login', function (req, res) {
+    app.get(endpoint.utenti.login, function (req, res) {
         res.render('login.ejs', {message: req.flash('loginMessage'), pageTitle: " login "});
     });
 
@@ -32,20 +33,20 @@ module.exports = function (app, passport) {
     /**
      * login post request
      */
-    app.post('/login', passport.authenticate('local-login', {
-            successRedirect: '/studenti',
-            failureRedirect: '/login',
+    app.post(endpoint.utenti.login, passport.authenticate('local-login', {
+            successRedirect: endpoint.utenti.studenti,
+            failureRedirect: endpoint.utenti.login,
             failureFlash: true
         }),
         function (req, res) {
-            res.redirect('/');
+            res.redirect(endpoint.utenti.home);
         });
 
 
     /**
      * registration page
      */
-    app.get('/signup', function (req, res) {
+    app.get(endpoint.utenti.signup, function (req, res) {
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', {message: req.flash('signupMessage'), pageTitle: "signup"});
     });
@@ -54,9 +55,9 @@ module.exports = function (app, passport) {
     /**
      * registration post request
      */
-    app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/studenti', // redirect to the secure profile section
-        failureRedirect: '/signup', // redirect back to the signup page if there is an error
+    app.post(endpoint.utenti.signup, passport.authenticate('local-signup', {
+        successRedirect: endpoint.utenti.studenti, // redirect to the secure profile section
+        failureRedirect: endpoint.utenti.signup, // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));
 
@@ -64,9 +65,9 @@ module.exports = function (app, passport) {
     // =====================================
     // LOGOUT ==============================
     // =====================================
-    app.get('/logout', function (req, res) {
+    app.get(endpoint.utenti.logout, function (req, res) {
         req.logout();
-        res.redirect('/');
+        res.redirect(endpoint.utenti.home);
     });
 };
 

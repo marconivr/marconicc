@@ -9,7 +9,9 @@ module.exports = {
     utenti:{
         login : "/login",
         signup : "/signup",
-        logout : "/logout"
+        logout : "/logout",
+        studenti : "/studenti",
+        home : "/"
     }
 
     ,
