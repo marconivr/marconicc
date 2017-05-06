@@ -11,14 +11,26 @@ module.exports = {
         signup : "/signup",
         logout : "/logout",
         studenti : "/studenti",
-        home : "/"
+        home : "/",
+        creaUtente : "/crea-utente",
+
     }
 
     ,
 
     alunni:{
         uploadAlunniCsv :"/upload-alunni-csv",
-        allTag: "/all-tag"
+        allTag: "/all-tag",
+        studenti : "/studenti",
+        updateTag : "/update-tag",
+        allStudents :"/all-students",
+        studentByCf :"/student-by-cf",
+        panoramicaClassi : "/panoramica-classi",
+        settings : "/settings",
+        settingsPrime : "/settings-prime",
+        settingsTerze : "/settings-terze",
+        insertSettingsPrime : "/insert-settings-prime",
+        insertSettingsTerze : "/insert-settings-terze",
     }
 
 

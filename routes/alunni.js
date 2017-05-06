@@ -43,7 +43,7 @@ module.exports = function (app) {
         }).on("end", function () {
 
             console.log("LETTURA FILE RIUSCITA");
-            res.redirect('/studenti');
+            res.redirect(endpoint.alunni.studenti);
 
         }).on("error", function (error) {
 
@@ -60,7 +60,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/update-tag', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, function (req, res) {
 
         query.updateTagFromCF(function (err, results) {
             if (err)
@@ -71,7 +71,7 @@ module.exports = function (app) {
     });
 
 
-    app.get('/all-students', function (req, res) {
+    app.get(endpoint.alunni.allStudents, function (req, res) {
         query.getAllStudents(function (err, results) {
             if (err)
                 throw err;
@@ -81,7 +81,7 @@ module.exports = function (app) {
     });
 
 
-    app.get('/student-by-cf', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.studentByCf, middleware.isLoggedIn, function (req, res) {
         query.getStudentByCf(function (err, results) {
             if (err)
                 throw err;
@@ -90,7 +90,7 @@ module.exports = function (app) {
         }, req.query.cf);
     });
 
-    app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         query.getPriorita(function (err, results) {
             if (err)
                 throw err;
@@ -103,26 +103,26 @@ module.exports = function (app) {
         })
     });
 
-    app.get('/crea-utente', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.utenti.creaUtente, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
         res.render('crea-utente.ejs', {
             pageTitle: "Creazione utente "
         })
     });
 
-    app.get('/panoramica-classi', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('panoramica-classi.ejs', {
             pageTitle: "Panoramica classi   "
         })
     });
 
-    app.get('/settings', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.settings, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('settings.ejs', {
             pageTitle: "Settings   "
         })
     });
 
-    app.get('/settings-prime', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.settingsPrime, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
         async.parallel({
             studentiPrima: function (callback) {
@@ -162,7 +162,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/settings-terze', middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.settingsTerze, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
         res.render('settings-terze.ejs', {
             pageTitle: " Settings terze",
@@ -173,7 +173,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.get('/insert-settings-prime', function (req, res) {
+    app.get(endpoint.alunni.insertSettingsPrime, function (req, res) {
         const scuola = req.user.id_scuola;
         query.insertSettingsPrime(function (err, results) {
             if (err)
@@ -187,7 +187,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.get('/insert-settings-terze', function (req, res) {
+    app.get(endpoint.alunni.insertSettingsTerze, function (req, res) {
         query.insertSettingsTerze(function (err, results) {
             if (err)
                 throw err;
