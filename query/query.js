@@ -370,16 +370,18 @@ module.exports = {
         cognome = identifier.split(" ")[0];
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?) AND scuola = ? AND anno_scolastico = ? AND classe_futura = ?",
-            ["%" + identifier + "%", "%" + identifier + "%", "%" + cognome + nome + "%", scuola, annoScolastico, classeFutura],
+            "SELECT * FROM alunni WHERE cognome LIKE ? OR nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?) AND scuola = ? AND anno_scolastico = ? AND classe_futura = ?",
+            ["%" + cognome + "%", "%" + nome + "%", "%" + cognome + nome + "%", scuola, annoScolastico, classeFutura],
             function (err, rows) {
                 callback(err, rows);
         });
     },
 
-    getStudentByCf: function (callback,cf) {
+    getStudentByCf: function (callback, cf, scuola) {
 
-        connection.query("SELECT * FROM alunni WHERE cf = '" + cf + "'", function (err, rows) {
+        connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ",
+            [cf, scuola],
+            function (err, rows) {
             if (err) {
                 throw err;
             } else {
@@ -390,7 +392,7 @@ module.exports = {
 
         getAllTag: function (scuola, callback) {
 
-        connection.query("SELECT nome FROM tag WHERE scuola = ?",[scuola], function (err, rows) {
+            connection.query("SELECT * FROM tag WHERE scuola = ?", [scuola], function (err, rows) {
             callback(err, rows);
 
         });
@@ -408,8 +410,7 @@ module.exports = {
                 callback(err, rows);
             }
         });
-    }
-    ,
+    },
 
     getClassiComposteForExport: function (callback) {
         var query = "SELECT alunni.matricola, alunni.cf, alunni.cognome, alunni.nome, alunni.data_di_nascita, alunni.sesso,alunni.CAP, alunni.nazionalita, " +

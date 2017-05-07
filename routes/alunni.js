@@ -78,7 +78,7 @@ module.exports = function (app) {
     app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
-        const classeFutura = "PRIME";
+        const classeFutura = "PRIME"; //todo:dipende dal dropdown
 
         const param = req.query.q;
         query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {
@@ -96,7 +96,7 @@ module.exports = function (app) {
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.cf);
+        }, req.query.cf, req.user.id_scuola);
     });
 
     app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
