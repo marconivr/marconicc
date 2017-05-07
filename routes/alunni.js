@@ -7,7 +7,6 @@ const query = require('./../query/query.js');
 const csv_post = require("csv");
 const middleware = require('./middleware/middleware');
 const newAlg = require("./new-algorithm.js");
-const alg = require("./algorithm.js");
 const async = require('async');
 const csv = require('express-csv');
 const endpoint = require('./endpoint/endpoint');
@@ -375,6 +374,11 @@ module.exports = function (app) {
      * this function allow or block api call based on user id
      * if the current user has the id passed in the params, it allow the call
      * possible id -> 0,1,2
+     *
+     * diritto 0 -> tutto
+     * diritto 1 -> tutto tranne creare utenti
+     * diritto 2 -> panoramica classi elenco studenti e export-->
+     *
      * @param role array of id
      * @returns {Function}
      */

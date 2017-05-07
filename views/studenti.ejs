@@ -196,24 +196,6 @@
             </div>
         </div>
     </div>
-
-    <!--positive-->
-    <div class="ui  positive  message transition  hidden" id="response">
-        <i class="close icon"></i>
-        <div class="header">
-            Fatto!
-        </div>
-        <p>Il tag è stato aggiunto</p>
-    </div>
-    <!--negative-->
-    <div class="ui negative message hidden" id="negative">
-        <i class="close icon"></i>
-        <div class="header">
-            Oops!
-        </div>
-        <p>Ci deve esser stato un problema
-        </p></div>
-    <!--thirds tabs-->
 </div>
 
 <% include sidebar-stop.ejs %>
@@ -495,13 +477,6 @@
             }
         }
     }
-
-    //x close on the response div//
-    $('.message .close').on('click', function () {
-        $(this)
-                .closest('.message')
-                .transition('fade');
-    });
 </script>
 <!--SAVE TAG TO DB-->
 <script>
@@ -523,14 +498,14 @@
                 },
                 type: 'get',
                 success: function (data) {
-                    $("#response").removeClass('hidden').addClass('visible');
+                    alertify.set('notifier', 'position', 'top-right');
+                    alertify.success("Ok! Il tag è stato aggiunto")
                 },
                 error: function (xhr, status, error) {
+                    alertify.set('notifier', 'position', 'top-right');
                     console.log('Error: ' + error.message);
-                    $("#response").removeClass('visible').addClass('hidden');
-                    $('#negative').removeClass('hidden').addClass('visible');
-
-                },
+                    alertify.error('Error: ' + error.message);
+                }
             });
         }
     }

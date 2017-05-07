@@ -308,13 +308,19 @@ module.exports = {
      * @param callback
      */
     getAllStudents: function (identifier,scuola, annoScolastico, classeFutura, callback) {
-        var nome, cognome;
-        nome = identifier.split(" ")[1];
-        cognome = identifier.split(" ")[0];
+        var idtr, idtr2;
+        //posso essere invertiti
+        idtr = identifier.split(" ")[1];//presunto nome
+        idtr2 = identifier.split(" ")[0];//presunto cognome
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ? OR nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?) AND scuola = ? AND anno_scolastico = ? AND classe_futura = ?",
-            ["%" + cognome + "%", "%" + nome + "%", "%" + cognome + nome + "%", scuola, annoScolastico, classeFutura],
+            "SELECT * FROM alunni WHERE cognome LIKE ?" +
+            " OR nome LIKE ?" +
+            " OR (CONCAT(cognome, nome) LIKE ?)" +
+            " OR nome LIKE ? " +
+            " OR cognome LIKE ? " +
+            " AND scuola = ? AND anno_scolastico = ? AND classe_futura = ?",
+            [idtr2 + "%", idtr + "%", "%" + idtr2 + idtr + "%", idtr2 + "%", idtr + "%", scuola, annoScolastico, classeFutura],
             function (err, rows) {
                 callback(err, rows);
         });
