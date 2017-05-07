@@ -361,7 +361,7 @@ module.exports = function (app) {
     app.get('/generate-classi', middleware.isLoggedIn, function (req, res) {
 
 
-        newAlg.generaClassiPrima(function (classi) {
+        newAlg.generaClassiPrima(req, function (classi) {
             res.send(classi);
         });
 

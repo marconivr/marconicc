@@ -17,14 +17,22 @@ var insiemi = [];
 var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 
+var anno_scolastico = undefined;
+var scuola = undefined;
+var classe_futura = undefined;
+
 module.exports = {
     /**
      * GeneraClassi prima generazione con le operazioni che seguono
      * @param classe
      * @param callback
      */
-    generaClassiPrima: function (callback) {
-        query.getStudentiPrima(function (err, results) {
+    generaClassiPrima: function (req, callback) {//todo:check this
+        anno_scolastico = "2017-2018"; //todo : dovrà essere nella req e settato nella navbar
+        scuola = req.user.id_scuola; //visto che servivano in altri metodoi e senza passare a tutti la req, li ho messi globali
+        classe_futura = "PRIMA";
+
+        query.getStudentiOfschool(scuola, anno_scolastico, classe_futura, function (err, results) {
             if (err)
                 throw err;
             else {
@@ -121,7 +129,7 @@ module.exports = {
             }
         }
 
-        query.getStudentiPrima(function (err, results) {
+        query.getStudentiOfschool(scuola, anno_scolastico, classe_futura, function (err, results) {
             if (err)
                 console.log(err);
             else {
