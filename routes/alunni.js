@@ -260,11 +260,11 @@ module.exports = function (app) {
      */
     app.get('/studenti', middleware.isLoggedIn, function (req, res) {
 
-        const anno_scolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
+        const annoScolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
         const scuola = req.user.id_scuola;
-        const classe_futura = "PRIMA";
+        const classeFutura = "PRIMA";
 
-        query.getStudentiOfschool(scuola,anno_scolastico,classe_futura,function (err, studenti) {
+        query.getStudentiOfschool(scuola, annoScolastico, classeFutura,function (err, studenti) {
             if(err){
                 console.log(err);
             }else{
@@ -360,8 +360,11 @@ module.exports = function (app) {
 
     app.get('/generate-classi', middleware.isLoggedIn, function (req, res) {
 
+        const annoScolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
+        const scuola = req.user.id_scuola;
+        const classeFutura = "PRIMA";
 
-        newAlg.generaClassiPrima(req, function (classi) {
+        newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
             res.send(classi);
         });
 
@@ -407,7 +410,7 @@ module.exports = function (app) {
                     console.log(err);
                 else
                     res.send(err);
-            }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.anno_scolastico);
+            }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.annoScolastico);
         }
     });
 
