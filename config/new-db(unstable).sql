@@ -393,7 +393,7 @@
     (0, 'ITIS G. Marconi', 'scuola superiore di Verona(informatica,logistica,elettronica)', 'piazzale Guardini 7, Vr', 'gmarconi@marconivr.it', '0456500190');
 
     CREATE TABLE `utenti` (
-      `id` int(11) NOT NULL,
+      `id` int(11) PRIMARY KEY AUTO_INCREMENT,
       `username` varchar(20) NOT NULL,
       `password` char(60) NOT NULL,
       `diritti` int(11) NOT NULL COMMENT '0 = admin 1 = modifica 2 = visualizza',
@@ -433,9 +433,6 @@
 
 
 
-    ALTER TABLE `utenti`
-      ADD PRIMARY KEY (`id`),
-      ADD KEY `scuola` (`scuola`);
 
 
     ALTER TABLE `alunni`
@@ -453,6 +450,9 @@
 
     ALTER TABLE `classi`
       ADD CONSTRAINT `classi_ibfk_1` FOREIGN KEY (`scuola`) REFERENCES `scuole` (`id`);
+
+          ALTER TABLE `utenti`
+            ADD CONSTRAINT `scuola_ibfk_1` FOREIGN KEY (`scuola`) REFERENCES `scuole` (`id`);
 
     ALTER TABLE `classi_composte`
       ADD CONSTRAINT `classi_composte_ibfk_1` FOREIGN KEY (`classe`) REFERENCES `classi` (`id`),

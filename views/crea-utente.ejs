@@ -2,7 +2,42 @@
 <body>
 <% include sidebar-start.ejs %>
 <% include finish-menu.ejs %>
-<label>crea utente</label>
+<div class="ui main text container">
+    <form class="ui form success" onsubmit='return onSubmit(this);return validateForm()'>
+        <h4 class="ui dividing header">Impostazioni prime</h4>
+
+        <!--sematic fields-->
+        <div class="field">
+
+            <div class="field">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Inserisci lo username" id="username">
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Password</label>
+            <input name="password" placeholder="Inserisci la Password" type="password" id="password">
+        </div>
+        <div class="field">
+            <label>Ripeti la password</label>
+            <input name="ripeti_password" placeholder="Ripeti la password" type="password" id="ripeti_password">
+        </div>
+
+        <div class="field">
+            <div class="three fields">
+                <select class="ui dropdown">
+                    <option value="">Gender</option>
+                    <option value="1">Male</option>
+                    <option value="0">Female</option>
+                </select>
+            </div>
+        </div>
+        <!--sematic button-->
+        <div>
+            <div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div>
+            <p id="messageCompila">Devi completare tutti i campi!</p></div>
+    </form>
+</div>
 <% include sidebar-stop.ejs %>
 <% include tag-close.ejs %>
-n
