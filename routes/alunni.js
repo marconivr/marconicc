@@ -147,12 +147,12 @@ module.exports = function (app) {
             },
 
             femminePrima: function (callback) {
-                query.getNumberGirl(function (err, results) {
+                query.getNumberGirl("PRIMA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
                         callback(null, {'femmine': results})
-                }, "PRIMA");
+                });
             },
             mediaPrima: function (callback) {
                 query.getAVGOfStudentiPrima(function (err, results) {
@@ -161,6 +161,14 @@ module.exports = function (app) {
                     else
                         callback(null, {'media': results})
                 });
+            },
+            stranieriPrima: function (callback) {
+                query.getNumberStranieri("PRIMA", function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'stranieri': results})
+                });
             }
         }, function (err, results) {
             res.render('settings-prime.ejs', {
@@ -168,7 +176,8 @@ module.exports = function (app) {
                 pageTitle: " Settings prime ",
                 studentiPrima: results.studentiPrima.studenti,
                 femminePrima: results.femminePrima.femmine,
-                mediaPrima: results.mediaPrima.media
+                mediaPrima: results.mediaPrima.media,
+                stranieriPrima: results.stranieriPrima.stranieri
             });
 
         });
@@ -395,36 +404,6 @@ module.exports = function (app) {
                 res.send(results);
             }
         });
-    });
-
-    app.get(endpoint.alunni.getDatiPrime, middleware.isLoggedIn, function (req, res) {
-        var dati = {};
-
-        query.getNumberOfStudentiPrima(function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                dati["alunni"] = results[0]["result"];
-            }
-        });
-
-        query.getNumberGirl(function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                dati["femmine"] = results[0]["result"];
-            }
-        }, "PRIMA");
-
-        query.getAVGOfStudentiPrima(function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                dati["media"] = results[0]["result"];
-            }
-        });
-
-        res.send(dati);
     });
 
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {

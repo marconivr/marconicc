@@ -248,9 +248,20 @@ module.exports = {
     },
 
 
-    getNumberGirl: function (callback, classe) {
+    getNumberGirl: function (classe, callback) {
 
         connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+            if (err) {
+                console.log('MySQL error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getNumberStranieri: function (classe, callback) {
+
+        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND nazionalita != 'ITALIANA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
             if (err) {
                 console.log('MySQL error');
             } else {
