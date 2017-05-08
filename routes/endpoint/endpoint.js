@@ -14,6 +14,7 @@ module.exports = {
         home : "/",
         creaUtente : "/crea-utente",
         unauthorized : "/unauthorized"
+        exportSingleCsv: "/export-single-csv",
 
     }
 
@@ -32,6 +33,18 @@ module.exports = {
         settingsTerze : "/settings-terze",
         insertSettingsPrime : "/insert-settings-prime",
         insertSettingsTerze : "/insert-settings-terze",
+        insertPriorita: "/insert-priorita",
+        studentiPrimaJson: "/studenti-prima-json",
+        numeroRagazzePrima: "/numero-ragazze-prima",
+        numeroStessoCap: "/numero-stesso-cap",
+        getClassiComposte: "/get-classi-composte",
+        generateClassi: "/generate-classi",
+        moveStudent: "/move-student",
+        getPastSettingsPrime: "/get-past-settings-prime",
+        getDatiPrime: "/get-dati-prime",
+        getHistory: "/get-history",
+        removeStudentFromHistory: "/remove-student-from-history",
+        getPastSettingsTerze: "/get-past-settings-terze",
     }
 
 
