@@ -7,7 +7,6 @@ const query = require('./../query/query.js');
 const csv_post = require("csv");
 const middleware = require('./middleware/middleware');
 const newAlg = require("./new-algorithm.js");
-const alg = require("./algorithm.js");
 const async = require('async');
 const csv = require('express-csv');
 const endpoint = require('./endpoint/endpoint');
@@ -16,7 +15,9 @@ const endpoint = require('./endpoint/endpoint');
 const multer = require('multer');
 const upload = multer({ dest: 'files/' });
 
+
 module.exports = function (app) {
+
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
@@ -52,9 +53,11 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.allTag, middleware.isLoggedIn, function (req, res) {
-        query.getAllTag(function (err, results) {
+        const scuola = req.user.id_scuola
+
+        query.getAllTag(scuola, function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else
                 res.send(JSON.stringify(results));
         });
@@ -71,13 +74,18 @@ module.exports = function (app) {
     });
 
 
-    app.get(endpoint.alunni.allStudents, function (req, res) {
-        query.getAllStudents(function (err, results) {
+    app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIME"; //todo:dipende dal dropdown
+
+        const param = req.query.q;
+        query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
-                throw err;
+               console.log(err);
             else
                 res.send(JSON.stringify(results));
-        }, req.query.q);
+        });
     });
 
 
@@ -87,7 +95,7 @@ module.exports = function (app) {
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.cf);
+        }, req.query.cf, req.user.id_scuola);
     });
 
     app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
@@ -199,7 +207,7 @@ module.exports = function (app) {
     /**
      * inserisce le priorita
      */
-    app.get(endpoint.alunni.insertPriorita, function (req, res) {
+    app.get('/insert-priorita', function (req, res) {
         query.insertPriorita(function (err, results) {
             if (err)
                 throw err;
@@ -209,7 +217,7 @@ module.exports = function (app) {
     });
 
 
-    app.get(endpoint.alunni.studentiPrimaJson, middleware.isLoggedIn, function (req, res) {
+    app.get('/studenti-prima-json', middleware.isLoggedIn, function (req, res) {
 
         query.getStudentiPrima(function (err, results) {
             if (err)
@@ -250,32 +258,20 @@ module.exports = function (app) {
      */
     app.get(endpoint.alunni.studenti, middleware.isLoggedIn, function (req, res) {
 
-        async.parallel({
-            studentiPrima: function (callback) {
-                query.getStudentiPrima(function (err, results) {
-                    if (err)
-                        console.log(err);
-                    else
-                        callback(null, {'prima': results})
-                });
-            },
+        const annoScolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
+        const scuola = req.user.id_scuola;
+        const classeFutura = "PRIMA";
 
-            studentiTerza: function (callback) {
-                query.getStudentiTerza(function (err, results) {
-                    if (err)
-                        console.log(err);
-                    else
-                        callback(null, {'terza': results})
+        query.getStudentiOfschool(scuola, annoScolastico, classeFutura,function (err, studenti) {
+            if(err){
+                console.log(err);
+            }else{
+                console.log(studenti);
+                res.render('studenti.ejs', {
+                    pageTitle: " Studenti ",
+                    studenti: studenti
                 });
             }
-        }, function (err, results) {
-            res.render('studenti.ejs', {
-                user: req.user,
-                pageTitle: " Studenti ",
-                studentsPrima: results.studentiPrima.prima,
-                studentsTerza: results.studentiTerza.terza
-            });
-
         });
     });
 
@@ -359,7 +355,7 @@ module.exports = function (app) {
     app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
 
 
-        newAlg.generaClassiPrima(function (classi) {
+        newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
             res.send(classi);
         });
 
@@ -370,6 +366,11 @@ module.exports = function (app) {
      * this function allow or block api call based on user id
      * if the current user has the id passed in the params, it allow the call
      * possible id -> 0,1,2
+     *
+     * diritto 0 -> tutto
+     * diritto 1 -> tutto tranne creare utenti
+     * diritto 2 -> panoramica classi elenco studenti e export-->
+     *
      * @param role array of id
      * @returns {Function}
      */
@@ -405,7 +406,7 @@ module.exports = function (app) {
                     console.log(err);
                 else
                     res.send(err);
-            }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.anno_scolastico);
+            }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.annoScolastico);
         }
     });
 

@@ -45,7 +45,7 @@ module.exports = function(passport) {
             passwordField : 'password',
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
-        function(req, username, password, diritti, scuola, done) {
+        function(req, username, password, done) {
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
             connection.query("SELECT * FROM utenti WHERE username = ?",[username], function(err, rows) {
@@ -59,9 +59,10 @@ module.exports = function(passport) {
                     var newUserMysql = {
                         username: username,
                         password: bcrypt.hashSync(password, null, null),  // use the generateHash function in our user model
-                        diritti: diritti,
-                        scuola: scuola
+                        diritti: 0,
+                        scuola: 0
                     };
+                    //todo i parametri dovranno essere passati dalla registrazione
 
                     var insertQuery = "INSERT INTO utenti ( username, password, diritti, scuola ) values (?,?,?,?)";
 

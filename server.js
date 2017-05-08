@@ -36,8 +36,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(express.static(__dirname + '/public'));
-app.locals.endpoint = endpoint;
 
+app.locals.endpoint = endpoint;
 
 middleware.setApp(app);
 

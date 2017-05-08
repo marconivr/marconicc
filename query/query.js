@@ -71,13 +71,6 @@ module.exports = {
         });
     },
 
-    removeAlunnoInClass: function (classe, cf) {
-        connection.query("DELETE FROM comp_classi WHERE nome_classe = '" + classe + "' AND cf_alunno = '" + cf +  "'", function (err, row) {
-            if (err) {
-                console.error(err);
-            }
-        });
-    },
 
     /**
      * aggiorna la classe di uno studente, serve per salvare su db
@@ -152,16 +145,6 @@ module.exports = {
         });
     },
 
-    getSettingsPrimeForAlgorithm: function (callback) {
-        connection.query("select id, DATE_FORMAT(data, '%d-%m-%Y') as data, min_alunni as min_al, max_alunni as max_al, max_femmine as fem, max_stranieri as max_str, stessa_provenienza as stessa_pr, nazionalita, naz_per_classe, max_al_104 from impostazioni_prime order by id desc limit 1", function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
-
     insertSettingsTerze: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {
         connection.query("INSERT INTO impostazioni_terze(data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
             if (err) {
@@ -212,15 +195,6 @@ module.exports = {
         });
     },
 
-    getAlunniFromClass: function(classe, callback){
-        connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "'", function (err, rows) {
-            if (err) {
-                console.log(err);
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
 
     getAlunniFromClassSync: function(classe, count, callback) {
         connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "' ORDER BY alunni.cognome, alunni.nome", function (err, rows) {
@@ -250,20 +224,27 @@ module.exports = {
     },
 
     /**
-     * Ritorna gli studenti data la scuola, l'anno scolastico e la classe futura(prima o terza ad esempio)
+     * Torna tutti gli alunni di una scuola
      * @param callback
      * @param scuola
-     * @param anno_scolastico
-     * @param classe
+     * @param annoScolastico
+     * @param classeFutura (opzionale, li torna tutti se non passata)
      */
-    getStudentiOfschool: function (callback,scuola,annoScolastico,classeFutura) {
-        connection.query("SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ? AND classe_futura = ?", [scuola,annoScolastico, classeFutura],function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
+    getStudentiOfschool: function (scuola, annoScolastico, classeFutura, callback) {
+
+        var query = undefined;
+
+        if (classeFutura === undefined){
+            query = "SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ?";
+        }else{
+            query = "SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ? AND classe_futura = ?";
+        }
+
+        var ris = connection.query(query, [scuola, annoScolastico, classeFutura],function (err, rows) {
+            callback(err,rows);
         });
+
+        console.log(ris.sql);
     },
 
 
@@ -305,16 +286,6 @@ module.exports = {
         });
     },
 
-    getNumerOfStudentiTerza: function (callback) {
-
-        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = 'TERZA'", function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
 
     getAVGOfStudentiPrima: function (callback) {
 
@@ -327,41 +298,38 @@ module.exports = {
         });
     },
 
-    getNumberOfGirlTerza: function (callback) {
-
-        connection.query("SELECT COUNT(classe_futura) as result from alunni where classe_futura = 'TERZA' and sesso = 'F' ", function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
-
-    getAVGOfStudentiTerza: function (callback) {
-
-        connection.query("SELECT ROUND( AVG(media_voti),2 ) as result FROM alunni WHERE classe_futura = 'TERZA' ", function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
 
     /**
-     * return students from the search service
-     * @param callback
+     * Cerca uno studente per nome o cognome data una stringa
      * @param identifier
+     * @param scuola
+     * @param annoScolastico
+     * @param classeFutura
+     * @param callback
      */
-    getAllStudents: function (callback,identifier) {
-        var nome, cognome;
-        nome = identifier.split(" ")[1];
-        cognome = identifier.split(" ")[0];
+    getAllStudents: function (identifier,scuola, annoScolastico, classeFutura, callback) {
+        var idtr, idtr2;
+        //posso essere invertiti
+        idtr = identifier.split(" ")[1];//presunto nome
+        idtr2 = identifier.split(" ")[0];//presunto cognome
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ? or nome LIKE ? OR (CONCAT(cognome, nome) LIKE ?)",
-            ["%" + identifier + "%", "%" + identifier + "%", "%" + cognome + nome + "%"],
+            "SELECT * FROM alunni WHERE cognome LIKE ?" +
+            " OR nome LIKE ?" +
+            " OR (CONCAT(cognome, nome) LIKE ?)" +
+            " OR nome LIKE ? " +
+            " OR cognome LIKE ? " +
+            " AND scuola = ? AND anno_scolastico = ? AND classe_futura = ?",
+            [idtr2 + "%", idtr + "%", "%" + idtr2 + idtr + "%", idtr2 + "%", idtr + "%", scuola, annoScolastico, classeFutura],
+            function (err, rows) {
+                callback(err, rows);
+        });
+    },
+
+    getStudentByCf: function (callback, cf, scuola) {
+
+        connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ",
+            [cf, scuola],
             function (err, rows) {
             if (err) {
                 throw err;
@@ -371,31 +339,17 @@ module.exports = {
         });
     },
 
-    getStudentByCf: function (callback,cf) {
+        getAllTag: function (scuola, callback) {
 
-        connection.query("SELECT * FROM alunni WHERE cf = '" + cf + "'", function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
+            connection.query("SELECT * FROM tag WHERE scuola = ?", [scuola], function (err, rows) {
+            callback(err, rows);
 
-    getAllTag: function (callback,cf) {
-
-        connection.query("SELECT * FROM tag", function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
-                callback(err, rows);
-            }
         });
     },
 
     updateTagFromCF: function (callback, tag, cf) {
         var query;
-        if(tag == 'none')  query = "UPDATE alunni set tag = NULL WHERE cf = '" + cf + "'";
+        if(tag === 'none')  query = "UPDATE alunni set tag = NULL WHERE cf = '" + cf + "'";
         else  query = "UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'";
 
         connection.query(query, function (err, rows) {
@@ -405,8 +359,7 @@ module.exports = {
                 callback(err, rows);
             }
         });
-    }
-    ,
+    },
 
     getClassiComposteForExport: function (callback) {
         var query = "SELECT alunni.matricola, alunni.cf, alunni.cognome, alunni.nome, alunni.data_di_nascita, alunni.sesso,alunni.CAP, alunni.nazionalita, " +
@@ -414,18 +367,24 @@ module.exports = {
             "INNER JOIN comp_classi as m1 on alunni.cf = m1.cf_alunno";
 
         connection.query(query, function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
-                callback(err, rows);
-            }
+            callback(err, rows);
         });
 
-    }
-    ,
+    },
 
-    generazioneAvvenuta: function (callback) {
-        var query = "SELECT alunni.matricola FROM c"
+    /**
+     * @param annoScolastico
+     * @param scuola
+     * @param classeFutura
+     * @param callback
+     */
+    scaricaSetting: function (annoScolastico, scuola, classeFutura, callback) {
+        var query = "SELECT min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 FROM configurazione " +
+            "WHERE scuola = ? AND anno_scolastico = ? AND classe = ? LIMIT 1;";
+
+        connection.query(query,[scuola, annoScolastico, classeFutura], function (err, row) {
+            callback(err,row);
+        })
     }
 
 };

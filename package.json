@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "async": "latest",
+    "asyncawait": "^1.0.6",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.13.1",
     "connect": "^3.5.0",
