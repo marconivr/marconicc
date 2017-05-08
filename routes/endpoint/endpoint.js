@@ -14,7 +14,7 @@ module.exports = {
         creaUtente : "/crea-utente",
         unauthorized : "/unauthorized",
         exportSingleCsv: "/export-single-csv",
-
+        insertUtente: "/insert-utente"
     }
 
     ,
@@ -44,7 +44,8 @@ module.exports = {
         getDatiPrime: "/get-dati-prime",
         getHistory: "/get-history",
         removeStudentFromHistory: "/remove-student-from-history",
-        getPastSettingsTerze: "/get-past-settings-terze",
+        getPastSettingsTerze: "/get-past-settings-terze"
+        
     }
 
 

@@ -8,6 +8,7 @@
 const middleware = require('./middleware/middleware');
 const query = require('./../query/query.js');
 const async = require('async');
+var bcrypt = require('bcrypt-nodejs');
 const endpoint = require('./endpoint/endpoint.js');
 
 module.exports = function (app, passport) {
@@ -65,6 +66,15 @@ module.exports = function (app, passport) {
         failureRedirect: endpoint.utenti.signup, // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));
+
+    app.post(endpoint.utenti.insertUtente, middleware.isLoggedIn, middleware.restrictTo([0]), function (req, res) {
+        query.insertUtente(req.body.username, bcrypt.hashSync(req.body.password, null, null), req.body.diritto, req.user.id_scuola, function (err, results) {
+            if (err)
+                res.send(err);
+            else
+                res.send("1");
+        });
+    });
 
 
     // =====================================

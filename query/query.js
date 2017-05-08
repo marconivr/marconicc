@@ -21,7 +21,7 @@ module.exports = {
     /*
      * Function for insert students into db having an array of data
      */
-    insertRecordFromCSV: function (arrayRow,scuola,utente) {
+    insertRecordFromCSV: function (arrayRow, scuola, utente) {
         var cognome = arrayRow[0];
         var nome = arrayRow[1];
         var matricola = arrayRow[2];
@@ -41,7 +41,7 @@ module.exports = {
         var classe_futura = arrayRow[16];
         var descrizione = arrayRow[17];
 
-        var query = connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?);", ['', cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], cap, nazionalita, legge_107, legge_104, classe_precedente,sceltaIndirizzo , annoScolastico, codiceCatastale, voto, classe_futura,scuola,utente,descrizione], function (err) {
+        var query = connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?);", ['', cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], cap, nazionalita, legge_107, legge_104, classe_precedente, sceltaIndirizzo, annoScolastico, codiceCatastale, voto, classe_futura, scuola, utente, descrizione], function (err) {
             if (err) {
                 throw err;
             }
@@ -85,14 +85,14 @@ module.exports = {
         var id = "select id from classi where anno_scolastico = ? AND scuola = ? AND classe_futura = ? AND nome = ?;";
         var alunno; //todo
         connection.query("UPDATE comp_classi SET nome_classe = '?' WHERE cf_alunno = ?", function (err, row) {
-           callback(err,row);
+            callback(err, row);
         });
     },
 
     insertHistory: function (callback, cf, toClass, fromClass, idUtente, anno_scolastico) {
         connection.query(
             "INSERT INTO history (cf, classe_precedente, classe_successiva, id_utente, anno_scolastico) VALUES (?,?,?,?,?)",
-            [cf, fromClass, toClass, idUtente,anno_scolastico],
+            [cf, fromClass, toClass, idUtente, anno_scolastico],
             function (err, rows) {
                 if (err) {
                     throw err;
@@ -128,10 +128,10 @@ module.exports = {
     },
 
     insertSettingsPrime: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
-        var query = connection.query("INSERT INTO configurazione (scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe , max_al_104, "PRIMA"], function (err, row) {
+        var query = connection.query("INSERT INTO configurazione (scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
             if (err) {
                 console.log(err);
-            }else {
+            } else {
                 callback(err, row, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104);
             }
         });
@@ -151,7 +151,7 @@ module.exports = {
         connection.query("INSERT INTO impostazioni_terze(data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
             if (err) {
                 console.log(err);
-            }else {
+            } else {
                 callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti);
             }
         });
@@ -198,7 +198,7 @@ module.exports = {
     },
 
 
-    getAlunniFromClassSync: function(classe, count, callback) {
+    getAlunniFromClassSync: function (classe, count, callback) {
         connection.query("SELECT alunni.* from (comp_classi inner join classi on nome_classe = nome) inner join alunni on cf_alunno = cf where nome_classe = '" + classe + "' ORDER BY alunni.cognome, alunni.nome", function (err, rows) {
             if (err) {
                 console.log(err);
@@ -210,9 +210,9 @@ module.exports = {
 
     getNumberAlunniClassi: function (classe, callback) {
         var ncl = 1;
-        if (classe.toLowerCase() == "prima"){
+        if (classe.toLowerCase() == "prima") {
             ncl = 1;
-        } else if(classe.toLowerCase() == "terza"){
+        } else if (classe.toLowerCase() == "terza") {
             ncl = 3;
         }
 
@@ -236,14 +236,14 @@ module.exports = {
 
         var query = undefined;
 
-        if (classeFutura === undefined){
+        if (classeFutura === undefined) {
             query = "SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ?";
-        }else{
+        } else {
             query = "SELECT * from alunni WHERE scuola = ? AND anno_scolastico = ? AND classe_futura = ?";
         }
 
-        var ris = connection.query(query, [scuola, annoScolastico, classeFutura],function (err, rows) {
-            callback(err,rows);
+        var ris = connection.query(query, [scuola, annoScolastico, classeFutura], function (err, rows) {
+            callback(err, rows);
         });
 
         console.log(ris.sql);
@@ -320,7 +320,7 @@ module.exports = {
      * @param classeFutura
      * @param callback
      */
-    getAllStudents: function (identifier,scuola, annoScolastico, classeFutura, callback) {
+    getAllStudents: function (identifier, scuola, annoScolastico, classeFutura, callback) {
         var idtr, idtr2;
         //posso essere invertiti
         idtr = identifier.split(" ")[1];//presunto nome
@@ -336,7 +336,7 @@ module.exports = {
             [idtr2 + "%", idtr + "%", "%" + idtr2 + idtr + "%", idtr2 + "%", idtr + "%", scuola, annoScolastico, classeFutura],
             function (err, rows) {
                 callback(err, rows);
-        });
+            });
     },
 
     getStudentByCf: function (callback, cf, scuola) {
@@ -344,17 +344,38 @@ module.exports = {
         connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ",
             [cf, scuola],
             function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
-                callback(err, rows);
-            }
-        });
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
     },
 
-        getAllTag: function (scuola, callback) {
+    /**
+     *
+     * @param callback
+     * @param username
+     * @param password
+     * @param diritto
+     * @param scuola
+     */
+    insertUtente: function (username, password, diritto, scuola, callback) {
 
-            connection.query("SELECT * FROM tag WHERE scuola = ?", [scuola], function (err, rows) {
+        connection.query("INSERT INTO utenti(username, password,diritti , scuola) VALUES (?, ? ,? ,?)",
+            [username, password, diritto, scuola],
+            function (err, rows) {
+                if (err) {
+                    throw err;
+                } else {
+                    callback(err, rows);
+                }
+            });
+    },
+
+    getAllTag: function (scuola, callback) {
+
+        connection.query("SELECT * FROM tag WHERE scuola = ?", [scuola], function (err, rows) {
             callback(err, rows);
 
         });
@@ -370,7 +391,7 @@ module.exports = {
 
     updateTagFromCF: function (callback, tag, cf) {
         var query;
-        if(tag === 'none')  query = "UPDATE alunni set tag = NULL WHERE cf = '" + cf + "'";
+        if (tag === 'none')  query = "UPDATE alunni set tag = NULL WHERE cf = '" + cf + "'";
         else  query = "UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'";
 
         connection.query(query, function (err, rows) {
@@ -403,8 +424,8 @@ module.exports = {
         var sql = "SELECT min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 FROM configurazione " +
             "WHERE scuola = ? AND anno_scolastico = ? AND classe = ? LIMIT 1;";
 
-        var query = connection.query(sql,[scuola, annoScolastico, classeFutura], function (err, row) {
-            callback(err,row);
+        var query = connection.query(sql, [scuola, annoScolastico, classeFutura], function (err, row) {
+            callback(err, row);
         });
 
         console.log(query.sql);
