@@ -378,7 +378,7 @@ module.exports = {
      * @param classeFutura
      * @param callback
      */
-    scaricaSetting: function (annoScolastico, scuola, classeFutura, callback) {
+    scaricaSettings: function (annoScolastico, scuola, classeFutura, callback) {
         var query = "SELECT min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 FROM configurazione " +
             "WHERE scuola = ? AND anno_scolastico = ? AND classe = ? LIMIT 1;";
 

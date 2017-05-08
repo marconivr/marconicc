@@ -9,7 +9,7 @@ const middleware = require('./middleware/middleware');
 const newAlg = require("./new-algorithm.js");
 const async = require('async');
 const csv = require('express-csv');
-const endpoint = require('./endpoint/endpoint');
+const endpoint = require('./endpoint/endpoint.js');
 
 
 const multer = require('multer');
@@ -257,7 +257,7 @@ module.exports = function (app) {
     /**
      * Elenco studenti in tabella
      */
-    app.get('/studenti', middleware.isLoggedIn, function (req, res) {
+    app.get('/studenti', middleware.isLoggedIn, middleware.restrictTo([0,1]),function (req, res) {
 
         const annoScolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
         const scuola = req.user.id_scuola;
@@ -370,34 +370,7 @@ module.exports = function (app) {
     });
 
 
-    /**
-     * this function allow or block api call based on user id
-     * if the current user has the id passed in the params, it allow the call
-     * possible id -> 0,1,2
-     *
-     * diritto 0 -> tutto
-     * diritto 1 -> tutto tranne creare utenti
-     * diritto 2 -> panoramica classi elenco studenti e export-->
-     *
-     * @param role array of id
-     * @returns {Function}
-     */
-    function restrictTo(role) {
-        return function (req, res, next) {
-            //var userId = todo: insert user id
-            var userId = 1;
-            for (var index = 0; index < role.length; index++) {
-                if (userId === role[index]) {
-                    next();
-
-                } else {
-                    console.log('call deny')
-                }
-            }
-        }
-    }
-
-    app.post('/move-student', middleware.isLoggedIn, restrictTo([0, 1]), function (req, res) {
+    app.post('/move-student', middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         //update student class
         query.updateAlunnoClass(function (err, results) {
             if (err)

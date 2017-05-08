@@ -8,7 +8,7 @@
 const middleware = require('./middleware/middleware');
 const query = require('./../query/query.js');
 const async = require('async');
-const endpoint = require('./endpoint/endpoint');
+const endpoint = require('./endpoint/endpoint.js');
 
 module.exports = function (app, passport) {
 
