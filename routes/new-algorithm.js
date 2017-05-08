@@ -786,13 +786,80 @@ module.exports = {
 
     },
 
+    updatePropIdeali: function (alunno, propIdeali, copyinsiemi) {
+        if (propIdeali.nazionalita[alunno.nazionalita] === undefined) {
+            if (alunno.nazionalita.toLowerCase() !== "italiana") {
+                propIdeali.nazionalita[alunno.nazionalita] = 1;
+            }
+        } else {
+            if (alunno.nazionalita.toLowerCase() !== "italiana") {
+                propIdeali.nazionalita[alunno.nazionalita] += 1;
+            }
+        }
+
+        if (alunno.sesso === "F") {
+            propIdeali.femmine += 1;
+        }
+
+        if (alunno.classe_precedente !== "") {
+            propIdeali.ripetenti += 1;
+        }
+
+        if (propIdeali.voto[alunno.voto] === undefined) {
+            propIdeali.voto[alunno.voto] = 1;
+        } else {
+            propIdeali.voto[alunno.voto] += 1;
+        }
+
+        if (propIdeali.CAP[alunno.CAP] === undefined) {
+            propIdeali.CAP[alunno.CAP] = 1;
+        } else {
+            propIdeali.CAP[alunno.CAP] += 1;
+        }
+
+        module.exports.removeStudenteFromCopyOfInsiemi(alunno, copyinsiemi);
+    },
+
+    /**
+     * Funzione che rimuove da tutti gli insiemi ed lista studenti uno studente partendo dal suo oggetto
+     * @param objStudente
+     */
+    removeStudenteFromCopyOfInsiemi: function (objStudente, copyinsiemi) {
+        for (var item in copyinsiemi) {
+            if (copyinsiemi[item].nome == "nazionalita" || copyinsiemi[item].nome == "CAP" || copyinsiemi[item].nome == "voto") {
+                for (var i in copyinsiemi[item].alunni) {
+                    var studenti = copyinsiemi[item].alunni[i];
+                    var posizione = studenti.indexOf(objStudente);
+                    if (posizione != -1) {
+                        studenti.splice(posizione, 1);
+                    }
+                }
+            } else {
+                var studenti = copyinsiemi[item].alunni;
+                var posizione = studenti.indexOf(objStudente)
+                if (posizione != -1) {
+                    studenti.splice(posizione, 1);
+                }
+            }
+        }
+        //rimuovo dalla lista studenti
+        posizione = listaAlunniDeleted.indexOf(objStudente);
+        if (posizione != -1) {
+            listaAlunniDeleted.splice(posizione, 1);
+        }
+    },
+
     generaPropIdeali3: function () {
         var insiemi2 = JSON.stringify(insiemi);
-        insiemi2 = JSON.stringify(insiemi2);
+        insiemi2 = JSON.parse(insiemi2);
 
         var insNaz = module.exports.getInsieme("nazionalita").alunni;
         var insVoti = module.exports.getInsieme("voto").alunni;
         var insCAP = module.exports.getInsieme("CAP").alunni;
+        var ins104 = module.exports.getInsieme("legge_104").alunni;
+        var ins107 = module.exports.getInsieme("legge_107").alunni;
+        var insFemmine = module.exports.getInsieme("femmine").alunni;
+        var insRip = module.exports.getInsieme("ripetenti").alunni;
 
         var totale104 = module.exports.count104(listaAlunni);
         var totale107 = module.exports.count107(listaAlunni);
@@ -815,7 +882,6 @@ module.exports = {
             cap[n] = insCAP[n].length;
         }
 
-        var flag = true;
         module.exports.inizializzaPropIdeali();
         var count = 0;
 
@@ -836,23 +902,117 @@ module.exports = {
         }
 
         for (var i in priority){
-            switch (i){
+            switch (priority[i]){
                 case "legge_104":
                     for (var i in listaClassi) {
                         if (totale104 > 0) {
                             listaClassi[i].propIdeali.legge_104 += 1;
                             module.exports.distribuisciSe104(listaClassi[i].propIdeali.alunni);
                             listaClassi[i].propIdeali.alunni = settings.max_al_104;
-                            //setta proprieta dello studente function(totale104 - 1)
+                            var studente = ins104[totale104 - 1];
+                            ins104.splice(totale104 - 1, 1);
+                            module.exports.updatePropIdeali(studente, listaClassi[i].propIdeali, insiemi2);
                             totale104 -= 1;
+                            var amico = module.exports.checkDesiderata(studente);
+                            if (amico) {
+                                module.exports.updatePropIdeali(amico, listaClassi[i].propIdeali, insiemi2);
+                            }
                         }
                         else {
                             break;
                         }
                     }
                     break;
+                case "legge_107":
+                    var j = 0;
+                    var x = 0;
+                    while (totale107 !== 0) {
+                        //salto le classi che hanno gia'  un 104 e aggiungo solo alle altre
+                        while (listaClassi[j].propIdeali.legge_104 > 0) {
+                            j++;
+                            if (j >= listaClassi.length) {
+                                j = x;
+                                x++;
+                                if (x >= listaClassi.length) {
+                                    x = 0;
+                                }
+                                break;
+                            }
+                        }
+                        listaClassi[j].propIdeali.legge_107 += 1;
+
+                        var studente = ins107[totale107 - 1];
+                        ins107.splice(totale107 - 1, 1);
+                        module.exports.updatePropIdeali(studente, listaClassi[j].propIdeali, insiemi2);
+
+                        var amico = module.exports.checkDesiderata(studente);
+                        if (amico) {
+                            module.exports.updatePropIdeali(amico, listaClassi[i].propIdeali, insiemi2);
+                        }
+                        totale107--;
+                        j++;
+
+                        if (j >= listaClassi.length) {
+                            j = 0;
+                        }
+                    }
+                    break;
+                case "ripetenti":
+                    var setRip = Math.round(totaleRip / listaClassi.length);
+                    var flag = false;
+                    while (totaleRip !== 0) {
+                        for (var i = 0; i < listaClassi.length; i++) {
+                            if (listaClassi[i].propIdeali.ripetenti <= setRip || flag) {
+                                for (var k = 0; k < setRip; k++) {
+                                    var studente = insRip[totaleRip - 1];
+                                    insRip.splice(totaleRip - 1, 1);
+                                    module.exports.updatePropIdeali(studente, listaClassi[i].propIdeali, insiemi2);
+                                    totaleRip -= 1;
+                                }
+                            }
+                            if (totaleRip == 0){
+                                break;
+                            }
+                            if (i + 1 == listaClassi.length && totaleRip != 0) {
+                                i = 0;
+                                flag = true;
+                                setRip = 1;
+                            }
+                        }
+                    }
+                    break;
+                case "femmine":
+                    var setFem = settings.fem;
+                    var flag = false;
+                    while (totaleFem !== 0) {
+                        for (var i = 0; i < listaClassi.length; i++) {
+                            if (listaClassi[i].propIdeali.femmine <= setFem || flag) {
+                                for (var k = 0; k < setFem; k++) {
+                                    var studente = insFemmine[totaleFem - 1];
+                                    insFemmine.splice(totaleFem - 1, 1);
+                                    module.exports.updatePropIdeali(studente, listaClassi[i].propIdeali, insiemi2);
+                                    totaleFem -= 1;
+
+                                    var amico = module.exports.checkDesiderata(studente);
+                                    if (amico) {
+                                        module.exports.updatePropIdeali(amico, listaClassi[i].propIdeali, insiemi2);
+                                    }
+                                }
+                            }
+                            if (totaleFem == 0){
+                                break;
+                            }
+                            if (i + 1 == listaClassi.length && totaleFem != 0) {
+                                i = 0;
+                                flag = true;
+                                setFem = 1;
+                            }
+                        }
+                    }
+                    break;
             }
         }
+        console.log(listaClassi);
     },
 
     // inizializzaPropIdealiCorradi: function () {
