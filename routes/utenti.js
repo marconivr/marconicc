@@ -35,7 +35,7 @@ module.exports = function (app, passport) {
      */
     //todo controllo che se questa scuola non ha studenti caricati si apre la pagina per caricarli
     app.post(endpoint.utenti.login, passport.authenticate('local-login', {
-            successRedirect: endpoint.utenti.studenti,
+            successRedirect: endpoint.alunni.studenti,
             failureRedirect: endpoint.utenti.login,
             failureFlash: true
         }),
@@ -57,7 +57,7 @@ module.exports = function (app, passport) {
      * registration post request
      */
     app.post(endpoint.utenti.signup, passport.authenticate('local-signup', {
-        successRedirect: endpoint.utenti.studenti, // redirect to the secure profile section
+        successRedirect: endpoint.alunni.studenti, // redirect to the secure profile section
         failureRedirect: endpoint.utenti.signup, // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));

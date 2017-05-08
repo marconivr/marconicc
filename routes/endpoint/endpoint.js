@@ -10,7 +10,6 @@ module.exports = {
         login : "/login",
         signup : "/signup",
         logout : "/logout",
-        studenti : "/studenti",
         home : "/",
         creaUtente : "/crea-utente",
         exportSingleCsv: "/export-single-csv",

@@ -253,7 +253,7 @@
         var naz_per_classe = parseInt($("#naz_per_classe").val());
         var max_al_104 = parseInt($("#max_al_104").val());
         $.ajax({
-            url: '/insert-settings-prime',
+            url: '<%endpoint.alunni.insertSettingsPrime%>',
             data: {
                 "data" : data,
                 "descrizione" : descrizione,
@@ -290,7 +290,7 @@
         priorita.push("voto");
 
         $.ajax({
-            url: '/insert-priorita',
+            url: '<%endpoint.alunni.insertPriorita%>',
             data: {
                 "priorita" : priorita
             },
@@ -310,7 +310,7 @@
     $(document).ready(function() {
         $.ajax({
             type: "GET",
-            url: '/get-past-settings-prime',
+            url: '<%endpoint.alunni.getPastSettingsPrime%>',
             data: {
                 format: 'json'
             },

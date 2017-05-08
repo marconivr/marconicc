@@ -216,7 +216,7 @@
         var iniziale = parseInt($("#iniziale").val());
         var ripetenti = parseInt($("#ripetenti").val());
         $.ajax({
-            url: '/insert-settings-terze',
+            url: '<%endpoint.alunni.insertSettingsTerze%>',
             data: {
                 "data" : data,
                 "descrizione" : descrizione,
@@ -253,7 +253,7 @@
         priorita.push("voto");
 
         $.ajax({
-            url: '/insert-priorita',
+            url: '<%endpoint.alunni.insertPriorita%>',
             data: {
                 "priorita" : priorita
             },
@@ -274,7 +274,7 @@
         var settings = [];
         $.ajax({
             type: "GET",
-            url: '/get-past-settings-terze',
+            url: '<%endpoint.alunni.getPastSettingsTerze%>',
             data: {
                 format: 'json'
             },
