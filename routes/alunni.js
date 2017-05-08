@@ -421,6 +421,7 @@ module.exports = function (app) {
         }
     });
 
+
     app.get(endpoint.alunni.getPastSettingsPrime, middleware.isLoggedIn, function (req, res) {
         query.getSettingsPrime(function (err, results) {
             if (err)
