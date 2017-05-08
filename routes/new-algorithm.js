@@ -17,13 +17,14 @@ var insiemi = [];
 var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
 
-var anno_scolastico = undefined;
+var annoScolastico = undefined;
 var scuola = undefined;
-var classe_futura = undefined;
+var classeFutura = undefined;
 
 module.exports = {
 
-    generaClassiPrima: function (annoScolastico, scuola, classeFutura, callback) {//todo:check this
+    generaClassiPrima: function (annoScolastico, scuola, classeFutura, callback) {
+        a
 
         query.getStudentiOfschool(scuola, anno_scolastico, classe_futura, function (err, results) {
             if (err)
@@ -569,7 +570,7 @@ module.exports = {
             //console.log("È true");
             var debuggerVoti = false;
             var debuggerNazionalita = false;
-            var debuggetcap = true;
+            var debuggetcap = false;
 
             if (debuggerVoti){
                 for (var lista in listaClassi) {
@@ -760,7 +761,6 @@ module.exports = {
                 }
             }
         }
-        console.log(insiemi);
         return voti, cap;
     },
 

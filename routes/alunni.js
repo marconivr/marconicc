@@ -9,7 +9,7 @@ const middleware = require('./middleware/middleware');
 const newAlg = require("./new-algorithm.js");
 const async = require('async');
 const csv = require('express-csv');
-const endpoint = require('./endpoint/endpoint');
+const endpoint = require('./endpoint/endpoint.js');
 
 
 const multer = require('multer');
@@ -65,12 +65,16 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, function (req, res) {
 
-        query.updateTagFromCF(function (err, results) {
-            if (err)
-                throw err;
-            else
-                res.send(JSON.stringify(results));
-        }, req.query.tag, req.query.cf);
+        if(req.user.diritti == 0 || req.user.diritti == 1 )
+        {
+            query.updateTagFromCF(function (err, results) {
+                if (err)
+                    throw err;
+                else
+                    res.send(JSON.stringify(results));
+            }, req.query.tag, req.query.cf);
+        }
+
     });
 
 
@@ -362,34 +366,7 @@ module.exports = function (app) {
     });
 
 
-    /**
-     * this function allow or block api call based on user id
-     * if the current user has the id passed in the params, it allow the call
-     * possible id -> 0,1,2
-     *
-     * diritto 0 -> tutto
-     * diritto 1 -> tutto tranne creare utenti
-     * diritto 2 -> panoramica classi elenco studenti e export-->
-     *
-     * @param role array of id
-     * @returns {Function}
-     */
-    function restrictTo(role) {
-        return function (req, res, next) {
-            //var userId = todo: insert user id
-            var userId = 1;
-            for (var index = 0; index < role.length; index++) {
-                if (userId === role[index]) {
-                    next();
-
-                } else {
-                    console.log('call deny')
-                }
-            }
-        }
-    }
-
-    app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, restrictTo([0, 1]), function (req, res) {
+    app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         //update student class
         query.updateAlunnoClass(function (err, results) {
             if (err)

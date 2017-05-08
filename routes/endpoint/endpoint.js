@@ -12,6 +12,7 @@ module.exports = {
         logout : "/logout",
         home : "/",
         creaUtente : "/crea-utente",
+        unauthorized : "/unauthorized",
         exportSingleCsv: "/export-single-csv",
 
     }

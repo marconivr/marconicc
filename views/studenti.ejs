@@ -343,7 +343,11 @@
                 $('#cf').text(ret[0].cf);
                 hasExistingTag = ret[0].tag;
                 var postal_code = ret[0].cap;
+
+                <%if (user.diritti == 0 || user.diritti == 1 ) { %>
                 getAllTag();
+                <% } %>
+
 
                 //save to db if the dropdown has change
                 $('.ui.modal').modal({
@@ -393,17 +397,6 @@
 
     function setDropDonwData() {
         var userTagInformation = null;
-
-
-//    <div class="ui selection dropdown">
-//                <input type="hidden" name="gender">
-//                <i class="dropdown icon"></i>
-//                <div class="default text">Gender</div>
-//                <div class="menu">
-//                <div class="item" data-value="1">Male</div>
-//                <div class="item" data-value="0">Female</div>
-//                </div>
-//                </div>
 
         $('<div/>', {
             'class': 'ui selection dropdown',

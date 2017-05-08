@@ -8,7 +8,7 @@
 const middleware = require('./middleware/middleware');
 const query = require('./../query/query.js');
 const async = require('async');
-const endpoint = require('./endpoint/endpoint');
+const endpoint = require('./endpoint/endpoint.js');
 
 module.exports = function (app, passport) {
 
@@ -50,6 +50,10 @@ module.exports = function (app, passport) {
     app.get(endpoint.utenti.signup, function (req, res) {
         // render the page and pass in any flash data if it exists
         res.render('signup.ejs', {message: req.flash('signupMessage'), pageTitle: "signup"});
+    });
+
+    app.get(endpoint.utenti.unauthorized, function (req, res) {
+        res.render('403.ejs');
     });
 
 
