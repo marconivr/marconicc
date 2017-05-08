@@ -134,6 +134,29 @@ module.exports = function (app) {
         })
     });
 
+    app.get(endpoint.alunni.tagAlunni, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+
+        async.parallel({
+            tagAlunni: function (callback) {
+                const scuola = req.user.id_scuola;
+                query.getAllTagName(scuola, function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        console.log(results);
+                        callback(null, {'tag': results})
+                });
+            }
+        }, function (err, results) {
+            res.render('tag-alunni.ejs', {
+                user: req.user,
+                pageTitle: " Tag alunni ",
+                tagAlunni: results.tagAlunni.tag
+            });
+
+        });
+    });
+
     app.get(endpoint.alunni.settingsPrime, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
         async.parallel({

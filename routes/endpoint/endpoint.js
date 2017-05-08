@@ -30,6 +30,7 @@ module.exports = {
         settings : "/settings",
         settingsPrime : "/settings-prime",
         settingsTerze : "/settings-terze",
+        tagAlunni : "/tag-alunni",
         insertSettingsPrime : "/insert-settings-prime",
         insertSettingsTerze : "/insert-settings-terze",
         insertPriorita: "/insert-priorita",

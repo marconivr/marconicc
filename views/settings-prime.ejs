@@ -63,33 +63,35 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label>Alunni minimi</label>
-                                    <input type="number" name="alunni_min" placeholder="Alunni minimi" onkeyup="setDataRealtimeNumberOfStudents()" id="alunni-min">
+                                    <input type="number" name="alunni_min" placeholder="Alunni minimi" onkeyup="setDataRealtimeNumberOfStudents()"
+                                           onchange="setDataRealtimeNumberOfStudents()" id="alunni-min" min="0">
                                 </div>
                                 <div class="field">
                                     <label>Alunni massimi</label>
-                                    <input type="number" name="alunni_max" placeholder="Alunni massimi" id="alunni-max">
+                                    <input type="number" name="alunni_max" placeholder="Alunni massimi" id="alunni-max" min="0">
                                 </div>
                             </div>
                         </div>
                         <div class="field">
                             <label>Numero femmine in una classe</label>
-                            <input name="max_femmine" placeholder="Femmine" type="number" onkeyup="setDataRealtimeNumberOfFemmine()" id="femmine">
+                            <input name="max_femmine" placeholder="Femmine" type="number" onkeyup="setDataRealtimeNumberOfFemmine()"
+                                   onchange="setDataRealtimeNumberOfFemmine()" id="femmine" min="0">
                         </div>
                         <div class="field">
                             <label>Numero persone con la stessa nazionalità</label>
-                            <input name="nazionalita" placeholder="Nazionalita" type="number" id="nazionalita">
+                            <input name="nazionalita" placeholder="Nazionalita" type="number" id="nazionalita" min="0">
                         </div>
                         <div class="field">
                             <label>Numero nazionalità per classe</label>
-                            <input name="naz_per_classe" placeholder="Naz_per_classe" type="number" id="naz_per_classe">
+                            <input name="naz_per_classe" placeholder="Naz_per_classe" type="number" id="naz_per_classe" min="0">
                         </div>
                         <div class="field">
                             <label>Numero persone che hanno residenza simile</label>
-                            <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza">
+                            <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza" min="0">
                         </div>
                         <div class="field">
                             <label>Numero massimo di alunni in una classe in presenza di un 104</label>
-                            <input name="max_al_104" placeholder="Max_al_104" type="number" id="max_al_104">
+                            <input name="max_al_104" placeholder="Max_al_104" type="number" id="max_al_104" min="0">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
