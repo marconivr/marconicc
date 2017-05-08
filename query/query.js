@@ -122,7 +122,6 @@ module.exports = {
                 }
             });
     },
-    
 
     insertSettingsPrime: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
         var query = connection.query("INSERT INTO configurazione (scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe , max_al_104, "PRIMA"], function (err, row) {
@@ -132,7 +131,6 @@ module.exports = {
                 callback(err, row, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104);
             }
         });
-        console.log(query.sql);
     },
 
     getSettingsPrime: function (callback) {
@@ -390,12 +388,14 @@ module.exports = {
      * @param callback
      */
     scaricaSettings: function (annoScolastico, scuola, classeFutura, callback) {
-        var query = "SELECT min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 FROM configurazione " +
+        var sql = "SELECT min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 FROM configurazione " +
             "WHERE scuola = ? AND anno_scolastico = ? AND classe = ? LIMIT 1;";
 
-        connection.query(query,[scuola, annoScolastico, classeFutura], function (err, row) {
+        var query = connection.query(sql,[scuola, annoScolastico, classeFutura], function (err, row) {
             callback(err,row);
-        })
+        });
+
+        console.log(query.sql);
     }
 
 };

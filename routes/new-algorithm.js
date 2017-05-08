@@ -23,12 +23,16 @@ var classeFutura = undefined;
 
 module.exports = {
 
-    generaClassiPrima: function (annoScolastico, scuola, classeFutura, callback) {
-        a
+    generaClassiPrima: function (a, s, c, callback) {
+        //setto le variabili globali
+        annoScolastico = a;
+        scuola = s;
+        classeFutura = c;
 
-        query.getStudentiOfschool(scuola, anno_scolastico, classe_futura, function (err, results) {
+
+        query.getStudentiOfschool(scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
-                throw err;
+                console.log(err);
             else {
                 async.waterfall(
                     [
@@ -38,7 +42,7 @@ module.exports = {
                             listaAlunni = [];
                             listaAlunniDeleted = [];
                             insiemi = [];
-                            module.exports.scaricaSettings(annoScolastico, scuola, classe_futura);
+                            module.exports.inizializzaSettings(annoScolastico, scuola, classeFutura);
                             callback();
                         },
                         function (callback) {
@@ -95,12 +99,12 @@ module.exports = {
         return null;
     },
 
-    scaricaSettings: function (annoScolastico, scuola, classe_futura) {
-        query.scaricaSettings(annoScolastico, scuola, classe_futura, function (err, results) {
+    inizializzaSettings: function (annoScolastico, scuola, classeFutura) {
+        query.scaricaSettings(annoScolastico, scuola, classeFutura, function (err, results) {
             if (err)
                 console.log(err);
             else {
-                module.exports.createSettingsArray(results);
+                settings = JSON.parse(JSON.stringify(results[0]));
             }
         });
     }
@@ -123,7 +127,7 @@ module.exports = {
             }
         }
 
-        query.getStudentiOfschool(scuola, anno_scolastico, classe_futura, function (err, results) {
+        query.getStudentiOfschool(scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
                 console.log(err);
             else {
@@ -192,8 +196,7 @@ module.exports = {
      * @param classe
      * @param callback
      */
-    generaListaClassi: function (classe) {
-        if (classe.toLowerCase() == "prima") {
+    generaListaClassi: function () {
             var num = Math.round(listaAlunni.length / (settings.min_alunni));
             for (i = 0; i < num; i++) {
                 var classe = "1" + String.fromCharCode(65 + i);
@@ -205,7 +208,6 @@ module.exports = {
                 });
             }
             return module.exports.generaPropIdeali(listaClassi);
-        }
     },
 
     sortProprietaIdeali: function (prop) {
@@ -1171,16 +1173,6 @@ module.exports = {
 
     getListaClassi: function () {
         return listaClassi;
-    },
-    
-
-    createSettingsArray: function (objSettings) {
-        for (prop in objSettings[0]){
-            if (prop != "id"){
-                settings[prop] = objSettings[0][prop];
-            }
-        }
-
     },
 
     /**

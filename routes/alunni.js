@@ -81,7 +81,7 @@ module.exports = function (app) {
     app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
-        const classeFutura = "PRIME"; //todo:dipende dal dropdown
+        const classeFutura = "PRIMA"; //todo:dipende dal dropdown
 
         const param = req.query.q;
         query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {
@@ -366,7 +366,9 @@ module.exports = function (app) {
 
 
     app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
-
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIMA"; //todo:dipende dal dropdown
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
             res.send(classi);
