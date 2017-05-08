@@ -37,11 +37,14 @@
 
 <div class="ui internally celled grid">
     <div class="row">
-        <!--this section represent the relatime data-->
+        <!--this section represent the realtime data-->
         <div class="three wide column">
             <a class="ui teal tag label"> Statistiche RealTime</a><br>
             <b>Numero di classi:</b>
             <p id="classe-realtime"></p>
+
+            <b>Numero di classi con femmine:</b>
+            <p id="classi-con-femmine"></p>
 
             <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
             <div id="rowForInsertDate">
@@ -70,7 +73,7 @@
                         </div>
                         <div class="field">
                             <label>Numero femmine in una classe</label>
-                            <input name="max_femmine" placeholder="Femmine" type="number" id="femmine">
+                            <input name="max_femmine" placeholder="Femmine" type="number" onkeyup="setDataRealtimeNumberOfFemmine()" id="femmine">
                         </div>
                         <div class="field">
                             <label>Numero persone con la stessa nazionalità</label>
@@ -111,29 +114,29 @@
         <div class="three wide column">
 
             <a class="ui orange tag label">Dati Studenti</a><br><br>
-            <div class="ui compact menu">
-                <a class="item">
-                    <i class="student icon"></i> Studenti
-                    <div class="floating ui yellow label">
-                        <p id="alunni-in-classe-prima">
-                            <%= studentiPrima[0].result%>
-                        </p>
+            <div class="ui vertical menu">
+                <a class="teal item">
+                    Studenti
+                    <div class="ui yellow left pointing label" id="alunni-in-classe-prima">
+                        <%= studentiPrima[0].result%>
+                    </div>
+                </a>
+                <a class="item active">
+                    Femmine
+                    <div class="ui green left pointing label" id="femmine-in-classe-prima">
+                        <%= femminePrima[0].result%>
                     </div>
                 </a>
                 <a class="item">
-                    <i class="female icon"></i> Donne
-                    <div class="floating ui pink label">
-                        <p id="donne-in-classe-prima">
-                            <%= femminePrima[0].result%>
-                        </p>
+                    Media voti
+                    <div class="ui blue left pointing label">
+                        <%= mediaPrima[0].result%>
                     </div>
                 </a>
                 <a class="item">
-                    <i class="write icon"></i> Media
-                    <div class="floating ui blue  label">
-                        <p id="media-in-classe-prima">
-                            <%= mediaPrima[0].result%>
-                        </p>
+                    Stranieri
+                    <div class="ui teal left pointing label">
+                        <%= stranieriPrima[0].result%>
                     </div>
                 </a>
             </div>
@@ -160,8 +163,27 @@
     <div class="header" id = modal-header>
 
     </div>
-    <div class="content" id="settings">
+    <div class="content">
+        <table class="ui very basic collapsing celled table">
+            <thead>
+            <tr>
+                <th>Data</th>
+                <th>Descrizione</th>
+                <th>Alunni minimi</th>
+                <th>Alunni massimi</th>
+                <th>Numero massimo di femmine</th>
+                <th>Stessa nazionalità</th>
+                <th>Numero di nazionalità</th>
+                <th>Residenza simile</th>
+                <th>Alunni massimi con un 104</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="row-settings">
 
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div class="actions">
         <div class="ui black deny button">
@@ -191,10 +213,9 @@
         document.getElementById("modal-header").innerHTML = settings[index].data;
 
         for (setting in settings[index]){
-            s+= "<p><b>" + setting + ": </b>" + settings[index][setting] + "</p>";
+            s+= "<td>" + settings[index][setting] + "</td>";
         }
-        document.getElementById("settings").innerHTML = s;
-
+        document.getElementById("row-settings").innerHTML = s;
         $('.ui.modal')
             .modal({
                 closable  : false,
@@ -237,9 +258,26 @@
     function setDataRealtimeNumberOfStudents() {
         var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML;
         var alunniMin = $("#alunni-min").val();
-        $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
+
+        if (alunniMin == ""){
+            $("#classe-realtime").html("");
+        }
+        else{
+            $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
+        }
     }
 
+    function setDataRealtimeNumberOfFemmine() {
+        var femmineTot = document.getElementById("femmine-in-classe-prima").innerHTML;
+        var femmineMax = $("#femmine").val();
+
+        if (femmineMax == ""){
+            $("#classi-con-femmine").html("");
+        }
+        else{
+            $("#classi-con-femmine").html(Math.floor(femmineTot / femmineMax));
+        }
+    }
     function addSettings() {
 
         var d = new Date();
@@ -325,7 +363,7 @@
                 var s = "";
                 s+= "<ul>";
                 for (var i = 0; i < settings.length; i++){
-                    s+= '<li><a onclick="createModal(\'' + i + '\')" style="color: black">' + settings[i].data + '</a></li>';
+                    s+= '<li style="cursor: pointer;list-style-type: none; "><a onclick="createModal(\'' + i + '\')" style="color: black">' + settings[i].data + '</a></li>';
                 }
                 s+= "</ul>";
                 document.getElementById("rowForInsertDate").innerHTML = s;

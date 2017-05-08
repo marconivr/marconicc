@@ -50,7 +50,7 @@ module.exports = {
             }
         }
         if(hasRights)next();
-        else res.redirect(endpoint.utenti.home);
+        else res.redirect(endpoint.utenti.unauthorized);
     }
 }
 
