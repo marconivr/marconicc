@@ -52,6 +52,10 @@ module.exports = function (app, passport) {
         res.render('signup.ejs', {message: req.flash('signupMessage'), pageTitle: "signup"});
     });
 
+    app.get(endpoint.utenti.unauthorized, function (req, res) {
+        res.render('403.ejs');
+    });
+
 
     /**
      * registration post request

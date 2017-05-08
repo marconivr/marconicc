@@ -13,6 +13,7 @@ module.exports = {
         studenti : "/studenti",
         home : "/",
         creaUtente : "/crea-utente",
+        unauthorized : "/unauthorized"
 
     }
 
