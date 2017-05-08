@@ -293,7 +293,7 @@
     $('.ui.search')
             .search({
                 apiSettings: {
-                    url: '/all-students?q={query}'
+                    url: '<% endpoint.alunni.allStudents%>?q={query}'
                 },
                 searchFullText: false,
                 silent: true, // no error in console
