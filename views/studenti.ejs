@@ -330,7 +330,7 @@
         cf_code = cf;
         console.log(cf)
         $.ajax({
-            url: '/student-by-cf',
+            url: '<% endpoint.alunni.studentByCf%>',
             data: {"cf": cf},
             type: 'get',
             success: function (data) {
@@ -376,7 +376,7 @@
     function getAllTag() {
         if (allTag === undefined) {
             $.ajax({
-                url: '/all-tag',
+                url: '<% endpoint.alunni.allTag%>',
                 type: 'get',
                 success: function (data) {
                     //optimize api call
@@ -484,7 +484,7 @@
 
         if (!(tag == "")) {
             $.ajax({
-                url: '/update-tag',
+                url: '<% endpoint.alunni.updateTag%>',
                 data: {
                     "tag": tag,
                     "cf": cf_code
