@@ -362,7 +362,7 @@ module.exports = function (app) {
     });
 
 
-    app.post('/move-student', middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
+    app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         //update student class
         query.updateAlunnoClass(function (err, results) {
             if (err)
