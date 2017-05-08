@@ -65,12 +65,16 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, function (req, res) {
 
-        query.updateTagFromCF(function (err, results) {
-            if (err)
-                throw err;
-            else
-                res.send(JSON.stringify(results));
-        }, req.query.tag, req.query.cf);
+        if(req.user.diritti == 0 || req.user.diritti == 1 )
+        {
+            query.updateTagFromCF(function (err, results) {
+                if (err)
+                    throw err;
+                else
+                    res.send(JSON.stringify(results));
+            }, req.query.tag, req.query.cf);
+        }
+
     });
 
 
