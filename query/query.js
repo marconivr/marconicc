@@ -360,6 +360,14 @@ module.exports = {
         });
     },
 
+    getAllTagName: function (scuola, callback) {
+
+        connection.query("SELECT type as tag FROM tag WHERE scuola = ?", [scuola], function (err, rows) {
+            callback(err, rows);
+
+        });
+    },
+
     updateTagFromCF: function (callback, tag, cf) {
         var query;
         if(tag === 'none')  query = "UPDATE alunni set tag = NULL WHERE cf = '" + cf + "'";
