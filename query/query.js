@@ -73,15 +73,19 @@ module.exports = {
 
 
     /**
-     * aggiorna la classe di uno studente, serve per salvare su db
+     *
      * @param cf
      * @param classe
+     * @param annoScolastico
+     * @param scuola
+     * @param classeFutura (PRIMA o TERZA)
+     * @param callback
      */
-    updateAlunnoClass: function (callback, cf, classe) {
-        connection.query("UPDATE comp_classi SET nome_classe = '" + classe + "' WHERE cf_alunno = '" + cf + "'", function (err, row) {
-            if (err) {
-                console.error(err);
-            }
+    updateAlunnoClass: function (cf, classe, annoScolastico, scuola, classeFutura, callback) {
+        var id = "select id from classi where anno_scolastico = ? AND scuola = ? AND classe_futura = ? AND nome = ?;";
+        var alunno; //todo
+        connection.query("UPDATE comp_classi SET nome_classe = '?' WHERE cf_alunno = ?", function (err, row) {
+           callback(err,row);
         });
     },
 

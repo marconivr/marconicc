@@ -379,12 +379,12 @@ module.exports = function (app) {
 
     app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         //update student class
-        query.updateAlunnoClass(function (err, results) {
+        query.updateAlunnoClass(req.body.cf, req.body.toClass, function (err, results) {
             if (err)
                 res.send(err);
             else
                 console.log("Salvo sul db");
-        }, req.body.cf, req.body.toClass);
+        });
 
         //populate history
         var saveHistory = (req.body.saveHistory === 'true');
