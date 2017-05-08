@@ -230,7 +230,7 @@ module.exports = function (app) {
     /**
      * Per visualizzare il numero di ragazze di prima
      */
-    app.get('/numero-ragazze-prima', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.numeroRagazzePrima, middleware.isLoggedIn, function (req, res) {
 
         query.getNumberGirl(function (err, results) {
             if (err)
@@ -243,8 +243,7 @@ module.exports = function (app) {
     /**
      * Per visualizzare il numero di ragazzi stesso cap con * altrimenti si specifica il codice catastale
      */
-    app.get('/numero-stesso-cap', middleware.isLoggedIn, function (req, res) {
-
+    app.get(endpoint.alunni.numeroStessoCap, middleware.isLoggedIn, function (req, res) {
 
         query.getNumberSameResidence(function (err, results) {
             if (err)
@@ -257,7 +256,7 @@ module.exports = function (app) {
     /**
      * Elenco studenti in tabella
      */
-    app.get('/studenti', middleware.isLoggedIn, middleware.restrictTo([0,1]),function (req, res) {
+    app.get(endpoint.alunni.studenti, middleware.isLoggedIn, function (req, res) {
 
         const annoScolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
         const scuola = req.user.id_scuola;
@@ -276,11 +275,7 @@ module.exports = function (app) {
         });
     });
 
-
-
-
-
-    app.get('/get-classi-composte', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.getClassiComposte, middleware.isLoggedIn, function (req, res) {
         var classi;
         var nAlunniCompCl;
         var listaClassi = [];
@@ -357,11 +352,8 @@ module.exports = function (app) {
     });
 
 
-    app.get('/generate-classi', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
 
-        const annoScolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
-        const scuola = req.user.id_scuola;
-        const classeFutura = "PRIMA";
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
             res.send(classi);
@@ -391,7 +383,7 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/get-past-settings-prime', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.getPastSettingsPrime, middleware.isLoggedIn, function (req, res) {
         query.getSettingsPrime(function (err, results) {
             if (err)
                 console.log(err);
@@ -401,7 +393,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/get-dati-prime', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.getDatiPrime, middleware.isLoggedIn, function (req, res) {
         var dati = {};
 
         query.getNumberOfStudentiPrima(function (err, results) {
@@ -431,7 +423,7 @@ module.exports = function (app) {
         res.send(dati);
     });
 
-    app.get('/get-history', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         query.getHistory(function (err, results) {
             if (err)
                 console.log(err);
@@ -441,7 +433,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/remove-student-from-history', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, function (req, res) {
         query.deleteStudentFromHistory(function (err, results) {
             if (err)
                 console.log(err);
@@ -452,7 +444,7 @@ module.exports = function (app) {
     });
 
 
-    app.get('/get-past-settings-terze', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.getPastSettingsTerze, middleware.isLoggedIn, function (req, res) {
         query.getSettingsTerze(function (err, results) {
             if (err)
                 console.log(err);
@@ -462,7 +454,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/export-single-csv', middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.utenti.exportSingleCsv, middleware.isLoggedIn, function (req, res) {
         query.getClassiComposteForExport(function (err, results) {
             if (err) {
                 console.log(err);
