@@ -239,6 +239,8 @@
          */
         function changeYearAndCLass(anno_scolastico, classeFutura) {
             $('#studenti_wrapper').remove();
+
+            //NOT SURE OF THIS
             var table = $('<table/>', {
                 cellspacing: "0px",
                 width: "100%",
@@ -255,45 +257,53 @@
                     anno_scolastico: anno_scolastico
                 },
                 success: function (data) {
+                    //populate table with tr
 
+                    //iterate data and insert row
+                    var table = $('#studenti').DataTable({
+
+                        language: {
+                            searchPlaceholder: "Studente",
+                            search: "Cerca:",
+                            EmptyTable: "Nessun alunno presente, vai nella sezione caricamento studenti per aggiungere degli studenti.",
+                            paginate: {
+                                "sFirst": "Primo",
+                                "sLast": "Ultimo",
+                                "sNext": "Avanti",
+                                "sPrevious": "Indietro"
+                            },
+                            "sLengthMenu": "Display _MENU_ records"
+
+
+                        },
+                        processing: true,
+                        lengthChange: false,
+                        buttons: ['excel'],
+                        "columns": [
+                            {"data": "cognome"},
+                            {"data": "nome"},
+                            {"data": "Matricola"},
+                            {"data": "Codice fiscale"},
+                            {"data": "Sesso"},
+                            {"data": "Data di nascita"},
+                            {"data": "Cap residenza"},
+                            {"data": "Nazionalita"},
+                            {"data": "Legge 107"},
+                            {"data": "Legge 104"},
+                            {"data": "Classe precedente"},
+                            {"data": "Indirizzo di studio"},
+                            {"data": "Voto"}
+
+
+                        ]
+                    });
+                    table.buttons().container()
+                            .appendTo($('div.eight.column:eq(0)', table.table().container()));
+                    $('.sixteen').removeClass().addClass('tableContainer');
 
                 }
             });
-            var table = $('#studenti').DataTable({
 
-                language: {
-                    searchPlaceholder: "Studente",
-                    search: "Cerca:",
-                    EmptyTable: "Nessun alunno presente, vai nella sezione caricamento studenti per aggiungere degli studenti.",
-                    paginate: {"sFirst": "Primo", "sLast": "Ultimo", "sNext": "Avanti", "sPrevious": "Indietro"},
-                    "sLengthMenu": "Display _MENU_ records"
-
-
-                },
-                processing: true,
-                lengthChange: false,
-                buttons: ['excel'],
-                "columns": [
-                    {"data": "cognome"},
-                    {"data": "nome"},
-                    {"data": "Matricola"},
-                    {"data": "Codice fiscale"},
-                    {"data": "Sesso"},
-                    {"data": "Data di nascita"},
-                    {"data": "Cap residenza"},
-                    {"data": "Nazionalita"},
-                    {"data": "Legge 107"},
-                    {"data": "Legge 104"},
-                    {"data": "Classe precedente"},
-                    {"data": "Indirizzo di studio"},
-                    {"data": "Voto"}
-
-
-                ]
-            });
-            table.buttons().container()
-                    .appendTo($('div.eight.column:eq(0)', table.table().container()));
-            $('.sixteen').removeClass().addClass('tableContainer');
         }
 
     </script>
