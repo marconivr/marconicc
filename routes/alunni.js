@@ -64,20 +64,29 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, function (req, res) {
-
-        if(req.user.diritti === 0 || req.user.diritti === 1 )
-        {
+    app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
+        
             query.updateTagFromCF(function (err, results) {
                 if (err)
                     throw err;
                 else
                     res.send(JSON.stringify(results));
             }, req.query.tag, req.query.cf);
-        }
 
     });
 
+    app.get(endpoint.alunni.getStudentsFromSpecifiCYear, middleware.isLoggedIn, function (req, res) {
+
+
+        query.getStudentsFromSpecifiYear(req.user.id_scuola, req.query.classe_futura, req.query.anno_scolastico, function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        });
+
+    });
+    
 
     app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
