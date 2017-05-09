@@ -241,11 +241,12 @@
             $('#studenti_wrapper').remove();
 
             //NOT SURE OF THIS
-            var table = $('<table/>', {
-                cellspacing: "0px",
-                width: "100%",
-                id: "studenti"
-            })
+            var table = $('<table/>',
+                    {
+                        cellspacing: "0px",
+                        width: "100%",
+                        id: "studenti"
+                    })
                     .addClass('ui celled teal table')
                     .appendTo($('.tableContainer'));
 
@@ -260,7 +261,7 @@
                     //populate table with tr
 
                     //iterate data and insert row
-                    var table = $('#studenti').DataTable({
+                    table.DataTable({
 
                         language: {
                             searchPlaceholder: "Studente",
