@@ -390,7 +390,7 @@ module.exports = {
 
     getStudentsFromSpecifiYear: function (scuola, classeFutura, annoScolastico, callback) {
 
-        connection.query("SELECT * FROM alunni where scuola = ? and classe_futura = ? and anno_scolastico = ?", [scuola, classeFutura, annoScolastico], function (err, rows) {
+        connection.query("SELECT cognome,nome,matricola,cf,sesso,data_di_nascita,cap,nazionalita,legge_107,legge_104, classe_precedente, scelta_indirizzo, voto FROM alunni where scuola = ? and classe_futura = ? and anno_scolastico = ?", [scuola, classeFutura, annoScolastico], function (err, rows) {
             callback(err, rows);
         });
     },
