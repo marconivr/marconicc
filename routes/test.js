@@ -7352,7 +7352,7 @@ var insiemi = {legge_104: legge_104, femmine: femmine, cap: cap, nazionalita: na
 //FINE POPOLAZIONE INSIEMI
 
 /**
- * Aggiorna dato l'oggetto della classe le suo proprietà in base agli alunni che contiene
+ * Aggiorna dato l'oggetto della classe le suw proprietà in base agli alunni che contiene
  * @param classe
  */
 function aggiornaPropietaAttuali(classe) {
@@ -7372,18 +7372,21 @@ function aggiornaPropietaAttuali(classe) {
         return o.voto;
     });
 
-    var n_legge_107 = _(_.filter(app, function (item) {
+    var n_legge_107 = _(_.filter(alunni, function (item) {
         if (item.legge_107 !== "") {
             return item;
         }
     })).size();
-    var n_legge_104 = _(_.filter(app, function (item) {
+    var n_legge_104 = _(_.filter(alunni, function (item) {
         if (item.legge_104 !== "") {
             return item;
         }
     })).size();
 
-    classe.propietaAttuali = {
+    var n_alunni = alunni.length;
+
+    classe.propIdeali = {
+        n_alunni: n_alunni,
         femmine: n_femmine,
         nazionalita: nazionalita,
         cap: cap,
@@ -7393,3 +7396,139 @@ function aggiornaPropietaAttuali(classe) {
     };
 }
 
+
+
+function fix104(){
+    var i = 0;
+    var lenght = legge_104.length;
+    while (lenght !== 0){
+        var alunni = listaClassi[i].alunni;
+        alunni = _.union(alunni,[legge_104[i]]);
+        listaClassi[i].alunni = alunni;
+        aggiornaPropietaAttuali(listaClassi[i]);
+        i++;
+        lenght--;
+        if (i >=listaClassi.length){
+            i = 0;
+        }
+    }
+}
+
+function fix107(){
+    var i = 0;
+    var lenght = legge_107.length;
+    while (lenght !== 0){
+        var alunni = listaClassi[i].alunni;
+        alunni = _.union(alunni,[legge_107[i]]);
+        listaClassi[i].alunni = alunni;
+        aggiornaPropietaAttuali(listaClassi[i]);
+        i++;
+        lenght--;
+        if (i >=listaClassi.length){
+            i = 0;
+        }
+    }
+}
+
+
+function fixFemmine (){
+    const gruppo_femmine = settings.gruppo_femmine;
+
+    var array_gruppi_femmine = _.chunk(femmine, gruppo_femmine);
+
+    var i = 0;
+    var lenght = array_gruppi_femmine.length;
+    while (lenght !== 0){
+        var alunni = listaClassi[i].alunni;
+        alunni = _.union(alunni,array_gruppi_femmine[i]);
+        listaClassi[i].alunni = alunni;
+        aggiornaPropietaAttuali(listaClassi[i]);
+        i++;
+        lenght--;
+        if (i >=listaClassi.length){
+            i = 0;
+        }
+    }
+
+}
+
+
+function validaPropietaAttuali(classe) {
+    var propIdeali = classe.propIdeali;
+
+    var valido = true;
+
+    //aggiungere il fatto se i 104 sono più delle classi
+    if(propIdeali.n_legge_104 > 1){
+        valido = false;
+    }
+
+    if(propIdeali.n_legge_104 > 0 && propIdeali.n_legge_107 > 0){
+        valido =  false;
+    }
+
+    if(propIdeali.n_legge_104 > 0 && propIdeali.n_alunni > settings.numero_alunni_con_104){
+        valido =  false;
+    }
+
+    if(propIdeali.n_alunni > settings.max_alunni){
+        valido = false;
+    }
+
+    return valido;
+
+}
+
+_.each(listaClassi,function (o) {
+    aggiornaPropietaAttuali(o);
+});
+
+
+var i = 0;
+
+
+
+for (var o in app){
+    if (o === "289"){
+        console.log("ok");
+    }
+    while (i < listaClassi.length){
+        var classe = listaClassi[i];
+        classe.alunni.push(app[o]);
+        aggiornaPropietaAttuali(classe);
+        if (!validaPropietaAttuali(classe)){
+            classe.alunni.pop();
+            i++;
+        }else{
+            i++;
+            delete app[o];
+            break;
+
+        }
+
+    }
+
+    if (i === listaClassi.length){
+        i = 0;
+    }
+}
+
+
+
+
+
+
+
+
+
+console.log(listaClassi);
+
+
+var filter = _.filter(listaClassi, function (classe) {
+     if(classe.propIdeali.n_legge_104 > 0){
+         return classe
+     }
+});
+
+
+console.log(filter);
