@@ -44,7 +44,8 @@ module.exports = {
         getDatiPrime: "/get-dati-prime",
         getHistory: "/get-history",
         removeStudentFromHistory: "/remove-student-from-history",
-        getPastSettingsTerze: "/get-past-settings-terze"
+        getPastSettingsTerze: "/get-past-settings-terze",
+        getStudentsFromSpecifiCYear: "/get-students-from-specifiC-year"
         
     }
 

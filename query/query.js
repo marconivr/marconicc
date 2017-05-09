@@ -388,6 +388,13 @@ module.exports = {
         });
     },
 
+    getStudentsFromSpecifiYear: function (scuola, classeFutura, annoScolastico, callback) {
+
+        connection.query("SELECT * FROM alunni where scuola = ? and classe_futura = ? and anno_scolastico = ?", [scuola, classeFutura, annoScolastico], function (err, rows) {
+            callback(err, rows);
+        });
+    },
+
     updateTagFromCF: function (callback, tag, cf) {
         var query;
         if (tag === 'none')  query = "UPDATE alunni set tag = NULL WHERE cf = '" + cf + "'";
