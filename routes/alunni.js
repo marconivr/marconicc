@@ -298,6 +298,16 @@ module.exports = function (app) {
         const scuola = req.user.id_scuola;
         const classeFutura = "PRIMA";
 
+        query.getAvailableYear(classeFutura, scuola, function (err, results) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(studenti);
+                //todo:try
+            }
+        });
+        //chimare un' altra volta per le terze
+
         query.getStudentiOfschool(scuola, annoScolastico, classeFutura,function (err, studenti) {
             if(err){
                 console.log(err);

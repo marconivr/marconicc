@@ -249,6 +249,23 @@ module.exports = {
         console.log(ris.sql);
     },
 
+    /**
+     * ritorna gli anni disponibili di una scuola di una determianta classeFutura
+     * @param classe (PRIMA, TERZA)
+     * @param scuola
+     * @param callback
+     */
+    getAvailableYear: function (classe, scuola, callback) {
+
+        connection.query("SELECT DISTINCT anno_scolastico FROM alunni wHERE classe_futura = ? AND scuola = ?", [classe, scuola], function (err, rows) {
+            if (err) {
+                console.log('MySQL error' + err);
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
 
     getNumberGirl: function (classe, callback) {
 
