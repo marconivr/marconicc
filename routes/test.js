@@ -7260,9 +7260,9 @@ var settings = {
     "min_alunni": 25,
     "max_alunni": 28,
     "gruppo_femmine": 4,
-    "gruppo_cap": 4,
-    "gruppo_nazionalita": 3,
-    "nazionalita_per_classe": 3,
+    "gruppo_cap": 3,
+    "gruppo_nazionalita": 4,
+    "nazionalita_per_classe": 4,
     "numero_alunni_con_104": 23
 };
 
@@ -7348,7 +7348,6 @@ var voto = _.groupBy(app, function (obj) {
     return obj.voto;
 });
 
-var insiemi = {legge_104: legge_104, femmine: femmine, cap: cap, nazionalita: nazionalita, voto: voto};
 //FINE POPOLAZIONE INSIEMI
 
 /**
@@ -7385,7 +7384,7 @@ function aggiornaPropietaAttuali(classe) {
 
     var n_alunni = alunni.length;
 
-    classe.propIdeali = {
+    classe.propAttuali = {
         n_alunni: n_alunni,
         femmine: n_femmine,
         nazionalita: nazionalita,
@@ -7394,40 +7393,6 @@ function aggiornaPropietaAttuali(classe) {
         n_legge_107: n_legge_107,
         n_legge_104: n_legge_104
     };
-}
-
-
-
-function fix104(){
-    var i = 0;
-    var lenght = legge_104.length;
-    while (lenght !== 0){
-        var alunni = listaClassi[i].alunni;
-        alunni = _.union(alunni,[legge_104[i]]);
-        listaClassi[i].alunni = alunni;
-        aggiornaPropietaAttuali(listaClassi[i]);
-        i++;
-        lenght--;
-        if (i >=listaClassi.length){
-            i = 0;
-        }
-    }
-}
-
-function fix107(){
-    var i = 0;
-    var lenght = legge_107.length;
-    while (lenght !== 0){
-        var alunni = listaClassi[i].alunni;
-        alunni = _.union(alunni,[legge_107[i]]);
-        listaClassi[i].alunni = alunni;
-        aggiornaPropietaAttuali(listaClassi[i]);
-        i++;
-        lenght--;
-        if (i >=listaClassi.length){
-            i = 0;
-        }
-    }
 }
 
 
@@ -7454,26 +7419,54 @@ function fixFemmine (){
 
 
 function validaPropietaAttuali(classe) {
-    var propIdeali = classe.propIdeali;
+    var propAttuali = classe.propAttuali;
 
     var valido = true;
 
     //aggiungere il fatto se i 104 sono più delle classi
-    if(propIdeali.n_legge_104 > 1){
+    if(propAttuali.n_legge_104 > 1){
         valido = false;
     }
 
-    if(propIdeali.n_legge_104 > 0 && propIdeali.n_legge_107 > 0){
+    if(propAttuali.n_legge_104 > 0 && propAttuali.n_legge_107 > 0){
         valido =  false;
     }
 
-    if(propIdeali.n_legge_104 > 0 && propIdeali.n_alunni > settings.numero_alunni_con_104){
+    if(propAttuali.n_legge_104 > 0 && propAttuali.n_alunni > settings.numero_alunni_con_104){
         valido =  false;
     }
 
-    if(propIdeali.n_alunni > settings.max_alunni){
+    if(propAttuali.n_alunni > settings.max_alunni){
         valido = false;
     }
+
+
+    //NAZIONALITA
+
+    _.forOwn(propAttuali.nazionalita,function (value, key) {
+        if(value > settings.gruppo_nazionalita && key.toLowerCase() !== "italiana" ){
+            valido = false;
+        }
+    });
+
+    var num_nazionalita = Object.keys(propAttuali.nazionalita).length;
+    if(num_nazionalita >= settings.nazionalita_per_classe){
+        valido = false;
+    }
+    //FINE NAZIONALITA
+
+
+    //CAP
+
+    _.forOwn(propAttuali.cap,function (value, key) {
+        if(value > settings.gruppo_cap && key.toLowerCase() !== "italiana"){
+            valido = false;
+        }
+    });
+
+    //FINE CAP
+
+    
 
     return valido;
 
@@ -7484,51 +7477,116 @@ _.each(listaClassi,function (o) {
 });
 
 
+alunni = _.union(legge_104,legge_107,app);
+//tolgo le femmini perchè verranno inserite dal fix
+alunni = _.filter(alunni, function (o) {
+    if(o.sesso.toLowerCase() === "m"){
+        return o;
+    }
+});
+
+alunni = _.filter(alunni, function (o) {
+    if(o.nazionalia)
+})
+
 var i = 0;
+fixFemmine();
 
+z = 0;
+cont = 0;
+while (z < 100){
 
+    var snap1 = JSON.parse(JSON.stringify(alunni));
 
-for (var o in app){
-    if (o === "289"){
-        console.log("ok");
-    }
-    while (i < listaClassi.length){
-        var classe = listaClassi[i];
-        classe.alunni.push(app[o]);
-        aggiornaPropietaAttuali(classe);
-        if (!validaPropietaAttuali(classe)){
-            classe.alunni.pop();
-            i++;
-        }else{
-            i++;
-            delete app[o];
-            break;
+    for (var o in alunni){
 
+        while (i < listaClassi.length){
+            var classe = listaClassi[i];
+            classe.alunni.push(alunni[o]);
+            aggiornaPropietaAttuali(classe);
+            if (!validaPropietaAttuali(classe)){
+                classe.alunni.pop();
+                i++;
+            }else{
+                i++;
+                alunni[o] = undefined;
+                break;
+            }
         }
-
+        if (i === listaClassi.length){
+            i = 0;
+        }
     }
 
-    if (i === listaClassi.length){
-        i = 0;
+    var snap2 = JSON.parse(JSON.stringify(alunni));
+
+    if(!_.isEqual(snap2,snap1)){
+        cont++;
     }
+
+
+    alunni = _.compact(alunni);
+    alunni = _.shuffle(alunni);
+    listaClassi = _.shuffle(listaClassi);
+    z++;
+    console.log(z);
 }
 
+console.log(cont + "coNt");
 
-
-
-
-
-
-
-
-console.log(listaClassi);
-
-
-var filter = _.filter(listaClassi, function (classe) {
-     if(classe.propIdeali.n_legge_104 > 0){
+var filtroFemmine = _.filter(listaClassi, function (classe) {
+     if(classe.propAttuali.femmine < 4 && classe.propAttuali.femmine !== 0 ){
          return classe
      }
 });
 
+var filtro104Limite = _.filter(listaClassi, function (classe) {
+    if(classe.propAttuali.n_legge_104 === 1 && classe.propAttuali.n_alunni === 23 ){
+        return classe
+    }
+});
 
-console.log(filter);
+
+var filtro104MaxNum  = _.filter(listaClassi, function (classe) {
+    if(classe.propAttuali.n_legge_104 > 1){
+        return classe
+    }
+});
+
+if(_(_.union(filtroFemmine,filtro104Limite,filtro104MaxNum)).size() === 0){
+    console.log("TUTTO OK");
+}
+
+
+var filtroNazionalita = _.countBy(alunni, function (o) {
+    return o.nazionalita;
+});
+
+var filtroCap = _.countBy(alunni, function (o) {
+    return o.cap;
+});
+
+console.log(filtroNazionalita);
+console.log(filtroCap);
+
+if (true){
+    for (var classe in listaClassi){
+        console.log("######################################");
+        console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propAttuali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+        var objNazAttuali = listaClassi[classe].propAttuali.nazionalita;
+        for (var naz in objNazAttuali){
+            console.log(naz + "-->" + objNazAttuali[naz])
+        }
+    }
+}
+
+if (true){
+    for (var classe in listaClassi){
+        console.log("######################################");
+        console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propAttuali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+        var objcapAttuali = listaClassi[classe].propAttuali.cap;
+        for (var cap in objcapAttuali){
+            console.log(cap + "-->" + objNazAttuali[cap])
+        }
+    }
+}
