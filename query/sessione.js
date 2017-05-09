@@ -17,8 +17,8 @@ module.exports = {
      * @param callback
      */
     classiSettaggiDefault: function (scuola,callback) {
-        connection.query("SELECT DISTINCT classe_futura,anno_scolastico FROM alunni WHERE scuola = ?", [scuola], function (err, row) {
-            callback(JSON.stringify(row));
+        connection.query("SELECT DISTINCT classe_futura,anno_scolastico FROM alunni WHERE scuola = ? ORDER BY anno_scolastico DESC", [scuola], function (err, row) {
+            callback(err, row);
         });
     }
 

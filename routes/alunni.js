@@ -10,7 +10,8 @@ const newAlg = require("./new-algorithm.js");
 const async = require('async');
 const csv = require('express-csv');
 const endpoint = require('./endpoint/endpoint.js');
-
+const sessione = require('./../query/sessione.js');
+const _ = require('lodash');
 
 const multer = require('multer');
 const upload = multer({ dest: 'files/' });
@@ -53,7 +54,7 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.allTag, middleware.isLoggedIn, function (req, res) {
-        const scuola = req.user.id_scuola
+        const scuola = req.user.id_scuola;
 
         query.getAllTag(scuola, function (err, results) {
             if (err)
@@ -65,7 +66,7 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, function (req, res) {
 
-        if(req.user.diritti == 0 || req.user.diritti == 1 )
+        if(req.user.diritti === 0 || req.user.diritti === 1 )
         {
             query.updateTagFromCF(function (err, results) {
                 if (err)
@@ -294,31 +295,37 @@ module.exports = function (app) {
      */
     app.get(endpoint.alunni.studenti, middleware.isLoggedIn, function (req, res) {
 
-        const annoScolastico = "2017-2018"; //dovrà essere nella req e settato nella navbar
         const scuola = req.user.id_scuola;
-        const classeFutura = "PRIMA";
 
-        query.getAvailableYear(classeFutura, scuola, function (err, results) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(studenti);
-                //todo:try
-            }
-        });
-        //chimare un' altra volta per le terze
-
-        query.getStudentiOfschool(scuola, annoScolastico, classeFutura,function (err, studenti) {
+        sessione.classiSettaggiDefault(scuola,function (err, obj) {
             if(err){
                 console.log(err);
             }else{
-                console.log(studenti);
-                res.render('studenti.ejs', {
-                    pageTitle: " Studenti ",
-                    studenti: studenti
+                //raggruppo per classe futura(es: PRIMA o TERZA)
+                app.locals.sessione = _.groupBy(obj, function (o) {
+                    return o.classe_futura;
+                });
+
+                //La query me li torna in ordine decrescente. Quindi il primo sarà il più attuale
+                const classeFutura = obj[0].classe_futura;
+                const annoScolastico = obj[0].anno_scolastico;
+
+                query.getStudentiOfschool(scuola, annoScolastico, classeFutura,function (err, studenti) {
+                    if(err){
+                        console.log(err);
+                    }else{
+                        console.log(studenti);
+                        res.render('studenti.ejs', {
+                            pageTitle: " Studenti ",
+                            studenti: studenti
+                        });
+                    }
                 });
             }
         });
+
+
+
     });
 
     app.get(endpoint.alunni.getClassiComposte, middleware.isLoggedIn, function (req, res) {

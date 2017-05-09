@@ -7393,8 +7393,3 @@ function aggiornaPropietaAttuali(classe) {
     };
 }
 
-
-
-
-
-

@@ -4,22 +4,18 @@
     <div class="ui dropdown item">
         Classi <i class="dropdown icon"></i>
         <div class="menu">
+            <%for(var classe in sessione){%>
             <div class="ui dropdown item">
-                Prime
+                <%=classe.substring(0, 1) + classe.substring(1).toLowerCase();%>
                 <i class="dropdown icon left"></i>
+
                 <div class="menu left">
-                    <a class="item"> 2017-2018</a>
-
-
+                <%for(var anno in sessione[classe]){%>
+                    <a class="item"><%=sessione[classe][anno].anno_scolastico%></a>
+                <%}%>
                 </div>
             </div>
-            <div class="ui dropdown item">
-                Terze
-                <i class="dropdown icon left"></i>
-                <div class="menu left">
-                    <a class="item">2017-2018</a>
-                </div>
-            </div>
+            <%}%>
         </div>
     </div>
 </div>

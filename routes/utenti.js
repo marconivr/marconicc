@@ -11,6 +11,7 @@ const async = require('async');
 var bcrypt = require('bcrypt-nodejs');
 const endpoint = require('./endpoint/endpoint.js');
 
+
 module.exports = function (app, passport) {
 
     /**

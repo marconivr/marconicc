@@ -293,7 +293,7 @@
     $('.ui.search')
             .search({
                 apiSettings: {
-                    url: '<% endpoint.alunni.allStudents%>?q={query}'
+                    url: '<%= endpoint.alunni.allStudents%>?q={query}'
                 },
                 searchFullText: false,
                 silent: true, // no error in console
@@ -330,7 +330,7 @@
         cf_code = cf;
         console.log(cf)
         $.ajax({
-            url: '<% endpoint.alunni.studentByCf%>',
+            url: '<%= endpoint.alunni.studentByCf%>',
             data: {"cf": cf},
             type: 'get',
             success: function (data) {
