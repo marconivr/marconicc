@@ -31,6 +31,7 @@ module.exports = {
         settingsPrime : "/settings-prime",
         settingsTerze : "/settings-terze",
         tagAlunni : "/tag-alunni",
+        insertTag : "/insert-tag",
         insertSettingsPrime : "/insert-settings-prime",
         insertSettingsTerze : "/insert-settings-terze",
         insertPriorita: "/insert-priorita",
