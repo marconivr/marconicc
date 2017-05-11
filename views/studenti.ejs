@@ -9,9 +9,12 @@
     <a class="item active" data-tab="first">Studenti</a>
     <a class="item " data-tab="tags">Tags</a>
 </div>
+<div class="ui active inverted dimmer" id="table-loader">
+    <div class="ui text loader">Creando la tabella..</div>
+</div>
 <div class="ui bottom attached tab active  segment" data-tab="first">
 
-    <div class="tableContainer">
+    <div class="tableContainer" style="display: none;">
         <table id="studenti" class="ui celled teal table" cellspacing="0" width="100%">
             <thead>
             <tr>
@@ -32,37 +35,7 @@
             </tr>
             </thead>
 
-            <tbody id="tbody-studenti">
-            <% for(var i = 0; i < studenti.length; i++){ %>
-            <tr>
-                <td><%= studenti[i].cognome %></td>
-                <td><%= studenti[i].nome %></td>
-                <td><%= studenti[i].matricola %></td>
-                <td><%= studenti[i].cf %></td>
-                <td><%= studenti[i].sesso %></td>
-
-                <% var mySQLDate = studenti[i].data_di_nascita + '' %>
-
-                <% var date = new Date(Date.parse(mySQLDate.replace('-', '/', 'g'))); %>
-                <% var day = date.getUTCDate() + 1 %>
-                <% var month = date.getMonth() + 1 %>
-                <% var year = date.getUTCFullYear() %>
-                <% var finalDate = day + '/' + month + '/' + year %>
-                <td><%= finalDate %></td>
-
-                <td><%= studenti[i].cap %></td>
-                <td><%= studenti[i].nazionalita %></td>
-                <td><%= studenti[i].legge_107 %></td>
-                <td><%= studenti[i].legge_104 %></td>
-                <td><%= studenti[i].classe_precedente %></td>
-                <% scelta = (studenti[i].scelta_indirizzo).split(' - ').pop(-1) %>
-                <td><%= scelta %></td>
-                <td><%= studenti[i].voto %></td>
-
-            </tr>
-            <% } %>
-
-            </tbody>
+            <tbody id="tbody-studenti"></tbody>
             <tfoot>
             <tr>
                 <th>Cognome</th>
@@ -205,11 +178,11 @@
 
 </script>
 
-
+<!--MAPS SECTION-->
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5HB8-mASDryN1tfLaJUvLVzd3ibJ5VUQ"></script>
 <!--this part handle the dropdown of class click-->
 <script>
-
-
     var settings = {
         language: {
             searchPlaceholder: "Studente",
@@ -239,23 +212,36 @@
 
         ]
     };
-    var table = $('#studenti').DataTable(settings);
-    table.buttons().container()
-            .appendTo($('div.eight.column:eq(0)', table.table().container()));
-    $('.sixteen').removeClass().addClass('tableContainer');
+
+    var ANNO_SCOLASTICO = '<%= annoScolastico %>';
+    var CLASSE_FUTURA = '<%= classeFutura %> ';
+    var table;
+    changeYearAndCLass(ANNO_SCOLASTICO, CLASSE_FUTURA.toUpperCase(), true);
 
 
     /**
      *
-     * @param year
+     * @param anno_scolastico
      * @param classeFutura (toUpperCase)
+     * @param firstTime check if create table or not
      */
-    function changeYearAndCLass(anno_scolastico, classeFutura) {
-        //$('#studenti_wrapper').remove();
-        $("#tbody-studenti").empty();
-        table.destroy();
-        table = $('#studenti').DataTable(settings);
-        table.clear();
+    function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
+        ANNO_SCOLASTICO = anno_scolastico;
+        CLASSE_FUTURA = classeFutura;
+
+        if (firstTime) {
+            table = $('#studenti').DataTable(settings);
+        }
+        else {
+            $('.tableContainer').hide();
+            $('#table-loader').removeClass('disabled').addClass('active');
+
+            $("#tbody-studenti").empty();
+            table.destroy();
+            table = $('#studenti').DataTable(settings);
+            table.clear();
+        }
+
 
         $.ajax({
             url: '<%= endpoint.alunni.getStudentsFromSpecifiCYear %>',
@@ -290,20 +276,15 @@
                 }
 
                 table.buttons().container()
-                        .appendTo($('div.eight.column:eq(0)', table.table().container()));
+                    .appendTo($('div.eight.column:eq(0)', table.table().container()));
                 $('.sixteen').removeClass().addClass('tableContainer');
+                $('.tableContainer').show();
+                $('#table-loader').removeClass('active').addClass('disabled');
 
             }
         });
     }
 
-
-</script>
-
-<!--MAPS SECTION-->
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5HB8-mASDryN1tfLaJUvLVzd3ibJ5VUQ"></script>
-<script>
 
     /**
      * param <cp> postal code -> es : 37030
@@ -335,48 +316,57 @@
             }
         });
     }
-</script>
 
-<!--SEARCH SECTION-->
-<script>
+
+    <!--SEARCH SECTION-->
     var cf_code;
     var hasExistingTag;
 
 
-    //this section is execute when user type in the search field
+    ///////////////////////////////////////////////////////////////////this section is execute when user type in the search field//////////////////////////////////////////////////////////////////
+
     $('.ui.search')
-            .search({
-                apiSettings: {
-                    url: '<%= endpoint.alunni.allStudents %>?q={query}'
-                },
-                searchFullText: false,
-                silent: true, // no error in console
-                onResults: function (response) {
-
-                    var html = '';
-                    if (response.length != 0) {
-                        $.each(response, function (index, result) {
-
-                            html += '<a onclick="setCardStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
-                            html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
-                            html += '<i> Media voti: ' + result.voto + '</i>';
-
-                            html += '' + '</div></a>';
-                            return index < 6;
-
-                        });
-                        $('.ui.search div.results').html(html);
-                    }
-                    else {
-                        html += '<div class="content">' +
-                                '<div class="title">' +
-                                '<b> Nessun risultato, riprovare con un altro nome' + '' +
-                                '</div></div>';
-                    }
-                    $('.ui.search div.results').html(html);
-                    return false;
+        .search({
+            apiSettings: {
+                url: '<%= endpoint.alunni.allStudents %>?q={query}&annoScolastico={annoScolastico}&classeFutura={classeFutura}',
+                beforeSend: function(settings) {
+                    settings.urlData.annoScolastico = ANNO_SCOLASTICO;
+                    settings.urlData.classeFutura = CLASSE_FUTURA;
+                    return settings;
                 }
-            });
+            }
+
+            ,
+            searchFullText: false,
+            silent: true,
+
+            onResults: function (response) {
+
+                var html = '';
+                if (response.length != 0) {
+                    $.each(response, function (index, result) {
+
+                        html += '<a onclick="setCardStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
+                        html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
+                        html += '<i> Media voti: ' + result.voto + '</i>';
+
+                        html += '' + '</div></a>';
+                        return index < 6;
+
+                    });
+                    $('.ui.search div.results').html(html);
+                }
+                else {
+                    html += '<div class="content">' +
+                        '<div class="title">' +
+                        '<b> Nessun risultato, riprovare con un altro nome' + '' +
+                        '</div></div>';
+                }
+                $('.ui.search div.results').html(html);
+                return false;
+            }
+        })
+    ;
 
 
     //set card with student data
@@ -430,7 +420,7 @@
     function getAllTag() {
         if (allTag === undefined) {
             $.ajax({
-                url: '<% endpoint.alunni.allTag %>',
+                url: '<%= endpoint.alunni.allTag %>',
                 type: 'get',
                 success: function (data) {
                     //optimize api call
@@ -468,7 +458,7 @@
 
         if (hasExistingTag != null) {
             for (var i = 0; i < allTag.length; i++) {
-                if (allTag[i].id == hasExistingTag)userTagInformation = allTag[i];
+                if (allTag[i].id == hasExistingTag) userTagInformation = allTag[i];
 
             }
 

@@ -14,10 +14,11 @@ const sessione = require('./../query/sessione.js');
 const _ = require('lodash');
 
 const multer = require('multer');
-const upload = multer({dest: 'files/'});
+const upload = multer({ dest: 'files/' });
 
 
 module.exports = function (app) {
+
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
@@ -39,7 +40,7 @@ module.exports = function (app) {
 
         }).on("record", function (row, index) {
 
-            query.insertRecordFromCSV(row, scuola, utente);
+                query.insertRecordFromCSV(row,scuola,utente);
 
         }).on("end", function () {
 
@@ -64,13 +65,13 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
-
-        query.updateTagFromCF(function (err, results) {
-            if (err)
-                throw err;
-            else
-                res.send(JSON.stringify(results));
-        }, req.query.tag, req.query.cf);
+        
+            query.updateTagFromCF(function (err, results) {
+                if (err)
+                    throw err;
+                else
+                    res.send(JSON.stringify(results));
+            }, req.query.tag, req.query.cf);
 
     });
 
@@ -85,12 +86,12 @@ module.exports = function (app) {
         });
 
     });
-
+    
 
     app.get(endpoint.alunni.allStudents, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA"; //todo:dipende dal dropdown
+        const annoScolastico = req.query.annoScolastico;
+        const classeFutura = req.query.classeFutura;
 
         const param = req.query.q;
         query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {
@@ -152,8 +153,7 @@ module.exports = function (app) {
                     if (err)
                         console.log(err);
                     else
-                        console.log(results);
-                    callback(null, {'tag': results})
+                        callback(null, {'tag': results})
                 });
             }
         }, function (err, results) {
@@ -164,6 +164,21 @@ module.exports = function (app) {
             });
 
         });
+    });
+
+    /**
+     * inserisce i tag
+     */
+    app.get(endpoint.alunni.insertTag, function (req, res) {
+        const scuola = req.user.id_scuola;
+        console.log("Dentro insert tag" + scuola + req.query.tag);
+        query.insertTag(scuola, req.query.tag, function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        });
+
     });
 
     app.get(endpoint.alunni.settingsPrime, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
