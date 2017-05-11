@@ -25,7 +25,7 @@
     $(document).ready(function () {
         $("#classi-anno").dropdown({
             onChange: function (val, id, element) {
-                changeYearAndCLass(val, element.parent('div').closest('.ui.dropdown.item').attr("id").toUpperCase())
+                changeYearAndCLass(val, element.parent('div').closest('.ui.dropdown.item').attr("id").toUpperCase(),false)
             }
         });
     });

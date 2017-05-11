@@ -9,10 +9,13 @@
     <a class="item active" data-tab="first">Studenti</a>
     <a class="item " data-tab="tags">Tags</a>
 </div>
+<div class="ui active inverted dimmer" id="table-loader">
+    <div class="ui text loader">Creando la tabella.. </div>
+</div>
 <div class="ui bottom attached tab active  segment" data-tab="first">
 
-    <div class="tableContainer">
-        <table id="studenti" class="ui celled teal table" cellspacing="0" width="100%">
+    <div class="tableContainer" style="display: none;">
+        <table id="studenti" class="ui celled teal table" cellspacing="0" width="100%" >
             <thead>
             <tr>
                 <th>Cognome</th>
@@ -32,37 +35,7 @@
             </tr>
             </thead>
 
-            <tbody id="tbody-studenti">
-            <% for(var i = 0; i < studenti.length; i++){ %>
-            <tr>
-                <td><%= studenti[i].cognome %></td>
-                <td><%= studenti[i].nome %></td>
-                <td><%= studenti[i].matricola %></td>
-                <td><%= studenti[i].cf %></td>
-                <td><%= studenti[i].sesso %></td>
-
-                <% var mySQLDate = studenti[i].data_di_nascita + '' %>
-
-                <% var date = new Date(Date.parse(mySQLDate.replace('-', '/', 'g'))); %>
-                <% var day = date.getUTCDate() + 1 %>
-                <% var month = date.getMonth() + 1 %>
-                <% var year = date.getUTCFullYear() %>
-                <% var finalDate = day + '/' + month + '/' + year %>
-                <td><%= finalDate %></td>
-
-                <td><%= studenti[i].cap %></td>
-                <td><%= studenti[i].nazionalita %></td>
-                <td><%= studenti[i].legge_107 %></td>
-                <td><%= studenti[i].legge_104 %></td>
-                <td><%= studenti[i].classe_precedente %></td>
-                <% scelta = (studenti[i].scelta_indirizzo).split(' - ').pop(-1) %>
-                <td><%= scelta %></td>
-                <td><%= studenti[i].voto %></td>
-
-            </tr>
-            <% } %>
-
-            </tbody>
+            <tbody id="tbody-studenti"></tbody>
             <tfoot>
             <tr>
                 <th>Cognome</th>
@@ -208,8 +181,6 @@
 
 <!--this part handle the dropdown of class click-->
 <script>
-
-
     var settings = {
         language: {
             searchPlaceholder: "Studente",
@@ -239,23 +210,35 @@
 
         ]
     };
-    var table = $('#studenti').DataTable(settings);
-    table.buttons().container()
-            .appendTo($('div.eight.column:eq(0)', table.table().container()));
-    $('.sixteen').removeClass().addClass('tableContainer');
+
+    var annoScolastico = '<%= annoScolastico %>';
+    var classeFutura = '<%= classeFutura %> ';
+    var table;
+    changeYearAndCLass(annoScolastico, classeFutura.toUpperCase(),true);
 
 
     /**
      *
-     * @param year
+     * @param anno_scolastico
      * @param classeFutura (toUpperCase)
+     * @param firstTime check if create table or not
      */
-    function changeYearAndCLass(anno_scolastico, classeFutura) {
-        //$('#studenti_wrapper').remove();
-        $("#tbody-studenti").empty();
-        table.destroy();
-        table = $('#studenti').DataTable(settings);
-        table.clear();
+    function changeYearAndCLass(anno_scolastico, classeFutura,firstTime) {
+
+        if(firstTime)
+        {
+            table = $('#studenti').DataTable(settings);
+        }
+        else{
+            $('.tableContainer').hide();
+            $('#table-loader').removeClass('disabled').addClass('active');
+
+            $("#tbody-studenti").empty();
+            table.destroy();
+            table = $('#studenti').DataTable(settings);
+            table.clear();
+        }
+
 
         $.ajax({
             url: '<%= endpoint.alunni.getStudentsFromSpecifiCYear %>',
@@ -292,6 +275,8 @@
                 table.buttons().container()
                         .appendTo($('div.eight.column:eq(0)', table.table().container()));
                 $('.sixteen').removeClass().addClass('tableContainer');
+                $('.tableContainer').show();
+                $('#table-loader').removeClass('active').addClass('disabled');
 
             }
         });
