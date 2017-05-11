@@ -14,11 +14,10 @@ const sessione = require('./../query/sessione.js');
 const _ = require('lodash');
 
 const multer = require('multer');
-const upload = multer({ dest: 'files/' });
+const upload = multer({dest: 'files/'});
 
 
 module.exports = function (app) {
-
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
@@ -40,7 +39,7 @@ module.exports = function (app) {
 
         }).on("record", function (row, index) {
 
-                query.insertRecordFromCSV(row,scuola,utente);
+            query.insertRecordFromCSV(row, scuola, utente);
 
         }).on("end", function () {
 
@@ -65,13 +64,13 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
-        
-            query.updateTagFromCF(function (err, results) {
-                if (err)
-                    throw err;
-                else
-                    res.send(JSON.stringify(results));
-            }, req.query.tag, req.query.cf);
+
+        query.updateTagFromCF(function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        }, req.query.tag, req.query.cf);
 
     });
 
@@ -86,9 +85,9 @@ module.exports = function (app) {
         });
 
     });
-    
 
-    app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
+
+    app.get(endpoint.alunni.allStudents, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA"; //todo:dipende dal dropdown
@@ -96,7 +95,7 @@ module.exports = function (app) {
         const param = req.query.q;
         query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
-               console.log(err);
+                console.log(err);
             else
                 res.send(JSON.stringify(results));
         });
@@ -154,7 +153,7 @@ module.exports = function (app) {
                         console.log(err);
                     else
                         console.log(results);
-                        callback(null, {'tag': results})
+                    callback(null, {'tag': results})
                 });
             }
         }, function (err, results) {
@@ -306,35 +305,28 @@ module.exports = function (app) {
 
         const scuola = req.user.id_scuola;
 
-        sessione.classiSettaggiDefault(scuola,function (err, obj) {
-            if(err){
+        sessione.classiSettaggiDefault(scuola, function (err, obj) {
+            if (err) {
                 console.log(err);
-            }else{
+            } else {
                 //raggruppo per classe futura(es: PRIMA o TERZA)
-                app.locals.sessione = _.groupBy(obj, function (o) {
+                app.locals.dropDown = _.groupBy(obj, function (o) {
                     return o.classe_futura;
                 });
 
-                //La query me li torna in ordine decrescente. Quindi il primo sarà il più attuale
-                const classeFutura = obj[0].classe_futura;
-                const annoScolastico = obj[0].anno_scolastico;
+                app.locals.sessioneIniziale = {
+                    classeFutura: obj[0].classe_futura,
+                    annoScolastico:obj[0].anno_scolastico
+                }
 
-                query.getStudentiOfschool(scuola, annoScolastico, classeFutura,function (err, studenti) {
-                    if(err){
-                        console.log(err);
-                    }else{
-                        console.log(studenti);
-                        res.render('studenti.ejs', {
-                            pageTitle: " Studenti ",
-                            studenti: studenti,
-                            annoScolastico: annoScolastico,
-                            classeFutura: classeFutura
-                        });
-                    }
+                res.render('studenti.ejs', {
+                    pageTitle: " Studenti ",
+                    studenti: studenti
                 });
             }
-        });
 
+
+        });
 
 
     });
