@@ -5,14 +5,14 @@
         <span class="text"> <%= sessioneIniziale.annoScolastico%> </span>
         <i class="dropdown icon"></i>
         <div class="menu">
-            <%for(var classe in dropdown){%>
+            <%for(var classe in dropDown){%>
             <div class="ui dropdown item" id="<%= classe.substring(0, 1) + classe.substring(1).toLowerCase(); %>">
                 <i class="dropdown icon left"></i>
                 <%= classe.substring(0, 1) + classe.substring(1).toLowerCase(); %>
 
                 <div class="menu left">
-                    <% for(var anno in dropdown[classe]){ %>
-                    <a class="item"><%= dropdown[classe][anno].anno_scolastico %></a>
+                    <% for(var anno in dropDown[classe]){ %>
+                    <a class="item"><%= dropDown[classe][anno].anno_scolastico %></a>
                     <% } %>
                 </div>
             </div>
