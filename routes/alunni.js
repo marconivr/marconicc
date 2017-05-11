@@ -90,8 +90,8 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA"; //todo:dipende dal dropdown
+        const annoScolastico = req.query.annoScolastico;
+        const classeFutura = req.query.classeFutura;
 
         const param = req.query.q;
         query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {

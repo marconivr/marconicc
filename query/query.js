@@ -326,13 +326,14 @@ module.exports = {
         idtr2 = identifier.split(" ")[0];//presunto cognome
 
         connection.query(
-            "SELECT * FROM alunni WHERE cognome LIKE ?" +
+            "SELECT * FROM alunni WHERE " +
+            " scuola = ? AND anno_scolastico = ? AND classe_futura = ?" +
+            " AND (cognome LIKE ?" +
             " OR nome LIKE ?" +
             " OR (CONCAT(cognome, nome) LIKE ?)" +
             " OR nome LIKE ? " +
-            " OR cognome LIKE ? " +
-            " AND scuola = ? AND anno_scolastico = ? AND classe_futura = ?",
-            [idtr2 + "%", idtr + "%", "%" + idtr2 + idtr + "%", idtr2 + "%", idtr + "%", scuola, annoScolastico, classeFutura],
+            " OR cognome LIKE ?)",
+            [ scuola, annoScolastico, classeFutura, idtr2 + "%", idtr + "%", "%" + idtr2 + idtr + "%", idtr2 + "%", idtr + "%"],
             function (err, rows) {
                 callback(err, rows);
             });
