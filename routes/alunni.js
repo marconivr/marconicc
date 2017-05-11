@@ -153,7 +153,6 @@ module.exports = function (app) {
                     if (err)
                         console.log(err);
                     else
-                        console.log(results);
                         callback(null, {'tag': results})
                 });
             }
@@ -165,6 +164,21 @@ module.exports = function (app) {
             });
 
         });
+    });
+
+    /**
+     * inserisce i tag
+     */
+    app.get(endpoint.alunni.insertTag, function (req, res) {
+        const scuola = req.user.id_scuola;
+        console.log("Dentro insert tag" + scuola + req.query.tag);
+        query.insertTag(scuola, req.query.tag, function (err, results) {
+            if (err)
+                throw err;
+            else
+                res.send(JSON.stringify(results));
+        });
+
     });
 
     app.get(endpoint.alunni.settingsPrime, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
