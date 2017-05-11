@@ -104,7 +104,7 @@ module.exports = {
             if (err)
                 console.log(err);
             else {
-                settings = JSON.parse(JSON.stringify(results[0]));
+                settings = results[0];
             }
         });
     }
