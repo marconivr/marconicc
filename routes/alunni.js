@@ -326,7 +326,9 @@ module.exports = function (app) {
                         console.log(studenti);
                         res.render('studenti.ejs', {
                             pageTitle: " Studenti ",
-                            studenti: studenti
+                            studenti: studenti,
+                            annoScolastico: annoScolastico,
+                            classeFutura: classeFutura
                         });
                     }
                 });
