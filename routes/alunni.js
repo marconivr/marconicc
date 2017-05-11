@@ -335,8 +335,7 @@ module.exports = function (app) {
                 }
 
                 res.render('studenti.ejs', {
-                    pageTitle: " Studenti ",
-                    studenti: studenti
+                    pageTitle: " Studenti "
                 });
             }
 
