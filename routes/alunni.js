@@ -104,12 +104,12 @@ module.exports = function (app) {
 
 
     app.get(endpoint.alunni.studentByCf, middleware.isLoggedIn, function (req, res) {
-        query.getStudentByCf(function (err, results) {
+        query.getStudentByCf(req.query.cf, req.user.id_scuola, function (err, results) {
             if (err)
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.cf, req.user.id_scuola);
+        });
     });
 
     app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists

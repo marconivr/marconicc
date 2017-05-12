@@ -63,8 +63,37 @@ module.exports = {
         }
     },
 
-    insertAlunnoInClass: function (classe, cf) {
-        connection.query("INSERT INTO comp_classi VALUES (?, ?)", [classe, cf], function (err, row) {
+    getIdClasse:function (nomeClasse, anno_scolastico, scuola, classeFutura, callback) {
+        connection.query("SELECT id from classi WHERE scuola = ? AND anno_scolastico = ? AND nome = ? AND classe_futura = ?;",[scuola, anno_scolastico,nomeClasse,classeFutura],function (err, row) {
+            callback(err,row);
+        })
+    }
+
+    ,
+
+    insertAlunnoInClass: function (nomeClasse, annoScolastico, scuola, classeFutura, cf) {
+        var idClasse = module.exports.getIdClasse(nomeClasse, annoScolastico, scuola, classeFutura,function (err, row) {
+            if(err){
+                console.log(err)
+            }else{
+                return row.id;
+            }
+        });
+
+        var idConfigurazione = module.exports.scaricaSettings(annoScolastico,classe,classeFutura,function (err, row) {
+            if(err){
+                console.log(err);
+            }else{
+                return row.id;
+            }
+        });
+
+
+        var idAlunno =
+
+
+
+        connection.query("INSERT INTO classi_composte VALUES (?, ?, ?)", [idClasse, idAlunno, idConfigurazione], function (err, row) {
             if (err) {
                 console.error(err);
             }
@@ -137,7 +166,7 @@ module.exports = {
         });
     },
 
-    getSettingsPrime: function (callback) {
+    getSettingsPrime: function (scuola, annoScolastico, classeFutura, callback) {
         connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'Prima';", function (err, rows) {
             if (err) {
                 console.log('error');
@@ -147,25 +176,6 @@ module.exports = {
         });
     },
 
-    insertSettingsTerze: function (callback, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti) {
-        connection.query("INSERT INTO impostazioni_terze(data, descrizione, min_alunni, max_alunni, max_femmine, max_stranieri, stessa_provenienza, stessa_iniziale, ripetenti) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti], function (err, row) {
-            if (err) {
-                console.log(err);
-            } else {
-                callback(err, row, data, descrizione, alunniMin, alunniMax, femmine, stranieri, residenza, iniziale, ripetenti);
-            }
-        });
-    },
-
-    getSettingsTerze: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'Terza';", function (err, rows) {
-            if (err) {
-                console.log('error');
-            } else {
-                callback(err, rows);
-            }
-        });
-    },
 
     insertPriorita: function (callback, priorita) {
         for (var i = 0; i < priorita.length; i++) {
@@ -339,11 +349,9 @@ module.exports = {
             });
     },
 
-    getStudentByCf: function (callback, cf, scuola) {
+    getStudentByCf: function (cf, scuola, callback) {
 
-        connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ",
-            [cf, scuola],
-            function (err, rows) {
+        connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ", [cf, scuola], function (err, rows) {
                 if (err) {
                     throw err;
                 } else {
@@ -437,7 +445,7 @@ module.exports = {
      * @param callback
      */
     scaricaSettings: function (annoScolastico, scuola, classeFutura, callback) {
-        var sql = "SELECT min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 FROM configurazione " +
+        var sql = "SELECT id,DATE_FORMAT(data, '%d-%m-%Y') as data,min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 FROM configurazione " +
             "WHERE scuola = ? AND anno_scolastico = ? AND classe = ? LIMIT 1;";
 
         var query = connection.query(sql, [scuola, annoScolastico, classeFutura], function (err, row) {

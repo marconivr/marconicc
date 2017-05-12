@@ -70,6 +70,7 @@ module.exports = {
                         },
                         function (callback) {
                             var ris = module.exports.generaListaClassi("prima");
+                            //module.exports.saveClassiOnDb(ris);
                             callback(ris);
                         }
                     ],
@@ -277,7 +278,7 @@ module.exports = {
     ,
     findAlunnoByCf: function (cf) {
         for (var i in listaAlunni) {
-            if (listaAlunni[i].cf == cf) {
+            if (listaAlunni[i].cf === cf) {
                 return listaAlunni[i];
             }
         }
@@ -290,8 +291,8 @@ module.exports = {
      */
     checkDesiderata: function (objStudente) {
 
-        if (objStudente != undefined) {
-            if (objStudente.desiderata != "") {
+        if (objStudente !== undefined) {
+            if (objStudente.desiderata !== "") {
 
 
                 var cf = objStudente.cf;
@@ -299,8 +300,14 @@ module.exports = {
 
                 var objAmico = module.exports.findAlunnoByCf(cfAmico);
 
+                if (objAmico === undefined){
+                    console.log(undefined);
+                }
 
-                if (objAmico.desiderata == cf) {
+                if(objAmico === undefined){
+                    return null;
+                }
+                if (objAmico.desiderata === cf) {
                     return objAmico;
                 } else {
                     return null;
@@ -1187,10 +1194,19 @@ module.exports = {
             }
         }
         return null;
-    }
+    },
     
    
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
     //##################################################################################################################
-}
+
+    saveClassiOnDb: function (listaClassi) {
+      // listaClassi.forEach(function (classe) {
+      //     classe.forEach(function (alunni) {
+      //
+      //     });
+      // });
+
+    }
+};
