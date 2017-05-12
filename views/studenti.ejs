@@ -256,13 +256,19 @@
                 var td;
                 //iterate data and insert row
                 for (var i = 0; i < alunni.length; i++) {
+                    var mySQLDate = alunni[i].data_di_nascita.split(/[- : T]/);
+                    var day = parseInt(mySQLDate[2]) + 1;
+                    var month = mySQLDate[1];
+                    var year = mySQLDate[0];
+                    var finalDate = day + '/' + month + '/' + year;
+
                     table.row.add({
                         "cognome": alunni[i].cognome,
                         "nome": alunni[i].nome,
                         "Matricola": alunni[i].matricola,
                         "Codice fiscale": alunni[i].cf,
                         "Sesso": alunni[i].sesso,
-                        "Data di nascita": alunni[i].data_di_nascita,
+                        "Data di nascita": finalDate,
                         "Cap residenza": alunni[i].cap,
                         "Nazionalita": alunni[i].nazionalita,
                         "Legge 107": alunni[i].legge_107,
