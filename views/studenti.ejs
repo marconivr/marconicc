@@ -5,14 +5,14 @@
 
 <% include finish-menu.ejs %>
 <!--tabs-->
-<div class="ui top attached tabular menu">
+<div class="ui tabular menu">
     <a class="item active" data-tab="first">Studenti</a>
     <a class="item " data-tab="tags">Tags</a>
 </div>
 <div class="ui active inverted dimmer" id="table-loader">
     <div class="ui text loader">Creando la tabella..</div>
 </div>
-<div class="ui bottom attached tab active  segment" data-tab="first">
+<div class="ui bottom attached  tab active  segment" id="noBorderSegment" data-tab="first">
 
     <div class="tableContainer" style="display: none;">
         <table id="studenti" class="ui celled teal table" cellspacing="0" width="100%">
