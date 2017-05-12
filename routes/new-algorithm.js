@@ -69,8 +69,7 @@ module.exports = {
                             });
                         },
                         function (callback) {
-                            var ris = module.exports.generaListaClassi("prima");
-                            //module.exports.saveClassiOnDb(ris);
+                            var ris = module.exports.generaListaClassi();
                             callback(ris);
                         }
                     ],
@@ -207,6 +206,7 @@ module.exports = {
                         legge_107: 0
                     }, alunni: []
                 });
+                module.exports.saveClassiOnDb(classe, annoScolastico,scuola,classeFutura);
             }
             return module.exports.generaPropIdeali(listaClassi);
     },
@@ -960,6 +960,8 @@ module.exports = {
 
         //console.log(listaAlunniDeleted);
 
+        module.exports.saveClassiComposteOnDb(listaClassi);
+
         return listaClassi;
     },
 
@@ -1201,12 +1203,20 @@ module.exports = {
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
     //##################################################################################################################
 
-    saveClassiOnDb: function (listaClassi) {
-      // listaClassi.forEach(function (classe) {
-      //     classe.forEach(function (alunni) {
-      //
-      //     });
-      // });
+    saveClassiComposteOnDb: function (listaClassi) {
+      for(var i = 0; i < listaClassi.length; i++){
+          var alunniClasse = listaClassi[i].alunni;
+          var nomeClasse = listaClassi[i].nome;
 
+          for(var j=0; j < alunniClasse.length; j++){
+              var cfAlunno = alunniClasse[j].cf;
+              query.insertAlunnoInClass(nomeClasse,annoScolastico,scuola,classeFutura,cfAlunno);
+          }
+      }
+
+    },
+
+    saveClassiOnDb: function (nomeClasse, annoScolastico, scuola, classeFutura) {
+        query.insertClassi(nomeClasse,annoScolastico,classeFutura,scuola);
     }
 };
