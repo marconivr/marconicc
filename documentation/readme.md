@@ -58,6 +58,7 @@ Elenco passi da eseguire per lanciare il progetto:
 ## Obiettivi sprint
 ### Sprint 1
 
+- Individuazione dei requisiti del progetto
 - Creazione database
 - Creazione interfacce web principali
 - Implementazione algoritmo che genera casualmente classi
@@ -75,6 +76,8 @@ Elenco passi da eseguire per lanciare il progetto:
 - Gestione history e possibilità di restore delle modifiche
 
 ### Sprint 3
-- Aggiunta possibilità di creazione di altre scuole
+- Possibilità di creazione di altre scuole
 - Aggiunta diritti per gli utenti(0 admin, 1 modifica, 2 visualizza)
 - Inserimento tag(e.g *La religione*) da poter assegnare ad un alunno
+- Dropdown classi
+- Possibilità inserimento nuovi utenti
