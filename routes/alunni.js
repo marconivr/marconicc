@@ -476,7 +476,10 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
-        query.getHistory(function (err, results) {
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIMA";
+        query.getHistory(scuola, function (err, results) {
             if (err)
                 console.log(err);
             else {
