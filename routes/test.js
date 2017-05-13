@@ -7257,8 +7257,8 @@ var app = [
 ];
 
 var settings = {
-    "min_alunni": 25,
-    "max_alunni": 28,
+    "min_alunni": 23,
+    "max_alunni": 25,
     "gruppo_femmine": 4,
     "gruppo_cap": 3,
     "gruppo_nazionalita": 4,
@@ -7485,18 +7485,11 @@ alunni = _.filter(alunni, function (o) {
     }
 });
 
-alunni = _.filter(alunni, function (o) {
-    if(o.nazionalia)
-})
-
 var i = 0;
 fixFemmine();
 
 z = 0;
-cont = 0;
 while (z < 100){
-
-    var snap1 = JSON.parse(JSON.stringify(alunni));
 
     for (var o in alunni){
 
@@ -7516,23 +7509,18 @@ while (z < 100){
         if (i === listaClassi.length){
             i = 0;
         }
+        alunni = _.compact(alunni);
+        alunni = _.shuffle(alunni);
     }
-
-    var snap2 = JSON.parse(JSON.stringify(alunni));
-
-    if(!_.isEqual(snap2,snap1)){
-        cont++;
-    }
-
 
     alunni = _.compact(alunni);
     alunni = _.shuffle(alunni);
     listaClassi = _.shuffle(listaClassi);
-    z++;
+
     console.log(z);
+    z++;
 }
 
-console.log(cont + "coNt");
 
 var filtroFemmine = _.filter(listaClassi, function (classe) {
      if(classe.propAttuali.femmine < 4 && classe.propAttuali.femmine !== 0 ){
@@ -7572,7 +7560,7 @@ console.log(filtroCap);
 if (true){
     for (var classe in listaClassi){
         console.log("######################################");
-        console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propAttuali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+        console.log(listaClassi[classe].nome + " alunni: " + listaClassi[classe].propAttuali.n_alunni);
         var objNazAttuali = listaClassi[classe].propAttuali.nazionalita;
         for (var naz in objNazAttuali){
             console.log(naz + "-->" + objNazAttuali[naz])
@@ -7583,10 +7571,11 @@ if (true){
 if (true){
     for (var classe in listaClassi){
         console.log("######################################");
-        console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propAttuali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
+        console.log(listaClassi[classe].nome + " alunni: " + listaClassi[classe].propAttuali.n_alunni);
         var objcapAttuali = listaClassi[classe].propAttuali.cap;
         for (var cap in objcapAttuali){
-            console.log(cap + "-->" + objNazAttuali[cap])
+            console.log(cap + "-->" + objcapAttuali[cap])
         }
     }
 }
+

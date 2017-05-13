@@ -88,15 +88,15 @@ module.exports = function (app) {
     });
     
 
-    app.get(endpoint.alunni.allStudents,middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.allStudents, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA"; //todo:dipende dal dropdown
+        const annoScolastico = req.query.annoScolastico;
+        const classeFutura = req.query.classeFutura;
 
         const param = req.query.q;
         query.getAllStudents(param, scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
-               console.log(err);
+                console.log(err);
             else
                 res.send(JSON.stringify(results));
         });
@@ -104,12 +104,12 @@ module.exports = function (app) {
 
 
     app.get(endpoint.alunni.studentByCf, middleware.isLoggedIn, function (req, res) {
-        query.getStudentByCf(function (err, results) {
+        query.getStudentByCf(req.query.cf, req.user.id_scuola, function (err, results) {
             if (err)
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.cf, req.user.id_scuola);
+        });
     });
 
     app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
@@ -153,7 +153,6 @@ module.exports = function (app) {
                     if (err)
                         console.log(err);
                     else
-                        console.log(results);
                         callback(null, {'tag': results})
                 });
             }
@@ -165,6 +164,20 @@ module.exports = function (app) {
             });
 
         });
+    });
+
+    /**
+     * inserisce i tag
+     */
+    app.get(endpoint.alunni.insertTag, function (req, res) {
+        const scuola = req.user.id_scuola;
+        query.insertTag(scuola, req.query.tag, function (err, results) {
+            if (err)
+                res.send(err);
+            else
+                res.send(JSON.stringify(results));
+        });
+
     });
 
     app.get(endpoint.alunni.settingsPrime, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
@@ -306,35 +319,27 @@ module.exports = function (app) {
 
         const scuola = req.user.id_scuola;
 
-        sessione.classiSettaggiDefault(scuola,function (err, obj) {
-            if(err){
+        sessione.classiSettaggiDefault(scuola, function (err, obj) {
+            if (err) {
                 console.log(err);
-            }else{
+            } else {
                 //raggruppo per classe futura(es: PRIMA o TERZA)
-                app.locals.sessione = _.groupBy(obj, function (o) {
+                app.locals.dropDown = _.groupBy(obj, function (o) {
                     return o.classe_futura;
                 });
 
-                //La query me li torna in ordine decrescente. Quindi il primo sarà il più attuale
-                const classeFutura = obj[0].classe_futura;
-                const annoScolastico = obj[0].anno_scolastico;
+                app.locals.sessioneIniziale = {
+                    classeFutura: obj[0].classe_futura,
+                    annoScolastico:obj[0].anno_scolastico
+                }
 
-                query.getStudentiOfschool(scuola, annoScolastico, classeFutura,function (err, studenti) {
-                    if(err){
-                        console.log(err);
-                    }else{
-                        console.log(studenti);
-                        res.render('studenti.ejs', {
-                            pageTitle: " Studenti ",
-                            studenti: studenti,
-                            annoScolastico: annoScolastico,
-                            classeFutura: classeFutura
-                        });
-                    }
+                res.render('studenti.ejs', {
+                    pageTitle: " Studenti "
                 });
             }
-        });
 
+
+        });
 
 
     });

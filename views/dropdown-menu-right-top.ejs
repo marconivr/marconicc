@@ -2,17 +2,17 @@
 <!--it's on right-top-->
 <div class="right menu">
     <div class="ui floating labeled icon dropdown item" id="classi-anno">
-        <span class="text">Classi</span>
+        <span class="text"> <%= sessioneIniziale.annoScolastico%> </span>
         <i class="dropdown icon"></i>
         <div class="menu">
-            <%for(var classe in sessione){%>
+            <%for(var classe in dropDown){%>
             <div class="ui dropdown item" id="<%= classe.substring(0, 1) + classe.substring(1).toLowerCase(); %>">
                 <i class="dropdown icon left"></i>
                 <%= classe.substring(0, 1) + classe.substring(1).toLowerCase(); %>
 
                 <div class="menu left">
-                    <% for(var anno in sessione[classe]){ %>
-                    <a class="item"><%= sessione[classe][anno].anno_scolastico %></a>
+                    <% for(var anno in dropDown[classe]){ %>
+                    <a class="item"><%= dropDown[classe][anno].anno_scolastico %></a>
                     <% } %>
                 </div>
             </div>
@@ -25,7 +25,7 @@
     $(document).ready(function () {
         $("#classi-anno").dropdown({
             onChange: function (val, id, element) {
-                changeYearAndCLass(val, element.parent('div').closest('.ui.dropdown.item').attr("id").toUpperCase())
+                changeYearAndCLass(val, element.parent('div').closest('.ui.dropdown.item').attr("id").toUpperCase(),false)
             }
         });
     });
