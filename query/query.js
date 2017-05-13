@@ -255,7 +255,7 @@ module.exports = {
         });
     },
 
-    getSettingsPrime: function (scuola, annoScolastico, classeFutura, callback) {
+    getSettingsPrime: function (callback) {
         connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'Prima';", function (err, rows) {
             if (err) {
                 console.log('error');
