@@ -534,7 +534,7 @@
 
         if (!(tag == "")) {
             $.ajax({
-                url: '<% endpoint.alunni.updateTag %>',
+                url: '<%= endpoint.alunni.updateTag %>',
                 data: {
                     "tag": tag,
                     "cf": cf_code
