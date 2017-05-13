@@ -1,5 +1,18 @@
 # Composizione classi
 
+##Obiettivi
+Fornire uno strumento alla scuola in grado di comporre le classi in modo automatico, in base a dei parametri personalizzabili dall'utente*-
+
+##Deliverables
+
+ - Analisi e specifiche
+ - WBS
+ - Gantt
+ - Organigramma progetto
+ - Unità organizzative
+ - Tecnologie utilizzate
+
+
 ## Requisiti
 - Mysql
 - NodeJS
@@ -30,7 +43,6 @@ Elenco passi da eseguire per lanciare il progetto:
 
 ## Progettazione
 
-### Spina di pesce
 ### WBS
 ### GANTT
 ### Matrice responsabilità
@@ -64,7 +76,7 @@ Elenco passi da eseguire per lanciare il progetto:
 - Implementazione algoritmo che genera casualmente classi
 - Pagina 'Elenco alunni' con possibilità di ricerca
 - Aggiunta proprietà  principali di ogni classe (numero Alunni, femmine, media, bocciati)
-- Possibilita  di aggiungere tag agli alunni(dsa...)
+- Possibilita  di aggiungere tag agli alunni()
 
 ### Sprint 2
 
@@ -78,6 +90,6 @@ Elenco passi da eseguire per lanciare il progetto:
 ### Sprint 3
 - Possibilità di creazione di altre scuole
 - Aggiunta diritti per gli utenti(0 admin, 1 modifica, 2 visualizza)
-- Inserimento tag(e.g *La religione*) da poter assegnare ad un alunno
+- Pagina tag(e.g *La religione*) in cui poterne inserire di nuovi
 - Dropdown classi
 - Possibilità inserimento nuovi utenti
