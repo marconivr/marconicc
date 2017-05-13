@@ -104,12 +104,12 @@ module.exports = function (app) {
 
 
     app.get(endpoint.alunni.studentByCf, middleware.isLoggedIn, function (req, res) {
-        query.getStudentByCf(function (err, results) {
+        query.getStudentByCf(req.query.cf, req.user.id_scuola,function (err, results) {
             if (err)
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.cf, req.user.id_scuola);
+        });
     });
 
     app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
@@ -171,10 +171,9 @@ module.exports = function (app) {
      */
     app.get(endpoint.alunni.insertTag, function (req, res) {
         const scuola = req.user.id_scuola;
-        console.log("Dentro insert tag" + scuola + req.query.tag);
         query.insertTag(scuola, req.query.tag, function (err, results) {
             if (err)
-                throw err;
+                res.send(err);
             else
                 res.send(JSON.stringify(results));
         });
@@ -425,7 +424,7 @@ module.exports = function (app) {
     app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA"; //todo:dipende dal dropdown
+        const classeFutura = "PRIMA";
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
             res.send(classi);
@@ -435,24 +434,34 @@ module.exports = function (app) {
 
 
     app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
-        //update student class
-        query.updateAlunnoClass(req.body.cf, req.body.toClass, function (err, results) {
-            if (err)
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIMA";
+
+        const cfALunno = req.body.cf;
+        const nuovaClasse = req.body.toClass;
+        const vecchiaClasse = req.body.fromClass;
+        const idUtente = req.user.id;
+
+
+        query.updateAlunnoClass(cfALunno, nuovaClasse ,annoScolastico, scuola, classeFutura, function (err) {
+            if(err){
                 res.send(err);
-            else
-                console.log("Salvo sul db");
+            }else{
+
+                var saveHistory = (req.body.saveHistory === 'true');
+
+                if (saveHistory && nuovaClasse !== vecchiaClasse) {
+                    query.insertHistory(cfALunno, nuovaClasse, vecchiaClasse, idUtente, annoScolastico, scuola, classeFutura, function (err) {
+                        if(err){
+                            res.send(err);
+                        }
+                    });
+                }
+            }
         });
 
-        //populate history
-        var saveHistory = (req.body.saveHistory === 'true');
-        if (saveHistory && req.body.toClass !== req.body.fromClass) {
-            query.insertHistory(function (err, results) {
-                if (err)
-                    console.log(err);
-                else
-                    res.send(err);
-            }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.annoScolastico);
-        }
+
     });
 
 
@@ -467,7 +476,10 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
-        query.getHistory(function (err, results) {
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIMA";
+        query.getHistory(scuola, function (err, results) {
             if (err)
                 console.log(err);
             else {

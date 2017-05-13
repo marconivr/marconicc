@@ -69,7 +69,7 @@ module.exports = {
                             });
                         },
                         function (callback) {
-                            var ris = module.exports.generaListaClassi("prima");
+                            var ris = module.exports.generaListaClassi();
                             callback(ris);
                         }
                     ],
@@ -206,6 +206,7 @@ module.exports = {
                         legge_107: 0
                     }, alunni: []
                 });
+                module.exports.saveClassiOnDb(classe, annoScolastico,scuola,classeFutura);
             }
             return module.exports.generaPropIdeali(listaClassi);
     },
@@ -277,7 +278,7 @@ module.exports = {
     ,
     findAlunnoByCf: function (cf) {
         for (var i in listaAlunni) {
-            if (listaAlunni[i].cf == cf) {
+            if (listaAlunni[i].cf === cf) {
                 return listaAlunni[i];
             }
         }
@@ -290,8 +291,8 @@ module.exports = {
      */
     checkDesiderata: function (objStudente) {
 
-        if (objStudente != undefined) {
-            if (objStudente.desiderata != "") {
+        if (objStudente !== undefined) {
+            if (objStudente.desiderata !== "") {
 
 
                 var cf = objStudente.cf;
@@ -299,8 +300,14 @@ module.exports = {
 
                 var objAmico = module.exports.findAlunnoByCf(cfAmico);
 
+                if (objAmico === undefined){
+                    console.log(undefined);
+                }
 
-                if (objAmico.desiderata == cf) {
+                if(objAmico === undefined){
+                    return null;
+                }
+                if (objAmico.desiderata === cf) {
                     return objAmico;
                 } else {
                     return null;
@@ -953,6 +960,8 @@ module.exports = {
 
         //console.log(listaAlunniDeleted);
 
+        module.exports.saveClassiComposteOnDb(listaClassi);
+
         return listaClassi;
     },
 
@@ -1187,10 +1196,27 @@ module.exports = {
             }
         }
         return null;
-    }
+    },
     
    
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
     //##################################################################################################################
-}
+
+    saveClassiComposteOnDb: function (listaClassi) {
+      for(var i = 0; i < listaClassi.length; i++){
+          var alunniClasse = listaClassi[i].alunni;
+          var nomeClasse = listaClassi[i].nome;
+
+          for(var j=0; j < alunniClasse.length; j++){
+              var cfAlunno = alunniClasse[j].cf;
+              query.insertAlunnoInClass(nomeClasse,annoScolastico,scuola,classeFutura,cfAlunno);
+          }
+      }
+
+    },
+
+    saveClassiOnDb: function (nomeClasse, annoScolastico, scuola, classeFutura) {
+        query.insertClassi(nomeClasse,annoScolastico,classeFutura,scuola);
+    }
+};

@@ -256,14 +256,11 @@
                 var td;
                 //iterate data and insert row
                 for (var i = 0; i < alunni.length; i++) {
-                    var mySQLDate = alunni[i].data_di_nascita;
-
-                     var date = new Date(Date.parse(mySQLDate.replace('-', '/', 'g')));
-                     var day = date.getUTCDate() + 1;
-                     var month = date.getMonth() + 1;
-                     var year = date.getUTCFullYear();
-                     var finalDate = day + '/' + month + '/' + year;
-
+                    var mySQLDate = alunni[i].data_di_nascita.split(/[- : T]/);
+                    var day = parseInt(mySQLDate[2]) + 1;
+                    var month = mySQLDate[1];
+                    var year = mySQLDate[0];
+                    var finalDate = day + '/' + month + '/' + year;
 
                     table.row.add({
                         "cognome": alunni[i].cognome,
@@ -537,7 +534,7 @@
 
         if (!(tag == "")) {
             $.ajax({
-                url: '<% endpoint.alunni.updateTag %>',
+                url: '<%= endpoint.alunni.updateTag %>',
                 data: {
                     "tag": tag,
                     "cf": cf_code
