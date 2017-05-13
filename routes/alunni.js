@@ -425,7 +425,7 @@ module.exports = function (app) {
     app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA"; //todo:dipende dal dropdown
+        const classeFutura = "PRIMA";
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
             res.send(classi);
@@ -435,24 +435,34 @@ module.exports = function (app) {
 
 
     app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
-        //update student class
-        query.updateAlunnoClass(req.body.cf, req.body.toClass, function (err, results) {
-            if (err)
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIMA";
+
+        const cfALunno = req.body.cf;
+        const nuovaClasse = req.body.toClass;
+        const vecchiaClasse = req.body.fromClass;
+        const idUtente = req.user.id;
+
+
+        query.updateAlunnoClass(cfALunno, nuovaClasse ,annoScolastico, scuola, classeFutura, function (err) {
+            if(err){
                 res.send(err);
-            else
-                console.log("Salvo sul db");
+            }else{
+
+                var saveHistory = (req.body.saveHistory === 'true');
+
+                if (saveHistory && nuovaClasse !== vecchiaClasse) {
+                    query.insertHistory(cfALunno, nuovaClasse, vecchiaClasse, idUtente, annoScolastico, scuola, classeFutura, function (err) {
+                        if(err){
+                            res.send(err);
+                        }
+                    });
+                }
+            }
         });
 
-        //populate history
-        var saveHistory = (req.body.saveHistory === 'true');
-        if (saveHistory && req.body.toClass !== req.body.fromClass) {
-            query.insertHistory(function (err, results) {
-                if (err)
-                    console.log(err);
-                else
-                    res.send(err);
-            }, req.body.cf, req.body.toClass, req.body.fromClass, req.body.id_utente, req.body.annoScolastico);
-        }
+
     });
 
 

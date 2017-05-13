@@ -78,40 +78,45 @@ module.exports = {
 
     insertAlunnoInClass: function (nomeClasse, annoScolastico, scuola, classeFutura, cf) {
 
-        var idClasse = module.exports.getIdClasse(nomeClasse, annoScolastico, scuola, classeFutura, function (err, row) {
-            if (err) {
-                console.log(err)
-            } else {
-                return row.id;
+        async.parallel({
+            classe: function (callback) {
+                module.exports.getIdClasse(nomeClasse, annoScolastico, scuola, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        callback(err,{id: row[0].id});
+                    }
+                });
+            },
+            settings: function (callback) {
+                module.exports.scaricaSettings(annoScolastico, scuola, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        callback(err, {id: row[0].id});
+                    }
+                });
+            },
+            alunno: function (callback) {
+                module.exports.getIdAlunnoByCf(cf, annoScolastico, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        callback(err,{id: row[0].id});
+                    }
+                });
             }
+
+
+        }, function (err, results) {
+            connection.query("INSERT INTO classi_composte VALUES (?, ?, ?)", [results.classe.id, results.alunno.id, results.settings.id], function (err, row) {
+                if (err) {
+                    console.error(err);
+                }
+            });
+
+
         });
-
-
-        var idSettings = module.exports.scaricaSettings(annoScolastico, scuola, classeFutura, function (err, row) {
-            if (err) {
-                console.log(err);
-            } else {
-                return row.id;
-            }
-        });
-
-        var idAlunno = module.exports.getIdAlunnoByCf(cf, annoScolastico, classeFutura, function (err, row) {
-            if (err) {
-                console.log(err);
-            } else {
-                return row.id;
-            }
-        });
-
-
-
-        connection.query("INSERT INTO classi_composte VALUES (?, ?, ?)", [idClasse, idAlunno, idSettings], function (err) {
-            if (err) {
-                console.error(err);
-            }
-        });
-
-
     },
 
 
@@ -124,25 +129,88 @@ module.exports = {
      * @param classeFutura (PRIMA o TERZA)
      * @param callback
      */
-    updateAlunnoClass: function (cf, classe, annoScolastico, scuola, classeFutura, callback) {
-        var id = "select id from classi where anno_scolastico = ? AND scuola = ? AND classe_futura = ? AND nome = ?;";
+    updateAlunnoClass: function (cf, nomeClasse, annoScolastico, scuola, classeFutura, callback) {
 
-        connection.query("UPDATE comp_classi SET nome_classe = '?' WHERE cf_alunno = ?", [], function (err, row) {
-            callback(err, row);
+        async.parallel({
+            classe: function (callback) {
+                module.exports.getIdClasse(nomeClasse, annoScolastico, scuola, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        callback(err,{id: row[0].id});
+                    }
+                });
+            },
+            settings: function (callback) {
+                module.exports.scaricaSettings(annoScolastico, scuola, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        callback(err, {id: row[0].id});
+                    }
+                });
+            },
+            alunno: function (callback) {
+                module.exports.getIdAlunnoByCf(cf, annoScolastico, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        callback(err,{id: row[0].id});
+                    }
+                });
+            }
+
+
+        }, function (err, results) {
+            connection.query("UPDATE classi_composte SET classe = ? WHERE alunno = ? AND configurazione = ?", [results.classe.id, results.alunno.id, results.settings.id], function (err, row) {
+               callback(err);
+            });
+
+
         });
+
     },
 
-    insertHistory: function (callback, cf, toClass, fromClass, idUtente, anno_scolastico) {
-        connection.query(
-            "INSERT INTO history (cf, classe_precedente, classe_successiva, id_utente, anno_scolastico) VALUES (?,?,?,?,?)",
-            [cf, fromClass, toClass, idUtente, anno_scolastico],
-            function (err, rows) {
-                if (err) {
-                    throw err;
-                } else {
-                    callback(err, rows);
-                }
+    insertHistory: function (cf, nomeNuovaClasse, nomeVecchiaClasse, idUtente, annoScolastico, scuola, classeFutura, callback) {
+
+        async.parallel({
+            nuovaClasse: function (callback) {
+                module.exports.getIdClasse(nomeNuovaClasse, annoScolastico, scuola, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        callback(err,{id: row[0].id});
+                    }
+                });
+            },
+            vecchiaClasse: function (callback) {
+                module.exports.getIdClasse(nomeVecchiaClasse, annoScolastico, scuola, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        callback(err,{id: row[0].id});
+                    }
+                });
+            },
+            alunno: function (callback) {
+                module.exports.getIdAlunnoByCf(cf, annoScolastico, classeFutura, function (err, row) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        callback(err,{id: row[0].id});
+                    }
+                });
+            }
+        }, function (err, results) {
+
+            var query = connection.query("insert into history (alunno,classe_precedente,classe_successiva,scuola,utente) values (?,?,?,?,?)", [results.alunno.id, results.vecchiaClasse.id, results.nuovaClasse.id, scuola, idUtente], function (err, row) {
+                callback(err);
             });
+
+            console.log(query.sql);
+
+
+        });
     },
 
     getHistory: function (callback) {
