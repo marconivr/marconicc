@@ -171,10 +171,9 @@ module.exports = function (app) {
      */
     app.get(endpoint.alunni.insertTag, function (req, res) {
         const scuola = req.user.id_scuola;
-        console.log("Dentro insert tag" + scuola + req.query.tag);
         query.insertTag(scuola, req.query.tag, function (err, results) {
             if (err)
-                throw err;
+                res.send(err);
             else
                 res.send(JSON.stringify(results));
         });
