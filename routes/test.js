@@ -7417,6 +7417,41 @@ function fixFemmine (){
 
 }
 
+function popolaObjAiuto(alunno, obj){
+    var flag = false;
+    for (var o in obj.CAP){
+        if (alunno.CAP == obj.CAP[o]){
+            obj.CAP[o] += 1;
+            flag = true;
+        }
+    }
+    if (!flag)  obj.CAP[alunno.CAP] = 1;
+
+    flag = false;
+    for (var n in obj.nazionalita){
+        if (alunno.nazionalita == obj.nazionalita[n]){
+            obj.nazionalita[n] += 1;
+            flag = true;
+        }
+    }
+    if (!flag)  obj.nazionalita[alunno.nazionalita] = 1;
+    return obj;
+}
+
+function removeFromObjAiuto(alunno, obj){
+    if (obj.CAP[alunno.CAP] > 1){
+        obj.CAP[alunno.CAP] -= 1;
+    } else{
+        delete obj.CAP[alunno.CAP];
+    }
+    if (obj.nazionalita[alunno.nazionalita] > 1){
+        obj.nazionalita[alunno.nazionalita] -= 1;
+    } else{
+        delete obj.nazionalita[alunno.nazionalita];
+    }
+    return obj;
+}
+
 
 function validaPropietaAttuali(classe) {
     var propAttuali = classe.propAttuali;
@@ -7474,6 +7509,72 @@ function validaPropietaAttuali(classe) {
 
 }
 
+function validaPropietaAttualiConObj(classe, obj) {
+    var propAttuali = classe.propAttuali;
+
+    var valido = true;
+
+    //aggiungere il fatto se i 104 sono più delle classi
+    if(propAttuali.n_legge_104 > 1){
+        valido = false;
+    }
+
+    if(propAttuali.n_legge_104 > 0 && propAttuali.n_legge_107 > 0){
+        valido =  false;
+    }
+
+    if(propAttuali.n_legge_104 > 0 && classe.alunni.length > settings.numero_alunni_con_104){
+        valido =  false;
+    }
+
+    if(classe.alunni.length > settings.max_alunni){
+        valido = false;
+    }
+
+
+    //NAZIONALITA
+
+    _.forOwn(propAttuali.nazionalita,function (value, key) {
+        if(value > settings.gruppo_nazionalita && key.toLowerCase() !== "italiana" ){
+            valido = false;
+        }
+    });
+
+
+    var cap = "37039";
+
+    var diz =_.countBy(propAttuali.cap, function (o) {
+        return o.cap;
+    });
+
+    console.log("a");
+
+
+    var num_nazionalita = Object.keys(propAttuali.nazionalita).length;
+    if(num_nazionalita > settings.nazionalita_per_classe){
+        valido = false;
+    }
+    //FINE NAZIONALITA
+
+
+    //CAP
+
+    _.forOwn(propAttuali.cap,function (value, key) {
+        if(value > settings.gruppo_cap){
+            valido = false;
+        }
+    });
+
+
+
+    //FINE CAP
+
+
+
+    return valido;
+
+}
+
 _.each(listaClassi,function (o) {
     aggiornaPropietaAttuali(o);
 });
@@ -7496,27 +7597,19 @@ for(i in listaClassi){
     var classe = listaClassi[i];
     var obj = {};
 
-
-
     for(o in alunni){
         classe.alunni.push(alunni[o]);
         aggiornaPropietaAttuali(classe);
-        if (!validaPropietaAttuali(classe)){
+        popolaObjAiuto(alunni[o],obj);
+        if (!validaPropietaAttualiConObj(classe, obj)){
             classe.alunni.pop();
+            removeFromObjAiuto(alunni[o],obj);
         }else{
             delete alunni[o];
             break;
         }
     }
 }
-
-
-
-
-
-
-
-
 
 
 
