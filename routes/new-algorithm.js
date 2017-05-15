@@ -69,8 +69,12 @@ module.exports = {
                             });
                         },
                         function (callback) {
-                            var ris = module.exports.generaListaClassi();
-                            callback(ris);
+                            if (settings !== undefined){
+                                var ris = module.exports.generaListaClassi();
+                                callback(ris);
+                            } else{
+                                callback(err);
+                            }
                         }
                     ],
                     function (succes) {

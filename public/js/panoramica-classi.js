@@ -1512,7 +1512,10 @@ $(document).ready(function () {
             format: 'json'
         },
         error: function () {
-            alertify.error('Errore di scaricamento dei dati');
+            alertify.error('Errore di scaricamento dei dati.\nControlla di aver creato la configurazione');
+           // $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
+            window.location.href = '/settings-prime';
+
         },
         dataType: 'json',
 
