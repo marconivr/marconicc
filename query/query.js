@@ -206,10 +206,6 @@ module.exports = {
             var query = connection.query("insert into history (alunno,classe_precedente,classe_successiva,scuola,utente) values (?,?,?,?,?)", [results.alunno.id, results.vecchiaClasse.id, results.nuovaClasse.id, scuola, idUtente], function (err, row) {
                 callback(err);
             });
-
-            console.log(query.sql);
-
-
         });
     },
 
@@ -228,13 +224,13 @@ module.exports = {
                     callback(err, rows);
                 }
             });
-
-        console.log(query.sql);
     },
 
     deleteStudentFromHistory: function (callback, cf) {
         connection.query(
-            "DELETE FROM history WHERE cf = ?",
+            "DELETE hst.* FROM history hst" +
+            " INNER JOIN alunni aln ON aln.id = hst.id" +
+            " WHERE (aln.cf = ? );",
             [cf],
             function (err, rows) {
                 if (err) {

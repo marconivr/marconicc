@@ -378,87 +378,12 @@ module.exports = function (app) {
 
     });
 
-    app.get(endpoint.alunni.getClassiComposte, middleware.isLoggedIn, function (req, res) {
-        var classi;
-        var nAlunniCompCl;
-        var listaClassi = [];
-        var listaNomiClassi = [];
-        var listaAlunniClasse = [];
-
-        var insiemi = null;
-
-        alg.creaInsiemi(function (err, result) {
-            if (err) {
-                console.log(err)
-            } else {
-                insiemi = result;
-                alg.setInsiemi(insiemi);
-                query.getNumberAlunniClassi("prima", function (err, results) {
-                    if (err)
-                        console.log(results);
-                    else {
-                        nAlunniCompCl = results[0].result;
-                        if (nAlunniCompCl === 0) {
-                            alg.firstGeneration("prima", function (err) {
-                                if (err)
-                                    console.log(err);
-                                else {
-                                    classi = alg.getListaClassi();
-                                    query.insertClassi(alg.listaNomiClassi());
-                                    for (var i = 0; i < classi.length; i++) {
-                                        for (var k = 0; k < classi[i].alunni.length; k++) {
-                                            if (classi[i].alunni[k] !== undefined) {
-                                                query.insertAlunnoInClass(classi[i].nome, classi[i].alunni[k].cf);
-                                            }
-                                        }
-                                    }
-                                    alg.fixClassi();
-                                    res.send(alg.getListaClassi());
-                                }
-                            });
-                        } else {
-                            query.getClassi(function (err, results) {
-                                if (err)
-                                    console.log(err);
-                                else {
-
-                                    listaNomiClassi = results;
-                                    var counter = 0;
-                                    for (var i = 0; i < listaNomiClassi.length; i++) {
-                                        query.getAlunniFromClassSync(listaNomiClassi[i].nome, counter, function (err, results, nomeCl, counter) {
-                                            if (err)
-                                                console.log(err);
-                                            else {
-                                                listaAlunniClasse = results;
-                                                listaClassi.push({
-                                                    nome: nomeCl,
-                                                    propAttuali: alg.createProprietaClasse(listaAlunniClasse),
-                                                    alunni: listaAlunniClasse
-                                                });
-                                                if (counter === listaNomiClassi.length - 1) {
-                                                    alg.setListaClassi(listaClassi);
-                                                    alg.fixClassi();
-                                                    alg.printProprieta();
-                                                    res.send(alg.getListaClassi());
-                                                }
-                                            }
-                                        });
-                                        counter++;
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-
     app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
+
+
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
             res.send(classi);
