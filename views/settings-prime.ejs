@@ -250,6 +250,10 @@
                                 break;
                         }
                     }
+                    document.getElementById("sendButton").setAttribute("class", "ui button");
+                    document.getElementById("messageCompila").setAttribute("class", "hiddenMessage");
+                    setDataRealtimeNumberOfStudents();
+                    setDataRealtimeNumberOfFemmine();
                 }
             })
             .modal('show')
