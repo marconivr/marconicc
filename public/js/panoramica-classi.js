@@ -1316,10 +1316,23 @@ function buttonRevertForHistory(element) {
 
     //button onclick
     button.click(function () {
-        var cf = $(this).closest("tr").children(':first').attr('id');
+        var cf = $(this).closest("tr").children().eq(1).attr('id');
         var classePrecendente = $(this).closest("tr").children("td#cp").text();
         var classeSuccessiva = $(this).closest("tr").children("td#cs").text();
         var tr = $(this).closest("tr");
+
+        var classeAttuale = getClassNameFromStudent(cf);
+
+
+        //todo
+        // var closable = alertify.alert().setting('closable');
+        // alertify.alert()
+        //     .setting({
+        //         'label':'Agree',
+        //         'message': 'This dialog is : ' + (closable ? ' ' : ' not ') + 'closable.' ,
+        //         'onok': function(){ alertify.success('Great');},
+        //         'onclose':function(){ alertify.message('alert was closed.')}
+        //     }).show();
 
 
         //remove from history
@@ -1345,7 +1358,7 @@ function buttonRevertForHistory(element) {
 
                 //aggiorno la grafica
                 try {
-                    moveStudent(cf, classeSuccessiva, classePrecendente, false,getStudentObject(cf).anno_scolastico);
+                    moveStudent(cf, classeSuccessiva, classePrecendente, false, getStudentObject(cf).anno_scolastico);
                     updateStudentGUI(cf, classeSuccessiva, classePrecendente);
                     alertify.success('Alunno spostato correttamente');
                 }
@@ -1375,6 +1388,7 @@ function history() {
         success: function (data) {
             var thead = $('<thead/>')
                 .html('<tr> ' +
+                    '<th>Ora</th> ' +
                     '<th>Alunno</th> ' +
                     '<th>Classe Precedente</th> ' +
                     '<th>Classe Successiva</th> ' +
@@ -1395,6 +1409,7 @@ function history() {
 
                     var thead = $('<thead/>')
                         .html('<tr> ' +
+                            '<th>Ora</th> ' +
                             '<th>Alunno</th> ' +
                             '<th>Classe Precedente</th> ' +
                             '<th>Classe Successiva</th> ' +
@@ -1417,6 +1432,7 @@ function history() {
 
                     tr = $('<tr/>');
                     var th =
+                        '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
                         '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
                         '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                         '<td id="cs">' + data[history].classe_successiva + '</td> ' +
@@ -1434,6 +1450,7 @@ function history() {
 
                         tr = $('<tr/>');
                         var th =
+                            '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
                             '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
@@ -1449,6 +1466,7 @@ function history() {
 
                         var thead = $('<thead/>')
                             .html('<tr> ' +
+                                '<th>Ora</th> ' +
                                 '<th>Alunno</th> ' +
                                 '<th>Classe Precedente</th> ' +
                                 '<th>Classe Successiva</th> ' +
@@ -1471,6 +1489,7 @@ function history() {
 
                         tr = $('<tr/>');
                         var th =
+                            '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
                             '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
