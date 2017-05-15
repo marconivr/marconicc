@@ -184,7 +184,7 @@ module.exports = function (app) {
 
         async.parallel({
             studentiPrima: function (callback) {
-                query.getNumberOfStudentiPrima(function (err, results) {
+                query.getNumberOfStudenti("PRIMA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -201,7 +201,7 @@ module.exports = function (app) {
                 });
             },
             mediaPrima: function (callback) {
-                query.getAVGOfStudentiPrima(function (err, results) {
+                query.getAVGOfStudenti("PRIMA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -231,9 +231,56 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.settingsTerze, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
-        res.render('settings-terze.ejs', {
-            pageTitle: " Settings terze",
-            data: JSON.stringify(dataInSettings)
+        async.parallel({
+            studentiTerza: function (callback) {
+                query.getNumberOfStudenti("TERZA", function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'studenti': results})
+                });
+            },
+
+            femmineTerza: function (callback) {
+                query.getNumberGirl("TERZA", function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'femmine': results})
+                });
+            },
+            mediaTerza: function (callback) {
+                query.getAVGOfStudenti("TERZA", function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else{
+                        console.log(results[0].result);
+                        if(results[0].result == null){
+                            results[0].result = 0;
+                        }
+                        callback(null, {'media': results})
+                    }
+
+                });
+            },
+            stranieriTerza: function (callback) {
+                query.getNumberStranieri("TERZA", function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else
+                        callback(null, {'stranieri': results})
+                });
+            }
+        }, function (err, results) {
+            res.render('settings-terze.ejs', {
+                user: req.user,
+                pageTitle: " Settings terze ",
+                studentiTerza: results.studentiTerza.studenti,
+                femmineTerza: results.femmineTerza.femmine,
+                mediaTerza: results.mediaTerza.media,
+                stranieriTerza: results.stranieriTerza.stranieri
+            });
+
         });
     });
 
@@ -262,19 +309,6 @@ module.exports = function (app) {
                 res.send(JSON.stringify(results));
         }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.ripetenti);
     });
-
-    /**
-     * inserisce le priorita
-     */
-    app.get('/insert-priorita', function (req, res) {
-        query.insertPriorita(function (err, results) {
-            if (err)
-                throw err;
-            else
-                res.send(JSON.stringify(results));
-        }, req.query.priorita);
-    });
-
 
     app.get('/studenti-prima-json', middleware.isLoggedIn, function (req, res) {
 
@@ -475,6 +509,16 @@ module.exports = function (app) {
         });
     });
 
+    app.get(endpoint.alunni.getPastSettingsTerze, middleware.isLoggedIn, function (req, res) {
+        query.getSettingsTerze(function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                res.send(results);
+            }
+        });
+    });
+
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
@@ -499,15 +543,7 @@ module.exports = function (app) {
     });
 
 
-    app.get(endpoint.alunni.getPastSettingsTerze, middleware.isLoggedIn, function (req, res) {
-        query.getSettingsTerze(function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                res.send(results);
-            }
-        });
-    });
+
 
     app.get(endpoint.utenti.exportSingleCsv, middleware.isLoggedIn, function (req, res) {
         query.getClassiComposteForExport(function (err, results) {
