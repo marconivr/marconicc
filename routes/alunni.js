@@ -392,6 +392,7 @@ module.exports = function (app) {
     });
 
 
+    //HISTORY & MOVE STUDENT
     app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
@@ -405,7 +406,9 @@ module.exports = function (app) {
 
         query.updateAlunnoClass(cfALunno, nuovaClasse ,annoScolastico, scuola, classeFutura, function (err) {
             if(err){
-                res.send(err);
+                res.send({
+                    "error": err
+                });
             }else{
 
                 var saveHistory = (req.body.saveHistory === 'true');
@@ -413,14 +416,45 @@ module.exports = function (app) {
                 if (saveHistory && nuovaClasse !== vecchiaClasse) {
                     query.insertHistory(cfALunno, nuovaClasse, vecchiaClasse, idUtente, annoScolastico, scuola, classeFutura, function (err) {
                         if(err){
-                            res.send(err);
+                            res.send({
+                                "error": err
+                            });
+                        }
+                        else {
+                            res.send("no-error")
                         }
                     });
                 }
+                else {
+                    res.send("no-error")
+                }
             }
         });
+    });
 
+    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
+        const scuola = req.user.id_scuola;
+        const annoScolastico = "2017-2018";
+        const classeFutura = "PRIMA";
+        query.getHistory(scuola, function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                res.send(results);
+            }
+        });
+    });
 
+    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, function (req, res) {
+        query.deleteStudentFromHistory(function (err, results) {
+            if (err)
+                res.send({
+                    "-1": err
+                });
+            else {
+                res.send(results);
+            }
+        }, req.query.cf, req.query.id);
     });
 
 
@@ -444,28 +478,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
-        const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA";
-        query.getHistory(scuola, function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                res.send(results);
-            }
-        });
-    });
 
-    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, function (req, res) {
-        query.deleteStudentFromHistory(function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                res.send(results);
-            }
-        }, req.query.cf);
-    });
 
 
 

@@ -482,10 +482,13 @@ function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory, anno_scola
             url: "/move-student",
             data: jsonToSend,
             success: function (data) {
-
+                if (data.error) {
+                    alertify.error("Opss, ci deve essere stato un problema");
+                    console.error(data.error);
+                }
             },
             error: function (errMsg) {
-                alertify.error('Opss, ci deve essere stato un problema');
+                alertify.error('Opss, ci deve essere stato un problema interno al server');
             }
         });
     }
@@ -1316,7 +1319,8 @@ function buttonRevertForHistory(element) {
 
     //button onclick
     button.click(function () {
-        var cf = $(this).closest("tr").children().eq(1).attr('id');
+        var cf = $(this).closest("tr").children().eq(1).attr('cf');
+        var id = $(this).closest("tr").children().eq(1).attr('id'); //serve per sapere quale riga eliminare nel db se ci sono più spostamenti dello stesso studente
         var classePrecendente = $(this).closest("tr").children("td#cp").text();
         var classeSuccessiva = $(this).closest("tr").children("td#cs").text();
         var tr = $(this).closest("tr");
@@ -1325,54 +1329,93 @@ function buttonRevertForHistory(element) {
 
 
         //todo
-        // var closable = alertify.alert().setting('closable');
-        // alertify.alert()
-        //     .setting({
-        //         'label':'Agree',
-        //         'message': 'This dialog is : ' + (closable ? ' ' : ' not ') + 'closable.' ,
-        //         'onok': function(){ alertify.success('Great');},
-        //         'onclose':function(){ alertify.message('alert was closed.')}
-        //     }).show();
-
-
-        //remove from history
-        $.ajax({
-            url: '/remove-student-from-history',
-            data: {"cf": cf},
-            type: 'get',
-            success: function (data) {
-                //eliminare dalla tabella
-                //la tabella ha un unico elemento
-                if (tr.prev().length == 0 && tr.next('tr').length == 0) {
-                    //elimino la il div title,content e la tabella
-                    var divContent = tr.closest("div");
-                    var divTitle = divContent.prev();
-                    //remove
-                    divContent.remove();
-                    divTitle.remove();
-
-                }
-                else {
-                    tr.remove();
-                }
-
+        //se classeAttuale è diversa da classeSuccessiva mostro in alert
+        if (classeAttuale != classeSuccessiva) {
+            var text = " L'alunno è stato ulteriormente spostato \n"
+                + " Adesso si trova nella " + classeAttuale + "\n"
+                + " Vuoi forzare lo spostamento? ";
+            if (confirm(text)) {
                 //aggiorno la grafica
                 try {
-                    moveStudent(cf, classeSuccessiva, classePrecendente, false, getStudentObject(cf).anno_scolastico);
-                    updateStudentGUI(cf, classeSuccessiva, classePrecendente);
+                    moveStudent(cf, classeAttuale, classePrecendente, false, getStudentObject(cf).anno_scolastico);
+                    updateStudentGUI(cf, classeAttuale, classePrecendente);
                     alertify.success('Alunno spostato correttamente');
+
+                    //eliminare dalla tabella
+                    //la tabella ha un unico elemento
+                    if (tr.prev().length == 0 && tr.next('tr').length == 0) {
+                        //elimino la il div title,content e la tabella
+                        var divContent = tr.closest("div");
+                        var divTitle = divContent.prev();
+                        //remove
+                        divContent.remove();
+                        divTitle.remove();
+
+                    }
+                    else {
+                        tr.remove();
+                    }
+
                 }
                 catch (e) {
                     alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
                 }
-
-
-            },
-
-            error: function (xhr, status, error) {
-                alertify.error("Opps, ci deve essere stato un problema" + "\n" + error)
             }
-        });
+        }
+        else {
+            // var closable = alertify.alert().setting('closable');
+            // alertify.alert()
+            //     .setting({
+            //         'label':'Agree',
+            //         'message': 'This dialog is : ' + (closable ? ' ' : ' not ') + 'closable.' ,
+            //         'onok': function(){ alertify.success('Great');},
+            //         'onclose':function(){ alertify.message('alert was closed.')}
+            //     }).show();
+
+
+            //remove from history
+            $.ajax({
+                url: '/remove-student-from-history',
+                data: {
+                    "cf": cf,
+                    "id": id
+                },
+                type: 'get',
+                success: function (data) {
+                    //eliminare dalla tabella
+                    //la tabella ha un unico elemento
+                    if (tr.prev().length == 0 && tr.next('tr').length == 0) {
+                        //elimino la il div title,content e la tabella
+                        var divContent = tr.closest("div");
+                        var divTitle = divContent.prev();
+                        //remove
+                        divContent.remove();
+                        divTitle.remove();
+
+                    }
+                    else {
+                        tr.remove();
+                    }
+
+                    //aggiorno la grafica
+                    try {
+                        moveStudent(cf, classeSuccessiva, classePrecendente, false, getStudentObject(cf).anno_scolastico);
+                        updateStudentGUI(cf, classeSuccessiva, classePrecendente);
+                        alertify.success('Alunno spostato correttamente');
+                    }
+                    catch (e) {
+                        alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
+                    }
+
+
+                },
+
+                error: function (xhr, status, error) {
+                    alertify.error("Opps, problemi interni al server" + "\n" + error)
+                }
+            });
+        }
+
     });
 
 }
@@ -1433,7 +1476,7 @@ function history() {
                     tr = $('<tr/>');
                     var th =
                         '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
-                        '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                        '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
                         '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                         '<td id="cs">' + data[history].classe_successiva + '</td> ' +
                         '<td>' + 'root' + '</td> ';
@@ -1451,7 +1494,7 @@ function history() {
                         tr = $('<tr/>');
                         var th =
                             '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
-                            '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                            '<td cf=' + data[history].cf + ' id=' + data[history].id + '>' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
                             '<td>' + 'root' + '</td> ';//todo
@@ -1490,7 +1533,7 @@ function history() {
                         tr = $('<tr/>');
                         var th =
                             '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
-                            '<td id=' + data[history].cf + '>' + getStudentByCF(data[history].cf) + '</td> ' +
+                            '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
                             '<td>' + data[history].id_utente + '</td> ';
@@ -1965,10 +2008,6 @@ $(document).ready(function () {
                     var classTo = newList.attr('id');
 
                     moveStudent(cf_studente_spostato, classFrom, classTo, true);
-
-                    console.log("Moved " + cf_studente_spostato + " from " + oldList.attr('id') + " to " + newList.attr('id'));
-
-
                 },
                 change: function (event, ui) {
                     if (ui.sender) newList = ui.placeholder.parent().parent();
@@ -2005,9 +2044,6 @@ $(document).ready(function () {
      */
     $('#selezioneClassi')
         .on('click', '.item', function () {
-
-            console.log($(this)[0]);
-
             if (!$($(this)[0]).hasClass('notSelectable')) { //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
