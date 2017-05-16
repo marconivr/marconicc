@@ -1335,89 +1335,66 @@ function buttonRevertForHistory(element) {
                 + " Adesso si trova nella " + classeAttuale + "\n"
                 + " Vuoi forzare lo spostamento? ";
             if (confirm(text)) {
-                //aggiorno la grafica
-                try {
-                    moveStudent(cf, classeAttuale, classePrecendente, false, getStudentObject(cf).anno_scolastico);
-                    updateStudentGUI(cf, classeAttuale, classePrecendente);
-                    alertify.success('Alunno spostato correttamente');
-
-                    //eliminare dalla tabella
-                    //la tabella ha un unico elemento
-                    if (tr.prev().length == 0 && tr.next('tr').length == 0) {
-                        //elimino la il div title,content e la tabella
-                        var divContent = tr.closest("div");
-                        var divTitle = divContent.prev();
-                        //remove
-                        divContent.remove();
-                        divTitle.remove();
-
-                    }
-                    else {
-                        tr.remove();
-                    }
-
-                }
-                catch (e) {
-                    alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
-                }
+                removeStudentsFromHistory(cf, id, classeAttuale, classePrecendente, tr);
             }
         }
         else {
-            // var closable = alertify.alert().setting('closable');
-            // alertify.alert()
-            //     .setting({
-            //         'label':'Agree',
-            //         'message': 'This dialog is : ' + (closable ? ' ' : ' not ') + 'closable.' ,
-            //         'onok': function(){ alertify.success('Great');},
-            //         'onclose':function(){ alertify.message('alert was closed.')}
-            //     }).show();
 
-
-            //remove from history
-            $.ajax({
-                url: '/remove-student-from-history',
-                data: {
-                    "cf": cf,
-                    "id": id
-                },
-                type: 'get',
-                success: function (data) {
-                    //eliminare dalla tabella
-                    //la tabella ha un unico elemento
-                    if (tr.prev().length == 0 && tr.next('tr').length == 0) {
-                        //elimino la il div title,content e la tabella
-                        var divContent = tr.closest("div");
-                        var divTitle = divContent.prev();
-                        //remove
-                        divContent.remove();
-                        divTitle.remove();
-
-                    }
-                    else {
-                        tr.remove();
-                    }
-
-                    //aggiorno la grafica
-                    try {
-                        moveStudent(cf, classeSuccessiva, classePrecendente, false, getStudentObject(cf).anno_scolastico);
-                        updateStudentGUI(cf, classeSuccessiva, classePrecendente);
-                        alertify.success('Alunno spostato correttamente');
-                    }
-                    catch (e) {
-                        alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
-                    }
-
-
-                },
-
-                error: function (xhr, status, error) {
-                    alertify.error("Opps, problemi interni al server" + "\n" + error)
-                }
-            });
+            removeStudentsFromHistory(cf, id, classeSuccessiva, classePrecendente, tr);
         }
 
     });
+}
 
+
+/**
+ * delete students from db
+ * delete student from modal
+ * @param cf
+ * @param classeSuccessiva
+ * @param classePrecendente
+ * @param tr
+ * @param id
+ */
+function removeStudentsFromHistory(cf, id, classeSuccessiva, classePrecendente, tr) {
+    $.ajax({
+        url: '/remove-student-from-history',
+        data: {
+            "cf": cf,
+            "id": id
+        },
+        type: 'get',
+        success: function (data) {
+            //eliminare dalla tabella
+            //la tabella ha un unico elemento
+            if (tr.prev().length == 0 && tr.next('tr').length == 0) {
+                //elimino la il div title,content e la tabella
+                var divContent = tr.closest("div");
+                var divTitle = divContent.prev();
+                //remove
+                divContent.remove();
+                divTitle.remove();
+
+            }
+            else {
+                tr.remove();
+            }
+
+            //aggiorno la grafica
+            try {
+                moveStudent(cf, classeSuccessiva, classePrecendente, false, getStudentObject(cf).anno_scolastico);
+                updateStudentGUI(cf, classeSuccessiva, classePrecendente);
+                alertify.success('Alunno spostato correttamente');
+            }
+            catch (e) {
+                alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
+            }
+        },
+
+        error: function (xhr, status, error) {
+            alertify.error("Opps, problemi interni al server" + "\n" + error)
+        }
+    });
 }
 
 function history() {
