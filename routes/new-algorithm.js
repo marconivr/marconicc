@@ -5,6 +5,7 @@
 var middleware = require('./middleware/middleware');
 var query = require('./../query/query.js');
 var async = require('async');
+const _ = require('lodash');
 
 //settings var
 var settings = {}; //data, min_alunni, max_alunni, fem, max_str, stessa_pr, nazionalita, naz_per_classe, numero_alunni_con_104
@@ -34,53 +35,63 @@ module.exports = {
             if (err)
                 console.log(err);
             else {
-                async.waterfall(
-                    [
-                        function (callback) {
-                            //pulisco gli array per chiamate successive
-                            listaClassi = [];
-                            listaAlunni = [];
-                            listaAlunniDeleted = [];
-                            insiemi = [];
-                            module.exports.inizializzaSettings(annoScolastico, scuola, classeFutura);
-                            callback();
-                        },
-                        function (callback) {
-                            var string = JSON.stringify(results);
-                            callback(null, string);
-                        },
-                        function (string, callback) {
-                            var json = JSON.parse(string);
-                            callback(null, json);
-                        },
-                        function (json, callback) {
-                            listaAlunni = json;
-                            listaAlunniDeleted = json;
-                            callback();
-                        },
-                        function (callback) {
-                            module.exports.creaInsiemi(function (err, result) {
-                                if (err) {
-                                    console.log(err)
-                                } else {
-                                    module.exports.setInsiemi(result);
-                                    callback();
+                query.getClassiComposte(scuola, classeFutura, annoScolastico, function (err, rows) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        if (rows.length > 0) {
+                            callback(module.exports.generateListaClassi(rows));
+                        } else {
+                            async.waterfall(
+                                [
+                                    function (callback) {
+                                        //pulisco gli array per chiamate successive
+                                        listaClassi = [];
+                                        listaAlunni = [];
+                                        listaAlunniDeleted = [];
+                                        insiemi = [];
+                                        module.exports.inizializzaSettings(annoScolastico, scuola, classeFutura);
+                                        callback();
+                                    },
+                                    function (callback) {
+                                        var string = JSON.stringify(results);
+                                        callback(null, string);
+                                    },
+                                    function (string, callback) {
+                                        var json = JSON.parse(string);
+                                        callback(null, json);
+                                    },
+                                    function (json, callback) {
+                                        listaAlunni = json;
+                                        listaAlunniDeleted = json;
+                                        callback();
+                                    },
+                                    function (callback) {
+                                        module.exports.creaInsiemi(function (err, result) {
+                                            if (err) {
+                                                console.log(err)
+                                            } else {
+                                                module.exports.setInsiemi(result);
+                                                callback();
+                                            }
+                                        });
+                                    },
+                                    function (callback) {
+                                        if (settings !== undefined) {
+                                            var ris = module.exports.generaListaClassi();
+                                            callback(ris);
+                                        } else {
+                                            callback(err);
+                                        }
+                                    }
+                                ],
+                                function (succes) {
+                                    callback(succes);
                                 }
-                            });
-                        },
-                        function (callback) {
-                            if (settings !== undefined){
-                                var ris = module.exports.generaListaClassi();
-                                callback(ris);
-                            } else{
-                                callback(err);
-                            }
+                            )
                         }
-                    ],
-                    function (succes) {
-                        callback(succes);
                     }
-                )
+                });
             }
         });
     },
@@ -201,18 +212,18 @@ module.exports = {
      * @param callback
      */
     generaListaClassi: function () {
-            var num = Math.round(listaAlunni.length / (settings.min_alunni));
-            for (i = 0; i < num; i++) {
-                var classe = "1" + String.fromCharCode(65 + i);
-                listaClassi.push({
-                    nome: classe, propAttuali: {}, propIdeali: {
-                        legge_104: 0,
-                        legge_107: 0
-                    }, alunni: []
-                });
-                module.exports.saveClassiOnDb(classe, annoScolastico,scuola,classeFutura);
-            }
-            return module.exports.generaPropIdeali(listaClassi);
+        var num = Math.round(listaAlunni.length / (settings.min_alunni));
+        for (i = 0; i < num; i++) {
+            var classe = "1" + String.fromCharCode(65 + i);
+            listaClassi.push({
+                nome: classe, propAttuali: {}, propIdeali: {
+                    legge_104: 0,
+                    legge_107: 0
+                }, alunni: []
+            });
+            module.exports.saveClassiOnDb(classe, annoScolastico, scuola, classeFutura);
+        }
+        return module.exports.generaPropIdeali(listaClassi);
     },
 
     sortProprietaIdeali: function (prop) {
@@ -304,11 +315,11 @@ module.exports = {
 
                 var objAmico = module.exports.findAlunnoByCf(cfAmico);
 
-                if (objAmico === undefined){
+                if (objAmico === undefined) {
                     console.log(undefined);
                 }
 
-                if(objAmico === undefined){
+                if (objAmico === undefined) {
                     return null;
                 }
                 if (objAmico.desiderata === cf) {
@@ -585,38 +596,38 @@ module.exports = {
             var debuggerNazionalita = false;
             var debuggetcap = false;
 
-            if (debuggerVoti){
+            if (debuggerVoti) {
                 for (var lista in listaClassi) {
-                console.log("######################################");
-                console.log(listaClassi[lista].nome + " alunni ideali: " + listaClassi[lista].propIdeali.alunni + " alunni attuali: " + listaClassi[lista].propAttuali.alunni);
-                console.log("10 ideale : " + listaClassi[lista].propIdeali.voto['10'] + ", 10 attuale : " + listaClassi[lista].propAttuali.voto['10']);
-                console.log("9  ideale : " + listaClassi[lista].propIdeali.voto['9'] + ", 9  attuale : " + listaClassi[lista].propAttuali.voto['9']);
-                console.log("8  ideale : " + listaClassi[lista].propIdeali.voto['8'] + ", 8  attuale : " + listaClassi[lista].propAttuali.voto['8']);
-                console.log("7  ideale : " + listaClassi[lista].propIdeali.voto['7'] + ", 7  attuale : " + listaClassi[lista].propAttuali.voto['7']);
-                console.log("6  ideale : " + listaClassi[lista].propIdeali.voto['6'] + ", 6  attuale : " + listaClassi[lista].propAttuali.voto['6']);
-                console.log("######################################");
+                    console.log("######################################");
+                    console.log(listaClassi[lista].nome + " alunni ideali: " + listaClassi[lista].propIdeali.alunni + " alunni attuali: " + listaClassi[lista].propAttuali.alunni);
+                    console.log("10 ideale : " + listaClassi[lista].propIdeali.voto['10'] + ", 10 attuale : " + listaClassi[lista].propAttuali.voto['10']);
+                    console.log("9  ideale : " + listaClassi[lista].propIdeali.voto['9'] + ", 9  attuale : " + listaClassi[lista].propAttuali.voto['9']);
+                    console.log("8  ideale : " + listaClassi[lista].propIdeali.voto['8'] + ", 8  attuale : " + listaClassi[lista].propAttuali.voto['8']);
+                    console.log("7  ideale : " + listaClassi[lista].propIdeali.voto['7'] + ", 7  attuale : " + listaClassi[lista].propAttuali.voto['7']);
+                    console.log("6  ideale : " + listaClassi[lista].propIdeali.voto['6'] + ", 6  attuale : " + listaClassi[lista].propAttuali.voto['6']);
+                    console.log("######################################");
                 }
             }
 
-            if (debuggerNazionalita){
-                for (var classe in listaClassi){
+            if (debuggerNazionalita) {
+                for (var classe in listaClassi) {
                     console.log("######################################");
                     console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propIdeali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
                     var objNazIdeali = listaClassi[classe].propIdeali.nazionalita;
                     var objNazAttuali = listaClassi[classe].propAttuali.nazionalita;
-                    for (var naz in objNazIdeali){
+                    for (var naz in objNazIdeali) {
                         console.log(naz + "-->" + objNazIdeali[naz])
                     }
                 }
             }
 
-            if (debuggetcap){
-                for (var classe in listaClassi){
+            if (debuggetcap) {
+                for (var classe in listaClassi) {
                     console.log("######################################");
                     console.log(listaClassi[classe].nome + " alunni ideali: " + listaClassi[classe].propIdeali.alunni + " alunni attuali: " + listaClassi[classe].propAttuali.alunni);
                     var objcapIdeali = listaClassi[classe].propIdeali.cap;
                     var objcapAttuali = listaClassi[classe].propAttuali.cap;
-                    for (var cap in objcapIdeali){
+                    for (var cap in objcapIdeali) {
                         console.log(cap + "-->" + objcapIdeali[cap])
                     }
                 }
@@ -705,11 +716,11 @@ module.exports = {
             if (nvoti > listaClassi[i].propIdeali.alunni) {
                 var diff = nvoti - listaClassi[i].propIdeali.alunni;
                 var n = 6;
-                while (n <= 10 || diff == 0){
+                while (n <= 10 || diff == 0) {
                     listaClassi[i].propIdeali.voto[n] -= 1;
-                    if (voti[n] === undefined){
+                    if (voti[n] === undefined) {
                         voti[n] = 1;
-                    }else{
+                    } else {
                         voti[n] += 1;
                     }
                     n++;
@@ -727,7 +738,7 @@ module.exports = {
                             listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += listaClassi[i].propIdeali.alunni - nVC;
                             voti[Object.keys(voti)[v]] -= listaClassi[i].propIdeali.alunni - nVC;
                         } else {
-                             listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += voti[Object.keys(voti)[v]];
+                            listaClassi[i].propIdeali.voto[Object.keys(voti)[v]] += voti[Object.keys(voti)[v]];
                             delete voti[Object.keys(voti)[v]];
                         }
                     }
@@ -915,7 +926,7 @@ module.exports = {
                         cap[k] -= temp;
                         nAlcap += temp;
 
-                        if (cap[k] == 1){
+                        if (cap[k] == 1) {
                             listaClassi[i].propIdeali.cap[k] += cap[k];
                             nAlcap += cap[k];
                             delete cap[k];
@@ -1126,7 +1137,7 @@ module.exports = {
         }
         return cont;
     }
-    
+
     ,
 
     /**
@@ -1145,10 +1156,7 @@ module.exports = {
 
         return count;
     },
-    
-    
-    
-   
+
 
     count104: function (listaAlunniClasse) {
         var count = 0;
@@ -1172,9 +1180,6 @@ module.exports = {
         return count;
     },
 
-
-    
-    
 
     setListaClassi: function (lC) {
         listaClassi = lC;
@@ -1201,26 +1206,46 @@ module.exports = {
         }
         return null;
     },
-    
-   
+
+
     //##################################################################################################################
     /**------------------------------------------------FINE UTILITY---------------------------------------------------*/
     //##################################################################################################################
 
     saveClassiComposteOnDb: function (listaClassi) {
-      for(var i = 0; i < listaClassi.length; i++){
-          var alunniClasse = listaClassi[i].alunni;
-          var nomeClasse = listaClassi[i].nome;
+        for (var i = 0; i < listaClassi.length; i++) {
+            var alunniClasse = listaClassi[i].alunni;
+            var nomeClasse = listaClassi[i].nome;
 
-          for(var j=0; j < alunniClasse.length; j++){
-              var cfAlunno = alunniClasse[j].cf;
-              query.insertAlunnoInClass(nomeClasse,annoScolastico,scuola,classeFutura,cfAlunno);
-          }
-      }
+            for (var j = 0; j < alunniClasse.length; j++) {
+                var cfAlunno = alunniClasse[j].cf;
+                query.insertAlunnoInClass(nomeClasse, annoScolastico, scuola, classeFutura, cfAlunno);
+            }
+        }
 
     },
 
     saveClassiOnDb: function (nomeClasse, annoScolastico, scuola, classeFutura) {
-        query.insertClassi(nomeClasse,annoScolastico,classeFutura,scuola);
+        query.insertClassi(nomeClasse, annoScolastico, classeFutura, scuola);
+    },
+
+    generateListaClassi: function (rows) {
+        var listaClassiObj = _.groupBy(rows, function (obj) {
+            return obj.classe_attuale;
+        });
+
+        var array = [];
+        for (var classe in listaClassiObj) {
+            var app = {
+                'nome': classe,
+                'alunni': listaClassiObj[classe]
+            };
+
+            array.push(app);
+        }
+
+        return array;
     }
+
+
 };

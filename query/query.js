@@ -556,8 +556,26 @@ module.exports = {
         var query = connection.query(sql, [scuola, annoScolastico, classeFutura], function (err, row) {
             callback(err, row);
         });
+    },
 
-        console.log(query.sql);
+    /**
+     * 
+     */
+    getClassiComposte: function (scuola, classeFutura, annoScolastico, callback) {
+
+        var sql = "SELECT classi.nome as classe_attuale, alunni.id, alunni.cognome, alunni.nome, alunni.matricola, alunni.cf,alunni.desiderata, " +
+            "alunni.sesso, alunni.data_di_nascita, alunni.cap, alunni.nazionalita, alunni.legge_107, " +
+            "alunni.legge_104, alunni.classe_precedente,alunni.scelta_indirizzo, alunni.anno_scolastico, " +
+            "alunni.cod_cat, alunni.voto, alunni.classe_futura, alunni.descrizione, tag.type FROM classi_composte " +
+            "INNER JOIN classi on classe = classi.id INNER JOIN alunni on alunni.id = alunno " +
+            "LEFT JOIN tag on tag.id = alunni.tag WHERE classi.anno_scolastico = ? " +
+            "and classi.classe_futura = ? and classi.scuola = ?";
+
+        var query = connection.query(sql, [annoScolastico, classeFutura, scuola],function (err, rows) {
+            callback(err,rows);
+        })
     }
+    
+    
 
 };
