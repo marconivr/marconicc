@@ -540,7 +540,7 @@ function moveStudent(cf, fromClass, toClass, saveHistory) {
         }
     }
 
-    saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory,anno_scolastico);
+    saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory, anno_scolastico);
     updateChartBar(toClass);//refresh the new chart
     updateChartBar(fromClass); //refresh the old chart
     updateInformation(toClass);
@@ -1406,6 +1406,8 @@ function history() {
         url: '/get-history',
         type: 'get',
         success: function (data) {
+            if (data.length == 0) $('#history-label').text("Non ci sono elementi nella history");
+            else $('#history-label').text("Qui puoi vedere tutti gli spostamenti compiuti");
             var thead = $('<thead/>')
                 .html('<tr> ' +
                     '<th>Ora</th> ' +
@@ -1452,7 +1454,7 @@ function history() {
 
                     tr = $('<tr/>');
                     var th =
-                        '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
+                        '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
                         '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
                         '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                         '<td id="cs">' + data[history].classe_successiva + '</td> ' +
@@ -1470,7 +1472,7 @@ function history() {
 
                         tr = $('<tr/>');
                         var th =
-                            '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
+                            '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
                             '<td cf=' + data[history].cf + ' id=' + data[history].id + '>' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
@@ -1509,7 +1511,7 @@ function history() {
 
                         tr = $('<tr/>');
                         var th =
-                            '<th>'+ ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2)  +'</th> ' +
+                            '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
                             '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
@@ -1530,7 +1532,8 @@ function history() {
             alertify.error('Opss, ci deve essere stato un problema');
         }
     });
-
+}
+function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
 
 }
 
@@ -1542,6 +1545,9 @@ function history() {
 // - CREAZIONE CHART
 // - INIZIALIZZAZIONE DRAG AND DROP STUDENTI
 $(document).ready(function () {
+
+
+
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
@@ -1553,7 +1559,7 @@ $(document).ready(function () {
         error: function () {
             $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
             alertify.error('Errore di scaricamento dei dati.\nControlla di aver creato la configurazione');
-            setTimeout(function() {
+            setTimeout(function () {
                 window.location.href = '/settings-prime';
             }, 3000);
 

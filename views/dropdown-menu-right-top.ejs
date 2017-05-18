@@ -1,5 +1,7 @@
 <!--this file represent the dropwdonw menu for select years and class-->
 <!--it's on right-top-->
+<%if (typeof dropDown !== 'undefined') { %>
+
 <div class="right menu">
     <div class="ui floating labeled icon dropdown item" id="classi-anno">
         <span class="text"> <%= sessioneIniziale.annoScolastico%> </span>
@@ -21,6 +23,7 @@
     </div>
 </div>
 
+<% } %>
 <script>
     $(document).ready(function () {
         $("#classi-anno").dropdown({

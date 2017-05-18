@@ -90,8 +90,24 @@ body::-webkit-scrollbar-thumb {
     outline: 1px solid #424242;
 }
 
-/*history*/
+.suwala-doubleScroll-scroll-wrapper::-webkit-scrollbar {
+    width: .4em;
+    background-color: white;
+    height: .8em;
+}
 
+.suwala-doubleScroll-scroll-wrapper::-webkit-scrollbar-track {
+    -webkit-box-shadow: #BDBDBD;
+}
+
+.suwala-doubleScroll-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: #BDBDBD;
+    width: .4em;
+    outline: 1px solid #BDBDBD;
+    border-radius: 10px;
+}
+
+/*history*/
 .history-container {
     overflow-y: scroll;
     max-height: 300px;
