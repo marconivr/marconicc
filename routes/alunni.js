@@ -358,18 +358,25 @@ module.exports = function (app) {
                 console.log(err);
             } else {
                 //raggruppo per classe futura(es: PRIMA o TERZA)
-                app.locals.dropDown = _.groupBy(obj, function (o) {
-                    return o.classe_futura;
-                });
+                if(obj.length === 0){
+                    res.redirect(endpoint.alunni.uploadAlunniCsv);
+                }else {
+                    app.locals.dropDown = _.groupBy(obj, function (o) {
+                        return o.classe_futura;
+                    });
 
-                app.locals.sessioneIniziale = {
-                    classeFutura: obj[0].classe_futura,
-                    annoScolastico:obj[0].anno_scolastico
+
+
+                    app.locals.sessioneIniziale = {
+                        classeFutura: obj[0].classe_futura,
+                        annoScolastico:obj[0].anno_scolastico
+                    };
+
+                    res.render('studenti.ejs', {
+                        pageTitle: " Studenti "
+                    });
                 }
 
-                res.render('studenti.ejs', {
-                    pageTitle: " Studenti "
-                });
             }
 
 
