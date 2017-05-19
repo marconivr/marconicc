@@ -135,7 +135,7 @@
     </div>
 
     <!--FILTRI-->
-    <div class="ui dropdown settings item notSelectable">
+    <div class="ui dropdown  settings item notSelectable">
         <p class="ui tiny" style="top:25%;position:relative">Filtri</p>
         <div class="menu" style=" width: 200%;">
             <div class="item">
@@ -187,9 +187,10 @@
                 <i class="dropdown icon"></i>
                 Nazionalità
                 <div class="menu">
-                    <div class="list" id="nazionalita-menu" style="width:10%; border-color:white !important;">
-
+                    <div class="list nazionalita-scrollbar " id="nazionalita-menu"
+                         style="width:10%; border-color:white !important;">
                     </div>
+
                 </div>
             </div>
             <!--desiderata-->
@@ -393,7 +394,8 @@
     </div>
     <div class="content">
         <div id="history-container" class="history-container">
-            <labeli id="history-label">Qui puoi vedere tutti gli spostamenti compiuti</labeli><br>
+            <label id="history-label">Qui puoi vedere tutti gli spostamenti compiuti</label>
+            <br>
             <div class="ui styled fluid accordion">
 
             </div>

@@ -119,6 +119,7 @@ body::-webkit-scrollbar-thumb {
 .history-container::-webkit-scrollbar {
     width: .5em;
     background-color: white;
+    max-height: 50px;
 }
 
 .history-container::-webkit-scrollbar-track {
@@ -129,6 +130,23 @@ body::-webkit-scrollbar-thumb {
 .history-container::-webkit-scrollbar-thumb {
     background-color: #424242;
     outline: 1px solid #424242;
+}
+
+.nazionalita-scrollbar::-webkit-scrollbar {
+    width: .4em;
+    background-color: white;
+    height: .8em;
+}
+
+.nazionalita-scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: #BDBDBD;
+}
+
+.nazionalita-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #BDBDBD;
+    width: .4em;
+    outline: 1px solid #BDBDBD;
+    border-radius: 10px;
 }
 
 
@@ -190,6 +208,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .pusher{
+    padding-top: 60px;
     min-height: 100%!important;
 }
 .sei {
