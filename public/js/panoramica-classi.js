@@ -1,3 +1,4 @@
+'use strict';
 var debug = false;
 var saveRealTimeOnDb = true;
 
@@ -1332,7 +1333,6 @@ function buttonRevertForHistory(element) {
         var classeAttuale = getClassNameFromStudent(cf);
 
 
-        //todo
         //se classeAttuale è diversa da classeSuccessiva mostro in alert
         if (classeAttuale != classeSuccessiva) {
             var text = " L'alunno è stato ulteriormente spostato \n"
@@ -1423,7 +1423,7 @@ function history() {
                     '</tr>');
 
             //create accordion
-            var lastDate, date, container, content, p, table, tbody, tr;
+            var lastDate, date, container, content, p, table, tbody, tr, title;
             var accordion = $('.ui.styled.fluid.accordion');
             for (var history = 0; history < data.length; history++) {
                 date = new Date(data[history].timestamp);
