@@ -47,8 +47,9 @@
             <p id="classi-con-femmine"></p>
 
             <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
-            <div id="rowForInsertDate">
-
+            <div>
+                <div class="ui items" id="row-for-insert-date"  style="padding-top:5px">
+                </div>
             </div>
         </div>
         <div class="ten wide column">
@@ -63,39 +64,39 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label>Alunni minimi in una classe</label>
-                                    <input type="number" name="alunni_min" placeholder="Alunni minimi" onkeyup="setDataRealtimeNumberOfStudents()"
+                                    <input type="number" name="alunni_min" placeholder="Qual è il numero di alunni minimi di una classe?" onkeyup="setDataRealtimeNumberOfStudents()"
                                            onchange="setDataRealtimeNumberOfStudents()" id="alunni-min" min="0">
                                 </div>
                                 <div class="field">
                                     <label>Alunni massimi in una classe</label>
-                                    <input type="number" name="alunni_max" placeholder="Alunni massimi" id="alunni-max" min="0">
+                                    <input type="number" name="alunni_max" placeholder="Qual è il numero di alunni massimi di una classe?" id="alunni-max" min="0">
                                 </div>
                             </div>
                         </div>
                         <div class="field">
                             <label>Numero femmine in una classe</label>
-                            <input name="max_femmine" placeholder="Femmine" type="number" onkeyup="setDataRealtimeNumberOfFemmine()"
+                            <input name="max_femmine" placeholder="Quante femmine per classe?" type="number" onkeyup="setDataRealtimeNumberOfFemmine()"
                                    onchange="setDataRealtimeNumberOfFemmine()" id="femmine" min="0">
                         </div>
                         <div class="field">
                             <label>Numero persone con la stessa nazionalità</label>
-                            <input name="nazionalita" placeholder="Nazionalita" type="number" id="nazionalita" min="0">
+                            <input name="nazionalita" placeholder="Quante nazionaità diverse per classe?" type="number" id="nazionalita" min="0">
                         </div>
                         <div class="field">
                             <label>Numero nazionalità per classe</label>
-                            <input name="naz_per_classe" placeholder="Naz_per_classe" type="number" id="naz_per_classe" min="0">
+                            <input name="naz_per_classe" placeholder="Quanti alunni con la stessa nazionalità per classe?" type="number" id="naz_per_classe" min="0">
                         </div>
                         <div class="field">
                             <label>Numero persone che hanno residenza simile</label>
-                            <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza" min="0">
+                            <input name="stessa_provenienza" placeholder="Quanti alunni con la stessa residenza?" type="number" id="residenza" min="0">
                         </div>
                         <div class="field">
                             <label>Numero massimo di alunni in una classe in presenza di un 104</label>
-                            <input name="max_al_104" placeholder="Max_al_104" type="number" id="max_al_104" min="0">
+                            <input name="max_al_104" placeholder="Qual è il numero di alunni massimi in presenza di un 104?" type="number" id="max_al_104" min="0">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
-                            <input name="descrizione" placeholder="Descrizione" type="text" id="descrizione">
+                            <input name="descrizione" placeholder="Inserisci una descrizione per idetnificare questa configurazione" type="text" id="descrizione">
                         </div>
                         <div class="ui hidden success message" id="message">
                             <div class="header">Form Completato</div>
@@ -146,20 +147,9 @@
 
         </div>
     </div>
-    <!--<div class="row">-->
-    <!--<div class="three wide column">-->
-    <!--hjhj-->
-    <!--</div>-->
-    <!--<div class="ten wide column">-->
-    <!--hjhj-->
-    <!--</div>-->
-    <!--<div class="three wide column">-->
-    <!--<img>-->
-    <!--</div>-->
-    <!--</div>-->
 </div>
 
-<div class="ui modal">
+<div class="ui modal large">
     <i class="close icon"></i>
     <div class="header" id = modal-header>
 
@@ -181,7 +171,6 @@
             </thead>
             <tbody>
             <tr id="row-settings">
-
             </tr>
             </tbody>
         </table>
@@ -310,13 +299,12 @@
             },
             type: 'get',
             success: function (data) {
-                document.getElementById("message").className = "ui success message";
+               alertify.success("Configurazione inserita");
             },
             error: function (xhr, status, error) {
-                document.getElementById("negativeMessage").className = "ui warning message";
-                console.log('Error: ' + error.message);
+               alertify.error("Opps, ci deve essere stato un problema");
 
-            },
+            }
         });
     }
 
@@ -349,8 +337,8 @@
         });
     }
 
-    //this function check that the form is compiled Strina release to check!!
-    $(document).ready(function() {
+
+      $(document).ready(function() {
         $.ajax({
             type: "GET",
             url: '<%= endpoint.alunni.getPastSettingsPrime%>',
@@ -363,15 +351,28 @@
             dataType: 'json',
 
             success: function (listaSettings) {
-                settings = listaSettings;
+                settings = listaSettings;//use when createModal() is call
 
-                var s = "";
-                s+= "<ul>";
-                for (var i = 0; i < settings.length; i++){
-                    s+= '<li style="cursor: pointer;list-style-type: none; "><a onclick="createModal(\'' + i + '\')" style="color: black">' + settings[i].data + '</a></li>';
+                for(var index = 0; index < listaSettings.length ; index++)
+                {
+                    var item = $('<div/>')
+                        .addClass('item')
+                        .appendTo($('#row-for-insert-date'));
+                    var content = $('<div/>')
+                        .addClass('content')
+                        .appendTo(item);
+
+                    console.log("value :" + index)
+                    var header = $('<div/>')
+                        .addClass('header')
+                        .html('<a onclick="createModal(\'' + index + '\')">' + listaSettings[index].nome + '</a>')
+                        .appendTo(content);
+
+                    var meta = $('<div/>')
+                        .addClass('meta')
+                        .html('<i class="wait icon"></i> ' + listaSettings[index].data + '<hr>')
+                        .appendTo(content);
                 }
-                s+= "</ul>";
-                document.getElementById("rowForInsertDate").innerHTML = s;
             }
         });
 
