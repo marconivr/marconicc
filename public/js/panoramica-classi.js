@@ -16,6 +16,9 @@ var bocciati = false;
 var bocciatiItems = [];
 var nazionalitaItems = [];
 
+//
+var dirittiUtente = undefined;
+
 
 //chart
 var informationArray = [];//reference to information
@@ -1572,6 +1575,7 @@ $(document).ready(function () {
 
         success: function (data) {
             var listaClassi = data.classi;
+            dirittiUtente = data.dirittiUtente;
 
             //dropdown for the settings
             $('.ui.dropdown.settings').dropdown(
@@ -1946,34 +1950,41 @@ $(document).ready(function () {
 
             }
             var oldList, newList, item, desiderata, cfAmico;
+            if (dirittiUtente == 0 || dirittiUtente == 1) {
             $(".contenitoreClasse").sortable({
                 connectWith: ".contenitoreClasse",
                 start: function (event, ui) {
 
-                    item = ui.item;
-                    var currentPos = $(this).position();
-                    desiderata = item.children().hasClass('desiderata');
-                    cf = item.children()[0].id; //cf dell'alunno selezionato
-                    cfAmico = getAlunnoDesiderataByCF(cf);
+
+                        item = ui.item;
+                        var currentPos = $(this).position();
+                        desiderata = item.children().hasClass('desiderata');
+                        cf = item.children()[0].id; //cf dell'alunno selezionato
+                        cfAmico = getAlunnoDesiderataByCF(cf);
 
 
-                    if (desiderata) {
-                        //check if i've already this cf
-                        if (jQuery.inArray(cf, cfArray) == -1) {
-                            cfArray.push(cf);
-                            var amico = getStudentByCF(cfAmico);
-                            var classeAmico = getClassNameFromStudent(cfAmico);
-                            var classeStudenteSelezionato = getClassNameFromStudent(cf);
-                            //se la desiderata non è corrisposta
-                            if (!(cfAmico === undefined || classeAmico === undefined || classeAmico != classeStudenteSelezionato)) {
-                                if (confirm("Questo alunno vuole stare con un amico: " + amico + " della " + classeAmico + ", continuare?")) {
-                                    newList = oldList = ui.item.parent().parent();
+                        if (desiderata) {
+                            //check if i've already this cf
+                            if (jQuery.inArray(cf, cfArray) == -1) {
+                                cfArray.push(cf);
+                                var amico = getStudentByCF(cfAmico);
+                                var classeAmico = getClassNameFromStudent(cfAmico);
+                                var classeStudenteSelezionato = getClassNameFromStudent(cf);
+                                //se la desiderata non è corrisposta
+                                if (!(cfAmico === undefined || classeAmico === undefined || classeAmico != classeStudenteSelezionato)) {
+                                    if (confirm("Questo alunno vuole stare con un amico: " + amico + " della " + classeAmico + ", continuare?")) {
+                                        newList = oldList = ui.item.parent().parent();
+                                    }
+                                    else {
+                                        var index = cfArray.indexOf(cf);
+                                        cfArray.splice(index, 1);
+                                        newList = oldList = ui.item.parent().parent();
+                                    }
                                 }
                                 else {
-                                    var index = cfArray.indexOf(cf);
-                                    cfArray.splice(index, 1);
                                     newList = oldList = ui.item.parent().parent();
                                 }
+
                             }
                             else {
                                 newList = oldList = ui.item.parent().parent();
@@ -1983,12 +1994,6 @@ $(document).ready(function () {
                         else {
                             newList = oldList = ui.item.parent().parent();
                         }
-
-                    }
-                    else {
-                        newList = oldList = ui.item.parent().parent();
-                    }
-
                 },
                 stop: function (event, ui) {
                     var cf_studente_spostato = item[0].childNodes[0].id;
@@ -2001,6 +2006,7 @@ $(document).ready(function () {
                     if (ui.sender) newList = ui.placeholder.parent().parent();
                 }
             }).disableSelection();
+        }
 
             displayAllClass();
 
@@ -2023,6 +2029,11 @@ $(document).ready(function () {
 
             //contents it's load, remove loader
             $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
+            //event.preveventD
+            if (dirittiUtente == 2) {
+                alertify.set('notifier', 'position', 'top-right');
+                alertify.warning('Attenzione, non hai i diritti per spsotare gli utenti');
+            }
         },
         type: 'GET'
     });
