@@ -299,14 +299,14 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.get(endpoint.alunni.insertSettingsPrime, function (req, res) {
+    app.post(endpoint.alunni.insertSettingsPrime, function (req, res) {
         const scuola = req.user.id_scuola;
         query.insertSettingsPrime(function (err, results) {
             if (err)
-                throw err;
+                res.send({"error":err});
             else
                 res.send(JSON.stringify(results));
-        }, scuola, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.residenza, req.query.nazionalita, req.query.naz_per_classe, req.query.max_al_104);
+        }, scuola, req.body.data, req.body.descrizione, req.body.alunniMin, req.body.alunniMax, req.body.femmine, req.body.residenza, req.body.nazionalita, req.body.naz_per_classe, req.body.max_al_104);
 
     });
 
@@ -317,7 +317,7 @@ module.exports = function (app) {
         const scuola = req.user.id_scuola;
         query.insertSettingsTerze(function (err, results) {
             if (err)
-                throw err;
+                res.send(err);
             else
                 res.send(JSON.stringify(results));
         }, scuola, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.residenza, req.query.nazionalita, req.query.naz_per_classe, req.query.max_al_104);
@@ -403,17 +403,11 @@ module.exports = function (app) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
-        const idUtente = req.user.id;
-        const dirittiUtente = req.user.diritti;
-
 
 
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
-
-            var wrapper = {scuola:scuola, annoScolastico:annoScolastico, classeFutura:classeFutura, idUtente:idUtente, dirittiUtente: dirittiUtente, classi:classi };
-            res.send(wrapper);
-
+            res.send(classi);
         });
 
     });
@@ -459,7 +453,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
+    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
@@ -472,7 +466,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
+    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, function (req, res) {
         query.deleteStudentFromHistory(function (err, results) {
             if (err)
                 res.send({

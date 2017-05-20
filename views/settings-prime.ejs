@@ -197,6 +197,7 @@
 
 <script>
     var settings = [];
+    var global_index = 0; // indice della configurazione
     function  createModal(index) {
         var s = "";
 
@@ -297,9 +298,39 @@
                 "naz_per_classe" : naz_per_classe,
                 "max_al_104" : max_al_104
             },
-            type: 'get',
-            success: function (data) {
-               alertify.success("Configurazione inserita");
+            type: 'post',
+            success: function (dati) {
+                settings.push({
+                    "data" : data,
+                    "descrizione" : descrizione,
+                    "alunniMin" : alunniMin,
+                    "alunniMax": alunniMax ,
+                    "femmine" : femmine ,
+                    "residenza" : residenza,
+                    "nazionalita" : nazionalita,
+                    "naz_per_classe" : naz_per_classe,
+                    "max_al_104" : max_al_104
+                });
+                alert(global_index);
+                var item = $('<div/>')
+                    .addClass('item')
+                    .appendTo($('#row-for-insert-date'));
+                var content = $('<div/>')
+                    .addClass('content')
+                    .appendTo(item);
+
+                var header = $('<div/>')
+                    .addClass('header')
+                    .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
+                    .appendTo(content);
+
+                var meta = $('<div/>')
+                    .addClass('meta')
+                    .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
+                    .appendTo(content);
+                global_index += 1;
+                alertify.success("Configurazione inserita");
+
             },
             error: function (xhr, status, error) {
                alertify.error("Opps, ci deve essere stato un problema");
@@ -307,36 +338,6 @@
             }
         });
     }
-
-    function addPriority() {
-        var priorita = [];
-        priorita.push("legge_104");
-        priorita.push("legge_107");
-        priorita.push("alunni");
-        priorita.push("desiderata");
-        priorita.push("ripetenti");
-        priorita.push("sesso");
-        priorita.push("nazionalita");
-        priorita.push("CAP");
-        priorita.push("voto");
-
-        $.ajax({
-            url: '<%= endpoint.alunni.insertPriorita%>',
-            data: {
-                "priorita" : priorita
-            },
-            type: 'get',
-            success: function (data) {
-
-            },
-            error: function (xhr, status, error) {
-
-                console.log('Error: ' + error.message);
-
-            },
-        });
-    }
-
 
       $(document).ready(function() {
         $.ajax({
@@ -372,6 +373,7 @@
                         .addClass('meta')
                         .html('<i class="wait icon"></i> ' + listaSettings[index].data + '<hr>')
                         .appendTo(content);
+                    global_index+= 1;
                 }
             }
         });
