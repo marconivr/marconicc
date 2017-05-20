@@ -403,11 +403,17 @@ module.exports = function (app) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
+        const idUtente = req.user.id;
+        const dirittiUtente = req.user.diritti;
+
 
 
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
-            res.send(classi);
+
+            var wrapper = {scuola:scuola, annoScolastico:annoScolastico, classeFutura:classeFutura, idUtente:idUtente, dirittiUtente: dirittiUtente, classi:classi };
+            res.send(wrapper);
+
         });
 
     });
@@ -453,7 +459,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
@@ -466,7 +472,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         query.deleteStudentFromHistory(function (err, results) {
             if (err)
                 res.send({

@@ -13,7 +13,6 @@
     <div class="ui text loader">Creando la tabella..</div>
 </div>
 <div class="ui bottom attached  tab active  segment" id="noBorderSegment" data-tab="first">
-
     <div class="tableContainer" style="display: none;">
         <table id="studenti" class="ui celled teal table" cellspacing="0" width="100%">
             <thead>
@@ -228,6 +227,8 @@
     function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
         ANNO_SCOLASTICO = anno_scolastico;
         CLASSE_FUTURA = classeFutura;
+        //set classe futura in alto a destra
+        $('#classe-futura-label').html(classeFutura);
 
         if (firstTime) {
             table = $('#studenti').DataTable(settings);

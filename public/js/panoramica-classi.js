@@ -1570,7 +1570,8 @@ $(document).ready(function () {
         },
         dataType: 'json',
 
-        success: function (listaClassi) {
+        success: function (data) {
+            var listaClassi = data.classi;
 
             //dropdown for the settings
             $('.ui.dropdown.settings').dropdown(
@@ -2004,7 +2005,7 @@ $(document).ready(function () {
             displayAllClass();
 
             $(".barChartButton").on('click', function (e) {
-                classe = $(this).parent().parent().parent().attr('id');
+                 var classe = $(this).parent().parent().parent().attr('id');
 
                 pieChart = $("#" + classe + "pieChart").hide();
                 barChart = $("#" + classe + "barChart").show();
@@ -2012,8 +2013,8 @@ $(document).ready(function () {
             });
 
             $(".pieChartButton").on('click', function (e) {
-
-                classe = $(this).parent().parent().parent().attr('id');
+                
+                var classe = $(this).parent().parent().parent().attr('id');
 
                 barChart = $("#" + classe + "barChart").hide();
                 pieChart = $("#" + classe + "pieChart").show();
