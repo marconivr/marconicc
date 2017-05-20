@@ -293,7 +293,7 @@
         var naz_per_classe = parseInt($("#naz_per_classe").val());
         var max_al_104 = parseInt($("#max_al_104").val());
         $.ajax({
-            url: '<%= endpoint.alunni.insertSettingsPrime%>',
+            url: '<%= endpoint.alunni.insertSettingsTerze%>',
             data: {
                 "data" : data,
                 "descrizione" : descrizione,
@@ -350,7 +350,7 @@
     $(document).ready(function() {
         $.ajax({
             type: "GET",
-            url: '<%= endpoint.alunni.getPastSettingsPrime%>',
+            url: '<%= endpoint.alunni.getPastSettingsTerze%>',
             data: {
                 format: 'json'
             },

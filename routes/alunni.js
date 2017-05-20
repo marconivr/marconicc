@@ -184,7 +184,7 @@ module.exports = function (app) {
 
         async.parallel({
             studentiPrima: function (callback) {
-                query.getNumberOfStudenti("PRIMA", function (err, results) {
+                query.getNumberOfStudenti(req.user.id_scuola, "PRIMA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -193,7 +193,7 @@ module.exports = function (app) {
             },
 
             femminePrima: function (callback) {
-                query.getNumberGirl("PRIMA", function (err, results) {
+                query.getNumberGirl(req.user.id_scuola, "PRIMA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -201,7 +201,7 @@ module.exports = function (app) {
                 });
             },
             mediaPrima: function (callback) {
-                query.getAVGOfStudenti("PRIMA", function (err, results) {
+                query.getAVGOfStudenti(req.user.id_scuola, "PRIMA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -209,7 +209,7 @@ module.exports = function (app) {
                 });
             },
             stranieriPrima: function (callback) {
-                query.getNumberStranieri("PRIMA", function (err, results) {
+                query.getNumberStranieri(req.user.id_scuola, "PRIMA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -233,7 +233,7 @@ module.exports = function (app) {
 
         async.parallel({
             studentiTerza: function (callback) {
-                query.getNumberOfStudenti("TERZA", function (err, results) {
+                query.getNumberOfStudenti(req.user.id_scuola, "TERZA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -242,7 +242,7 @@ module.exports = function (app) {
             },
 
             femmineTerza: function (callback) {
-                query.getNumberGirl("TERZA", function (err, results) {
+                query.getNumberGirl(req.user.id_scuola, "TERZA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
@@ -250,7 +250,7 @@ module.exports = function (app) {
                 });
             },
             mediaTerza: function (callback) {
-                query.getAVGOfStudenti("TERZA", function (err, results) {
+                query.getAVGOfStudenti(req.user.id_scuola, "TERZA", function (err, results) {
                     if (err)
                         console.log(err);
                     else{
@@ -264,11 +264,22 @@ module.exports = function (app) {
                 });
             },
             stranieriTerza: function (callback) {
-                query.getNumberStranieri("TERZA", function (err, results) {
+                query.getNumberStranieri(req.user.id_scuola, "TERZA", function (err, results) {
                     if (err)
                         console.log(err);
                     else
                         callback(null, {'stranieri': results})
+                });
+            },
+            indirizziTerza: function (callback) {
+                query.getIndirizziTerza(req.user.id_scuola, function (err, results) {
+                    if (err)
+                        console.log(err);
+                    else{
+                        console.log(results);
+                        callback(null, {'indirizzi': results});
+                    }
+
                 });
             }
         }, function (err, results) {
@@ -278,7 +289,8 @@ module.exports = function (app) {
                 studentiTerza: results.studentiTerza.studenti,
                 femmineTerza: results.femmineTerza.femmine,
                 mediaTerza: results.mediaTerza.media,
-                stranieriTerza: results.stranieriTerza.stranieri
+                stranieriTerza: results.stranieriTerza.stranieri,
+                indirizziTerza: results.indirizziTerza.indirizzi
             });
 
         });
@@ -299,15 +311,17 @@ module.exports = function (app) {
     });
 
     /**
-     * inserisce le impostazioni delle prime
+     * inserisce le impostazioni delle terze
      */
     app.get(endpoint.alunni.insertSettingsTerze, function (req, res) {
+        const scuola = req.user.id_scuola;
         query.insertSettingsTerze(function (err, results) {
             if (err)
                 throw err;
             else
                 res.send(JSON.stringify(results));
-        }, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.stranieri, req.query.residenza, req.query.iniziale, req.query.ripetenti);
+        }, scuola, req.query.data, req.query.descrizione, req.query.alunniMin, req.query.alunniMax, req.query.femmine, req.query.residenza, req.query.nazionalita, req.query.naz_per_classe, req.query.max_al_104);
+
     });
 
     app.get('/studenti-prima-json', middleware.isLoggedIn, function (req, res) {
@@ -466,7 +480,8 @@ module.exports = function (app) {
 
 
     app.get(endpoint.alunni.getPastSettingsPrime, middleware.isLoggedIn, function (req, res) {
-        query.getSettingsPrime(function (err, results) {
+        const scuola = req.user.id_scuola;
+        query.getSettingsPrime(scuola, function (err, results) {
             if (err)
                 console.log(err);
             else {
@@ -476,7 +491,8 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.getPastSettingsTerze, middleware.isLoggedIn, function (req, res) {
-        query.getSettingsTerze(function (err, results) {
+        const scuola = req.user.id_scuola;
+        query.getSettingsTerze(scuola, function (err, results) {
             if (err)
                 console.log(err);
             else {
@@ -484,11 +500,6 @@ module.exports = function (app) {
             }
         });
     });
-
-
-
-
-
 
     app.get(endpoint.utenti.exportSingleCsv, middleware.isLoggedIn, function (req, res) {
         query.getClassiComposteForExport(function (err, results) {
