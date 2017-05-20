@@ -40,7 +40,7 @@ module.exports = {
      */
     restrictTo :function(role) {
     return function (req, res, next) {
-        //var userId = todo: insert user id
+
         var userId = req.user.diritti;
         var hasRights = false;
         for (var index = 0; index < role.length; index++) {
