@@ -481,7 +481,7 @@ module.exports = {
             [username, password, diritto, scuola],
             function (err, rows) {
                 if (err) {
-                    throw err;
+                    console.log(err);
                 } else {
                     callback(err, rows);
                 }

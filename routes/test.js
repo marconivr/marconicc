@@ -7407,6 +7407,18 @@ function fixFemmine() {
         var alunni = listaClassi[i].alunni;
         alunni = _.union(alunni, array_gruppi_femmine[i]);
         listaClassi[i].alunni = alunni;
+        for (var i in alunni){
+            var amico = checkDesiderata(alunni[i]);
+            if(amico !== null){
+                listaClassi[i].alunni.push(amico);
+                _.remove(femmine, function(obj) {
+                    return obj.cf = amico.cf ;
+                });
+                listaClassi[i].alunni.push(amico);
+                aggiornaPropietaAttuali(listaClassi[i]);
+            }
+
+        }
         aggiornaPropietaAttuali(listaClassi[i]);
         i++;
         lenght--;
@@ -7599,6 +7611,15 @@ for (var o in alunni) {
             i++;
         } else {
             i++;
+            var amico = checkDesiderata(alunni[o]);
+            if(amico !== null){
+                classe.alunni.push(amico);
+                _.remove(alunni, function(obj) {
+                    return obj.cf = amico.cf ;
+                });
+                aggiornaPropietaAttuali(classe);
+            }
+
             delete alunni[o];
             break;
         }
@@ -7727,12 +7748,19 @@ while(true){
 
 
 
-function checkDesiderata(cfStudente){
+function checkDesiderata(objStudente){
     var amico = _.filter(app,function (obj) {
-        return obj.cf = cfStudente;
+        if (objStudente.desiderata === obj.cf){
+            return obj;
+        }
     });
 
-    if(amico.desiderata === cfStudente){
+    amico = amico[0];
+
+    if(amico == undefined){
+        return null;
+    }
+    if(amico.desiderata === objStudente.cf){
         return amico;
     }else{
         return null;
@@ -7757,37 +7785,55 @@ for (i = 0; i < listaClassi.length; i++) {
 
         while (limiteAlunni !== 0){
 
-            var propIdealiNaz = classe.propAttuali.nazionalita;
+            var propAttualiNaz = classe.propAttuali.nazionalita;
 
-            var nNazClasse =  Object.keys(propIdealiNaz).length;
+            var nNazClasse =  Object.keys(propAttualiNaz).length;
 
-            if(propIdealiNaz["ITALIANA"] !== undefined){
+            if(propAttualiNaz["ITALIANA"] !== undefined){
                 nNazClasse -= 1;
             }
 
-            if(nNazClasse > settings.nazionalita_per_classe){
+            if(nNazClasse >= settings.nazionalita_per_classe){
+                //classi che superano il limite quindi devo popolarli con gente della stessa nazionalità
+                for(var naz in propAttualiNaz){
+                   if(naz.toLowerCase() !== "italiana" ){
+                       if(risNaz[naz] !== undefined){
+                           if(risNaz[naz].length > 0){
+                               var gruppetto = risNaz[naz][0];
+                               var somma = propAttualiNaz[naz] += gruppetto;
+                               if (somma  >= (settings.gruppo_nazionalita * 2)){
+                                   risNaz[naz].shift();
+                                   limiteAlunni -= gruppetto;
+                               }
+                           }
+                       }
+
+                   }
+                }
+
+                limiteAlunni = 0;
 
             }else{
                 var rimantenti = settings.nazionalita_per_classe - nNazClasse;
 
                 while (rimantenti !== 0){
                     for(var naz in risNaz){
-                        if (propIdealiNaz[naz] === undefined){
-                            propIdealiNaz[naz] = risNaz[naz].shift();
-                            rimantenti--;
-                            break
-                        }
+                        if (propAttualiNaz[naz] === undefined){
+                            if(risNaz[naz].length > 0){
+                                propAttualiNaz[naz] = risNaz[naz].shift();
+                                rimantenti--;
+                                break
+                            }
 
+                        }
                     }
+                    limiteAlunni = 0;
+
                 }
 
 
             }
 
-
-
-
-            limiteAlunni--;
         }
 
 }
@@ -7815,5 +7861,3 @@ if (_(_.union(filtroFemmine, filtro104Limite, filtro104MaxNum)).size() === 0) {
     console.log("TUTTO OK");
 }
 
-
-console.log(300^300);

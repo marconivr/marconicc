@@ -389,11 +389,15 @@ module.exports = function (app) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
+        const idUtente = req.user.id;
 
 
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
-            res.send(classi);
+
+            var wrapper = {scuola:scuola, annoScolastico:annoScolastico, classeFutura:classeFutura, idUtente:idUtente,classi:classi };
+            res.send(wrapper);
+
         });
 
     });
