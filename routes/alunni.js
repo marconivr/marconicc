@@ -453,7 +453,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
@@ -466,7 +466,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.removeStudentFromHistory, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         query.deleteStudentFromHistory(function (err, results) {
             if (err)
                 res.send({
