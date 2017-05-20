@@ -3,6 +3,9 @@
 <%if (typeof dropDown !== 'undefined') { %>
 
 <div class="right menu">
+    <div class="ui floating labeled icon dropdown item">
+        <span class="text" id="classe-futura-label"> <%= sessioneIniziale.classeFutura.substring(0,1) + sessioneIniziale.classeFutura.substring(1).toLocaleLowerCase() %> </span>
+    </div>
     <div class="ui floating labeled icon dropdown item" id="classi-anno">
         <span class="text"> <%= sessioneIniziale.annoScolastico%> </span>
         <i class="dropdown icon"></i>
