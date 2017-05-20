@@ -404,12 +404,14 @@ module.exports = function (app) {
         const annoScolastico = "2017-2018";
         const classeFutura = "PRIMA";
         const idUtente = req.user.id;
+        const dirittiUtente = req.user.diritti;
+
 
 
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
 
-            var wrapper = {scuola:scuola, annoScolastico:annoScolastico, classeFutura:classeFutura, idUtente:idUtente,classi:classi };
+            var wrapper = {scuola:scuola, annoScolastico:annoScolastico, classeFutura:classeFutura, idUtente:idUtente, dirittiUtente: dirittiUtente, classi:classi };
             res.send(wrapper);
 
         });
