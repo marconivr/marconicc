@@ -13,8 +13,6 @@ var async = require('async');
 
 connection.query('USE ' + dbconfig.database);
 
-//for select strudents of this year
-var anno_sc = "SELECT CONCAT_WS('-', YEAR(CURDATE()), YEAR(DATE_ADD(CURDATE(), INTERVAL 1 YEAR))) AS anno_scolastico";
 
 
 module.exports = {
@@ -244,7 +242,7 @@ module.exports = {
     },
 
     insertSettingsPrime: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
-        var query = connection.query("INSERT INTO configurazione (scuola, anno_scolastico, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, anno_sc, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
+        var query = connection.query("INSERT INTO configurazione (scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
             if (err) {
                 console.log(err);
             } else {
@@ -254,7 +252,7 @@ module.exports = {
     },
 
     insertSettingsTerze: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
-        var query = connection.query("INSERT INTO configurazione (scuola, anno_scolastico, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, anno_sc, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "TERZA*-"], function (err, row) {
+        var query = connection.query("INSERT INTO configurazione (scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "TERZA"], function (err, row) {
             if (err) {
                 console.log(err);
             } else {
@@ -264,8 +262,8 @@ module.exports = {
     },
 
 
-    getSettingsPrime: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'PRIMA';", function (err, rows) {
+    getSettingsPrime: function (scuola, callback) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'PRIMA' and scuola = ?;", [scuola], function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -274,8 +272,8 @@ module.exports = {
         });
     },
 
-    getSettingsTerze: function (callback) {
-        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'TERZA';", function (err, rows) {
+    getSettingsTerze: function (scuola, callback) {
+        connection.query("select DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'TERZA' and scuola = ?;", [scuola], function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -366,9 +364,9 @@ module.exports = {
         console.log(ris.sql);
     },
 
-    getNumberGirl: function (classe, callback) {
+    getNumberGirl: function (scuola, classe, callback) {
 
-        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND scuola = ?",[scuola],  function (err, rows) {
             if (err) {
                 console.log('MySQL error');
             } else {
@@ -377,9 +375,9 @@ module.exports = {
         });
     },
 
-    getNumberStranieri: function (classe, callback) {
+    getNumberStranieri: function (scuola, classe, callback) {
 
-        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND nazionalita != 'ITALIANA' AND anno_scolastico = (" + anno_sc + ")", function (err, rows) {
+        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND nazionalita != 'ITALIANA' AND scuola = ?",[scuola],  function (err, rows) {
             if (err) {
                 console.log('MySQL error');
             } else {
@@ -404,9 +402,9 @@ module.exports = {
         });
     },
 
-    getNumberOfStudenti: function (classe, callback) {
+    getNumberOfStudenti: function (scuola, classe, callback) {
 
-        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = ?", [classe], function (err, rows) {
+        connection.query("SELECT  DISTINCT COUNT(classe_futura) as result from alunni WHERE classe_futura = ? and scuola = ?", [classe, scuola], function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
@@ -416,9 +414,20 @@ module.exports = {
     },
 
 
-    getAVGOfStudenti: function (classe, callback) {
+    getAVGOfStudenti: function (scuola, classe, callback) {
 
-        connection.query("SELECT ROUND( AVG(voto),2 ) as result FROM alunni WHERE classe_futura = ? ", [classe], function (err, rows) {
+        connection.query("SELECT ROUND( AVG(voto),2 ) as result FROM alunni WHERE classe_futura = ? AND scuola = ?", [classe, scuola], function (err, rows) {
+            if (err) {
+                console.log('error');
+            } else {
+                callback(err, rows);
+            }
+        });
+    },
+
+    getIndirizziTerza: function (scuola, callback) {
+
+        connection.query("SELECT i.indirizzo as result FROM configurazione as c, indirizzi as i, indirizzi_configurazione as ic WHERE  ic.configurazione = c.id AND ic.indirizzo = i.id AND c.classe = 'TERZA' AND c.scuola = ?", [scuola], function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
