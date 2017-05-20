@@ -136,6 +136,7 @@ body::-webkit-scrollbar-thumb {
     width: .4em;
     background-color: white;
     height: .8em;
+    max-height: 20px;
 }
 
 .nazionalita-scrollbar::-webkit-scrollbar-track {

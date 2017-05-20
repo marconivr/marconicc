@@ -38,7 +38,6 @@
         <!--sematic button-->
         <div>
             <div class="large ui disabled button " tabindex="0" id="sendButton" onclick="addUtente()">Send</div>
-            <p id="messageCompila">Devi completare tutti i campi!</p></div>
     </form>
 </div>
 
@@ -57,9 +56,7 @@
 
             if (!$emptyFields.length) {
                 $("#sendButton").removeClass('disabled');
-                $("#messageCompila").hide();
             } else {
-                $("#messageCompila").show();
                 $("#sendButton").addClass('ui disabled button');
             }
         });
@@ -85,6 +82,7 @@
                         $("#ripeti_password").val("");
                         $("#username").val("");
                     }
+                    $("#sendButton").addClass('ui disabled button');
 
                 },
                 error: function (xhr, status, error) {
