@@ -1570,7 +1570,8 @@ $(document).ready(function () {
         },
         dataType: 'json',
 
-        success: function (listaClassi) {
+        success: function (data) {
+            var listaClassi = data.classi;
 
             //dropdown for the settings
             $('.ui.dropdown.settings').dropdown(
