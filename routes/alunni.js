@@ -411,7 +411,15 @@ module.exports = function (app) {
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
 
-            var wrapper = {scuola:scuola, annoScolastico:annoScolastico, classeFutura:classeFutura, idUtente:idUtente, dirittiUtente: dirittiUtente, classi:classi };
+            var wrapper = {
+                scuola:scuola,
+                annoScolastico:annoScolastico,
+                classeFutura:classeFutura,
+                idUtente:idUtente,
+                dirittiUtente: dirittiUtente,
+                classi:classi
+            };
+            
             res.send(wrapper);
 
         });
