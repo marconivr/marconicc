@@ -522,7 +522,7 @@ module.exports = function (app) {
         query.getClassiComposteForExport(function (err, results) {
             if (err) {
                 console.log(err);
-                res.send("errore");
+                res.send("Errore nello scaricamento del file");
             }
             else {
                 res.setHeader('Content-disposition', 'attachment; filename=export.csv');
