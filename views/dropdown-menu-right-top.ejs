@@ -1,6 +1,7 @@
 <!--this file represent the dropwdonw menu for select years and class-->
 <!--it's on right-top-->
-<%if (typeof dropDown !== 'undefined') { %>
+<!--se c'è hideDropDown non lo faccio vedere-->
+<% if (typeof dropDown !== 'undefined' && typeof hideDropDown == 'undefined'){ %>
 
 <div class="right menu">
     <div class="ui floating labeled icon dropdown item">

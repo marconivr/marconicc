@@ -22,8 +22,10 @@ module.exports = function (app) {
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
+        //hideDropDown if true -> dropdown not show
         res.render('insert-from-csv.ejs', {
-            pageTitle: " main "
+            pageTitle: " main ",
+            hideDropDown: true
         });
     });
 
@@ -128,7 +130,8 @@ module.exports = function (app) {
     app.get(endpoint.utenti.creaUtente, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
         res.render('crea-utente.ejs', {
-            pageTitle: "Creazione utente "
+            pageTitle: "Creazione utente ",
+            hideDropDown: true
         })
     });
 
