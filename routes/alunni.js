@@ -22,8 +22,10 @@ module.exports = function (app) {
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
+        //hideDropDown if true -> dropdown not show
         res.render('insert-from-csv.ejs', {
-            pageTitle: " main "
+            pageTitle: " main ",
+            hideDropDown: true
         });
     });
 
@@ -128,7 +130,8 @@ module.exports = function (app) {
     app.get(endpoint.utenti.creaUtente, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
 
         res.render('crea-utente.ejs', {
-            pageTitle: "Creazione utente "
+            pageTitle: "Creazione utente ",
+            hideDropDown: true
         })
     });
 
@@ -407,7 +410,17 @@ module.exports = function (app) {
 
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
-            res.send(classi);
+
+            var wrapper = {
+                scuola:scuola,
+                annoScolastico:annoScolastico,
+                classeFutura:classeFutura,
+                idUtente:idUtente,
+                dirittiUtente: dirittiUtente,
+                classi:classi
+            };
+
+            res.send(wrapper);
         });
 
     });
@@ -505,7 +518,7 @@ module.exports = function (app) {
         query.getClassiComposteForExport(function (err, results) {
             if (err) {
                 console.log(err);
-                res.send("errore");
+                res.send("Errore nello scaricamento del file");
             }
             else {
                 res.setHeader('Content-disposition', 'attachment; filename=export.csv');

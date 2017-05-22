@@ -7838,6 +7838,7 @@ for (i = 0; i < listaClassi.length; i++) {
 
 }
 
+
 var filtroFemmine = _.filter(listaClassi, function (classe) {
     if (classe.propAttuali.femmine < 4 && classe.propAttuali.femmine !== 0) {
         return classe

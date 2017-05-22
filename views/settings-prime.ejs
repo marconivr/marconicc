@@ -151,14 +151,18 @@
 
 <div class="ui modal large">
     <i class="close icon"></i>
-    <div class="header" id = modal-header>
+    <div class="header">
+
+        <h2 class="ui header">
+            <span class="ui header" id="modal-header"></span>
+            <div class="sub header"><span class="ui header" id="modal-date"></span></div>
+        </h2>
 
     </div>
     <div class="content">
         <table class="ui very basic collapsing celled table">
             <thead>
             <tr>
-                <th>Data</th>
                 <th>Descrizione</th>
                 <th>Alunni minimi</th>
                 <th>Alunni massimi</th>
@@ -201,10 +205,10 @@
     function  createModal(index) {
         var s = "";
 
-        document.getElementById("modal-header").innerHTML = settings[index].data;
-
+        $('#modal-header').text(settings[index].nome);
+        $('#modal-date').text(settings[index].data);
         for (setting in settings[index]){
-            s+= "<td>" + settings[index][setting] + "</td>";
+            s += '<td class="center aligned">' + settings[index][setting] + "</td>";
         }
         document.getElementById("row-settings").innerHTML = s;
         $('.ui.modal')
