@@ -510,16 +510,18 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.utenti.exportSingleCsv, middleware.isLoggedIn, function (req, res) {
+    app.get(endpoint.alunni.exportSingleCsv, middleware.isLoggedIn, function (req, res) {
         query.getClassiComposteForExport(function (err, results) {
             if (err) {
                 console.log(err);
                 res.send("errore");
             }
             else {
+                csv.separator = ";";
                 res.setHeader('Content-disposition', 'attachment; filename=export.csv');
                 res.set('Content-Type', 'text/csv');
                 res.csv(results);
+                csv.separator = ",";
             }
         })
 

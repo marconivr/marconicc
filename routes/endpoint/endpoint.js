@@ -13,13 +13,13 @@ module.exports = {
         home : "/",
         creaUtente : "/crea-utente",
         unauthorized : "/unauthorized",
-        exportSingleCsv: "/export-single-csv",
         insertUtente: "/insert-utente"
     }
 
     ,
 
     alunni:{
+        exportSingleCsv: "/export-single-csv",
         uploadAlunniCsv :"/upload-alunni-csv",
         allTag: "/all-tag",
         studenti : "/studenti",

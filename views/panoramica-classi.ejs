@@ -129,7 +129,7 @@
         <p class="ui tiny" style="top:25%;position:relative"><i class="options icon"></i>Options</p>
         <!-- <i class="dropdown icon "></i>  occupa tanto spazio -->
         <div class="menu" style="width: 10%">
-            <div class="item" id="scarica-excel"> <i class="download icon"></i>Scarica excel</div>
+            <div class="item" id="scarica-excel" onclick="location.href = <%= endpoint.alunni.exportSingleCsv %>;"> <i class="download icon"></i>Scarica excel</div>
             <div class="item" id="history"> <i class="undo icon"></i>History</div>
         </div>
     </div>
