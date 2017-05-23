@@ -415,8 +415,8 @@ module.exports = function (app) {
                 scuola:scuola,
                 annoScolastico:annoScolastico,
                 classeFutura:classeFutura,
-                idUtente:idUtente,
-                dirittiUtente: dirittiUtente,
+                idUtente: req.user.id,
+                dirittiUtente: req.user.diritti,
                 classi:classi
             };
 
