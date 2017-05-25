@@ -308,7 +308,7 @@ module.exports = function (app) {
             if (err)
                 res.send({"error":err});
             else
-                res.send(JSON.stringify(results));
+                res.send("no-error");
         }, scuola, req.body.data, req.body.descrizione, req.body.alunniMin, req.body.alunniMax, req.body.femmine, req.body.residenza, req.body.nazionalita, req.body.naz_per_classe, req.body.max_al_104);
 
     });

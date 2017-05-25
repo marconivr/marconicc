@@ -14,7 +14,6 @@ var async = require('async');
 connection.query('USE ' + dbconfig.database);
 
 
-
 module.exports = {
 
     /*
@@ -84,7 +83,7 @@ module.exports = {
                     if (err) {
                         console.log(err)
                     } else {
-                        callback(err,{id: row[0].id});
+                        callback(err, {id: row[0].id});
                     }
                 });
             },
@@ -102,7 +101,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        callback(err,{id: row[0].id});
+                        callback(err, {id: row[0].id});
                     }
                 });
             }
@@ -137,7 +136,7 @@ module.exports = {
                     if (err) {
                         console.log(err)
                     } else {
-                        callback(err,{id: row[0].id});
+                        callback(err, {id: row[0].id});
                     }
                 });
             },
@@ -155,7 +154,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        callback(err,{id: row[0].id});
+                        callback(err, {id: row[0].id});
                     }
                 });
             }
@@ -163,7 +162,7 @@ module.exports = {
 
         }, function (err, results) {
             connection.query("UPDATE classi_composte SET classe = ? WHERE alunno = ? AND configurazione = ?", [results.classe.id, results.alunno.id, results.settings.id], function (err, row) {
-               callback(err);
+                callback(err);
             });
 
 
@@ -179,7 +178,7 @@ module.exports = {
                     if (err) {
                         console.log(err)
                     } else {
-                        callback(err,{id: row[0].id});
+                        callback(err, {id: row[0].id});
                     }
                 });
             },
@@ -188,7 +187,7 @@ module.exports = {
                     if (err) {
                         console.log(err)
                     } else {
-                        callback(err,{id: row[0].id});
+                        callback(err, {id: row[0].id});
                     }
                 });
             },
@@ -197,7 +196,7 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        callback(err,{id: row[0].id});
+                        callback(err, {id: row[0].id});
                     }
                 });
             }
@@ -209,7 +208,7 @@ module.exports = {
         });
     },
 
-    getHistory: function (scuola,callback) {
+    getHistory: function (scuola, callback) {
         var query = connection.query(
             "SELECT timestamp, alunni.cf as cf,history.id as id, classe_uno.nome as classe_precedente,classe_due.nome as classe_successiva FROM history" +
             " INNER JOIN scuole ON history.scuola = scuole.id" +
@@ -242,28 +241,44 @@ module.exports = {
     },
 
     insertSettingsPrime: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
-        async.waterfall({
-            updateActiveSettings: function (callback) {
-                var query = connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?",  [scuola, "PRIMA"], function (err, row) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        callback(err, {id: "Ok"});
-                    }
-                });
-            },
-            insertSettings: function (callback) {
-                var query = connection.query("INSERT INTO configurazione (attiva, scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        callback(err, {id: "Ok"});
-                    }
-                });
-            },
-        }, function (err, results) {
-                callback(err, results);
-        });
+        // async.waterfall({
+        //     updateActiveSettings: function (callback) {
+        //         var query = connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?",  [scuola, "PRIMA"], function (err, row) {
+        //             if (err) {
+        //                 console.log(err);
+        //             } else {
+        //                 callback(err, {id: "Ok"});
+        //             }
+        //         });
+        //     },
+        //     insertSettings: function (callback) {
+        //         var query = connection.query("INSERT INTO configurazione (attiva, scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
+        //             if (err) {
+        //                 console.log(err);
+        //             } else {
+        //                 callback(err, {id: "Ok"});
+        //             }
+        //         });
+        //     },
+        // }, function (err, results) {
+        //         callback(err, results);
+        // });
+        async.series
+        ([
+                function (callback) {
+                    connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?", [scuola, "PRIMA"], function (err, row) {
+                        callback(err, {id: "1"});
+                    });
+                },
+                function (callback) {
+                    connection.query("INSERT INTO configurazione (attiva, scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
+                        callback(err, {id: "1"});
+                    });
+                }
+            ],
+            function (err, results) {
+                callback(err, results)
+            });
     },
 
     updateActiveSettingsPrime: function (scuola, index, callback) {
@@ -392,7 +407,7 @@ module.exports = {
 
     getNumberGirl: function (scuola, classe, callback) {
 
-        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND scuola = ?",[scuola],  function (err, rows) {
+        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND sesso = 'F' AND scuola = ?", [scuola], function (err, rows) {
             if (err) {
                 console.log('MySQL error');
             } else {
@@ -403,7 +418,7 @@ module.exports = {
 
     getNumberStranieri: function (scuola, classe, callback) {
 
-        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND nazionalita != 'ITALIANA' AND scuola = ?",[scuola],  function (err, rows) {
+        connection.query("SELECT  DISTINCT count(classe_futura)  as result from alunni WHERE classe_futura = '" + classe + "' AND nazionalita != 'ITALIANA' AND scuola = ?", [scuola], function (err, rows) {
             if (err) {
                 console.log('MySQL error');
             } else {
@@ -597,7 +612,7 @@ module.exports = {
     },
 
     /**
-     * 
+     *
      */
     getClassiComposte: function (scuola, classeFutura, annoScolastico, callback) {
 
@@ -609,11 +624,10 @@ module.exports = {
             "LEFT JOIN tag on tag.id = alunni.tag WHERE classi.anno_scolastico = ? " +
             "and classi.classe_futura = ? and classi.scuola = ?";
 
-        var query = connection.query(sql, [annoScolastico, classeFutura, scuola],function (err, rows) {
-            callback(err,rows);
+        var query = connection.query(sql, [annoScolastico, classeFutura, scuola], function (err, rows) {
+            callback(err, rows);
         })
     }
-    
-    
+
 
 };

@@ -98,16 +98,9 @@
                             <label>Descrizione</label>
                             <input name="descrizione" placeholder="Inserisci una descrizione per identificare questa configurazione" type="text" id="descrizione">
                         </div>
-                        <div class="ui hidden success message" id="message">
-                            <div class="header">Form Completato</div>
-                            <p>Le impostazioni sono state salvate</p>
+                        <div>
+                            <div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div>
                         </div>
-                        <div class="ui hidden success message" id="negativeMessage">
-                            <div class="header">Errore</div>
-                            <p>Il form non è stato inviato</p>
-                        </div>
-                        <!--sematic button-->
-                        <div><div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div><p id="messageCompila">Devi completare tutti i campi!</p></div>
                     </form>
                 </div>
             </div>
@@ -178,8 +171,19 @@
             </tr>
             </tbody>
         </table>
+        <div class="ui right aligned grid">
+
+            <div class="right floated left aligned five wide column">
+                <label class="align left">
+                    Vuoi rendere attiva questa configurazione?
+                </label>
+            </div>
+
+        </div>
+
     </div>
     <div class="actions">
+
         <div class="ui black deny button">
             No
         </div>
@@ -307,6 +311,9 @@
             },
             type: 'post',
             success: function (dati) {
+                if (dati == "no-error") {
+
+
                 settings.push({
                     "data" : data,
                     "descrizione" : descrizione,
@@ -336,7 +343,10 @@
                     .appendTo(content);
                 global_index += 1;
                 alertify.success("Configurazione inserita");
-
+                }
+                else {
+                    alertify.error("Ci deve essere stato un problema");
+                }
             },
             error: function (xhr, status, error) {
                alertify.error("Opps, ci deve essere stato un problema");
@@ -358,7 +368,7 @@
             dataType: 'json',
 
             success: function (listaSettings) {
-                settings = listaSettings;//use when createModal() is call
+                settings = listaSettings;//ufse when createModal() is call
 
                 for(var index = 0; index < listaSettings.length ; index++)
                 {
