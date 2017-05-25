@@ -590,7 +590,7 @@ function createNazionalitaMenu() {
             .addClass('temp')
             .css({
                 'padding-top': '25%',
-                'position':'relative'
+                'position': 'relative'
             });
 
         var containerInput = $('<div/>')
@@ -673,7 +673,7 @@ function disableAllFilter() {
     }
 
     for (var desiderata = 0; desiderata < desiderataNotRespectedItems.length; desiderata++) {
-        $(desiderataNotRespectedItems[desiderata]).children('.popuptext').remove();
+        $(desiderataNotRespectedItems[desiderata]).removeClass("desiderata-non-rispettato");
     }
 
     for (var bocciati = 0; bocciati < bocciatiItems.length; bocciati++) {
@@ -723,38 +723,9 @@ function getDesiderataNonRispettato(elemento) {
 }
 
 function setFilterDesiderataNonRispettato(container) {
-    if (container === undefined) {
+    var spanTooltip = $($(container).children('span').first()[0]);
+    if (!(spanTooltip.html().indexOf("desiderata") >= 0)) {
 
-        $('.ui.segment.tooltip').each(function (index, element) {
-            var cf = $(element).attr("id"); //cf dell'alunno selezionato
-            var cfAmico = getAlunnoDesiderataByCF(cf);
-            if (cfAmico != undefined) {
-                var classe1 = getClassNameFromStudent(cf);
-                var classeAmico = getClassNameFromStudent(cfAmico);
-                var nomealunno = getStudentByCF(cf);
-                var nomeAlunnoAmico = getStudentByCF(cfAmico);
-                if (classe1 != classeAmico) {
-
-
-                    var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' + classeAmico;
-                    var span = $('<span/>')
-                        .html(text)
-                        .addClass('popuptext');
-
-                    span.appendTo($(container));
-                    span.toggleClass("show");
-
-                    $(container).mouseover(function () {
-                        span.removeClass('show');
-                    });
-
-                }
-            }
-
-
-        });
-    }
-    else {
         var cf = $(container).attr("id"); //cf dell'alunno selezionato
         var cfAmico = getAlunnoDesiderataByCF(cf);
         if (cfAmico != undefined) {
@@ -764,19 +735,16 @@ function setFilterDesiderataNonRispettato(container) {
             var nomeAlunnoAmico = getStudentByCF(cfAmico);
             if (classe1 != classeAmico) {
 
-                var text = 'Vuole stare con ' + nomeAlunnoAmico + ' che è nella ' + classeAmico;
-                var span = $('<span/>')
-                    .html(text)
-                    .addClass('popuptext');
-
-                span.appendTo($(container));
-                span.toggleClass("show");
-                $(container).mouseover(function () {
-                    span.removeClass('show');
-                });
-
+                //aggiorno il tooltip
+                var text = ' desiderata : ' + classeAmico;
+                spanTooltip.html(spanTooltip.html() + text);
+                //metto il conttorno al container
+                container.addClass("desiderata-non-rispettato");
             }
         }
+    }
+    else {
+        container.addClass("desiderata-non-rispettato");
     }
 }
 /**
@@ -930,167 +898,188 @@ function votoIntegerToDecimal(voto) {
  * this function set all filter on the page;
  */
 function setAllFilter() {
+    var totalResult = 0;
     //TODO: SET ALL FILTER
     //vedere queli filtri sono vuoti e comportarsi di conseguenza
 
-    //1 CASO
-    //guardo se il checkbox dei voti è spuntanto,se no procedo con gli altri filtri
-    if (votiCheckBoxArray.length != 0) {
-        //controllo se il filtro delle nazionalità è attivo
-        if (nazionalitaCheckBoxArray.length != 0) {
-            //controllo se c'è il filtro desiderata
-            if (desiderataNonRispettato) {
-                //ci sono tutti i filtri
-                //scorro tutti gli studenti
-                for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
-                    //todo
-                }
-            }
-            //desiderata non è rispettato, filtro pe voto e per nazionalita
-            else {
-
-                arrayStudentiVoti = [];
-                nazionalitaItems = [];
-
-                for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
-                    arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
-                    for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
-                        arrayStudentiVoti.each(function (index, element) {
-                            if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
-                                setFilterVoti(votiCheckBoxArray[voto], $(element));
-                                setFilterNazionalita($(element));
-                                nazionalitaItems.push($(element));
-                            }
-
-                        });
-
+    //guardo se entrare nelle condizioni
+    if (votiCheckBoxArray.length != 0 || nazionalitaCheckBoxArray.length != 0 || desiderataNonRispettato || bocciati) {
+        //1 CASO
+        //guardo se il checkbox dei voti è spuntanto,se no procedo con gli altri filtri
+        if (votiCheckBoxArray.length != 0) {
+            //controllo se il filtro delle nazionalità è attivo
+            if (nazionalitaCheckBoxArray.length != 0) {
+                //controllo se c'è il filtro desiderata
+                if (desiderataNonRispettato) {
+                    //ci sono tutti i filtri
+                    //scorro tutti gli studenti
+                    for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                        //todo
+                        totalResult++;
                     }
                 }
+                //desiderata non è rispettato, filtro pe voto e per nazionalita
+                else {
 
-            }
-        }
-        //VOTI SI, NAZIONALITA NO
-        else {
-            if (desiderataNonRispettato) {
-
-            }
-            else {
-                //VOTI E BOCCCIATI
-                if (bocciati) {
                     arrayStudentiVoti = [];
+                    nazionalitaItems = [];
+
                     for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
                         arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
-                        arrayStudentiVoti.each(function (index, element) {
-                            if (getIfStudentsIsBocciato($(element).attr("id"))) {
-                                setFilterVoti(votiCheckBoxArray[voto], $(element));
+                        for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                            arrayStudentiVoti.each(function (index, element) {
+                                if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
+                                    setFilterVoti(votiCheckBoxArray[voto], $(element));
+                                    setFilterNazionalita($(element));
+                                    nazionalitaItems.push($(element));
+                                    totalResult++;
+                                }
+
+                            });
+
+                        }
+                    }
+
+                }
+            }
+            //VOTI SI, NAZIONALITA NO
+            else {
+                if (desiderataNonRispettato) {
+
+                }
+                else {
+                    //VOTI E BOCCCIATI
+                    if (bocciati) {
+                        arrayStudentiVoti = [];
+                        for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                            arrayStudentiVoti = $('.' + votiCheckBoxArray[voto]);
+                            arrayStudentiVoti.each(function (index, element) {
+                                if (getIfStudentsIsBocciato($(element).attr("id"))) {
+                                    setFilterVoti(votiCheckBoxArray[voto], $(element));
+                                    setFilterBocciati($(element));
+                                    bocciatiItems.push($(element));
+                                    totalResult++;
+                                }
+
+                            });
+                        }
+                    }
+                    else {
+                        //ho solo i voti come filtro
+                        arrayStudentiVoti = [];
+                        for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
+                            $('.' + votiCheckBoxArray[voto]).each(function (index, element) {
+                                setFilterVoti(votiCheckBoxArray[voto], element)
+                                totalResult++;
+                            });
+                        }
+                    }
+
+                }
+            }
+        }
+        //2 CASO - VOTI NO
+        else {
+            //CI SONO NAZIONALITA
+            if (nazionalitaCheckBoxArray.length != 0) {
+                //CI SONO I FILTRI DESIDERATA
+                if (desiderataNonRispettato) {
+                    nazionalitaItems = [];
+                    desiderataNotRespectedItems = [];
+                    for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                        $('.ui.segment.tooltip').each(function (index, element) {
+                            var desiderata = getDesiderataNonRispettato(element);
+                            if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase() && desiderata) {
+                                setFilterNazionalita($(element));
+                                nazionalitaItems.push($(element));
+                                setFilterDesiderataNonRispettato($(element));
+                                desiderataNotRespectedItems.push($(element));
+                                totalResult++;
+                            }
+
+                        });
+
+                    }
+                }
+                //NON CI SONO FILTRI DESIDERATA
+                else {
+                    nazionalitaItems = [];
+                    for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
+                        $('.ui.segment.tooltip').each(function (index, element) {
+                            if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
+                                setFilterNazionalita($(element));
+                                nazionalitaItems.push($(element));
+                                totalResult++;
+                            }
+
+                        });
+
+                    }
+                }
+
+            }
+            //NON CI SONO NAZIONALITA
+            else {
+                //SOLO DESIDERATA
+                if (desiderataNonRispettato) {
+                    //ANCHE BOCCIATI
+                    if (bocciati) {
+                        $('.ui.segment.tooltip').each(function (index, element) {
+                            var desiderata = getDesiderataNonRispettato(element);
+                            if (desiderata && getIfStudentsIsBocciato($(element).attr("id"))) {
+                                setFilterDesiderataNonRispettato($(element));
+                                desiderataNotRespectedItems.push($(element));
                                 setFilterBocciati($(element));
                                 bocciatiItems.push($(element));
+                                totalResult++;
                             }
 
                         });
                     }
-                }
-                else {
-                    //ho solo i voti come filtro
-                    arrayStudentiVoti = [];
-                    for (var voto = 0; voto < votiCheckBoxArray.length; voto++) {
-                        $('.' + votiCheckBoxArray[voto]).each(function (index, element) {
-                            setFilterVoti(votiCheckBoxArray[voto], element)
+                    //SOLO DEISDERATA
+                    else {
+                        $('.ui.segment.tooltip').each(function (index, element) {
+                            var desiderata = getDesiderataNonRispettato(element);
+                            if (desiderata) {
+                                //setFilterNazionalita($(element));
+                                //nazionalitaItems.push($(element));
+                                setFilterDesiderataNonRispettato($(element));
+                                desiderataNotRespectedItems.push($(element));
+                                totalResult++;
+                            }
+
                         });
+
+                    }
+
+                }
+                else
+                //SOLO BOCCIATI
+                {
+                    if (bocciati) {
+                        $('.ui.segment.tooltip').each(function (index, element) {
+
+                            if (getIfStudentsIsBocciato($(element).attr("id"))) {
+                                setFilterBocciati($(element));
+                                bocciatiItems.push($(element));
+                                totalResult++;
+                            }
+
+                        });
+
                     }
                 }
-
             }
         }
-    }
-    //2 CASO - VOTI NO
-    else {
-        //CI SONO NAZIONALITA
-        if (nazionalitaCheckBoxArray.length != 0) {
-            //CI SONO I FILTRI DESIDERATA
-            if (desiderataNonRispettato) {
-                nazionalitaItems = [];
-                desiderataNotRespectedItems = [];
-                for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
-                    $('.ui.segment.tooltip').each(function (index, element) {
-                        var desiderata = getDesiderataNonRispettato(element);
-                        if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase() && desiderata) {
-                            setFilterNazionalita($(element));
-                            nazionalitaItems.push($(element));
-                            setFilterDesiderataNonRispettato($(element));
-                            desiderataNotRespectedItems.push($(element));
-                        }
-
-                    });
-
-                }
-            }
-            //NON CI SONO FILTRI DESIDERATA
-            else {
-                nazionalitaItems = [];
-                for (var nazionalita = 0; nazionalita < nazionalitaCheckBoxArray.length; nazionalita++) {
-                    $('.ui.segment.tooltip').each(function (index, element) {
-                        if ($(element).attr('data-content').toLowerCase() == nazionalitaCheckBoxArray[nazionalita].toLowerCase()) {
-                            setFilterNazionalita($(element));
-                            nazionalitaItems.push($(element));
-                        }
-
-                    });
-
-                }
-            }
-
+        alertify.set('notifier', 'position', 'top-right');
+        if (totalResult == 0) {
+            alertify.error("Non ci sono risultati", 1)
         }
-        //NON CI SONO NAZIONALITA
         else {
-            //SOLO DESIDERATA
-            if (desiderataNonRispettato) {
-                //ANCHE BOCCIATI
-                if (bocciati) {
-                    $('.ui.segment.tooltip').each(function (index, element) {
-                        var desiderata = getDesiderataNonRispettato(element);
-                        if (desiderata && getIfStudentsIsBocciato($(element).attr("id"))) {
-                            setFilterDesiderataNonRispettato($(element));
-                            desiderataNotRespectedItems.push($(element));
-                            setFilterBocciati($(element));
-                            bocciatiItems.push($(element));
-                        }
-
-                    });
-                }
-                //SOLO DEISDERATA
-                else {
-                    $('.ui.segment.tooltip').each(function (index, element) {
-                        var desiderata = getDesiderataNonRispettato(element);
-                        if (desiderata) {
-                            //setFilterNazionalita($(element));
-                            //nazionalitaItems.push($(element));
-                            setFilterDesiderataNonRispettato($(element));
-                            desiderataNotRespectedItems.push($(element));
-                        }
-
-                    });
-
-                }
-
-            }
-            else
-            //SOLO BOCCIATI
-            {
-                if (bocciati) {
-                    $('.ui.segment.tooltip').each(function (index, element) {
-
-                        if (getIfStudentsIsBocciato($(element).attr("id"))) {
-                            setFilterBocciati($(element));
-                            bocciatiItems.push($(element));
-                        }
-
-                    });
-
-                }
-            }
+            alertify.success('Ci sono ' + totalResult + " risultati",1);
         }
     }
+
 }
 
 
@@ -1554,7 +1543,6 @@ function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
 $(document).ready(function () {
 
 
-
     /**
      * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
      */
@@ -1736,7 +1724,7 @@ $(document).ready(function () {
 
                         var tooltip = $('<span/>')
                             .addClass('tooltiptext')
-                            .html('media : ' + voto + '<br>naz : ' + nazionalita + handicapTooltip)
+                            .html('media : ' + voto + '<br>naz : ' + nazionalita.toLowerCase() + '<br>' + handicapTooltip)
                             .appendTo(container);
 
                         var li = $('<li/>')
@@ -1951,9 +1939,9 @@ $(document).ready(function () {
             }
             var oldList, newList, item, desiderata, cfAmico;
             if (dirittiUtente == 0 || dirittiUtente == 1) {
-            $(".contenitoreClasse").sortable({
-                connectWith: ".contenitoreClasse",
-                start: function (event, ui) {
+                $(".contenitoreClasse").sortable({
+                    connectWith: ".contenitoreClasse",
+                    start: function (event, ui) {
 
 
                         item = ui.item;
@@ -1994,24 +1982,24 @@ $(document).ready(function () {
                         else {
                             newList = oldList = ui.item.parent().parent();
                         }
-                },
-                stop: function (event, ui) {
-                    var cf_studente_spostato = item[0].childNodes[0].id;
-                    var classFrom = oldList.attr('id');
-                    var classTo = newList.attr('id');
+                    },
+                    stop: function (event, ui) {
+                        var cf_studente_spostato = item[0].childNodes[0].id;
+                        var classFrom = oldList.attr('id');
+                        var classTo = newList.attr('id');
 
-                    moveStudent(cf_studente_spostato, classFrom, classTo, true);
-                },
-                change: function (event, ui) {
-                    if (ui.sender) newList = ui.placeholder.parent().parent();
-                }
-            }).disableSelection();
-        }
+                        moveStudent(cf_studente_spostato, classFrom, classTo, true);
+                    },
+                    change: function (event, ui) {
+                        if (ui.sender) newList = ui.placeholder.parent().parent();
+                    }
+                }).disableSelection();
+            }
 
             displayAllClass();
 
             $(".barChartButton").on('click', function (e) {
-                 var classe = $(this).parent().parent().parent().attr('id');
+                var classe = $(this).parent().parent().parent().attr('id');
 
                 pieChart = $("#" + classe + "pieChart").hide();
                 barChart = $("#" + classe + "barChart").show();
@@ -2019,7 +2007,7 @@ $(document).ready(function () {
             });
 
             $(".pieChartButton").on('click', function (e) {
-                
+
                 var classe = $(this).parent().parent().parent().attr('id');
 
                 barChart = $("#" + classe + "barChart").hide();
