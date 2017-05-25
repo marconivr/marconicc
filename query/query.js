@@ -544,9 +544,10 @@ module.exports = {
     },
 
     getClassiComposteForExport: function (callback) {
+
         var query = "SELECT alunni.matricola, alunni.cf, alunni.cognome, alunni.nome, alunni.data_di_nascita, alunni.sesso,alunni.CAP, alunni.nazionalita, " +
-            "alunni.legge_107, alunni.legge_104, alunni.classe_precedente, alunni.anno_scolastico,alunni.voto,alunni.tag,alunni.desiderata from alunni " +
-            "INNER JOIN comp_classi as m1 on alunni.cf = m1.cf_alunno";
+            "alunni.legge_107, alunni.legge_104, alunni.classe_precedente,classi.nome AS classe_futura, alunni.anno_scolastico,alunni.voto,alunni.tag,alunni.desiderata " +
+            "FROM alunni INNER JOIN classi_composte as m1 on alunni.id = m1.alunno INNER JOIN classi ON m1.classe = classi.id ORDER BY classe_futura, alunni.cognome, alunni.nome";
 
         connection.query(query, function (err, rows) {
             callback(err, rows);
