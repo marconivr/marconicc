@@ -20,6 +20,7 @@ module.exports = {
 
     alunni:{
         exportSingleCsv: "/export-single-csv",
+        exportSingleExcel: "/export-single-excel",
         uploadAlunniCsv :"/upload-alunni-csv",
         allTag: "/all-tag",
         studenti : "/studenti",

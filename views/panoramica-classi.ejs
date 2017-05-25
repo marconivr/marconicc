@@ -20,6 +20,10 @@
         padding-right: 10px !important;
 
     }
+    .ui.basic.button {
+        width:100%;
+        height:25%;
+    }
 
     .contenitoreClasse li {
         margin: 0 5px 5px 5px;
@@ -147,10 +151,10 @@
                 <div class="menu">
                     <div class="list">
                         <div class="item">
-                            <button class="ui  basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleExcel %>';"><i class="file excel outline icon"></i> Excel</button>
+                            <button class="ui basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleExcel %>';"><i class="file excel outline icon"></i> Excel</button>
                         </div>
                         <div class="item">
-                            <button class="ui  basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleCsv %>';"><i class="file text outline icon"></i> Csv</button>
+                            <button class="ui basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleCsv %>';"><i class="file text outline icon"></i> Csv</button>
                         </div>
                     </div>
                 </div>

@@ -535,11 +535,40 @@ module.exports = function (app) {
                     objRes[o]["posizione_in_classe"] = count;
                 }
                 results = objRes;
-                csv.separator = ";";
-                res.setHeader('Content-disposition', 'attachment; filename=export.csv');
+                csv.separator = ",";
+                res.setHeader('Content-disposition', 'attachment; filename=exportCsv.csv');
                 res.set('Content-Type', 'text/csv');
                 res.csv(results);
-                csv.separator = ",";
+            }
+        })
+
+    });
+
+    app.get(endpoint.alunni.exportSingleExcel, middleware.isLoggedIn, function (req, res) {
+        query.getClassiComposteForExport(function (err, results) {
+            if (err) {
+                console.log(err);
+                res.send("Errore nello scaricamento del file");
+            }
+            else {
+                var objRes = JSON.stringify(results);
+                var objRes = JSON.parse(objRes);
+                var count = 1;
+                var classe = ""
+                for (var o in objRes){
+                    if(classe === objRes[o].classe_futura){
+                        count ++;
+                    } else{
+                        count = 1;
+                        classe = objRes[o].classe_futura;
+                    }
+                    objRes[o]["posizione_in_classe"] = count;
+                }
+                results = objRes;
+                csv.separator = ";";
+                res.setHeader('Content-disposition', 'attachment; filename=exportExcel.xls');
+                res.set('Content-Type', 'text/csv');
+                res.csv(results);
             }
         })
 
