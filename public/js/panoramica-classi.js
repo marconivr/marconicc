@@ -1403,7 +1403,7 @@ function history() {
         type: 'get',
         success: function (data) {
             if (data.length == 0) $('#history-label').text("Non ci sono elementi nella history");
-            else $('#history-label').text("Qui puoi vedere tutti gli spostamenti compiuti");
+            else $('#history-label').text("In questa sezione puoi vedere e ripristinare tutti gli spostamenti compiuti");
             var thead = $('<thead/>')
                 .html('<tr> ' +
                     '<th>Ora</th> ' +
