@@ -59,37 +59,14 @@
     src: url("font/context-menu-icons.eot?lnvb");
     src: url("font/context-menu-icons.eot?lnvb#iefix") format("embedded-opentype"), url("font/context-menu-icons.woff2?lnvb") format("woff2"), url("font/context-menu-icons.woff?lnvb") format("woff"), url("font/context-menu-icons.ttf?lnvb") format("truetype");
 }
-
-.context-menu-icon-add:before {
-    content: "\EA01";
+.context-menu-icon {
+    min-height: 18px; background-repeat: no-repeat; background-position: 7px 6px;
 }
-
-.context-menu-icon-copy:before {
-    content: "\EA02";
+.context-menu-icon-view {
+    background-image: url("../icons/fa-fa-book.png");
 }
-
-.context-menu-icon-cut:before {
-    content: "\EA03";
-}
-
-.context-menu-icon-delete:before {
-    content: "\EA04";
-}
-
-.context-menu-icon-edit:before {
-    content: "\EA05";
-}
-
-.context-menu-icon-loading:before {
-    content: "\EA06";
-}
-
-.context-menu-icon-paste:before {
-    content: "\EA07";
-}
-
-.context-menu-icon-quit:before {
-    content: "\EA08";
+.context-menu-icon-move {
+    background-image: url("../icons/fa-arrow-right.png");
 }
 
 .context-menu-icon::before {

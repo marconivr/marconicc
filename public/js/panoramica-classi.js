@@ -861,7 +861,7 @@ function populateModal(object) {
     $("#nazionalita").text(object.nazionalita);
     $("#sesso").text(object.sesso);
 
-    $("#cap").text(object.CAP);
+    $("#cap").text(object.cap);
     $("#matricola").text(object.matricola);
     $("#codice-fiscale").text(object.cf);
 
@@ -1780,10 +1780,10 @@ $(document).ready(function () {
                         }
                     },
                     items: {
-                        "informazioni": {name: "Informazioni", icon: "edit"},
+                        "informazioni": {name: "Informazioni", icon: "view"},
                         "spostamento": {
                             name: "Spostamento",
-                            icon: "cut",
+                            icon: "move",
                             "items": returnJsonOfClassName()
                         }
                     }
