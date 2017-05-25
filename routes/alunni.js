@@ -521,6 +521,20 @@ module.exports = function (app) {
                 res.send("Errore nello scaricamento del file");
             }
             else {
+                var objRes = JSON.stringify(results);
+                var objRes = JSON.parse(objRes);
+                var count = 1;
+                var classe = ""
+                for (var o in objRes){
+                    if(classe === objRes[o].classe_futura){
+                        count ++;
+                    } else{
+                        count = 1;
+                        classe = objRes[o].classe_futura;
+                    }
+                    objRes[o]["posizione_in_classe"] = count;
+                }
+                results = objRes;
                 csv.separator = ";";
                 res.setHeader('Content-disposition', 'attachment; filename=export.csv');
                 res.set('Content-Type', 'text/csv');
