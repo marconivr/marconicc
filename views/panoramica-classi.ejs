@@ -146,15 +146,15 @@
                 <i class="download icon"></i> Download
                 <div class="menu">
                     <div class="list">
-                        <div class="item">
-                            <button class="ui primary basic button" id="scarica-excel"><i class="file excel outline icon"></i> Excel</button>
-                        </div>
+                        <!--<div class="item">-->
+                            <!--<button class="ui primary basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleExcel %>';"><i class="file excel outline icon"></i> Excel</button>-->
+                        <!--</div>-->
+                        <!--<div class="item">-->
+                            <!--<button class="ui primary basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleCsv %>';"><i class="file text outline icon"></i> Csv</button>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>
-        <!-- <i class="dropdown icon "></i>  occupa tanto spazio -->
-        <div class="menu" style="width: 10%">
-            <div class="item" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleCsv %>';"> <i class="download icon"></i>Scarica excel</div>
             <div class="item" id="history"> <i class="undo icon"></i>History</div>
         </div>
     </div>
