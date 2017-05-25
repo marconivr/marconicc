@@ -393,6 +393,7 @@ CREATE TABLE `classi_composte` (
 
 CREATE TABLE `configurazione` (
   `id` int(11) NOT NULL,
+  `attiva` bit DEFAULT 0,
   `scuola` int(11) DEFAULT NULL,
   `anno_scolastico` varchar(15) DEFAULT NULL,
   `data` date NOT NULL,
@@ -411,8 +412,8 @@ CREATE TABLE `configurazione` (
 -- Dumping data for table `configurazione`
 --
 
-INSERT INTO `configurazione` (`id`, `scuola`, `anno_scolastico`, `data`, `nome`, `min_alunni`, `max_alunni`, `gruppo_femmine`, `gruppo_cap`, `gruppo_nazionalita`, `nazionalita_per_classe`, `numero_alunni_con_104`, `classe`) VALUES
-(1, 0, '2017-2018', '2017-05-09', 'prova1', 25, 28, 4, 4, 4, 3, 23, 'PRIMA');
+INSERT INTO `configurazione` (`id`, `attiva`, `scuola`, `anno_scolastico`, `data`, `nome`, `min_alunni`, `max_alunni`, `gruppo_femmine`, `gruppo_cap`, `gruppo_nazionalita`, `nazionalita_per_classe`, `numero_alunni_con_104`, `classe`) VALUES
+(1, 1, 0, '2017-2018', '2017-05-09', 'prova1', 25, 28, 4, 4, 4, 3, 23, 'PRIMA');
 
 -- --------------------------------------------------------
 

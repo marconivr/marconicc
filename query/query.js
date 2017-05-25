@@ -242,11 +242,37 @@ module.exports = {
     },
 
     insertSettingsPrime: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
-        var query = connection.query("INSERT INTO configurazione (scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
+        async.waterfall({
+            updateActiveSettings: function (callback) {
+                var query = connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?",  [scuola, "PRIMA"], function (err, row) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        callback(err, {id: "Ok"});
+                    }
+                });
+            },
+            insertSettings: function (callback) {
+                var query = connection.query("INSERT INTO configurazione (attiva, scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        callback(err, {id: "Ok"});
+                    }
+                });
+            },
+        }, function (err, results) {
+                callback(err, results);
+        });
+    },
+
+    updateActiveSettingsPrime: function (scuola, index, callback) {
+        var query = connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?;" +
+            "UPDATE configurazione SET attiva = 1 WHERE id = ? AND scuola = ? AND classe = ?", [scuola, "PRIMA", index, scuola, "PRIMA",], function (err, row) {
             if (err) {
                 console.log(err);
             } else {
-                callback(err, row, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104);
+                callback(err, row, index, scuola);
             }
         });
     },

@@ -96,7 +96,7 @@
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
-                            <input name="descrizione" placeholder="Inserisci una descrizione per idetnificare questa configurazione" type="text" id="descrizione">
+                            <input name="descrizione" placeholder="Inserisci una descrizione per identificare questa configurazione" type="text" id="descrizione">
                         </div>
                         <div class="ui hidden success message" id="message">
                             <div class="header">Form Completato</div>
@@ -215,6 +215,8 @@
             .modal({
                 closable  : false,
                 onApprove : function() {
+
+                    /*
                     for (setting in settings[index]){
                         switch (setting){
                             case "nome":
@@ -247,6 +249,7 @@
                     document.getElementById("messageCompila").setAttribute("class", "hiddenMessage");
                     setDataRealtimeNumberOfStudents();
                     setDataRealtimeNumberOfFemmine();
+                    */
                 }
             })
             .modal('show')
@@ -315,7 +318,6 @@
                     "naz_per_classe" : naz_per_classe,
                     "max_al_104" : max_al_104
                 });
-                alert(global_index);
                 var item = $('<div/>')
                     .addClass('item')
                     .appendTo($('#row-for-insert-date'));
