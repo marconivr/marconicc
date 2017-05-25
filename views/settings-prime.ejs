@@ -22,6 +22,10 @@
         font-size: 1.2em;
         width: 120px;
     }
+    .ui.fixed.menu+.ui.grid{
+        padding-top: 0rem;
+    }
+
 </style>
 
 <script>
@@ -48,7 +52,7 @@
 
             <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
             <div>
-                <div class="ui items" id="row-for-insert-date"  style="padding-top:5px">
+                <div class="ui items" id="row-for-insert-date"  style="padding-top:10px">
                 </div>
             </div>
         </div>
@@ -372,7 +376,7 @@
                     console.log("value :" + index)
                     var header = $('<div/>')
                         .addClass('header')
-                        .html('<a onclick="createModal(\'' + index + '\')">' + listaSettings[index].nome + '</a>')
+                        .html('<a style="font-size: 16px;" onclick="createModal(\'' + index + '\')">' + listaSettings[index].nome + '</a>')
                         .appendTo(content);
 
                     var meta = $('<div/>')
