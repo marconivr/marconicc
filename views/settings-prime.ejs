@@ -347,9 +347,11 @@
                     .appendTo(content);
                 global_index += 1;
                 alertify.success("Configurazione inserita");
+                    $('.ui.form.success')[0].reset();
+                    document.getElementById("sendButton").setAttribute("class", "ui disabled button")
                 }
                 else {
-                    alertify.error("Ci deve essere stato un problema");
+                    alertify.error("Opps, ci deve essere stato un problema");
                 }
             },
             error: function (xhr, status, error) {
@@ -410,9 +412,8 @@
 
             if (!$emptyFields.length) {
                 document.getElementById("sendButton").setAttribute("class", "ui button")
-                document.getElementById("messageCompila").setAttribute("class", "hiddenMessage")
+
             } else {
-                document.getElementById("messageCompila").setAttribute("class", "")
                 document.getElementById("sendButton").setAttribute("class", "ui disabled button")
             }
         });
