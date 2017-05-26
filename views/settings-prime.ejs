@@ -2,9 +2,10 @@
 <body xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 
 <style>
-    .hiddenMessage{
+    .hiddenMessage {
         visibility: hidden;
     }
+
     #sortable1, #sortable2, #sortable3, #sortable4, #sortable5, #sortable6, #sortable7, #sortable8 {
         border: 1px solid #eee;
         width: 142px;
@@ -22,7 +23,8 @@
         font-size: 1.2em;
         width: 120px;
     }
-    .ui.fixed.menu+.ui.grid{
+
+    .ui.fixed.menu + .ui.grid {
         padding-top: 0rem;
     }
 
@@ -52,7 +54,7 @@
 
             <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
             <div>
-                <div class="ui items" id="row-for-insert-date"  style="padding-top:10px">
+                <div class="ui items" id="row-for-insert-date" style="padding-top:10px">
                 </div>
             </div>
         </div>
@@ -68,39 +70,52 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label>Alunni minimi in una classe</label>
-                                    <input type="number" name="alunni_min" placeholder="Qual è il numero di alunni minimi di una classe?" onkeyup="setDataRealtimeNumberOfStudents()"
+                                    <input type="number" name="alunni_min"
+                                           placeholder="Qual è il numero di alunni minimi di una classe?"
+                                           onkeyup="setDataRealtimeNumberOfStudents()"
                                            onchange="setDataRealtimeNumberOfStudents()" id="alunni-min" min="0">
                                 </div>
                                 <div class="field">
                                     <label>Alunni massimi in una classe</label>
-                                    <input type="number" name="alunni_max" placeholder="Qual è il numero di alunni massimi di una classe?" id="alunni-max" min="0">
+                                    <input type="number" name="alunni_max"
+                                           placeholder="Qual è il numero di alunni massimi di una classe?"
+                                           id="alunni-max" min="0">
                                 </div>
                             </div>
                         </div>
                         <div class="field">
                             <label>Numero femmine in una classe</label>
-                            <input name="max_femmine" placeholder="Quante femmine per classe?" type="number" onkeyup="setDataRealtimeNumberOfFemmine()"
+                            <input name="max_femmine" placeholder="Quante femmine per classe?" type="number"
+                                   onkeyup="setDataRealtimeNumberOfFemmine()"
                                    onchange="setDataRealtimeNumberOfFemmine()" id="femmine" min="0">
                         </div>
                         <div class="field">
                             <label>Numero persone con la stessa nazionalità</label>
-                            <input name="nazionalita" placeholder="Quante nazionaità diverse per classe?" type="number" id="nazionalita" min="0">
+                            <input name="nazionalita" placeholder="Quante nazionaità diverse per classe?" type="number"
+                                   id="nazionalita" min="0">
                         </div>
                         <div class="field">
                             <label>Numero nazionalità per classe</label>
-                            <input name="naz_per_classe" placeholder="Quanti alunni con la stessa nazionalità per classe?" type="number" id="naz_per_classe" min="0">
+                            <input name="naz_per_classe"
+                                   placeholder="Quanti alunni con la stessa nazionalità per classe?" type="number"
+                                   id="naz_per_classe" min="0">
                         </div>
                         <div class="field">
                             <label>Numero persone che hanno residenza simile</label>
-                            <input name="stessa_provenienza" placeholder="Quanti alunni con la stessa residenza?" type="number" id="residenza" min="0">
+                            <input name="stessa_provenienza" placeholder="Quanti alunni con la stessa residenza?"
+                                   type="number" id="residenza" min="0">
                         </div>
                         <div class="field">
                             <label>Numero massimo di alunni in una classe in presenza di un 104</label>
-                            <input name="max_al_104" placeholder="Qual è il numero di alunni massimi in presenza di un 104?" type="number" id="max_al_104" min="0">
+                            <input name="max_al_104"
+                                   placeholder="Qual è il numero di alunni massimi in presenza di un 104?" type="number"
+                                   id="max_al_104" min="0">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
-                            <input name="descrizione" placeholder="Inserisci una descrizione per identificare questa configurazione" type="text" id="descrizione">
+                            <input name="descrizione"
+                                   placeholder="Inserisci una descrizione per identificare questa configurazione"
+                                   type="text" id="descrizione">
                         </div>
                         <div>
                             <div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div>
@@ -117,25 +132,25 @@
                 <a class="teal item">
                     Studenti
                     <div class="ui yellow left pointing label" id="alunni-in-classe-prima">
-                        <%= studentiPrima[0].result%>
+                        <%= studentiPrima[0].result %>
                     </div>
                 </a>
                 <a class="item">
                     Femmine
                     <div class="ui green left pointing label" id="femmine-in-classe-prima">
-                        <%= femminePrima[0].result%>
+                        <%= femminePrima[0].result %>
                     </div>
                 </a>
                 <a class="item">
                     Media voti
                     <div class="ui blue left pointing label">
-                        <%= mediaPrima[0].result%>
+                        <%= mediaPrima[0].result %>
                     </div>
                 </a>
                 <a class="item">
                     Stranieri
                     <div class="ui teal left pointing label">
-                        <%= stranieriPrima[0].result%>
+                        <%= stranieriPrima[0].result %>
                     </div>
                 </a>
             </div>
@@ -192,7 +207,7 @@
             No
         </div>
         <div class="ui positive right labeled icon button">
-            Sì
+            Attiva
             <i class="checkmark icon"></i>
         </div>
     </div>
@@ -210,54 +225,56 @@
 <script>
     var settings = [];
     var global_index = 0; // indice della configurazione
-    function  createModal(index) {
+    function createModal(index) {
         var s = "";
 
         $('#modal-header').text(settings[index].nome);
         $('#modal-date').text(settings[index].data);
-        for (setting in settings[index]){
+        for (setting in settings[index]) {
+            if(setting != "data")
             s += '<td class="center aligned">' + settings[index][setting] + "</td>";
         }
         document.getElementById("row-settings").innerHTML = s;
         $('.ui.modal')
             .modal({
-                closable  : false,
-                onApprove : function() {
+                closable: false,
+                onApprove: function () {
 
+                    //todo:ssetta
                     /*
-                    for (setting in settings[index]){
-                        switch (setting){
-                            case "nome":
-                                document.getElementById("descrizione").value = settings[index][setting];
-                                break;
-                            case "min_alunni":
-                                document.getElementById("alunni-min").value = settings[index][setting];
-                                break;
-                            case "max_alunni":
-                                document.getElementById("alunni-max").value = settings[index][setting];
-                                break;
-                            case "gruppo_femmine":
-                                document.getElementById("femmine").value = settings[index][setting];
-                                break;
-                            case "gruppo_cap":
-                                document.getElementById("residenza").value = settings[index][setting];
-                                break;
-                            case "gruppo_nazionalita":
-                                document.getElementById("nazionalita").value = settings[index][setting];
-                                break;
-                            case "nazionalita_per_classe":
-                                document.getElementById("naz_per_classe").value = settings[index][setting];
-                                break;
-                            case "numero_alunni_con_104":
-                                document.getElementById("max_al_104").value = settings[index][setting];
-                                break;
-                        }
-                    }
-                    document.getElementById("sendButton").setAttribute("class", "ui button");
-                    document.getElementById("messageCompila").setAttribute("class", "hiddenMessage");
-                    setDataRealtimeNumberOfStudents();
-                    setDataRealtimeNumberOfFemmine();
-                    */
+                     for (setting in settings[index]){
+                     switch (setting){
+                     case "nome":
+                     document.getElementById("descrizione").value = settings[index][setting];
+                     break;
+                     case "min_alunni":
+                     document.getElementById("alunni-min").value = settings[index][setting];
+                     break;
+                     case "max_alunni":
+                     document.getElementById("alunni-max").value = settings[index][setting];
+                     break;
+                     case "gruppo_femmine":
+                     document.getElementById("femmine").value = settings[index][setting];
+                     break;
+                     case "gruppo_cap":
+                     document.getElementById("residenza").value = settings[index][setting];
+                     break;
+                     case "gruppo_nazionalita":
+                     document.getElementById("nazionalita").value = settings[index][setting];
+                     break;
+                     case "nazionalita_per_classe":
+                     document.getElementById("naz_per_classe").value = settings[index][setting];
+                     break;
+                     case "numero_alunni_con_104":
+                     document.getElementById("max_al_104").value = settings[index][setting];
+                     break;
+                     }
+                     }
+                     document.getElementById("sendButton").setAttribute("class", "ui button");
+                     document.getElementById("messageCompila").setAttribute("class", "hiddenMessage");
+                     setDataRealtimeNumberOfStudents();
+                     setDataRealtimeNumberOfFemmine();
+                     */
                 }
             })
             .modal('show')
@@ -269,10 +286,10 @@
         var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML;
         var alunniMin = $("#alunni-min").val();
 
-        if (alunniMin == ""){
+        if (alunniMin == "") {
             $("#classe-realtime").html("");
         }
-        else{
+        else {
             $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
         }
     }
@@ -281,17 +298,17 @@
         var femmineTot = document.getElementById("femmine-in-classe-prima").innerHTML;
         var femmineMax = $("#femmine").val();
 
-        if (femmineMax == ""){
+        if (femmineMax == "") {
             $("#classi-con-femmine").html("");
         }
-        else{
+        else {
             $("#classi-con-femmine").html(Math.floor(femmineTot / femmineMax));
         }
     }
     function addSettings() {
 
         var d = new Date();
-        var data = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+        var data = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
         var descrizione = $("#descrizione").val()
         var alunniMin = parseInt($("#alunni-min").val());
         var alunniMax = parseInt($("#alunni-max").val());
@@ -301,52 +318,51 @@
         var naz_per_classe = parseInt($("#naz_per_classe").val());
         var max_al_104 = parseInt($("#max_al_104").val());
         $.ajax({
-            url: '<%= endpoint.alunni.insertSettingsPrime%>',
+            url: '<%= endpoint.alunni.insertSettingsPrime %>',
             data: {
-                "data" : data,
-                "descrizione" : descrizione,
-                "alunniMin" : alunniMin,
-                "alunniMax": alunniMax ,
-                "femmine" : femmine ,
-                "residenza" : residenza,
-                "nazionalita" : nazionalita,
-                "naz_per_classe" : naz_per_classe,
-                "max_al_104" : max_al_104
+                "data": data,
+                "descrizione": descrizione,
+                "alunniMin": alunniMin,
+                "alunniMax": alunniMax,
+                "femmine": femmine,
+                "residenza": residenza,
+                "nazionalita": nazionalita,
+                "naz_per_classe": naz_per_classe,
+                "max_al_104": max_al_104
             },
             type: 'post',
             success: function (dati) {
                 if (dati == "no-error") {
 
+                    settings.push({
+                        "data": data,
+                        "descrizione": descrizione,
+                        "alunniMin": alunniMin,
+                        "alunniMax": alunniMax,
+                        "femmine": femmine,
+                        "residenza": residenza,
+                        "nazionalita": nazionalita,
+                        "naz_per_classe": naz_per_classe,
+                        "max_al_104": max_al_104
+                    });
+                    var item = $('<div/>')
+                        .addClass('item')
+                        .appendTo($('#row-for-insert-date'));
+                    var content = $('<div/>')
+                        .addClass('content')
+                        .appendTo(item);
 
-                settings.push({
-                    "data" : data,
-                    "descrizione" : descrizione,
-                    "alunniMin" : alunniMin,
-                    "alunniMax": alunniMax ,
-                    "femmine" : femmine ,
-                    "residenza" : residenza,
-                    "nazionalita" : nazionalita,
-                    "naz_per_classe" : naz_per_classe,
-                    "max_al_104" : max_al_104
-                });
-                var item = $('<div/>')
-                    .addClass('item')
-                    .appendTo($('#row-for-insert-date'));
-                var content = $('<div/>')
-                    .addClass('content')
-                    .appendTo(item);
+                    var header = $('<div/>')
+                        .addClass('header')
+                        .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
+                        .appendTo(content);
 
-                var header = $('<div/>')
-                    .addClass('header')
-                    .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
-                    .appendTo(content);
-
-                var meta = $('<div/>')
-                    .addClass('meta')
-                    .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
-                    .appendTo(content);
-                global_index += 1;
-                alertify.success("Configurazione inserita");
+                    var meta = $('<div/>')
+                        .addClass('meta')
+                        .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
+                        .appendTo(content);
+                    global_index += 1;
+                    alertify.success("Configurazione inserita");
                     $('.ui.form.success')[0].reset();
                     document.getElementById("sendButton").setAttribute("class", "ui disabled button")
                 }
@@ -355,16 +371,16 @@
                 }
             },
             error: function (xhr, status, error) {
-               alertify.error("Opps, ci deve essere stato un problema");
+                alertify.error("Opps, ci deve essere stato un problema");
 
             }
         });
     }
 
-      $(document).ready(function() {
+    $(document).ready(function () {
         $.ajax({
             type: "GET",
-            url: '<%= endpoint.alunni.getPastSettingsPrime%>',
+            url: '<%= endpoint.alunni.getPastSettingsPrime %>',
             data: {
                 format: 'json'
             },
@@ -376,8 +392,7 @@
             success: function (listaSettings) {
                 settings = listaSettings;//ufse when createModal() is call
 
-                for(var index = 0; index < listaSettings.length ; index++)
-                {
+                for (var index = 0; index < listaSettings.length; index++) {
                     var item = $('<div/>')
                         .addClass('item')
                         .appendTo($('#row-for-insert-date'));
@@ -395,7 +410,7 @@
                         .addClass('meta')
                         .html('<i class="wait icon"></i> ' + listaSettings[index].data + '<hr>')
                         .appendTo(content);
-                    global_index+= 1;
+                    global_index += 1;
                 }
             }
         });
