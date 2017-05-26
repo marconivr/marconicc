@@ -41,7 +41,9 @@
 <% include sidebar-start.ejs %>
 <% include finish-menu.ejs %>
 
+
 <div class="ui internally celled grid">
+    <div class="ui text loader disabled  medium" id="loader"> Download settings ...</div>
     <div class="row">
         <!--this section represent the realtime data-->
         <div class="three wide column">
@@ -278,8 +280,9 @@
                                 console.error(data.error);
                             }
                             else {
-
                                 alertify.success("Questa configurazione è attiva");
+                                downloadSettings();
+                                $('#row-for-insert-date').children().remove();
                             }
                         },
                         error: function (errMsg) {
@@ -389,46 +392,60 @@
 
             }
         });
-
     }
 
-    $(document).ready(function () {
+    function downloadSettings() {
         $.ajax({
             type: "GET",
             url: '<%= endpoint.alunni.getPastSettingsPrime %>',
             data: {
                 format: 'json'
             },
-            error: function () {
-
+            error: function (xhr, status, error) {
+                alertify.error("Opps, ci deve essere stato un problema");
+                console.log(error)
             },
             dataType: 'json',
+            beforeSend: function () {
+                $('#loader').removeClass('disabled').addClass('active');
+            },
+            success: createListOfSettings
 
-            success: function (listaSettings) {
-                settings = listaSettings;//use when createModal() is call
-
-                for (var index = 0; index < listaSettings.length; index++) {
-                    var item = $('<div/>')
-                        .addClass('item')
-                        .appendTo($('#row-for-insert-date'));
-                    var content = $('<div/>')
-                        .addClass('content')
-                        .appendTo(item);
-
-                    console.log("value :" + index)
-                    var header = $('<div/>')
-                        .addClass('header')
-                            .html('<a style="font-size: 16px;" onclick="createModal(' + index + ',' + listaSettings[index].id + ')">' + listaSettings[index].nome + '</a>')
-                        .appendTo(content);
-
-                    var meta = $('<div/>')
-                        .addClass('meta')
-                        .html('<i class="wait icon"></i> ' + listaSettings[index].data + '<hr>')
-                        .appendTo(content);
-                    global_index += 1;
-                }
-            }
         });
+    }
+
+    function createListOfSettings(listaSettings) {
+        settings = listaSettings;//use when createModal() is call
+
+        for (var index = 0; index < listaSettings.length; index++) {
+            var item = $('<div/>')
+                    .addClass('item')
+                    .appendTo($('#row-for-insert-date'));
+
+            var content = $('<div/>')
+                    .addClass('content')
+                    .appendTo(item);
+            if (listaSettings[index].attiva == 1) {
+                content.append('<i class="checkmark green  icon"></i>');
+            }
+
+            var header = $('<div/>')
+                    .addClass('header')
+                    .html('<a style="font-size: 16px;" onclick="createModal(' + index + ',' + listaSettings[index].id + ')">' + listaSettings[index].nome + '</a>')
+                    .appendTo(content);
+
+            var meta = $('<div/>')
+                    .addClass('meta')
+                    .html('<i class="calendar icon"></i> ' + listaSettings[index].data + '<hr>')
+                    .appendTo(content);
+            global_index += 1;
+        }
+        $('#loader').removeClass('active').addClass('disabled');
+    }
+
+
+    $(document).ready(function () {
+        downloadSettings();
 
         document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
         var $fields = $(".field :input");

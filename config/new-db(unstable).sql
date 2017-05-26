@@ -393,7 +393,7 @@ CREATE TABLE `classi_composte` (
 
 CREATE TABLE `configurazione` (
   `id` int(11) NOT NULL,
-  `attiva` bit DEFAULT 0,
+  `attiva` int DEFAULT 0,
   `scuola` int(11) DEFAULT NULL,
   `anno_scolastico` varchar(15) DEFAULT NULL,
   `data` date NOT NULL,

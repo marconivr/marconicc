@@ -226,7 +226,8 @@ module.exports = function (app) {
                 studentiPrima: results.studentiPrima.studenti,
                 femminePrima: results.femminePrima.femmine,
                 mediaPrima: results.mediaPrima.media,
-                stranieriPrima: results.stranieriPrima.stranieri
+                stranieriPrima: results.stranieriPrima.stranieri,
+                hideDropDown: true
             });
 
         });
@@ -304,12 +305,13 @@ module.exports = function (app) {
      */
     app.post(endpoint.alunni.insertSettingsPrime, function (req, res) {
         const scuola = req.user.id_scuola;
-        query.insertSettingsPrime(function (err, results) {
+        const annoScolastico = "2017-2018";
+        query.insertSettingsPrime(scuola, annoScolastico, req.body.data, req.body.descrizione, req.body.alunniMin, req.body.alunniMax, req.body.femmine, req.body.residenza, req.body.nazionalita, req.body.naz_per_classe, req.body.max_al_104, function (err, results) {
             if (err)
                 res.send({"error":err});
             else
                 res.send("no-error");
-        }, scuola, req.body.data, req.body.descrizione, req.body.alunniMin, req.body.alunniMax, req.body.femmine, req.body.residenza, req.body.nazionalita, req.body.naz_per_classe, req.body.max_al_104);
+        });
 
     });
 
@@ -387,7 +389,7 @@ module.exports = function (app) {
         sessione.classiSettaggiDefault(scuola, function (err, obj) {
             if (err) {
                 console.log(err);
-            } else {
+Z
                 //raggruppo per classe futura(es: PRIMA o TERZA)
                 if(obj.length === 0){
                     res.redirect(endpoint.alunni.uploadAlunniCsv);
