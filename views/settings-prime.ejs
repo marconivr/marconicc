@@ -22,6 +22,10 @@
         font-size: 1.2em;
         width: 120px;
     }
+    .ui.fixed.menu+.ui.grid{
+        padding-top: 0rem;
+    }
+
 </style>
 
 <script>
@@ -48,7 +52,7 @@
 
             <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
             <div>
-                <div class="ui items" id="row-for-insert-date"  style="padding-top:5px">
+                <div class="ui items" id="row-for-insert-date"  style="padding-top:10px">
                 </div>
             </div>
         </div>
@@ -96,23 +100,11 @@
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
-                            <input name="descrizione" placeholder="Inserisci una descrizione per idetnificare questa configurazione" type="text" id="descrizione">
+                            <input name="descrizione" placeholder="Inserisci una descrizione per identificare questa configurazione" type="text" id="descrizione">
                         </div>
-                        <div class="ui hidden success message" id="message">
-                            <div class="header">Form Completato</div>
-                            <p>Le impostazioni sono state salvate</p>
+                        <div>
+                            <div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div>
                         </div>
-                        <div class="ui hidden success message" id="negativeMessage">
-                            <div class="header">Errore</div>
-                            <p>Il form non è stato inviato</p>
-                        </div>
-                        <!--sematic button-->
-<<<<<<< Updated upstream
-                        <div><div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div><p id="messageCompila">Devi completare tutti i campi!</p></div>
-=======
-                        <div><div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Invia</div><p id="messageCompila">Devi completare tutti i campi!</p></div></br></br>
-
->>>>>>> Stashed changes
                     </form>
                 </div>
             </div>
@@ -183,8 +175,19 @@
             </tr>
             </tbody>
         </table>
+        <div class="ui right aligned grid">
+
+            <div class="right floated left aligned five wide column">
+                <label class="align left">
+                    Vuoi rendere attiva questa configurazione?
+                </label>
+            </div>
+
+        </div>
+
     </div>
     <div class="actions">
+
         <div class="ui black deny button">
             No
         </div>
@@ -206,6 +209,7 @@
 
 <script>
     var settings = [];
+    var global_index = 0; // indice della configurazione
     function  createModal(index) {
         var s = "";
 
@@ -219,6 +223,8 @@
             .modal({
                 closable  : false,
                 onApprove : function() {
+
+                    /*
                     for (setting in settings[index]){
                         switch (setting){
                             case "nome":
@@ -251,6 +257,7 @@
                     document.getElementById("messageCompila").setAttribute("class", "hiddenMessage");
                     setDataRealtimeNumberOfStudents();
                     setDataRealtimeNumberOfFemmine();
+                    */
                 }
             })
             .modal('show')
@@ -306,9 +313,44 @@
                 "naz_per_classe" : naz_per_classe,
                 "max_al_104" : max_al_104
             },
-            type: 'get',
-            success: function (data) {
-               alertify.success("Configurazione inserita");
+            type: 'post',
+            success: function (dati) {
+                if (dati == "no-error") {
+
+
+                settings.push({
+                    "data" : data,
+                    "descrizione" : descrizione,
+                    "alunniMin" : alunniMin,
+                    "alunniMax": alunniMax ,
+                    "femmine" : femmine ,
+                    "residenza" : residenza,
+                    "nazionalita" : nazionalita,
+                    "naz_per_classe" : naz_per_classe,
+                    "max_al_104" : max_al_104
+                });
+                var item = $('<div/>')
+                    .addClass('item')
+                    .appendTo($('#row-for-insert-date'));
+                var content = $('<div/>')
+                    .addClass('content')
+                    .appendTo(item);
+
+                var header = $('<div/>')
+                    .addClass('header')
+                    .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
+                    .appendTo(content);
+
+                var meta = $('<div/>')
+                    .addClass('meta')
+                    .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
+                    .appendTo(content);
+                global_index += 1;
+                alertify.success("Configurazione inserita");
+                }
+                else {
+                    alertify.error("Ci deve essere stato un problema");
+                }
             },
             error: function (xhr, status, error) {
                alertify.error("Opps, ci deve essere stato un problema");
@@ -316,36 +358,6 @@
             }
         });
     }
-
-    function addPriority() {
-        var priorita = [];
-        priorita.push("legge_104");
-        priorita.push("legge_107");
-        priorita.push("alunni");
-        priorita.push("desiderata");
-        priorita.push("ripetenti");
-        priorita.push("sesso");
-        priorita.push("nazionalita");
-        priorita.push("CAP");
-        priorita.push("voto");
-
-        $.ajax({
-            url: '<%= endpoint.alunni.insertPriorita%>',
-            data: {
-                "priorita" : priorita
-            },
-            type: 'get',
-            success: function (data) {
-
-            },
-            error: function (xhr, status, error) {
-
-                console.log('Error: ' + error.message);
-
-            },
-        });
-    }
-
 
       $(document).ready(function() {
         $.ajax({
@@ -360,7 +372,7 @@
             dataType: 'json',
 
             success: function (listaSettings) {
-                settings = listaSettings;//use when createModal() is call
+                settings = listaSettings;//ufse when createModal() is call
 
                 for(var index = 0; index < listaSettings.length ; index++)
                 {
@@ -374,13 +386,14 @@
                     console.log("value :" + index)
                     var header = $('<div/>')
                         .addClass('header')
-                        .html('<a onclick="createModal(\'' + index + '\')">' + listaSettings[index].nome + '</a>')
+                        .html('<a style="font-size: 16px;" onclick="createModal(\'' + index + '\')">' + listaSettings[index].nome + '</a>')
                         .appendTo(content);
 
                     var meta = $('<div/>')
                         .addClass('meta')
                         .html('<i class="wait icon"></i> ' + listaSettings[index].data + '<hr>')
                         .appendTo(content);
+                    global_index+= 1;
                 }
             }
         });

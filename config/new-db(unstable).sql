@@ -10,12 +10,6 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Database: `composizione_classi`
 --
@@ -379,24 +373,6 @@ CREATE TABLE `classi` (
   `classe_futura` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `classi`
---
-
-INSERT INTO `classi` (`id`, `nome`, `anno_scolastico`, `descrizione`, `scuola`, `classe_futura`) VALUES
-(1, '1A', '2017-2018', '', 0, 'PRIMA'),
-(2, '1B', '2017-2018', '', 0, 'PRIMA'),
-(3, '1C', '2017-2018', '', 0, 'PRIMA'),
-(4, '1D', '2017-2018', '', 0, 'PRIMA'),
-(5, '1E', '2017-2018', '', 0, 'PRIMA'),
-(6, '1F', '2017-2018', '', 0, 'PRIMA'),
-(7, '1G', '2017-2018', '', 0, 'PRIMA'),
-(8, '1H', '2017-2018', '', 0, 'PRIMA'),
-(9, '1I', '2017-2018', '', 0, 'PRIMA'),
-(10, '1J', '2017-2018', '', 0, 'PRIMA'),
-(11, '1K', '2017-2018', '', 0, 'PRIMA'),
-(12, '1L', '2017-2018', '', 0, 'PRIMA');
-
 -- --------------------------------------------------------
 
 --
@@ -417,6 +393,7 @@ CREATE TABLE `classi_composte` (
 
 CREATE TABLE `configurazione` (
   `id` int(11) NOT NULL,
+  `attiva` bit DEFAULT 0,
   `scuola` int(11) DEFAULT NULL,
   `anno_scolastico` varchar(15) DEFAULT NULL,
   `data` date NOT NULL,
@@ -435,8 +412,8 @@ CREATE TABLE `configurazione` (
 -- Dumping data for table `configurazione`
 --
 
-INSERT INTO `configurazione` (`id`, `scuola`, `anno_scolastico`, `data`, `nome`, `min_alunni`, `max_alunni`, `gruppo_femmine`, `gruppo_cap`, `gruppo_nazionalita`, `nazionalita_per_classe`, `numero_alunni_con_104`, `classe`) VALUES
-(1, 0, '2017-2018', '2017-05-09', 'prova1', 25, 28, 4, 4, 4, 3, 23, 'PRIMA');
+INSERT INTO `configurazione` (`id`, `attiva`, `scuola`, `anno_scolastico`, `data`, `nome`, `min_alunni`, `max_alunni`, `gruppo_femmine`, `gruppo_cap`, `gruppo_nazionalita`, `nazionalita_per_classe`, `numero_alunni_con_104`, `classe`) VALUES
+(1, 1, 0, '2017-2018', '2017-05-09', 'prova1', 25, 28, 4, 4, 4, 3, 23, 'PRIMA');
 
 -- --------------------------------------------------------
 
@@ -740,7 +717,3 @@ ALTER TABLE `tag`
 ALTER TABLE `utenti`
   ADD CONSTRAINT `scuola_ibfk_1` FOREIGN KEY (`scuola`) REFERENCES `scuole` (`id`),
   ADD CONSTRAINT `utenti_ibfk_1` FOREIGN KEY (`scuola`) REFERENCES `scuole` (`id`);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

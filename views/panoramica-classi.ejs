@@ -20,6 +20,10 @@
         padding-right: 10px !important;
 
     }
+    .ui.basic.button {
+        width:100%;
+        height:25%;
+    }
 
     .contenitoreClasse li {
         margin: 0 5px 5px 5px;
@@ -75,9 +79,11 @@
         width: 120px;
         background-color: #555;
         color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px 0;
+        text-align: left;
+        padding-left : 5px;
+        padding-top: 5px;
+        padding-bottom : 5px;
+        border-radius: 5px;
         position: absolute;
         z-index: 1;
         bottom: 125%;
@@ -91,7 +97,7 @@
         content: "";
         position: absolute;
         top: 100%;
-        left: 50%;
+        left: 80%;
         margin-left: -5px;
         border-width: 5px;
         border-style: solid;
@@ -102,7 +108,6 @@
         visibility: visible;
         opacity: 1;
     }
-
     .ui.menu {
         border: none;
     }
@@ -120,6 +125,14 @@
         border-style: solid !important;
         border-width: 5px !important;
     }
+
+    .desiderata-non-rispettato {
+        border-color: #4DB6AC !important;
+        border-style: solid !important;
+        border-width: 5px !important;
+    }
+
+
 </style>
 
 <% include sidebar-start.ejs %>
@@ -127,9 +140,25 @@
     <!--filter and settings-->
     <div class="ui dropdown settings item notSelectable">
         <p class="ui tiny" style="top:25%;position:relative"><i class="options icon"></i>Options</p>
-        <!-- <i class="dropdown icon "></i>  occupa tanto spazio -->
-        <div class="menu" style="width: 10%">
-            <div class="item" id="scarica-excel"> <i class="download icon"></i>Scarica excel</div>
+
+        <div class="menu" style="width: 140%;">
+            <!--<div class="item" id="scarica-excel">-->
+                <!--<i class="download icon"></i>Download-->
+            <!--</div>-->
+            <div class="item">
+                <i class="dropdown icon"></i>
+                <i class="download icon"></i> Download
+                <div class="menu">
+                    <div class="list">
+                        <div class="item">
+                            <button class="ui basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleExcel %>';"><i class="file excel outline icon"></i> Excel</button>
+                        </div>
+                        <div class="item">
+                            <button class="ui basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleCsv %>';"><i class="file text outline icon"></i> Csv</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="item" id="history"> <i class="undo icon"></i>History</div>
         </div>
     </div>
