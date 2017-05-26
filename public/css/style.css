@@ -149,6 +149,28 @@ body::-webkit-scrollbar-thumb {
     border-radius: 10px;
 }
 
+/*scrollbar medium height*/
+
+.medium-height {
+    overflow-y: visible;
+    max-height: 5%;
+}
+
+.medium-height::-webkit-scrollbar {
+    width: .5em;
+    background-color: #00ff0b;
+    max-height: 50px;
+}
+
+.medium-height::-webkit-scrollbar-track {
+    -webkit-box-shadow: #424242;
+    margin-left: 5px;
+}
+
+.medium-height::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    outline: 1px solid #424242;
+}
 
  body > .grid {
     height: 100%;

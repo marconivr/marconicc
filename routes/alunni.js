@@ -318,7 +318,7 @@ module.exports = function (app) {
      */
     app.post(endpoint.alunni.setActiveConfiguration, function (req, res) {
         const scuola = req.user.id_scuola;
-        query.insertSettingsPrime(scuola, "PRIMA", req.body.id, function (err, results) {
+        query.setActiveConfiguration(scuola, "PRIMA", req.body.id, function (err, results) {
             if (err)
                 res.send({"error":err});
             else

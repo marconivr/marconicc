@@ -54,7 +54,7 @@
 
             <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
             <div>
-                <div class="ui items" id="row-for-insert-date" style="padding-top:10px">
+                <div class="ui items medium-height" id="row-for-insert-date" style="padding-top:10px">
                 </div>
             </div>
         </div>
@@ -73,13 +73,18 @@
                                     <input type="number" name="alunni_min"
                                            placeholder="Qual è il numero di alunni minimi di una classe?"
                                            onkeyup="setDataRealtimeNumberOfStudents()"
-                                           onchange="setDataRealtimeNumberOfStudents()" id="alunni-min" min="0">
+                                           onchange="setDataRealtimeNumberOfStudents()"
+                                           id="alunni-min"
+                                           min="0"
+                                           max="30">
                                 </div>
                                 <div class="field">
                                     <label>Alunni massimi in una classe</label>
                                     <input type="number" name="alunni_max"
                                            placeholder="Qual è il numero di alunni massimi di una classe?"
-                                           id="alunni-max" min="0">
+                                           id="alunni-max"
+                                           min="0"
+                                           max="50">
                                 </div>
                             </div>
                         </div>
@@ -87,29 +92,41 @@
                             <label>Numero femmine in una classe</label>
                             <input name="max_femmine" placeholder="Quante femmine per classe?" type="number"
                                    onkeyup="setDataRealtimeNumberOfFemmine()"
-                                   onchange="setDataRealtimeNumberOfFemmine()" id="femmine" min="0">
+                                   onchange="setDataRealtimeNumberOfFemmine()"
+                                   id="femmine"
+                                   min="0"
+                                   max="25">
                         </div>
                         <div class="field">
                             <label>Numero persone con la stessa nazionalità</label>
                             <input name="nazionalita" placeholder="Quante nazionaità diverse per classe?" type="number"
-                                   id="nazionalita" min="0">
+                                   id="nazionalita"
+                                   min="0"
+                                   max="25">
                         </div>
                         <div class="field">
                             <label>Numero nazionalità per classe</label>
                             <input name="naz_per_classe"
                                    placeholder="Quanti alunni con la stessa nazionalità per classe?" type="number"
-                                   id="naz_per_classe" min="0">
+                                   id="naz_per_classe"
+                                   min="0"
+                                   max="15">
                         </div>
                         <div class="field">
                             <label>Numero persone che hanno residenza simile</label>
                             <input name="stessa_provenienza" placeholder="Quanti alunni con la stessa residenza?"
-                                   type="number" id="residenza" min="0">
+                                   type="number"
+                                   id="residenza"
+                                   min="0"
+                                   max="25">
                         </div>
                         <div class="field">
                             <label>Numero massimo di alunni in una classe in presenza di un 104</label>
                             <input name="max_al_104"
                                    placeholder="Qual è il numero di alunni massimi in presenza di un 104?" type="number"
-                                   id="max_al_104" min="0">
+                                   id="max_al_104"
+                                   min="0"
+                                   max="30">
                         </div>
                         <div class="field">
                             <label>Descrizione</label>
@@ -118,7 +135,11 @@
                                    type="text" id="descrizione">
                         </div>
                         <div>
-                            <div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div>
+                            <button class="ui basic button" tabindex="0" id="sendButton" onclick="addSettings()">
+                                <i class="upload icon"></i>
+                                Aggiungi configurazione
+                            </button>
+
                         </div>
                     </form>
                 </div>
@@ -225,7 +246,13 @@
 <script>
     var settings = [];
     var global_index = 0; // indice della configurazione
-    function createModal(index) {
+
+    /**
+     *
+     * @param index -> index dell'array per popolare il modal
+     * @param databaseIndex -> indice per settare attiva del database
+     */
+    function createModal(index, databaseIndex) {
         var s = "";
 
         $('#modal-header').text(settings[index].nome);
@@ -240,7 +267,7 @@
                 closable: false,
                 onApprove: function () {
                     //setto questa configurazione attiva
-                    var id = index;
+                    var id = databaseIndex;
                     $.ajax({
                         type: "POST",
                         url: '<%= endpoint.alunni.setActiveConfiguration %>',
@@ -318,6 +345,8 @@
             type: 'post',
             success: function (dati) {
                 if (dati == "no-error") {
+                    alertify.success("Configurazione inserita");
+                    document.getElementById("sendButton").setAttribute("class", "ui basic button disabled")
 
                     settings.push({
                         "data": data,
@@ -347,9 +376,9 @@
                         .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
                         .appendTo(content);
                     global_index += 1;
-                    alertify.success("Configurazione inserita");
+
                     $('.ui.form.success')[0].reset();
-                    document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+
                 }
                 else {
                     alertify.error("Opps, ci deve essere stato un problema");
@@ -360,6 +389,7 @@
 
             }
         });
+
     }
 
     $(document).ready(function () {
@@ -375,7 +405,7 @@
             dataType: 'json',
 
             success: function (listaSettings) {
-                settings = listaSettings;//ufse when createModal() is call
+                settings = listaSettings;//use when createModal() is call
 
                 for (var index = 0; index < listaSettings.length; index++) {
                     var item = $('<div/>')
@@ -388,7 +418,7 @@
                     console.log("value :" + index)
                     var header = $('<div/>')
                         .addClass('header')
-                        .html('<a style="font-size: 16px;" onclick="createModal(\'' + index + '\')">' + listaSettings[index].nome + '</a>')
+                            .html('<a style="font-size: 16px;" onclick="createModal(' + index + ',' + listaSettings[index].id + ')">' + listaSettings[index].nome + '</a>')
                         .appendTo(content);
 
                     var meta = $('<div/>')
@@ -400,7 +430,7 @@
             }
         });
 
-        document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+        document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
         var $fields = $(".field :input");
         $fields.keyup(function () {
 
@@ -411,10 +441,10 @@
             });
 
             if (!$emptyFields.length) {
-                document.getElementById("sendButton").setAttribute("class", "ui button")
+                document.getElementById("sendButton").setAttribute("class", "ui basic button")
 
             } else {
-                document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+                document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
             }
         });
     });
