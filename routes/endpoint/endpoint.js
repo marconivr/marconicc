@@ -47,7 +47,8 @@ module.exports = {
         getHistory: "/get-history",
         removeStudentFromHistory: "/remove-student-from-history",
         getPastSettingsTerze: "/get-past-settings-terze",
-        getStudentsFromSpecifiCYear: "/get-students-from-specifiC-year"
+        getStudentsFromSpecifiCYear: "/get-students-from-specifiC-year",
+        setActiveConfiguration : "/set-active-configuration"
         
     }
 

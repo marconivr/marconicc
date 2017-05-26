@@ -239,43 +239,28 @@
             .modal({
                 closable: false,
                 onApprove: function () {
+                    //setto questa configurazione attiva
+                    var id = index;
+                    $.ajax({
+                        type: "POST",
+                        url: '<%= endpoint.alunni.setActiveConfiguration %>',
+                        data: {id: id},
+                        success: function (data) {
+                            if (data.error) {
+                                alertify.error("Opss, ci deve essere stato un problema");
+                                console.error(data.error);
+                            }
+                            else {
 
-                    //todo:ssetta
-                    /*
-                     for (setting in settings[index]){
-                     switch (setting){
-                     case "nome":
-                     document.getElementById("descrizione").value = settings[index][setting];
-                     break;
-                     case "min_alunni":
-                     document.getElementById("alunni-min").value = settings[index][setting];
-                     break;
-                     case "max_alunni":
-                     document.getElementById("alunni-max").value = settings[index][setting];
-                     break;
-                     case "gruppo_femmine":
-                     document.getElementById("femmine").value = settings[index][setting];
-                     break;
-                     case "gruppo_cap":
-                     document.getElementById("residenza").value = settings[index][setting];
-                     break;
-                     case "gruppo_nazionalita":
-                     document.getElementById("nazionalita").value = settings[index][setting];
-                     break;
-                     case "nazionalita_per_classe":
-                     document.getElementById("naz_per_classe").value = settings[index][setting];
-                     break;
-                     case "numero_alunni_con_104":
-                     document.getElementById("max_al_104").value = settings[index][setting];
-                     break;
-                     }
-                     }
-                     document.getElementById("sendButton").setAttribute("class", "ui button");
-                     document.getElementById("messageCompila").setAttribute("class", "hiddenMessage");
-                     setDataRealtimeNumberOfStudents();
-                     setDataRealtimeNumberOfFemmine();
-                     */
+                                alertify.success("Questa configurazione è attiva");
+                            }
+                        },
+                        error: function (errMsg) {
+                            alertify.error('Opss, ci deve essere stato un problema interno al server');
+                        }
+                    });
                 }
+
             })
             .modal('show')
         ;
