@@ -217,11 +217,7 @@ module.exports = {
             " INNER JOIN alunni ON alunni.id = alunno" +
             " ORDER BY timestamp DESC",
             function (err, rows) {
-                if (err) {
-                    throw err;
-                } else {
-                    callback(err, rows);
-                }
+                callback(err, rows);
             });
     },
 
@@ -506,11 +502,7 @@ module.exports = {
     getStudentByCf: function (cf, scuola, callback) {
 
         connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ", [cf, scuola], function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
                 callback(err, rows);
-            }
         });
     },
 
@@ -573,11 +565,7 @@ module.exports = {
         else  query = "UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'";
 
         connection.query(query, function (err, rows) {
-            if (err) {
-                throw err;
-            } else {
                 callback(err, rows);
-            }
         });
     },
 
