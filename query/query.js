@@ -241,28 +241,6 @@ module.exports = {
     },
 
     insertSettingsPrime: function (callback, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104) {
-        // async.waterfall({
-        //     updateActiveSettings: function (callback) {
-        //         var query = connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?",  [scuola, "PRIMA"], function (err, row) {
-        //             if (err) {
-        //                 console.log(err);
-        //             } else {
-        //                 callback(err, {id: "Ok"});
-        //             }
-        //         });
-        //     },
-        //     insertSettings: function (callback) {
-        //         var query = connection.query("INSERT INTO configurazione (attiva, scuola, data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe , numero_alunni_con_104, classe) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [1, scuola, data, descrizione, alunniMin, alunniMax, femmine, residenza, nazionalita, naz_per_classe, max_al_104, "PRIMA"], function (err, row) {
-        //             if (err) {
-        //                 console.log(err);
-        //             } else {
-        //                 callback(err, {id: "Ok"});
-        //             }
-        //         });
-        //     },
-        // }, function (err, results) {
-        //         callback(err, results);
-        // });
         async.series
         ([
                 function (callback) {
@@ -323,7 +301,7 @@ module.exports = {
 
 
     getSettingsPrime: function (scuola, callback) {
-        connection.query("select id, attiva, DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'PRIMA' and scuola = ?;", [scuola], function (err, rows) {
+        connection.query("select id, attiva , DATE_FORMAT(data, '%d-%m-%Y') as data, nome, min_alunni, max_alunni, gruppo_femmine, gruppo_cap, gruppo_nazionalita, nazionalita_per_classe, numero_alunni_con_104 from configurazione where classe = 'PRIMA' and scuola = ?;", [scuola], function (err, rows) {
             if (err) {
                 console.log('error');
             } else {
