@@ -281,7 +281,7 @@ module.exports = {
             });
     },
 
-    setActiveConfiguration: function (callback, scuola, classe, index) {
+    setActiveConfiguration: function (scuola, classe, index, callback) {
         async.series
         ([
                 function (callback) {

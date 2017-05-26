@@ -314,6 +314,20 @@ module.exports = function (app) {
     });
 
     /**
+     * inserisce le impostazioni delle prime
+     */
+    app.post(endpoint.alunni.setActiveConfiguration, function (req, res) {
+        const scuola = req.user.id_scuola;
+        query.insertSettingsPrime(scuola, "PRIMA", req.body.id, function (err, results) {
+            if (err)
+                res.send({"error":err});
+            else
+                res.send("no-error");
+        });
+
+    });
+
+    /**
      * inserisce le impostazioni delle terze
      */
     app.get(endpoint.alunni.insertSettingsTerze, function (req, res) {
