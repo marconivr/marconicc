@@ -1534,6 +1534,476 @@ function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
 
 }
 
+function setLoader(value) {
+    $('.ui.indicating.progress').progress({
+        percent: value
+    });
+}
+
+function generatePage(data) {
+    var listaClassi = data.classi;
+    dirittiUtente = data.dirittiUtente;
+    idUtente = data.idUtente;
+    // setLoader(22);
+
+    //dropdown for the settings
+    $('.ui.dropdown.settings').dropdown(
+        {
+            action: 'nothing'
+        }
+    );
+    $('.ui.accordion').accordion();
+    handleCheckBoxVoti();
+    createDynamicStyle();
+    createNazionalitaMenu();
+    handleCheckBoxNazionalita();
+    handleCheckBoxDesiderata();
+    handleCheckBoxBocciati();
+    var selezioneClassi = $('#selezioneClassi');
+
+    //handle history click
+    $('#history').click(function (e) {
+        history();
+    });
+
+
+    for (i = 0; i < listaClassi.length; i++) {
+        listaClassi[i].alunni.sort(compare);
+    }
+
+    populate(listaClassi);
+    for (var i = 0; i < listaClassi.length; i++) {
+
+        var nomeClasse = listaClassi[i].nome;
+        var arrayStudenti = listaClassi[i].alunni;
+
+        var wrapperClasse = $('<div/>', {
+            'id': nomeClasse,
+            'class': 'wrapperClasse',
+        }).appendTo('#rowForInsertClasses').hide();
+
+        var classButton = $('<a/>', {
+            'class': 'item',
+            'text': nomeClasse
+        });
+
+        $('<div/>')
+            .css
+            ({
+                top: '15%',
+                position: 'relative'
+            })
+            .html(classButton)
+            .addClass('classi')
+            .appendTo(selezioneClassi);
+
+        var settingClasse = $('<div/>', {
+            'class': 'ui raised segment wrapperSettingClasse',
+            'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>' +
+            ' <div class="ui icon buttons mini" style="left:15%;position:relative">' +
+            '<button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button>' +
+            '<button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button>' +
+            '</div>'
+        }).appendTo(wrapperClasse);
+
+        var div = $('<ul/>', {
+            'class': 'contenitoreClasse ui vertical menu'
+        }).appendTo(wrapperClasse);
+
+
+        jsonVoti = {};
+        for (var j = 0; j < arrayStudenti.length; j++) {
+            if (arrayStudenti[j] !== undefined) {
+                var cognomeStudente = arrayStudenti[j].cognome;
+                var nomeStudente = arrayStudenti[j].nome;
+                var cf = arrayStudenti[j].cf;
+                var nazionalita = arrayStudenti[j].nazionalita;
+                var desiderata = arrayStudenti[j].desiderata;
+                var voto = arrayStudenti[j].voto;
+
+
+                var iconFlagElement = "";
+                if (nazionalita != "ITALIANA") {
+                    iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
+                }
+
+                /////////////////////STUDENTI//////////////////
+                //CREAZIONE TAG
+                //ES : CIECO
+                //ES : DSA-> DISGRAFICO
+
+                //CONTROLLO ANAGRAFICA
+                //CONTROLLO DESIDERATA
+                //AGGIUGNO CLASSE VOTO
+
+                var tag;
+                var anagrafica = $('<p/>')
+                    .addClass('roboto')
+                    .html(iconFlagElement + " " + cognomeStudente + " " + nomeStudente);
+
+                //CREO GLI STUDENTI
+                var container;
+                if (arrayStudenti[j].sesso == "M") {
+                    container = $('<div/>',
+                        {
+                            'width': $(wrapperClasse).width() - 5,
+                            'height': 40,
+                            'data-content': nazionalita,
+                            'cognome': cognomeStudente,
+                            'data-variation': "tiny"
+
+                        })
+                        .addClass('ui segment tooltip guys popup-information ' + voto)
+                        .attr('id', cf)
+                        .html(anagrafica)
+                }
+                else {
+                    container = $('<div/>',
+                        {
+                            'width': $(wrapperClasse).width() - 5,
+                            'height': 40,
+                            'data-content': nazionalita,
+                            'cognome': cognomeStudente,
+                            'data-variation': "tiny"
+                        })
+                        .addClass('ui segment tooltip girl popup-information ' + voto)
+                        .attr('id', cf)
+                        .html(anagrafica)
+                }
+
+
+                //aggiungo la classe desiderata se presente
+                if (desiderata != "") container.addClass('desiderata');
+
+                var tooltipValue = "";
+                if ((arrayStudenti[j].legge_104) != "") {
+                    tooltipValue = "104"
+                } else if (arrayStudenti[j].legge_107 != "") {
+                    tooltipValue = "107";
+                }
+
+
+                if (tooltipValue != "") {
+                    //contiene il tag studente
+                    tag = $('<div/>')
+                        .addClass('floating ui grey label mini')
+                        .css(
+                            {
+                                'top': '25%'
+                            }
+                        )
+                        .html(tooltipValue)
+                        .appendTo(container)
+                }
+
+                //tooltip for handicap
+                var handicapTooltip = "";
+                if ((arrayStudenti[j])['legge_' + tooltipValue] !== undefined) {
+                    handicapTooltip = '<br>' + tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
+                }
+
+                var tooltip = $('<span/>')
+                    .addClass('tooltiptext')
+                    .html('media : ' + voto + '<br>naz : ' + nazionalita.toLowerCase() + '<br>' + handicapTooltip)
+                    .appendTo(container);
+
+                var li = $('<li/>')
+                    .html(container)
+                    .appendTo(div);
+            }
+        }
+
+        //create menu
+        div.contextMenu({
+            selector: 'li',
+            callback: function (key, options) {
+                var studente = getStudentObject($(this).children().attr("id"));
+                switch (key) {
+                    case "informazioni":
+                        //open modal
+                        $('.ui.modal.informazioni').modal({
+                            onHide: function () {
+
+                            },
+                            onApprove: function () {
+
+
+                            },
+                            onShow: function () {
+
+                                populateModal(studente);
+                            }
+                        }).modal('show');
+
+                        break;
+                    //for further case
+                    case "spostamento" :
+
+                        moveStudentFromContextMenu(key, studente);
+                        break;
+                    //spostamento nelle classi
+                    default:
+                        moveStudentFromContextMenu(key, studente);
+                        break;
+                }
+            },
+            items: {
+                "informazioni": {name: "Informazioni", icon: "view"},
+                "spostamento": {
+                    name: "Spostamento",
+                    icon: "move",
+                    "items": returnJsonOfClassName()
+                }
+            }
+        });
+        // setLoader(70);
+
+        var jsonVotiPrima = totalVotiOfAllClass();
+        var jsonVoti = numerOfVotiOfClass(nomeClasse);
+        var numerOfStudent = totalNumberOfStudent(nomeClasse);
+        var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
+
+        // CHART BAR //
+        var canvasBarChart = $('<canvas/>',
+            {
+                'id': nomeClasse + 'barChart',
+                'class': 'barChart',
+                'width': 200,
+                'height': 250
+            }).appendTo(settingClasse);
+
+        var br = $('<br>', {
+            class: 'barChart'
+        }).appendTo(settingClasse);
+
+        var barChart = new Chart(canvasBarChart, {
+            type: 'bar',
+            data: {
+                labels: ["6", "7", "8", "9", "10"],
+                datasets: [{
+                    label: 'classe' + nomeClasse,
+                    data: [
+                        approxNum((jsonVoti[6] / numerOfStudent) * 100),
+                        approxNum((jsonVoti[7] / numerOfStudent) * 100),
+                        approxNum((jsonVoti[8] / numerOfStudent) * 100),
+                        approxNum((jsonVoti[9] / numerOfStudent) * 100),
+                        approxNum((jsonVoti[10] / numerOfStudent) * 100)
+                    ],
+                    backgroundColor: [
+                        '#FFCC80',
+                        '#E6EE9C',
+                        '#D4E157',
+                        '#C5E1A5',
+                        '#AED581'
+                    ],
+                    borderColor: [
+                        '#FFB74D',
+                        '#E6EE9C',
+                        '#CDDC39',
+                        '#C5E1A5',
+                        '#AED581'
+                    ],
+                    borderWidth: 1,
+                    stack: 1
+                },
+                    {
+                        label: 'Totali',
+                        data: [
+                            approxNum((jsonVotiPrima[6] / totalNumberOfAllClass) * 100),
+                            approxNum((jsonVotiPrima[7] / totalNumberOfAllClass) * 100),
+                            approxNum((jsonVotiPrima[8] / totalNumberOfAllClass) * 100),
+                            approxNum((jsonVotiPrima[9] / totalNumberOfAllClass) * 100),
+                            approxNum((jsonVotiPrima[10] / totalNumberOfAllClass) * 100)
+                        ],
+                        backgroundColor: [
+                            '#E0E0E0',
+                            '#E0E0E0',
+                            '#E0E0E0',
+                            '#E0E0E0',
+                            '#E0E0E0'
+                        ],
+                        borderColor: [
+                            '#BDBDBD',
+                            '#BDBDBD',
+                            '#BDBDBD',
+                            '#BDBDBD',
+                            '#BDBDBD'
+                        ],
+                        borderWidth: 1,
+                        stack: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            steps: 10,
+                            stepValue: 6,
+                            max: 60,
+                            callback: function (value) {
+                                return value + "%";   //mettendo questa per la percentuale il voto viene messo orizzontale
+                            }
+                        }
+                    }]
+                }
+            }
+        });
+
+        barChartArray.push(barChart);
+
+
+        // PIE CHART
+        //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
+
+        var canvasPieChart = $('<canvas/>',
+            {
+                'id': nomeClasse + 'pieChart',
+                'class': 'pieChart',
+                'width': 200,
+                'height': 250
+            }).appendTo(settingClasse).hide();
+
+
+        var stranieri = getNationalityOfClass(nomeClasse);
+        var labels = [];
+        var data = [];
+
+
+        for (var prop in stranieri) {
+            labels.push(flagTag(prop));
+            data.push(stranieri[prop]);
+        }
+
+        var colorArray = getColorOfNationalitiesByLabelArray(labels);
+
+        var br = $('<br>', {
+            class: 'pieChart'
+        }).appendTo(settingClasse);
+
+        // For a pie chart
+        var pieChart = new Chart(canvasPieChart, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        data: data,
+                        backgroundColor: colorArray,
+                        hoverBackgroundColor: colorArray
+                    }]
+            },
+            options: {
+                responsive: false,
+                tooltips: {
+                    callbacks: {
+                        label: function (tooltipItems, data) {
+                            return data.datasets[0].data[tooltipItems.index] + ' -> naz: ' + nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
+                        }
+
+                    }
+                }
+
+            }
+        });
+
+        pieChartArray.push(pieChart);
+
+        //box informazioni
+
+        createBoxInformazioni(settingClasse, nomeClasse);
+
+
+    }
+    var oldList, newList, item, desiderata, cfAmico;
+    if (dirittiUtente == 0 || dirittiUtente == 1) {
+        $(".contenitoreClasse").sortable({
+            connectWith: ".contenitoreClasse",
+            start: function (event, ui) {
+
+
+                item = ui.item;
+                var currentPos = $(this).position();
+                desiderata = item.children().hasClass('desiderata');
+                cf = item.children()[0].id; //cf dell'alunno selezionato
+                cfAmico = getAlunnoDesiderataByCF(cf);
+
+
+                if (desiderata) {
+                    //check if i've already this cf
+                    if (jQuery.inArray(cf, cfArray) == -1) {
+                        cfArray.push(cf);
+                        var amico = getStudentByCF(cfAmico);
+                        var classeAmico = getClassNameFromStudent(cfAmico);
+                        var classeStudenteSelezionato = getClassNameFromStudent(cf);
+                        //se la desiderata non è corrisposta
+                        if (!(cfAmico === undefined || classeAmico === undefined || classeAmico != classeStudenteSelezionato)) {
+                            if (confirm("Questo alunno vuole stare con un amico: " + amico + " della " + classeAmico + ", continuare?")) {
+                                newList = oldList = ui.item.parent().parent();
+                            }
+                            else {
+                                var index = cfArray.indexOf(cf);
+                                cfArray.splice(index, 1);
+                                newList = oldList = ui.item.parent().parent();
+                            }
+                        }
+                        else {
+                            newList = oldList = ui.item.parent().parent();
+                        }
+
+                    }
+                    else {
+                        newList = oldList = ui.item.parent().parent();
+                    }
+
+                }
+                else {
+                    newList = oldList = ui.item.parent().parent();
+                }
+            },
+            stop: function (event, ui) {
+                var cf_studente_spostato = item[0].childNodes[0].id;
+                var classFrom = oldList.attr('id');
+                var classTo = newList.attr('id');
+
+                moveStudent(cf_studente_spostato, classFrom, classTo, true);
+            },
+            change: function (event, ui) {
+                if (ui.sender) newList = ui.placeholder.parent().parent();
+            }
+        }).disableSelection();
+    }
+
+    displayAllClass();
+
+    $(".barChartButton").on('click', function (e) {
+        var classe = $(this).parent().parent().parent().attr('id');
+
+        pieChart = $("#" + classe + "pieChart").hide();
+        barChart = $("#" + classe + "barChart").show();
+
+    });
+
+    $(".pieChartButton").on('click', function (e) {
+
+        var classe = $(this).parent().parent().parent().attr('id');
+
+        barChart = $("#" + classe + "barChart").hide();
+        pieChart = $("#" + classe + "pieChart").show();
+    });
+
+
+    //contents it's load, remove loader
+    $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
+    //event.preveventD
+    if (dirittiUtente == 2) {
+        alertify.set('notifier', 'position', 'top-right');
+        alertify.warning('Attenzione, non hai i diritti per spsotare gli utenti');
+    }
+}
+
 ////////////////////////////////////////////////////
 //AJAX CALL//
 ////////////////////////////////////////////////////
@@ -1562,469 +2032,7 @@ $(document).ready(function () {
         },
         dataType: 'json',
 
-        success: function (data) {
-            var listaClassi = data.classi;
-            dirittiUtente = data.dirittiUtente;
-            idUtente = data.idUtente;
-
-            //dropdown for the settings
-            $('.ui.dropdown.settings').dropdown(
-                {
-                    action: 'nothing'
-                }
-            );
-            $('.ui.accordion').accordion();
-            handleCheckBoxVoti();
-            createDynamicStyle();
-            createNazionalitaMenu();
-            handleCheckBoxNazionalita();
-            handleCheckBoxDesiderata();
-            handleCheckBoxBocciati();
-            var selezioneClassi = $('#selezioneClassi');
-
-            //handle history click
-            $('#history').click(function (e) {
-                history();
-            });
-
-
-            for (i = 0; i < listaClassi.length; i++) {
-                listaClassi[i].alunni.sort(compare);
-            }
-
-            populate(listaClassi);
-            for (var i = 0; i < listaClassi.length; i++) {
-
-                var nomeClasse = listaClassi[i].nome;
-                var arrayStudenti = listaClassi[i].alunni;
-
-                var wrapperClasse = $('<div/>', {
-                    'id': nomeClasse,
-                    'class': 'wrapperClasse',
-                }).appendTo('#rowForInsertClasses').hide();
-
-                var classButton = $('<a/>', {
-                    'class': 'item',
-                    'text': nomeClasse
-                });
-
-                $('<div/>')
-                    .css
-                    ({
-                        top: '15%',
-                        position: 'relative'
-                    })
-                    .html(classButton)
-                    .addClass('classi')
-                    .appendTo(selezioneClassi);
-
-                var settingClasse = $('<div/>', {
-                    'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>' +
-                    ' <div class="ui icon buttons mini">' +
-                    '<button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton">' +
-                    '<i class="bar chart icon"></i></button>' +
-                    '<button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button>' +
-                    '</div>'
-                }).appendTo(wrapperClasse);
-
-                var div = $('<ul/>', {
-                    'class': 'contenitoreClasse ui vertical menu'
-                }).appendTo(wrapperClasse);
-
-
-                jsonVoti = {};
-                for (var j = 0; j < arrayStudenti.length; j++) {
-                    if (arrayStudenti[j] !== undefined) {
-                        var cognomeStudente = arrayStudenti[j].cognome;
-                        var nomeStudente = arrayStudenti[j].nome;
-                        var cf = arrayStudenti[j].cf;
-                        var nazionalita = arrayStudenti[j].nazionalita;
-                        var desiderata = arrayStudenti[j].desiderata;
-                        var voto = arrayStudenti[j].voto;
-
-
-                        var iconFlagElement = "";
-                        if (nazionalita != "ITALIANA") {
-                            iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
-                        }
-
-                        /////////////////////STUDENTI//////////////////
-                        //CREAZIONE TAG
-                        //ES : CIECO
-                        //ES : DSA-> DISGRAFICO
-
-                        //CONTROLLO ANAGRAFICA
-                        //CONTROLLO DESIDERATA
-                        //AGGIUGNO CLASSE VOTO
-
-                        var tag;
-                        var anagrafica = $('<p/>')
-                            .addClass('roboto')
-                            .html(iconFlagElement + " " + cognomeStudente + " " + nomeStudente);
-
-                        //CREO GLI STUDENTI
-                        var container;
-                        if (arrayStudenti[j].sesso == "M") {
-                            container = $('<div/>',
-                                {
-                                    'width': $(wrapperClasse).width() - 5,
-                                    'height': 40,
-                                    'data-content': nazionalita,
-                                    'cognome': cognomeStudente,
-                                    'data-variation': "tiny"
-
-                                })
-                                .addClass('ui segment tooltip guys popup-information ' + voto)
-                                .attr('id', cf)
-                                .html(anagrafica)
-                        }
-                        else {
-                            container = $('<div/>',
-                                {
-                                    'width': $(wrapperClasse).width() - 5,
-                                    'height': 40,
-                                    'data-content': nazionalita,
-                                    'cognome': cognomeStudente,
-                                    'data-variation': "tiny"
-                                })
-                                .addClass('ui segment tooltip girl popup-information ' + voto)
-                                .attr('id', cf)
-                                .html(anagrafica)
-                        }
-
-
-                        //aggiungo la classe desiderata se presente
-                        if (desiderata != "") container.addClass('desiderata');
-
-                        var tooltipValue = "";
-                        if ((arrayStudenti[j].legge_104) != "") {
-                            tooltipValue = "104"
-                        } else if (arrayStudenti[j].legge_107 != "") {
-                            tooltipValue = "107";
-                        }
-
-
-                        if (tooltipValue != "") {
-                            //contiene il tag studente
-                            tag = $('<div/>')
-                                .addClass('floating ui grey label mini')
-                                .css(
-                                    {
-                                        'top': '25%'
-                                    }
-                                )
-                                .html(tooltipValue)
-                                .appendTo(container)
-                        }
-
-                        //tooltip for handicap
-                        var handicapTooltip = "";
-                        if ((arrayStudenti[j])['legge_' + tooltipValue] !== undefined) {
-                            handicapTooltip = '<br>' + tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
-                        }
-
-                        var tooltip = $('<span/>')
-                            .addClass('tooltiptext')
-                            .html('media : ' + voto + '<br>naz : ' + nazionalita.toLowerCase() + '<br>' + handicapTooltip)
-                            .appendTo(container);
-
-                        var li = $('<li/>')
-                            .html(container)
-                            .appendTo(div);
-                    }
-                }
-
-                //create menu
-                div.contextMenu({
-                    selector: 'li',
-                    callback: function (key, options) {
-                        var studente = getStudentObject($(this).children().attr("id"));
-                        switch (key) {
-                            case "informazioni":
-                                //open modal
-                                $('.ui.modal.informazioni').modal({
-                                    onHide: function () {
-
-                                    },
-                                    onApprove: function () {
-
-
-                                    },
-                                    onShow: function () {
-
-                                        populateModal(studente);
-                                    }
-                                }).modal('show');
-
-                                break;
-                            //for further case
-                            case "spostamento" :
-
-                                moveStudentFromContextMenu(key, studente);
-                                break;
-                            //spostamento nelle classi
-                            default:
-                                moveStudentFromContextMenu(key, studente);
-                                break;
-                        }
-                    },
-                    items: {
-                        "informazioni": {name: "Informazioni", icon: "view"},
-                        "spostamento": {
-                            name: "Spostamento",
-                            icon: "move",
-                            "items": returnJsonOfClassName()
-                        }
-                    }
-                });
-
-
-                var jsonVotiPrima = totalVotiOfAllClass();
-                var jsonVoti = numerOfVotiOfClass(nomeClasse);
-                var numerOfStudent = totalNumberOfStudent(nomeClasse);
-                var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
-
-                // CHART BAR //
-                var canvasBarChart = $('<canvas/>',
-                    {
-                        'id': nomeClasse + 'barChart',
-                        'class': 'barChart',
-                        'width': 200,
-                        'height': 250
-                    }).appendTo(settingClasse);
-
-                var br = $('<br>', {
-                    class: 'barChart'
-                }).appendTo(settingClasse);
-
-                var barChart = new Chart(canvasBarChart, {
-                    type: 'bar',
-                    data: {
-                        labels: ["6", "7", "8", "9", "10"],
-                        datasets: [{
-                            label: 'classe' + nomeClasse,
-                            data: [
-                                approxNum((jsonVoti[6] / numerOfStudent) * 100),
-                                approxNum((jsonVoti[7] / numerOfStudent) * 100),
-                                approxNum((jsonVoti[8] / numerOfStudent) * 100),
-                                approxNum((jsonVoti[9] / numerOfStudent) * 100),
-                                approxNum((jsonVoti[10] / numerOfStudent) * 100)
-                            ],
-                            backgroundColor: [
-                                '#FFCC80',
-                                '#E6EE9C',
-                                '#D4E157',
-                                '#C5E1A5',
-                                '#AED581'
-                            ],
-                            borderColor: [
-                                '#FFB74D',
-                                '#E6EE9C',
-                                '#CDDC39',
-                                '#C5E1A5',
-                                '#AED581'
-                            ],
-                            borderWidth: 1,
-                            stack: 1
-                        },
-                            {
-                                label: 'Totali',
-                                data: [
-                                    approxNum((jsonVotiPrima[6] / totalNumberOfAllClass) * 100),
-                                    approxNum((jsonVotiPrima[7] / totalNumberOfAllClass) * 100),
-                                    approxNum((jsonVotiPrima[8] / totalNumberOfAllClass) * 100),
-                                    approxNum((jsonVotiPrima[9] / totalNumberOfAllClass) * 100),
-                                    approxNum((jsonVotiPrima[10] / totalNumberOfAllClass) * 100)
-                                ],
-                                backgroundColor: [
-                                    '#E0E0E0',
-                                    '#E0E0E0',
-                                    '#E0E0E0',
-                                    '#E0E0E0',
-                                    '#E0E0E0'
-                                ],
-                                borderColor: [
-                                    '#BDBDBD',
-                                    '#BDBDBD',
-                                    '#BDBDBD',
-                                    '#BDBDBD',
-                                    '#BDBDBD'
-                                ],
-                                borderWidth: 1,
-                                stack: 2
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: false,
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    steps: 10,
-                                    stepValue: 6,
-                                    max: 60,
-                                    callback: function (value) {
-                                        return value + "%";   //mettendo questa per la percentuale il voto viene messo orizzontale
-                                    }
-                                }
-                            }]
-                        }
-                    }
-                });
-
-                barChartArray.push(barChart);
-
-
-                // PIE CHART
-                //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
-
-                var canvasPieChart = $('<canvas/>',
-                    {
-                        'id': nomeClasse + 'pieChart',
-                        'class': 'pieChart',
-                        'width': 200,
-                        'height': 250
-                    }).appendTo(settingClasse).hide();
-
-
-                var stranieri = getNationalityOfClass(nomeClasse);
-                var labels = [];
-                var data = [];
-
-
-                for (var prop in stranieri) {
-                    labels.push(flagTag(prop));
-                    data.push(stranieri[prop]);
-                }
-
-                var colorArray = getColorOfNationalitiesByLabelArray(labels);
-
-                var br = $('<br>', {
-                    class: 'pieChart'
-                }).appendTo(settingClasse);
-
-                // For a pie chart
-                var pieChart = new Chart(canvasPieChart, {
-                    type: 'pie',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                data: data,
-                                backgroundColor: colorArray,
-                                hoverBackgroundColor: colorArray
-                            }]
-                    },
-                    options: {
-                        responsive: false,
-                        tooltips: {
-                            callbacks: {
-                                label: function (tooltipItems, data) {
-                                    return data.datasets[0].data[tooltipItems.index] + ' -> naz: ' + nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
-                                }
-
-                            }
-                        }
-
-                    }
-                });
-
-                pieChartArray.push(pieChart);
-
-                //box informazioni
-
-                createBoxInformazioni(settingClasse, nomeClasse);
-
-
-            }
-            var oldList, newList, item, desiderata, cfAmico;
-            if (dirittiUtente == 0 || dirittiUtente == 1) {
-                $(".contenitoreClasse").sortable({
-                    connectWith: ".contenitoreClasse",
-                    start: function (event, ui) {
-
-
-                        item = ui.item;
-                        var currentPos = $(this).position();
-                        desiderata = item.children().hasClass('desiderata');
-                        cf = item.children()[0].id; //cf dell'alunno selezionato
-                        cfAmico = getAlunnoDesiderataByCF(cf);
-
-
-                        if (desiderata) {
-                            //check if i've already this cf
-                            if (jQuery.inArray(cf, cfArray) == -1) {
-                                cfArray.push(cf);
-                                var amico = getStudentByCF(cfAmico);
-                                var classeAmico = getClassNameFromStudent(cfAmico);
-                                var classeStudenteSelezionato = getClassNameFromStudent(cf);
-                                //se la desiderata non è corrisposta
-                                if (!(cfAmico === undefined || classeAmico === undefined || classeAmico != classeStudenteSelezionato)) {
-                                    if (confirm("Questo alunno vuole stare con un amico: " + amico + " della " + classeAmico + ", continuare?")) {
-                                        newList = oldList = ui.item.parent().parent();
-                                    }
-                                    else {
-                                        var index = cfArray.indexOf(cf);
-                                        cfArray.splice(index, 1);
-                                        newList = oldList = ui.item.parent().parent();
-                                    }
-                                }
-                                else {
-                                    newList = oldList = ui.item.parent().parent();
-                                }
-
-                            }
-                            else {
-                                newList = oldList = ui.item.parent().parent();
-                            }
-
-                        }
-                        else {
-                            newList = oldList = ui.item.parent().parent();
-                        }
-                    },
-                    stop: function (event, ui) {
-                        var cf_studente_spostato = item[0].childNodes[0].id;
-                        var classFrom = oldList.attr('id');
-                        var classTo = newList.attr('id');
-
-                        moveStudent(cf_studente_spostato, classFrom, classTo, true);
-                    },
-                    change: function (event, ui) {
-                        if (ui.sender) newList = ui.placeholder.parent().parent();
-                    }
-                }).disableSelection();
-            }
-
-            displayAllClass();
-
-            $(".barChartButton").on('click', function (e) {
-                var classe = $(this).parent().parent().parent().attr('id');
-
-                pieChart = $("#" + classe + "pieChart").hide();
-                barChart = $("#" + classe + "barChart").show();
-
-            });
-
-            $(".pieChartButton").on('click', function (e) {
-
-                var classe = $(this).parent().parent().parent().attr('id');
-
-                barChart = $("#" + classe + "barChart").hide();
-                pieChart = $("#" + classe + "pieChart").show();
-            });
-
-
-            //contents it's load, remove loader
-            $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
-            //event.preveventD
-            if (dirittiUtente == 2) {
-                alertify.set('notifier', 'position', 'top-right');
-                alertify.warning('Attenzione, non hai i diritti per spsotare gli utenti');
-            }
-        },
+        success: generatePage,
         type: 'GET'
     });
 

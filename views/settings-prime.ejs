@@ -426,7 +426,7 @@
                     .addClass('content')
                     .appendTo(item);
             if (listaSettings[index].attiva == 1) {
-                content.append('<i class="checkmark  green box icon"></i>');
+                content.append('<i class="checkmark green  icon"></i>');
             }
 
             var header = $('<div/>')
@@ -436,7 +436,7 @@
 
             var meta = $('<div/>')
                     .addClass('meta')
-                    .html('<i class="wait icon"></i> ' + listaSettings[index].data + '<hr>')
+                    .html('<i class="calendar icon"></i> ' + listaSettings[index].data + '<hr>')
                     .appendTo(content);
             global_index += 1;
         }

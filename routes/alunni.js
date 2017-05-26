@@ -226,7 +226,8 @@ module.exports = function (app) {
                 studentiPrima: results.studentiPrima.studenti,
                 femminePrima: results.femminePrima.femmine,
                 mediaPrima: results.mediaPrima.media,
-                stranieriPrima: results.stranieriPrima.stranieri
+                stranieriPrima: results.stranieriPrima.stranieri,
+                hideDropDown: true
             });
 
         });
