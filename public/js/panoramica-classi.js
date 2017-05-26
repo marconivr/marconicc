@@ -16,8 +16,9 @@ var bocciati = false;
 var bocciatiItems = [];
 var nazionalitaItems = [];
 
-//
+//sezione diritti
 var dirittiUtente = undefined;
+var idUtente = undefined;
 
 
 //chart
@@ -474,7 +475,7 @@ function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory, anno_scola
         cf: cf,
         fromClass: fromClass,
         toClass: toClass,
-        id_utente: null,//todo:insert id_utente
+        id_utente: idUtente,
         anno_scolastico: anno_scolastico,
         saveHistory: saveHistory
 
@@ -1564,6 +1565,7 @@ $(document).ready(function () {
         success: function (data) {
             var listaClassi = data.classi;
             dirittiUtente = data.dirittiUtente;
+            idUtente = data.idUtente;
 
             //dropdown for the settings
             $('.ui.dropdown.settings').dropdown(
