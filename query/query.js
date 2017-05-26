@@ -281,6 +281,25 @@ module.exports = {
             });
     },
 
+    setActiveConfiguration: function (callback, scuola, classe, index) {
+        async.series
+        ([
+                function (callback) {
+                    connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?", [scuola, classe], function (err, row) {
+                        callback(err, {id: "1"});
+                    });
+                },
+                function (callback) {
+                    connection.query("UPDATE configurazione SET attiva = 1 WHERE scuola = ? AND classe = ? AND id = ?", [scuola, classe, index], function (err, row) {
+                        callback(err, {id: "1"});
+                    });
+                }
+            ],
+            function (err, results) {
+                callback(err, results)
+            });
+    },
+
     updateActiveSettingsPrime: function (scuola, index, callback) {
         var query = connection.query("UPDATE configurazione SET attiva = 0 WHERE attiva = 1 AND scuola = ? AND classe = ?;" +
             "UPDATE configurazione SET attiva = 1 WHERE id = ? AND scuola = ? AND classe = ?", [scuola, "PRIMA", index, scuola, "PRIMA",], function (err, row) {
