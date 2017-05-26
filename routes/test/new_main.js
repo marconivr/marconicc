@@ -28,9 +28,9 @@ class Classe {
 
         if (!Classe.checkValidazione(ris)){
             this.alunni.pop();
+            return ris;
         }
-
-        return ris;
+        return "ok";
      }
 
 
@@ -40,8 +40,8 @@ class Classe {
     }
 
     static checkValidazione(ris){
-        _.forEach(ris, function (key, value) {
-            if(!value){
+        _.forEach(ris, function (value, key) {
+            if(value === false){
                 return false;
             }
         });
@@ -188,10 +188,7 @@ class Classe {
 let classe1 = new Classe("1A");
 
 for(i in alunni){
-    if(i == 30){
-        console.log(classe1.setAlunno(alunni[i]));
-    }
-    classe1.setAlunno(alunni[i]);
+    console.log(classe1.setAlunno(alunni[i]));
 }
 
 console.log(classe1);
