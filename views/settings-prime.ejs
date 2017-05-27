@@ -64,7 +64,7 @@
             <div class="ui centered grid">
                 <div class="six wide tablet ten wide computer column">
                     <!--sematic form-->
-                    <form class="ui form success" onsubmit='return onSubmit(this);return validateForm()'>
+                    <form class="ui form success" id="form-inserimento" >
                         <h4 class="ui dividing header">Impostazioni prime</h4>
 
                         <!--sematic fields-->
@@ -137,7 +137,7 @@
                                    type="text" id="descrizione">
                         </div>
                         <div>
-                            <button class="ui basic button" tabindex="0" id="sendButton" onclick="addSettings()">
+                            <button class="ui basic button" tabindex="0" id="sendButton" >
                                 <i class="upload icon"></i>
                                 Aggiungi configurazione
                             </button>
@@ -320,7 +320,8 @@
             $("#classi-con-femmine").html(Math.floor(femmineTot / femmineMax));
         }
     }
-    function addSettings() {
+
+    $('#form-inserimento').submit(function(e) {
 
         var d = new Date();
         var data = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
@@ -345,7 +346,7 @@
                 "naz_per_classe": naz_per_classe,
                 "max_al_104": max_al_104
             },
-            type: 'post',
+            type: 'POST',
             success: function (dati) {
                 if (dati == "no-error") {
                     alertify.success("Configurazione inserita");
@@ -380,7 +381,7 @@
                         .appendTo(content);
                     global_index += 1;
 
-                    $('.ui.form.success')[0].reset();
+
 
                 }
                 else {
@@ -392,7 +393,9 @@
 
             }
         });
-    }
+        this.reset();
+        e.preventDefault();
+    });
 
     function downloadSettings() {
         $.ajax({
@@ -443,27 +446,27 @@
         $('#loader').removeClass('active').addClass('disabled');
     }
 
+    document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
+    var $fields = $(".field :input");
+    $fields.keyup(function () {
+
+        var $emptyFields = $fields.filter(function () {
+
+            // remove the $.trim if whitespace is counted as filled
+            return $.trim(this.value) === "";
+        });
+
+        if (!$emptyFields.length) {
+            document.getElementById("sendButton").setAttribute("class", "ui basic button")
+
+        } else {
+            document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
+        }
+    });
+
 
     $(document).ready(function () {
-        downloadSettings();
-
-        document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
-        var $fields = $(".field :input");
-        $fields.keyup(function () {
-
-            var $emptyFields = $fields.filter(function () {
-
-                // remove the $.trim if whitespace is counted as filled
-                return $.trim(this.value) === "";
-            });
-
-            if (!$emptyFields.length) {
-                document.getElementById("sendButton").setAttribute("class", "ui basic button")
-
-            } else {
-                document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
-            }
-        });
+       downloadSettings();
     });
 
 </script>
