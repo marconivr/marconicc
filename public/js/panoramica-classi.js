@@ -1542,6 +1542,15 @@ function setLoader(value) {
 
 function generatePage(data) {
     var listaClassi = data.classi;
+
+    if (listaClassi === null){
+        $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
+        alertify.error('Errore di scaricamento dei dati.\nControlla di aver creato la configurazione');
+        setTimeout(function () {
+            window.location.href = '/settings-prime';
+        }, 3000);
+    }
+
     dirittiUtente = data.dirittiUtente;
     idUtente = data.idUtente;
     // setLoader(22);
@@ -1565,7 +1574,6 @@ function generatePage(data) {
     $('#history').click(function (e) {
         history();
     });
-
 
     for (i = 0; i < listaClassi.length; i++) {
         listaClassi[i].alunni.sort(compare);
@@ -2000,7 +2008,7 @@ function generatePage(data) {
     //event.preveventD
     if (dirittiUtente == 2) {
         alertify.set('notifier', 'position', 'top-right');
-        alertify.warning('Attenzione, non hai i diritti per spsotare gli utenti');
+        alertify.warning('Attenzione, non hai i diritti per spostare gli utenti');
     }
 }
 
