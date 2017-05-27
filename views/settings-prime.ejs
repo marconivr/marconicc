@@ -260,7 +260,7 @@
         $('#modal-header').text(settings[index].nome);
         $('#modal-date').text(settings[index].data);
         for (setting in settings[index]) {
-            if(setting != "data")
+            if(setting != "data" || setting != "id" || setting != "attiva")
             s += '<td class="center aligned">' + settings[index][setting] + "</td>";
         }
         document.getElementById("row-settings").innerHTML = s;
