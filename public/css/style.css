@@ -53,6 +53,10 @@
 .column {
     max-width: 60%;
 }
+.columnLogSign {
+    max-width: 20%;
+    padding-top: 30%;
+}
 
 .columnLogSign {
     max-width: 19%;
