@@ -530,7 +530,7 @@ CREATE TABLE `utenti` (
 --
 
 INSERT INTO `utenti` (`id`, `username`, `password`, `diritti`, `scuola`) VALUES
-(5, 'root', '$2a$10$gWIN0a0Y7ILHhk6KB4yud.lnM5oRX8sqqpTr4TRieGJb7OOVdP2yK', 1, 0);
+(5, 'root', '$2a$10$9TwgVRUMdBjpajCtXb7sWOmQ5JZqkxYKwMcB5TbMUW8MnkU3jWApy', 1, 0);
 
 --
 -- Indexes for dumped tables
