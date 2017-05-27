@@ -539,6 +539,10 @@ module.exports = function (app) {
             else {
                 var objRes = JSON.stringify(results);
                 var objRes = JSON.parse(objRes);
+                var intestazione = [];
+                for (var o in objRes[0]){
+                    intestazione.push(o);
+                }
                 var count = 1;
                 var classe = ""
                 for (var o in objRes){
@@ -550,6 +554,7 @@ module.exports = function (app) {
                     }
                     objRes[o]["posizione_in_classe"] = count;
                 }
+                objRes.splice(0, 0, intestazione);
                 results = objRes;
                 csv.separator = ",";
                 res.setHeader('Content-disposition', 'attachment; filename=exportCsv.csv');
@@ -569,6 +574,10 @@ module.exports = function (app) {
             else {
                 var objRes = JSON.stringify(results);
                 var objRes = JSON.parse(objRes);
+                var intestazione = [];
+                for (var o in objRes[0]){
+                    intestazione.push(o);
+                }
                 var count = 1;
                 var classe = ""
                 for (var o in objRes){
@@ -580,6 +589,7 @@ module.exports = function (app) {
                     }
                     objRes[o]["posizione_in_classe"] = count;
                 }
+                objRes.splice(0, 0, intestazione);
                 results = objRes;
                 csv.separator = ";";
                 res.setHeader('Content-disposition', 'attachment; filename=exportExcel.xls');
