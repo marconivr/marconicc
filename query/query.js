@@ -118,6 +118,32 @@ module.exports = {
         });
     },
 
+    cleanClassi: function (scuola, annoScolastico, callback) {
+        async.waterfall([
+            function(callback){
+                connection.query("delete from classi_composte WHERE classi_composte.classe IN " +
+                    "(SELECT c.id FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?)", [annoScolastico, scuola], function (err, row) {
+                    if (err){
+                        console.error(err);
+                    }
+                });
+                callback();
+            },
+            function(callback){
+                connection.query("delete FROM classi WHERE anno_scolastico = ? AND scuola = ?", [annoScolastico, scuola], function (err, row) {
+                    if (err){
+                        console.error(err);
+                    }
+                });
+                callback();
+            }
+            ],
+            function (succes) {
+
+            });
+
+    },
+
 
     /**
      *

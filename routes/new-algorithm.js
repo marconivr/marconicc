@@ -17,10 +17,10 @@ var listaAlunniDeleted = [];
 var insiemi = [];
 var listaClassi = []; //esempio [{nome:"1AI", propAttuali:{alunni:23, femmine:2}, alunni:[{nome:"Mario", cognome:"Rossi"}]}]
 
-
 var annoScolastico = undefined;
 var scuola = undefined;
 var classeFutura = undefined;
+var vecchiaConf;
 
 module.exports = {
 
@@ -29,7 +29,7 @@ module.exports = {
         annoScolastico = a;
         scuola = s;
         classeFutura = c;
-
+        module.exports.inizializzaSettings(annoScolastico, scuola, classeFutura);
 
         query.getStudentiOfschool(scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
@@ -39,21 +39,15 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
-                        var flag = true;
+                        var isCGUseActualConf = true;
                         if (rows.length > 0) {
-                            async.series([
-                                    function (callback) {
-                                        var idConf = module.exports.getIdConfiguration(annoScolastico, scuola, classeFutura);
-                                        callback(err, idConf);
-                                    }
-                                ],
-                                function (err, idConf) {
-                                    if(rows[0].configurazione == idConf){
-                                        callback(module.exports.generateListaClassi(rows));
-                                        flag = false;
-                                    }
-                                });
-                        } if (flag) {
+                            vecchiaConf = rows[0].configurazione;
+
+                            if(vecchiaConf == settings.id){
+                                isCGUseActualConf = false;
+                                callback(module.exports.generateListaClassi(rows));
+                            }
+                        } if (isCGUseActualConf) {
                             async.waterfall(
                                 [
                                     function (callback) {
@@ -62,7 +56,16 @@ module.exports = {
                                         listaAlunni = [];
                                         listaAlunniDeleted = [];
                                         insiemi = [];
-                                        module.exports.inizializzaSettings(annoScolastico, scuola, classeFutura);
+                                        callback();
+                                    },
+                                    function(callback){
+                                        if(vecchiaConf != settings.id){
+                                            query.cleanClassi(scuola, annoScolastico, function (err) {
+                                                if (err) {
+                                                    console.log(err);
+                                                }
+                                            });
+                                        }
                                         callback();
                                     },
                                     function (callback) {
@@ -136,16 +139,6 @@ module.exports = {
         });
     }
     ,
-
-    getIdConfiguration: function (annoScolastico, scuola, classeFutura) {
-        query.scaricaSettings(annoScolastico, scuola, classeFutura, function (err, results) {
-            if (err)
-                console.log(err);
-            else {
-                return results[0]["id"];
-            }
-        });
-    },
 
     /**
      * creaInsiemi genera i possibili insiemi dati gli alunni
