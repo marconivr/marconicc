@@ -389,7 +389,7 @@ module.exports = function (app) {
         sessione.classiSettaggiDefault(scuola, function (err, obj) {
             if (err) {
                 console.log(err);
-Z
+            }else{
                 //raggruppo per classe futura(es: PRIMA o TERZA)
                 if(obj.length === 0){
                     res.redirect(endpoint.alunni.uploadAlunniCsv);
