@@ -1,0 +1,103 @@
+<% include header %>
+<body>
+<% include sidebar-start.ejs %>
+<% include finish-menu.ejs %>
+<div class="ui main text container">
+    <form class="ui form success" id="crea-utente" onsubmit='return onSubmit(this);return validateForm()'>
+        <h4 class="ui dividing header">Impostazioni prime</h4>
+
+        <!--sematic fields-->
+        <div class="field">
+
+            <div class="field">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Inserisci lo username" id="username">
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Password</label>
+            <input name="password" placeholder="Inserisci la Password" type="password" id="password">
+        </div>
+        <div class="field">
+            <label>Ripeti la password</label>
+            <input name="ripeti_password" placeholder="Ripeti la password" type="password" id="ripeti_password">
+        </div>
+
+        <div class="field">
+            <div class="three fields">
+                <div class="field">
+                    <select class="ui dropdown">
+                        <option value="0">Admin</option>
+                        <option value="1">Modifica</option>
+                        <option value="2">Visualizza</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--sematic button-->
+        <div>
+            <div class="large ui disabled button " tabindex="0" id="sendButton" onclick="addUtente()">Send</div>
+    </form>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        var $fields = $(".field :input");
+        $fields.keyup(function () {
+
+            var $emptyFields = $fields.filter(function () {
+
+                // remove the $.trim if whitespace is counted as filled
+                return $.trim(this.value) === "";
+            });
+
+            if (!$emptyFields.length) {
+                $("#sendButton").removeClass('disabled');
+            } else {
+                $("#sendButton").addClass('ui disabled button');
+            }
+        });
+    });
+
+    function addUtente() {
+        if ($("#password").val() == $("#ripeti_password").val()) {
+
+            $.ajax({
+                type: 'POST',
+                url: '<%= endpoint.utenti.insertUtente %>',
+                data: {
+                    password: $("#password").val(),
+                    username: $("#username").val(),
+                    diritto: $('.ui.dropdown').dropdown('get value')[3]
+                },
+
+                success: function (data) {
+                    if (data == 1) {
+                        alertify.set('notifier', 'position', 'top-right');
+                        alertify.success('Utente aggiunto');
+                        $("#password").val("");
+                        $("#ripeti_password").val("");
+                        $("#username").val("");
+                    }
+                    $("#sendButton").addClass('ui disabled button');
+
+                },
+                error: function (xhr, status, error) {
+                    alertify.set('notifier', 'position', 'top-right');
+                    alertify.error('Attenzione! Ci sono dei problemi' + error);
+
+                }
+            });
+        }
+        else {
+            alertify.set('notifier', 'position', 'top-right');
+            alertify.warning('Attenzione! Le due password non corrispondo');
+        }
+    }
+</script>
+
+<% include sidebar-stop.ejs %>
+<% include tag-close.ejs %>

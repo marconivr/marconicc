@@ -3,89 +3,61 @@
 <body>
 <% include sidebar-start.ejs %>
 
+<% include finish-menu.ejs %>
 <!--tabs-->
-<div class="ui top attached tabular menu">
-    <a class="item active" data-tab="first">Prime</a>
-    <a class="item " data-tab="third">Terze</a>
+<div class="ui tabular menu">
+    <a class="item active" data-tab="first">Studenti</a>
     <a class="item " data-tab="tags">Tags</a>
 </div>
-<div class="ui bottom attached tab active  segment" data-tab="first">
+<div class="ui active inverted dimmer" id="table-loader">
+    <div class="ui text loader">Creando la tabella..</div>
+</div>
+<div class="ui bottom attached  tab active  segment" id="noBorderSegment" data-tab="first">
+    <div class="tableContainer" style="display: none;">
+        <table id="studenti" class="ui celled teal table" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Matricola</th>
+                <th>Codice fiscale</th>
+                <th>Sesso</th>
+                <th>Data di nascita</th>
+                <th>Cap residenza</th>
+                <th>Nazionalita</th>
+                <th>Legge 107</th>
+                <th>Legge 104</th>
+                <th>Classe precedente</th>
+                <th>Indirizzo di studio</th>
+                <th>Voto</th>
 
-    <div class="ui two column centered grid">
-        <div class="column">
+            </tr>
+            </thead>
 
-            <table id="studenti" class="ui celled table" cellspacing="0" width="100%">
-                <thead>
-                <tr>
-                    <th>cognome</th>
-                    <th>nome</th>
-                    <th>cf</th>
-                    <th>sesso</th>
-                    <th>data_di_nascita</th>
-                    <th>stato</th>
-                    <th>cap_provenienza</th>
-                    <!--<th>scelta_indirizzo</th>  ho commentato perchè troppo largo e rompe layout tabella-->
-                    <th>anno_scolastico</th>
-                    <th>anno</th>
-                    <th>cod_cat</th>
-                    <th>media_voti</th>
-                    <th>classe_futura</th>
+            <tbody id="tbody-studenti"></tbody>
+            <tfoot>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Matricola</th>
+                <th>Codice fiscale</th>
+                <th>Sesso</th>
+                <th>Data di nascita</th>
+                <th>Cap residenza</th>
+                <th>Nazionalita</th>
+                <th>Legge 107</th>
+                <th>Legge 104</th>
+                <th>Classe precedente</th>
+                <th>Indirizzo di studio</th>
+                <th>Voto</th>
 
-                </tr>
-                </thead>
-
-                <tbody>
-                <% for(var i = 0; i < studentsData.length; i++){ %>
-                <tr>
-                    <td><%= studentsData[i].cognome %></td>
-                    <td><%= studentsData[i].nome %></td>
-                    <td><%= studentsData[i].cf %></td>
-                    <td><%= studentsData[i].sesso %></td>
-
-                    <td><%= studentsData[i].data_di_nascita %></td>
-
-                    <td><%= studentsData[i].stato %></td>
-                    <td><%= studentsData[i].cap_provenienza %></td>
-                    <!--<td><%= studentsData[i].scelta_indirizzo %></td>  ho commentato perchè troppo largo e rompe layout tabella -->
-                    <td><%= studentsData[i].anno_scolastico %></td>
-                    <td><%= studentsData[i].anno %></td>
-                    <td><%= studentsData[i].cod_cat %></td>
-                    <td><%= studentsData[i].media_voti %></td>
-                    <td><%= studentsData[i].classe_futura %></td>
-
-                </tr>
-                <% } %>
-
-                </tbody>
-                <tfoot>
-                <tr>
-                    <th>cognome</th>
-                    <th>nome</th>
-                    <th>cf</th>
-                    <th>sesso</th>
-                    <th>data_di_nascita</th>
-                    <th>stato</th>
-                    <th>cap_provenienza</th>
-                    <!-- <th>scelta_indirizzo</th> ho commentato perchè troppo largo e rompe layout tabella -->
-                    <th>anno_scolastico</th>
-                    <th>anno</th>
-                    <th>cod_cat</th>
-                    <th>media_voti</th>
-                    <th>classe_futura</th>
-
-                </tr>
-                </tfoot>
-            </table>
-
-        </div>
+            </tr>
+            </tfoot>
+        </table>
     </div>
     <!--close first tabs-->
 </div>
 
-<!--third tabs-->
-<div class="ui bottom attached tab segment" data-tab="third">
-    Third
-</div>
 
 <!--tags and insert-->
 <div class="ui bottom attached tab segment" data-tab="tags">
@@ -122,17 +94,20 @@
                 <!--table-->
                 <table class="ui very basic collapsing celled table">
                     <thead>
-                    <tr><th>Tipo</th>
+                    <tr>
+                        <th>Tipo</th>
                         <th>Dato</th>
-                    </tr></thead>
-                    <tbody>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
                     <tr>
                         <td>
                             <h4 class="ui image header">
                                 <div class="content">
                                     <b>Media voti </b>
                                 </div>
-                            </h4></td>
+                            </h4>
+                        </td>
                         <td>
                             <span id="media-voti"></span>
                         </td>
@@ -144,7 +119,8 @@
                                     <b>Codice catastale </b>
 
                                 </div>
-                            </h4></td>
+                            </h4>
+                        </td>
                         <td>
                             <span id="codice-catastale"></span>
                         </td>
@@ -156,7 +132,8 @@
                                     <b>Codice fiscale </b>
 
                                 </div>
-                            </h4></td>
+                            </h4>
+                        </td>
                         <td>
                             <span id="cf"></span>
                         </td>
@@ -168,7 +145,8 @@
                                     <b>Anno scolastico </b>
 
                                 </div>
-                            </h4></td>
+                            </h4>
+                        </td>
                         <td>
                             <span id="anno-scolastico"></span>
                         </td>
@@ -190,26 +168,6 @@
             </div>
         </div>
     </div>
-
-
-
-    <!--positive-->
-    <div class="ui  positive  message transition  hidden" id="response">
-        <i class="close icon"></i>
-        <div class="header">
-            Fatto!
-        </div>
-        <p>Il tag è stato aggiunto</p>
-    </div>
-    <!--negative-->
-    <div class="ui negative message hidden" id="negative">
-        <i class="close icon"></i>
-        <div class="header">
-            Oops!
-        </div>
-        <p>Ci deve esser stato un problema
-        </p></div>
-<!--thirds tabs-->
 </div>
 
 <% include sidebar-stop.ejs %>
@@ -219,38 +177,121 @@
 
 </script>
 
-<!--first class table-->
+<!--MAPS SECTION-->
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5HB8-mASDryN1tfLaJUvLVzd3ibJ5VUQ"></script>
+<!--this part handle the dropdown of class click-->
 <script>
-    $(document).ready(function () {
-        var table = $('#studenti').DataTable({
-            processing: true,
-            lengthChange: false,
-            buttons: ['excel'],
-            "columns": [
-                {"data": "cognome"},
-                {"data": "nome"},
-                {"data": "cf"},
-                {"data": "sesso"},
-                {"data": "data_di_nascita"},
-                {"data": "stato"},
-                {"data": "cap_provenienza"},
-                //{ "data": "scelta_indirizzo" },
-                {"data": "anno_scolastico"},
-                {"data": "anno"},
-                {"data": "cod_cat"},
-                {"data": "media_voti"},
-                {"data": "classe_futura"}
+    var settings = {
+        language: {
+            searchPlaceholder: "Studente",
+            search: "Cerca:",
+            EmptyTable: "Nessun alunno presente, vai nella sezione caricamento studenti per aggiungere degli studenti.",
+            paginate: {"sFirst": "Primo", "sLast": "Ultimo", "sNext": "Avanti", "sPrevious": "Indietro"},
+            "sLengthMenu": "Display _MENU_ records"
+        },
+        processing: true,
+        lengthChange: false,
+        buttons: ['excel'],
+        "columns": [
+            {"data": "cognome"},
+            {"data": "nome"},
+            {"data": "Matricola"},
+            {"data": "Codice fiscale"},
+            {"data": "Sesso"},
+            {"data": "Data di nascita"},
+            {"data": "Cap residenza"},
+            {"data": "Nazionalita"},
+            {"data": "Legge 107"},
+            {"data": "Legge 104"},
+            {"data": "Classe precedente"},
+            {"data": "Indirizzo di studio"},
+            {"data": "Voto"}
 
-            ]
+
+        ]
+    };
+
+    var ANNO_SCOLASTICO = '<%= sessioneIniziale.annoScolastico %>';
+    var CLASSE_FUTURA = '<%= sessioneIniziale.classeFutura %> ';
+    var table;
+    changeYearAndCLass(ANNO_SCOLASTICO, CLASSE_FUTURA.toUpperCase(), true);
+
+
+    /**
+     *
+     * @param anno_scolastico
+     * @param classeFutura (toUpperCase)
+     * @param firstTime check if create table or not
+     */
+    function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
+        ANNO_SCOLASTICO = anno_scolastico;
+        CLASSE_FUTURA = classeFutura;
+        //set classe futura in alto a destra
+        $('#classe-futura-label').html(classeFutura);
+
+        if (firstTime) {
+            table = $('#studenti').DataTable(settings);
+        }
+        else {
+            $('.tableContainer').hide();
+            $('#table-loader').removeClass('disabled').addClass('active');
+
+            $("#tbody-studenti").empty();
+            table.destroy();
+            table = $('#studenti').DataTable(settings);
+            table.clear();
+        }
+
+
+        $.ajax({
+            url: '<%= endpoint.alunni.getStudentsFromSpecifiCYear %>',
+            data: {
+                classe_futura: classeFutura,
+                anno_scolastico: anno_scolastico
+            },
+            success: function (data) {
+                //populate table with tr
+                var alunni = JSON.parse(data);
+                var tr;
+                var td;
+                //iterate data and insert row
+                for (var i = 0; i < alunni.length; i++) {
+                    var mySQLDate = alunni[i].data_di_nascita.split(/[- : T]/);
+                    var day = parseInt(mySQLDate[2]) + 1;
+                    var month = mySQLDate[1];
+                    var year = mySQLDate[0];
+                    var finalDate = day + '/' + month + '/' + year;
+
+                    table.row.add({
+                        "cognome": alunni[i].cognome,
+                        "nome": alunni[i].nome,
+                        "Matricola": alunni[i].matricola,
+                        "Codice fiscale": alunni[i].cf,
+                        "Sesso": alunni[i].sesso,
+                        "Data di nascita": finalDate,
+                        "Cap residenza": alunni[i].cap,
+                        "Nazionalita": alunni[i].nazionalita,
+                        "Legge 107": alunni[i].legge_107,
+                        "Legge 104": alunni[i].legge_104,
+                        "Classe precedente": alunni[i].classe_precedente,
+                        "Indirizzo di studio": alunni[i].scelta_indirizzo,
+                        "Voto": alunni[i].voto
+                    }).draw();
+
+
+                }
+
+                table.buttons().container()
+                    .appendTo($('div.eight.column:eq(0)', table.table().container()));
+                $('.sixteen').removeClass().addClass('tableContainer');
+                $('.tableContainer').show();
+                $('#table-loader').removeClass('active').addClass('disabled');
+
+            }
         });
-        table.buttons().container()
-            .appendTo($('div.eight.column:eq(0)', table.table().container()));
-    });
-</script>
+    }
 
-                                                                <!--MAPS SECTION-->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5HB8-mASDryN1tfLaJUvLVzd3ibJ5VUQ"></script>
-<script>
 
     /**
      * param <cp> postal code -> es : 37030
@@ -258,16 +299,16 @@
      * inside this, i call a api which return me the latitude and longitude by passing the postal code
      */
     function initMap(cp) {
-        $.getJSON( {
+        $.getJSON({
             //https://maps.googleapis.com/maps/api/geocode/json?&address=37014%20veneto
-            url  : 'http://maps.googleapis.com/maps/api/geocode/json',
-            data : {
-                address :  cp + 'veneto'
+            url: 'http://maps.googleapis.com/maps/api/geocode/json',
+            data: {
+                address: cp + 'veneto'
             },
-            success : function( data, textStatus ) {
-               var location  = {
-                    'lat' : data.results[0].geometry.location.lat,
-                    'lng' : data.results[0].geometry.location.lng
+            success: function (data, textStatus) {
+                var location = {
+                    'lat': data.results[0].geometry.location.lat,
+                    'lng': data.results[0].geometry.location.lng
                 }
 
                 var map = new google.maps.Map(document.getElementById('map'), {
@@ -280,59 +321,67 @@
                 });
 
             }
-        } );
+        });
     }
-</script>
 
-                                                                <!--SEARCH SECTION-->
-<script>
- var cf_code ;
- var existing_tag;
 
-    //this section is execute when user type in the search field
+    <!--SEARCH SECTION-->
+    var cf_code;
+    var hasExistingTag;
+
+
+    ///////////////////////////////////////////////////////////////////this section is execute when user type in the search field//////////////////////////////////////////////////////////////////
+
     $('.ui.search')
         .search({
             apiSettings: {
-                url: '/all-students?q={query}'
-            },
+                url: '<%= endpoint.alunni.allStudents %>?q={query}&annoScolastico={annoScolastico}&classeFutura={classeFutura}',
+                beforeSend: function(settings) {
+                    settings.urlData.annoScolastico = ANNO_SCOLASTICO;
+                    settings.urlData.classeFutura = CLASSE_FUTURA;
+                    return settings;
+                }
+            }
+
+            ,
             searchFullText: false,
-            silent: true, // no error in console
+            silent: true,
+
             onResults: function (response) {
 
                 var html = '';
-                if (response !== undefined) {
+                if (response.length != 0) {
                     $.each(response, function (index, result) {
-                        //TODO:FIX  NO RESULT
-                        if(result.cf != '')
-                        {
-                            html += '<a onclick="setStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
-                            html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
-                            html += '<i> Media voti: ' + result.media_voti + '</i>';
 
-                            html += '' + '</div></a>';
-                            return index < 6;
-                        }
-                        else
-                        {
-                            html += '<div class="title"<b>Oops, nessun risultato' + '</div>';
-                            return index<1;
+                        html += '<a onclick="setCardStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
+                        html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
+                        html += '<i> Media voti: ' + result.voto + '</i>';
 
-                        }
+                        html += '' + '</div></a>';
+                        return index < 6;
 
                     });
                     $('.ui.search div.results').html(html);
                 }
+                else {
+                    html += '<div class="content">' +
+                        '<div class="title">' +
+                        '<b> Nessun risultato, riprovare con un altro nome' + '' +
+                        '</div></div>';
+                }
+                $('.ui.search div.results').html(html);
                 return false;
             }
-        });
+        })
+    ;
 
 
-                                                                //set card with student data
-    function setStudentData(cf) {
+    //set card with student data
+    function setCardStudentData(cf) {
         cf_code = cf;
         console.log(cf)
         $.ajax({
-            url: '/student-by-cf',
+            url: '<%= endpoint.alunni.studentByCf %>',
             data: {"cf": cf},
             type: 'get',
             success: function (data) {
@@ -340,24 +389,28 @@
                 $('#cognome').text(ret[0].cognome);
                 $('#nome').text(ret[0].nome);
                 $('#codice-catastale').text(ret[0].cod_cat);
-                $('#media-voti').text(ret[0].media_voti);
+                $('#media-voti').text(ret[0].voto);
                 $('#anno-scolastico').text(ret[0].anno_scolastico);
                 $('#cf').text(ret[0].cf);
-                existing_tag = ret[0].tag;
-                var postal_code = ret[0].cap_provenienza
-                setDropdownData();
+                hasExistingTag = ret[0].tag;
+                var postal_code = ret[0].cap;
+
+                <% if (user.diritti == 0 || user.diritti == 1 ) { %>
+                getAllTag();
+                <% } %>
+
 
                 //save to db if the dropdown has change
                 $('.ui.modal').modal({
-                    onHide: function(){
+                    onHide: function () {
                         jQuery('#dropdown-container').empty();
                     },
-                    onApprove: function() {
+                    onApprove: function () {
                         saveChangeToDB();
                         jQuery('#dropdown-container').empty();
 
                     },
-                    onShow : function () {
+                    onShow: function () {
                         initMap(postal_code);
                         console.log(postal_code);
                     }
@@ -366,123 +419,139 @@
             },
             error: function (xhr, status, error) {
                 console.log('Error: ' + error.message);
-
-            },
+            }
         });
     }
 
-                                                    //SET DROPWDOWN DATA//
-   function setDropdownData() {
+    var allTag = undefined;                                                //SET DROPWDOWN DATA//
+    function getAllTag() {
+        if (allTag === undefined) {
+            $.ajax({
+                url: '<%= endpoint.alunni.allTag %>',
+                type: 'get',
+                success: function (data) {
+                    //optimize api call
+                    allTag = JSON.parse(data);
+                    setDropDonwData();
 
-        $.ajax({
-            url: '/all-tag',
-            type: 'get',
-            success: function (data) {
-                var TAG = jQuery.parseJSON(data);
-
-
-                $('<div/>', {
-                    'class':'ui selection dropdown',
-                    'id':'dropdown-data'
-                }).appendTo($('#dropdown-container'));
-
-
-
-                $('<input/>', {
-                        'type':'hidden',
-                        'name':'nessun tag'
-                    }).appendTo($('#dropdown-data'));
-
-
-                $('<i/>', {
-                    'class':'dropdown icon',
-                }).appendTo($('#dropdown-data'));
-
-                if(existing_tag != null)
-                {
-                    $('<div/>', {
-                        'class':'default text',
-                        'text':existing_tag
-                    }).appendTo($('#dropdown-data'));
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error.message);
+                    alertify.error('Error: ' + error.message);
                 }
-                else
-                {
-                    $('<div/>', {
-                        'class':'default text',
-                        'text':'nessuno'
-                    }).appendTo($('#dropdown-data'));
-                }
+            });
+        }
+        else setDropDonwData();
 
 
+    }
+
+    function setDropDonwData() {
+        var userTagInformation = null;
+
+        $('<div/>', {
+            'class': 'ui selection dropdown',
+            'id': 'dropdown-data'
+        }).appendTo($('#dropdown-container'));
+
+        $('<input/>', {
+            'type': 'hidden',
+            'name': 'nessun tag'
+        }).appendTo($('#dropdown-data'));
+
+        $('<i/>', {
+            'class': 'dropdown icon'
+        }).appendTo($('#dropdown-data'));
+
+        if (hasExistingTag != null) {
+            for (var i = 0; i < allTag.length; i++) {
+                if (allTag[i].id == hasExistingTag) userTagInformation = allTag[i];
+
+            }
+
+            $('<div/>', {
+                'class': 'default text',
+                'text': userTagInformation.type,
+                'data-value': userTagInformation.id,
+            }).appendTo($('#dropdown-data'));
+        }
+        else {
+            $('<div/>', {
+                'class': 'default text',
+                'data-value': "-1",
+                'text': 'nessuno'
+            }).appendTo($('#dropdown-data'));
+        }
+
+        $('<div/>', {
+            'class': 'menu',
+            'id': 'tag'
+        }).appendTo($('#dropdown-data'));
+        $('.ui.dropdown').dropdown();
+
+        //tag nel dropdown
+        if (hasExistingTag == null) {
+            for (var i = 0; i < allTag.length; i++) {
                 $('<div/>', {
-                    'class':'menu',
-                    'id':'tag'
-                }).appendTo($('#dropdown-data'));
-                $('.ui.dropdown').dropdown();
-                //tag
-                for( var i = 0 ; i < TAG.length ; i++)
-                {
+                    'class': 'item',
+                    'data-value': allTag[i].id,
+                    'text': allTag[i].type
+                }).appendTo($('#tag'));
+            }
+        }
+        else {
+            for (var i = 0; i < allTag.length; i++) {
+                if (userTagInformation.id == allTag[i].id) {
                     $('<div/>', {
-                        'class':'item',
-                        'data-value':TAG[i].tag,
-                        'text':TAG[i].tag
+                        'class': 'item',
+                        'data-value': 'nessuno',
+                        'text': 'nessuno'
                     }).appendTo($('#tag'));
                 }
+                else {
 
-                //il tag nessuno non è messo di default
-                //quindi lo aggiungo
-                if(existing_tag != null)
-                {
+
                     $('<div/>', {
-                        'class':'item',
-                        'data-value':'nessuno',
-                        'text':'nessuno'
+                        'class': 'item',
+                        'data-value': allTag[i].id,
+                        'text': allTag[i].type
                     }).appendTo($('#tag'));
 
                 }
-
-            },
-            error: function (xhr, status, error) {
-                console.log('Error: ' + error.message);
-
-            },
-        });
-   }
-
-                                                    //x close on the response div//
- $('.message .close').on('click', function() {
-         $(this)
-             .closest('.message')
-             .transition('fade');
-     });
+            }
+        }
+    }
 </script>
-                                                   <!--SAVE TAG TO DB-->
+<!--SAVE TAG TO DB-->
 <script>
-    function saveChangeToDB()
-    {
+    function saveChangeToDB() {
         var tag = $('#dropdown-data').dropdown('get value');
 
         //tag default has change, so i save it to db
         if (tag == 'nessuno') tag = 'none';
 
+        //-1 ->update tag  to null
+        if (tag == "-1") tag = 'none';
 
+        if (!(tag == "")) {
             $.ajax({
-                url: '/update-tag',
+                url: '<%= endpoint.alunni.updateTag %>',
                 data: {
                     "tag": tag,
-                    "cf" : cf_code
+                    "cf": cf_code
                 },
                 type: 'get',
                 success: function (data) {
-                    $("#response").removeClass('hidden').addClass('visible');
+                    alertify.set('notifier', 'position', 'top-right');
+                    alertify.success("Ok! Il tag è stato aggiunto")
                 },
                 error: function (xhr, status, error) {
+                    alertify.set('notifier', 'position', 'top-right');
                     console.log('Error: ' + error.message);
-                    $("#response").removeClass('visible').addClass('hidden');
-                    $('#negative').removeClass('hidden').addClass('visible');
-
-                },
+                    alertify.error('Error: ' + error.message);
+                }
             });
+        }
     }
 </script>
 

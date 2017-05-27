@@ -1,0 +1,402 @@
+<% include header %>
+<body xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+<style>
+    .hiddenMessage{
+        visibility: hidden;
+    }
+    #sortable1, #sortable2, #sortable3, #sortable4, #sortable5, #sortable6, #sortable7, #sortable8 {
+        border: 1px solid #eee;
+        width: 142px;
+        min-height: 20px;
+        list-style-type: none;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+    }
+
+    #sortable1 li, #sortable2 li, #sortable3 li, #sortable4 li, #sortable5 li, #sortable6 li, #sortable7 li, #sortable8 li {
+        margin: 0 5px 5px 5px;
+        padding: 5px;
+        font-size: 1.2em;
+        width: 120px;
+    }
+    .ui.fixed.menu+.ui.grid{
+        padding-top: 0rem;
+    }
+</style>
+
+<script>
+    $(function () {
+        $("#sortable1, #sortable2,#sortable3, #sortable4, #sortable5, #sortable6, #sortable7,#sortable8").sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+    });
+</script>
+
+<% include sidebar-start.ejs %>
+<% include finish-menu.ejs %>
+
+<div class="ui internally celled grid">
+    <div class="row">
+        <!--this section represent the realtime data-->
+        <div class="three wide column">
+            <a class="ui teal tag label"> Statistiche RealTime</a><br>
+            <b>Numero di classi:</b>
+            <p id="classe-realtime"></p>
+
+            <b>Numero di classi con femmine:</b>
+            <p id="classi-con-femmine"></p>
+
+            <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
+            <div id="rowForInsertDate">
+
+            </div>
+        </div>
+        <div class="ten wide column">
+            <div class="ui centered grid">
+                <div class="six wide tablet ten wide computer column">
+                    <!--sematic form-->
+                    <form class="ui form success" onsubmit='return onSubmit(this);return validateForm()'>
+                        <h4 class="ui dividing header">Impostazioni terze</h4>
+
+                        <!--sematic fields-->
+                        <div class="field">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Alunni minimi</label>
+                                    <input type="number" name="alunni_min" placeholder="Alunni minimi" onkeyup="setDataRealtimeNumberOfStudents()"
+                                           onchange="setDataRealtimeNumberOfStudents()" id="alunni-min" min="0">
+                                </div>
+                                <div class="field">
+                                    <label>Alunni massimi</label>
+                                    <input type="number" name="alunni_max" placeholder="Alunni massimi" id="alunni-max" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Numero femmine in una classe</label>
+                            <input name="max_femmine" placeholder="Femmine" type="number" onkeyup="setDataRealtimeNumberOfFemmine()"
+                                   onchange="setDataRealtimeNumberOfFemmine()" id="femmine" min="0">
+                        </div>
+                        <div class="field">
+                            <label>Numero persone con la stessa nazionalità</label>
+                            <input name="nazionalita" placeholder="Nazionalita" type="number" id="nazionalita" min="0">
+                        </div>
+                        <div class="field">
+                            <label>Numero nazionalità per classe</label>
+                            <input name="naz_per_classe" placeholder="Naz_per_classe" type="number" id="naz_per_classe" min="0">
+                        </div>
+                        <div class="field">
+                            <label>Numero persone che hanno residenza simile</label>
+                            <input name="stessa_provenienza" placeholder="Residenza" type="number" id="residenza" min="0">
+                        </div>
+                        <div class="field">
+                            <label>Numero massimo di alunni in una classe in presenza di un 104</label>
+                            <input name="max_al_104" placeholder="Max_al_104" type="number" id="max_al_104" min="0">
+                        </div>
+                        <div class="field">
+                            <label>Descrizione</label>
+                            <input name="descrizione" placeholder="Descrizione" type="text" id="descrizione">
+                        </div>
+                        <div class="ui hidden success message" id="message">
+                            <div class="header">Form Completato</div>
+                            <p>Le impostazioni sono state salvate</p>
+                        </div>
+                        <div class="ui hidden success message" id="negativeMessage">
+                            <div class="header">Errore</div>
+                            <p>Il form non è stato inviato</p>
+                        </div>
+                        <!--sematic button-->
+                        <div><div class="large ui button" tabindex="0" id="sendButton" onclick="addSettings()">Send</div><p id="messageCompila">Devi completare tutti i campi!</p></div></br></br>
+                        <div class="large ui button" tabindex="0" onclick="addPriority()">Add Priority</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--this section represent data in db-->
+        <div class="three wide column">
+
+            <a class="ui orange tag label">Dati Studenti</a><br><br>
+            <div class="ui vertical menu">
+                <a class="teal item">
+                    Studenti
+                    <div class="ui yellow left pointing label" id="alunni-in-classe-prima">
+                        <%= studentiTerza[0].result%>
+                    </div>
+                </a>
+                <a class="item">
+                    Femmine
+                    <div class="ui green left pointing label" id="femmine-in-classe-prima">
+                        <%= femmineTerza[0].result%>
+                    </div>
+                </a>
+                <a class="item">
+                    Media voti
+                    <div class="ui blue left pointing label">
+                        <%= mediaTerza[0].result%>
+                    </div>
+                </a>
+                <a class="item">
+                    Stranieri
+                    <div class="ui teal left pointing label">
+                        <%= stranieriTerza[0].result%>
+                    </div>
+                </a>
+            </div>
+
+            <br>
+
+        </div>
+    </div>
+    <!--<div class="row">-->
+    <!--<div class="three wide column">-->
+    <!--hjhj-->
+    <!--</div>-->
+    <!--<div class="ten wide column">-->
+    <!--hjhj-->
+    <!--</div>-->
+    <!--<div class="three wide column">-->
+    <!--<img>-->
+    <!--</div>-->
+    <!--</div>-->
+</div>
+
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header" id = modal-header>
+
+    </div>
+    <div class="content">
+        <table class="ui very basic collapsing celled table">
+            <thead>
+            <tr>
+                <th>Data</th>
+                <th>Descrizione</th>
+                <th>Alunni minimi</th>
+                <th>Alunni massimi</th>
+                <th>Numero massimo di femmine</th>
+                <th>Stessa nazionalità</th>
+                <th>Numero di nazionalità</th>
+                <th>Residenza simile</th>
+                <th>Alunni massimi con un 104</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="row-settings">
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            No
+        </div>
+        <div class="ui positive right labeled icon button">
+            Sì
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<% include sidebar-stop.ejs %>
+<!--personal script for specific page -->
+
+
+<script>
+    $('.ui.dropdown').dropdown();
+
+</script>
+
+<script>
+    var settings = [];
+    function  createModal(index) {
+        var s = "";
+
+        document.getElementById("modal-header").innerHTML = settings[index].data;
+
+        for (setting in settings[index]){
+            s+= "<td>" + settings[index][setting] + "</td>";
+        }
+        document.getElementById("row-settings").innerHTML = s;
+        $('.ui.modal')
+            .modal({
+                closable  : false,
+                onApprove : function() {
+                    for (setting in settings[index]){
+                        switch (setting){
+                            case "nome":
+                                document.getElementById("descrizione").value = settings[index][setting];
+                                break;
+                            case "min_alunni":
+                                document.getElementById("alunni-min").value = settings[index][setting];
+                                break;
+                            case "max_alunni":
+                                document.getElementById("alunni-max").value = settings[index][setting];
+                                break;
+                            case "gruppo_femmine":
+                                document.getElementById("femmine").value = settings[index][setting];
+                                break;
+                            case "gruppo_cap":
+                                document.getElementById("residenza").value = settings[index][setting];
+                                break;
+                            case "gruppo_nazionalita":
+                                document.getElementById("nazionalita").value = settings[index][setting];
+                                break;
+                            case "nazionalita_per_classe":
+                                document.getElementById("naz_per_classe").value = settings[index][setting];
+                                break;
+                            case "numero_alunni_con_104":
+                                document.getElementById("max_al_104").value = settings[index][setting];
+                                break;
+                        }
+                    }
+                }
+            })
+            .modal('show')
+        ;
+    }
+
+    //this function set the number of student for class
+    function setDataRealtimeNumberOfStudents() {
+        var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML;
+        var alunniMin = $("#alunni-min").val();
+
+        if (alunniMin == ""){
+            $("#classe-realtime").html("");
+        }
+        else{
+            $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
+        }
+    }
+
+    function setDataRealtimeNumberOfFemmine() {
+        var femmineTot = document.getElementById("femmine-in-classe-prima").innerHTML;
+        var femmineMax = $("#femmine").val();
+
+        if (femmineMax == ""){
+            $("#classi-con-femmine").html("");
+        }
+        else{
+            $("#classi-con-femmine").html(Math.floor(femmineTot / femmineMax));
+        }
+    }
+    function addSettings() {
+
+        var d = new Date();
+        var data = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();
+        var descrizione = $("#descrizione").val()
+        var alunniMin = parseInt($("#alunni-min").val());
+        var alunniMax = parseInt($("#alunni-max").val());
+        var femmine = parseInt($("#femmine").val());
+        var residenza = parseInt($("#residenza").val());
+        var nazionalita = parseInt($("#nazionalita").val());
+        var naz_per_classe = parseInt($("#naz_per_classe").val());
+        var max_al_104 = parseInt($("#max_al_104").val());
+        $.ajax({
+            url: '<%= endpoint.alunni.insertSettingsTerze%>',
+            data: {
+                "data" : data,
+                "descrizione" : descrizione,
+                "alunniMin" : alunniMin,
+                "alunniMax": alunniMax ,
+                "femmine" : femmine ,
+                "residenza" : residenza,
+                "nazionalita" : nazionalita,
+                "naz_per_classe" : naz_per_classe,
+                "max_al_104" : max_al_104
+            },
+            type: 'get',
+            success: function (data) {
+                document.getElementById("message").className = "ui success message";
+            },
+            error: function (xhr, status, error) {
+                document.getElementById("negativeMessage").className = "ui warning message";
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    }
+
+    function addPriority() {
+        var priorita = [];
+        priorita.push("legge_104");
+        priorita.push("legge_107");
+        priorita.push("alunni");
+        priorita.push("desiderata");
+        priorita.push("ripetenti");
+        priorita.push("sesso");
+        priorita.push("nazionalita");
+        priorita.push("CAP");
+        priorita.push("voto");
+
+        $.ajax({
+            url: '<%= endpoint.alunni.insertPriorita%>',
+            data: {
+                "priorita" : priorita
+            },
+            type: 'get',
+            success: function (data) {
+
+            },
+            error: function (xhr, status, error) {
+
+                console.log('Error: ' + error.message);
+
+            },
+        });
+    }
+
+    //this function check that the form is compiled Strina release to check!!
+    $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: '<%= endpoint.alunni.getPastSettingsTerze%>',
+            data: {
+                format: 'json'
+            },
+            error: function () {
+
+            },
+            dataType: 'json',
+
+            success: function (listaSettings) {
+                settings = listaSettings;
+
+                var s = "";
+                s+= "<ul>";
+                for (var i = 0; i < settings.length; i++){
+                    s+= '<li style="cursor: pointer;list-style-type: none; "><a onclick="createModal(\'' + i + '\')" style="color: black">' + settings[i].data + '</a></li>';
+                }
+                s+= "</ul>";
+                document.getElementById("rowForInsertDate").innerHTML = s;
+            }
+        });
+
+        document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+        var $fields = $(".field :input");
+        $fields.keyup(function () {
+
+            var $emptyFields = $fields.filter(function () {
+
+                // remove the $.trim if whitespace is counted as filled
+                return $.trim(this.value) === "";
+            });
+
+            if (!$emptyFields.length) {
+                document.getElementById("sendButton").setAttribute("class", "ui button")
+                document.getElementById("messageCompila").setAttribute("class", "hiddenMessage")
+            } else {
+                document.getElementById("messageCompila").setAttribute("class", "")
+                document.getElementById("sendButton").setAttribute("class", "ui disabled button")
+            }
+        });
+    });
+
+</script>
+
+
+<!--close html tag-->
+<% include tag-close.ejs %>

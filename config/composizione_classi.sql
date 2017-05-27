@@ -8,7 +8,7 @@ CREATE DATABASE IF NOT EXISTS `composizione_classi` DEFAULT CHARACTER SET latin1
 USE `composizione_classi`;
 
 -- --------------------------------------------------------
--- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dumpa
 -- version 4.5.1
 -- http://www.phpmyadmin.net
 --
@@ -55,16 +55,23 @@ CREATE TABLE  `alunni` (
 
  `cognome` VARCHAR( 255 ) NOT NULL ,
  `nome` VARCHAR( 255 ) NOT NULL ,
+ `matricola` INT(10) NOT NULL,
  `cf` CHAR( 16 ) NOT NULL ,
+ `desiderata` CHAR( 16 ) NULL ,
  `sesso` CHAR( 1 ) NOT NULL ,
  `data_di_nascita` DATE NOT NULL ,
  `stato` VARCHAR( 20 ) NOT NULL ,
- `cap_provenienza` INT( 5 ) NOT NULL ,
+ `CAP` INT( 5 ) NOT NULL ,
+ `nazionalita` VARCHAR(25) NOT NULL,
+ `legge_107` VARCHAR(25) NULL,
+ `legge_104` VARCHAR(25) NULL,
+ `classe_precedente` VARCHAR( 5 ) NULL ,
  `scelta_indirizzo` VARCHAR( 50 ) NOT NULL ,
  `anno_scolastico` VARCHAR( 15 ) NOT NULL ,
  `anno` VARCHAR( 4 ) NOT NULL ,
  `cod_cat` VARCHAR( 10 ) NOT NULL ,
- `media_voti` DOUBLE NOT NULL ,
+ `voto` INT(1) NOT NULL ,
+ `condotta` INT(1) NULL,
  `classe_futura` VARCHAR( 50 ) NOT NULL ,
  `tag` VARCHAR( 25 ) ,
 FOREIGN KEY (`tag`) REFERENCES tag(`tag`)
@@ -78,8 +85,8 @@ FOREIGN KEY (`tag`) REFERENCES tag(`tag`)
 DROP TABLE IF EXISTS `amici`;
 CREATE TABLE `amici` (
   `id` int(11) NOT NULL,
-  `matricola_1` int(5) NOT NULL,
-  `matricola_2` int(5) NOT NULL
+  `cf_1` CHAR(16) NOT NULL,
+  `cf_2` CHAR(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -88,44 +95,46 @@ CREATE TABLE `amici` (
 -- Struttura della tabella `impostazioni`
 --
 
-DROP TABLE IF EXISTS `impostazioni`;
-CREATE TABLE `impostazioni` (
+DROP TABLE IF EXISTS `impostazioni_prime`;
+CREATE TABLE `impostazioni_prime` (
   `id` int(11) NOT NULL,
+  `data` date NOT NULL,
+  `descrizione` varchar(100) NOT NULL,
+  `min_alunni` int(11) DEFAULT NULL,
   `max_alunni` int(11) DEFAULT NULL,
   `max_femmine` int(11) DEFAULT NULL,
   `max_stranieri` int(11) DEFAULT NULL,
   `stessa_provenienza` int(11) DEFAULT NULL,
-  `media_min` float DEFAULT NULL,
-  `media_max` float DEFAULT NULL,
-  `bocciati` int(11) DEFAULT NULL,
-  `anno_scolastico` varchar(25) NOT NULL,
-  `descrizione` varchar(255) NOT NULL,
-  `classe_futura` varchar(25) NOT NULL
+  `nazionalita` int(11) DEFAULT NULL,
+  `naz_per_classe` int(11) DEFAULT NULL,
+  `max_al_104` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `impostazioni_terze`;
+CREATE TABLE `impostazioni_terze` (
+  `id` int(11) NOT NULL,
+  `data` date NOT NULL,
+  `descrizione` varchar(100) NOT NULL,
+  `min_alunni` int(11) DEFAULT NULL,
+  `max_alunni` int(11) DEFAULT NULL,
+  `max_femmine` int(11) DEFAULT NULL,
+  `max_stranieri` int(11) DEFAULT NULL,
+  `stessa_provenienza` int(11) DEFAULT NULL,
+  `stessa_iniziale` int(11) DEFAULT NULL,
+  `ripetenti` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `priorita_scelta`
+-- Struttura della tabella `priorita`
 --
 
-DROP TABLE IF EXISTS `priorita_scelta`;
-CREATE TABLE `priorita_scelta` (
+DROP TABLE IF EXISTS `priorita`;
+CREATE TABLE `priorita` (
   `id` int(11) NOT NULL,
   `scelta` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dump dei dati per la tabella `priorita_scelta`
---
-
-INSERT INTO `priorita_scelta` (`id`, `scelta`) VALUES
-(1, 'femmine'),
-(2, 'stranieri'),
-(3, 'bocciati'),
-(4, 'alunni'),
-(5, 'stessa_nazionalita'),
-(6, 'media');
 
 -- --------------------------------------------------------
 
@@ -168,13 +177,17 @@ ALTER TABLE `amici`
 --
 -- Indici per le tabelle `impostazioni`
 --
-ALTER TABLE `impostazioni`
+ALTER TABLE `impostazioni_prime`
   ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `impostazioni_terze`
+  ADD PRIMARY KEY (`id`);
+
+
 --
--- Indici per le tabelle `priorita_scelta`
+-- Indici per le tabelle `priorita`
 --
-ALTER TABLE `priorita_scelta`
+ALTER TABLE `priorita`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -193,10 +206,21 @@ ALTER TABLE `users`
 ALTER TABLE `amici`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT per la tabella `priorita_scelta`
+-- AUTO_INCREMENT per la tabella `priorita`
 --
-ALTER TABLE `priorita_scelta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+ALTER TABLE `priorita`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT per la tabella `impostazioni_prime`
+--
+ALTER TABLE `impostazioni_prime`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `impostazioni_terze`
+--
+ALTER TABLE `impostazioni_terze`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT per la tabella `users`
 --
@@ -245,4 +269,12 @@ foreign key (nome_classe) references classi(nome),
 foreign key (cf_alunno) references alunni(cf)
 );
 
-
+CREATE TABLE `history` (
+  `id` int(11) AUTO_INCREMENT PRIMARY KEY,
+  `cf` varchar(16) NOT NULL,
+  `classe_precedente` varchar(10) NOT NULL,
+  `classe_successiva` varchar(10) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id_utente` varchar(8) NOT NULL,
+    CONSTRAINT `cf` FOREIGN key(`cf`) REFERENCES alunni(`cf`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

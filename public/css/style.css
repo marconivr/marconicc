@@ -6,12 +6,19 @@
     background-size: cover;
 
 }
+
+.max {
+    width: 100% !important;
+}
 .map {
     height: 100%;
     width: 100%;
 }
 .signupBackground{
     background-image: url("../img/Classe.jpg");
+}
+#noBorderSegment{
+    border: 1px solid #ffffff;
 }
 .robotoWhiteTitle{
     font-family: Roboto, sans-serif;
@@ -26,6 +33,23 @@
     padding: 0.65em 0 0.65em 0.7em;
 }
 
+.tableContainer {
+    padding-left: 1%;
+    padding-right: 1%;
+    clear: both;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.roboto {
+    font-family: Roboto, sans-serif !important;
+    font-size: 0.7em;
+    line-height: 1em;
+    color: black;
+    /*display: inline-block;*/
+    text-align: left;
+
+}
 .column {
     max-width: 60%;
 }
@@ -40,6 +64,197 @@
     padding-top: 12%;
 }
 
+.logo_footer{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@media (min-height: 320px) {
+    .ui.footer.form-page { /* Increased specificity for SO snippet priority */
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: #323D45;
+    }
+}
+
+/*vertical scrollbar*/
+body::-webkit-scrollbar {
+    width: .5em;
+    background-color: white;
+}
+
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: #424242;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    outline: 1px solid #424242;
+}
+
+.suwala-doubleScroll-scroll-wrapper::-webkit-scrollbar {
+    width: .4em;
+    background-color: white;
+    height: .8em;
+}
+
+.suwala-doubleScroll-scroll-wrapper::-webkit-scrollbar-track {
+    -webkit-box-shadow: #BDBDBD;
+}
+
+.suwala-doubleScroll-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: #BDBDBD;
+    width: .4em;
+    outline: 1px solid #BDBDBD;
+    border-radius: 10px;
+}
+
+/*history*/
+.history-container {
+    overflow-y: scroll;
+    max-height: 300px;
+    padding-left: 0.8em !Important;
+    padding-bottom: 0.8em;
+    padding-right: 0.8em !important
+}
+
+.history-container::-webkit-scrollbar {
+    width: .5em;
+    background-color: white;
+    max-height: 50px;
+}
+
+.history-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: #424242;
+    margin-left: 5px;
+}
+
+.history-container::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    outline: 1px solid #424242;
+}
+
+.nazionalita-scrollbar::-webkit-scrollbar {
+    width: .4em;
+    background-color: white;
+    height: .8em;
+    max-height: 20px;
+}
+
+.nazionalita-scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: #BDBDBD;
+}
+
+.nazionalita-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #BDBDBD;
+    width: .4em;
+    outline: 1px solid #BDBDBD;
+    border-radius: 10px;
+}
+
+/*scrollbar medium height*/
+
+.medium-height {
+    overflow-y: visible;
+    max-height: 5%;
+}
+
+.medium-height::-webkit-scrollbar {
+    width: .5em;
+    background-color: #00ff0b;
+    max-height: 50px;
+}
+
+.medium-height::-webkit-scrollbar-track {
+    -webkit-box-shadow: #424242;
+    margin-left: 5px;
+}
+
+.medium-height::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    outline: 1px solid #424242;
+}
+
  body > .grid {
     height: 100%;
+}
+.girl{
+    background-color: #f2bed0 !important;
+    color: #000000 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.guys{
+    background-color: #99c9f7 !important;
+    color: #000000 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.dieci {
+    background-color: #AED581 !important;
+    color: #AED581 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.nove {
+    background-color: #C5E1A5 !important;
+    color: #C5E1A5 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.otto {
+    background-color: #D4E157 !important;
+    color: #D4E157 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.sette {
+    background-color: #E6EE9C !important;
+    color: #E6EE9C !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.pusher{
+    padding-top: 60px;
+    min-height: 100%!important;
+}
+.sei {
+    background-color: #FFCC80 !important;
+    color: #FFCC80 !important;
+    border-left-width: 5px;
+    border-right-width: 5px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
 }

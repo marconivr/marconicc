@@ -2,19 +2,36 @@
 <body>
 
 <% include sidebar-start.ejs %>
+<% include finish-menu.ejs %>
     <div class="ui raised very padded text container segment">
         <h2 class="ui header">Inserisci studenti da un csv</h2>
 
-        <form method="post" enctype="multipart/form-data" action="/upload-csv">
-            <input type="file" name="csv">
-            <input type="submit">
+        <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniCsv %>">
+            <button class="ui basic button" id="upload">
+                <i class="cloud download icon"></i>
+                Upload file
+            </button>
+            <input type="file" id="hidde-new-file" onchange="setFileName()" name="csv" style="display: none"
+                   name="anno_scolastico">
+            <div class="ui small label">
+                Nessun file selezionato
+            </div>
+            <button class="ui green button tiny" type="submit">Send</button>
         </form>
     </div>
 <% include sidebar-stop.ejs%>
 <!--personal script for specific page -->
-
 <script>
 
+    $("#upload").on("click", function (e) {
+        e.preventDefault();
+        $('#hidde-new-file').click();
+    });
+
+    function setFileName() {
+        var value = $('#hidde-new-file').val().split("\\")[2]
+        $('.ui.small.label').html(value);
+    }
 
 </script>
 

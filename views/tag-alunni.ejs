@@ -1,0 +1,66 @@
+<% include header %>
+<body>
+<% include sidebar-start.ejs %>
+<% include finish-menu.ejs %>
+<div class="ui raised very padded text container segment">
+    <div class="ui equal width center aligned padded grid">
+        <div class="row">
+            <div class="column">
+                <h1 class="ui header">
+                    Aggiunta tag
+                </h1>
+            </div>
+        </div>
+        <div class="row">
+
+			<div class="ui center aligned basic segment">
+                <div class="ui left icon action input">
+                    <i class="tag icon"></i>
+                    <input placeholder="Tag" type="text" id="tag" onkeydown = "">
+                    <div class="ui blue submit button" onclick="addTag()">Aggiungi tag</div>
+                </div>
+
+                <h4 class="ui horizontal divider header">
+                    <i class="tags icon"></i>
+                    Tag esistenti
+                </h4>
+                <div id="row_tag">
+                    <div class="ui list">
+                        <% for(var i = 0; i < tagAlunni.length;i++){ %>
+
+                        <div class="item"><%= tagAlunni[i].tag%></div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+	</div>
+</div>
+
+<script>
+
+    function addTag(){
+        var tag = document.getElementById("tag").value;
+
+        $.ajax({
+            type:"get",
+            url:'<%=endpoint.alunni.insertTag%>',
+            data: {
+                "tag":tag
+            },
+            success: function (data) {
+                alertify.success("Tag aggiunto");
+                $("#row_tag").append("<div class='item'>" + tag + "</div>")
+            },
+            error: function(err){
+                alertify.error("C'è stato un problema " + err);
+            }
+        })
+    }
+
+</script>
+</script>
+</body>
+<% include sidebar-stop.ejs%>
+<% include tag-close.ejs%>

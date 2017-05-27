@@ -1,240 +1,452 @@
 <% include header %>
 
+<script src="js/panoramica-classi.js"></script>
+
 <style>
-    .contenitoreClasse{
+    /*proprietà per il dropdown della nazionalità da implementare*/
+
+    .ui.menu .temp::before {
+        position: absolute;
+        content: '';
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .contenitoreClasse {
         list-style-type: none;
+        padding-right: 10px !important;
+
+    }
+    .ui.basic.button {
+        width:100%;
+        height:25%;
     }
 
-    .contenitoreClasse li{
+    .contenitoreClasse li {
         margin: 0 5px 5px 5px;
-        padding: 5px;
+        width: 100%;
+
+    }
+
+    ul {
+        -webkit-margin-before: 1em;
+        -webkit-margin-after: 1em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+        -webkit-padding-start: 10px;
+    }
+
+    .studenteItem {
         width: 120px;
     }
 
-    .studenteItem{
-        width: 120px;
-    }
+    .wrapperClasse {
+        display: table-cell;
+        border: 1px solid #eee;
+        border-radius: .28571429rem;
 
-    .wrapperClasse{
-        //border: 1px solid #eee;
-        display:table-cell;
-        //padding-right:45px;
     }
 
     #wrapper {
         overflow-x: scroll;
-        white-space:no-wrap;
         padding-left: 10px;
+        overflow-y: hidden;
     }
 
     .table {
-        display:table;
+        display: table;
     }
 
     .tr {
-        display:table-row;
+        display: table-row;
     }
 
-    .wrapperSettingClasse{
-
+    .wrapperSettingClasse {
+        height: 350px;
     }
+
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: left;
+        padding-left : 5px;
+        padding-top: 5px;
+        padding-bottom : 5px;
+        border-radius: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 1s;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 80%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+    .ui.menu {
+        border: none;
+    }
+
+    .ui.menu .item > .floating.label {
+        z-index: 0;
+    }
+
+    .ui.floating.label {
+        z-index: 0;
+    }
+
+    .bocciato {
+        border-color: #9c1500 !important;
+        border-style: solid !important;
+        border-width: 5px !important;
+    }
+
+    .desiderata-non-rispettato {
+        border-color: #4DB6AC !important;
+        border-style: solid !important;
+        border-width: 5px !important;
+    }
+
 
 </style>
 
-<script>
-
-    $( document ).ready(function() {
-        $(".contenitoreClasse").sortable({
-            connectWith: ".contenitoreClasse",
-            update: function(event, ui) {
-                if (this === ui.item.parent()[0]) {  //this control is because is called twice
-                    console.log( $(event.target).parent().attr('id'));
-                }
-
-
-            },
-            receive: function(event, ui) {
-                console.log( $(event.target).parent().attr('id'));
-
-            }
-        }).disableSelection();
-    });
-
-
-
-
-</script>
-
 <% include sidebar-start.ejs %>
+<div id="selezioneClassi" class="ui icon menu">
+    <!--filter and settings-->
+    <div class="ui dropdown settings item notSelectable">
+        <p class="ui tiny" style="top:25%;position:relative"><i class="options icon"></i>Options</p>
 
-<div id="selezioneClassi" class="ui labeled icon menu">
+        <div class="menu" style="width: 140%;">
+            <!--<div class="item" id="scarica-excel">-->
+                <!--<i class="download icon"></i>Download-->
+            <!--</div>-->
+            <div class="item">
+                <i class="dropdown icon"></i>
+                <i class="download icon"></i> Download
+                <div class="menu">
+                    <div class="list">
+                        <div class="item">
+                            <button class="ui basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleExcel %>';"><i class="file excel outline icon"></i> Excel</button>
+                        </div>
+                        <div class="item">
+                            <button class="ui basic button" id="scarica-excel" onclick="location.href = '<%= endpoint.alunni.exportSingleCsv %>';"><i class="file text outline icon"></i> Csv</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item" id="history"> <i class="undo icon"></i>History</div>
+        </div>
+    </div>
 
-    <div id="contenitoreCheckBox" class="item">
-        <div id="checkBox" class="ui toggle checkbox">
-            <input type="checkbox" name="public">
-            <label>Mostra tutte</label>
+    <!--FILTRI-->
+    <div class="ui dropdown  settings item notSelectable">
+        <p class="ui tiny" style="top:25%;position:relative"><i class="filter icon"></i>Filtri</p>
+        <div class="menu" style=" width: 200%;">
+            <div class="item">
+                <i class="dropdown icon"></i>
+                <i class="write icon"></i> Voto
+                <div class="menu">
+                    <div class="list">
+                        <div class="item">
+                            <div class="ui  child checkbox voto">
+                                <input type="checkbox" name="6">
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #FFCC80!important;">6</a></label>
+
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child   checkbox voto">
+                                <input type="checkbox" name="7">
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #E6EE9C!important;">7</a></label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child  checkbox voto">
+                                <input type="checkbox" name="8">
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #D4E157!important;">8</a></label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child  checkbox voto">
+                                <input type="checkbox" name="9">
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #C5E1A5!important;">9</a></label>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="ui child  checkbox voto">
+                                <input type="checkbox" name="10">
+                                <label><a class="ui circular label mini"
+                                          style="background-color: #AED581!important;">10</a></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--nazionalita-->
+            <div class="item">
+                <i class="dropdown icon"></i>
+                <i class="users icon"></i>Nazionalità
+                <div class="menu">
+                    <div class="list nazionalita-scrollbar " id="nazionalita-menu"
+                         style="width:10%; border-color:white !important;">
+                    </div>
+
+                </div>
+            </div>
+            <!--desiderata-->
+            <div class="item">
+                <i class="dropdown icon"></i>
+                <i class="tag icon"></i>Desiderata
+                <div class="menu">
+                    <div class="list">
+                        <div class="item temp">
+                            <div class="ui child checkbox desiderata">
+                                <input type="checkbox" name="desiderata-not-respected">
+                                <label>Desiderata non rispettato</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--bocciati-->
+            <div class="item">
+                <i class="dropdown icon"></i>
+                <i class="configure icon"></i>Bocciati
+                <div class="menu">
+                    <div class="list">
+                        <div class="item">
+                            <div class="ui child checkbox bocciati">
+                                <input type="checkbox" name="bocciati">
+                                <label>Bocciati</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contenitoreCheckBox" class="item notSelectable">
+        <div id="checkBox" class="ui toggle checkbox" style="top:10%;position:relative">
+            <input id="check" type="checkbox" name="public" checked>
         </div>
     </div>
 </div>
 
+<% include finish-menu.ejs %>
 
+<div class="ui text loader active medium"> Download classi ...</div>
+<!--<div class="ui indicating progress">-->
+<!--<div class="bar"></div>-->
+<!--<div class="label">0% loading</div>-->
+<!--</div>-->
 <div id="wrapper">
     <div class="table">
         <div id="rowForInsertClasses" class="tr">
 
 
-
-
         </div>
     </div>
 </div>
 
-<script>
+<!--modal response -->
+<div class="ui modal informazioni">
+    <i class="close icon"></i>
+    <div class="header">
+        <span id="cognome"></span>
+        <span id="nome"></span>
+    </div>
+    <div class="image content">
+        <div class="ui large image">
+            <div class="ui card max">
+                <div class="content">
+                    <div class="header" id="nome-cognome"></div>
+                </div>
+                <div class="content">
+                    <div class="ui small feed">
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Nazionalità : <span id="nazionalita"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Sesso : <span id="sesso"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Data di nascita : <span id="data-di-nascita"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Cap : <span id="cap"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Matricola : <span id="matricola"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="event">
+                            <div class="content">
+                                <div class="summary">
+                                    <span> Codice fiscale : <span id="codice-fiscale"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="description">
+            <div class="ui header">Dati per la classe</div>
 
-    /**
-     * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
-     */
+            <!--table-->
+            <table class="ui very basic collapsing celled table">
+                <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Dato</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Media voti </b>
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="media-voti"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Classe precedente</b>
 
-    $.ajax({
-        url: '/get-classi-composte',
-        data: {
-            format: 'json'
-        },
-        error: function() {
-            alert('Errore di scaricamento dei dati /get-classi-composte');
-        },
-        dataType: 'json',
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="classe-precedente"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Anno scolastico </b>
 
-        success: function(listaClassi) {
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="anno-scolastico"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4 class="ui image header">
+                            <div class="content">
+                                <b>Scelta indirizzo </b>
 
-            for (var i=0 ; i<listaClassi.length ; i++){
-
-                var nomeClasse = listaClassi[i].nome;
-                var proprieta = listaClassi[i].proprieta;
-                var arrayStudenti = listaClassi[i].alunni;
-
-                var wrapperClasse = $('<div/>', {
-                    'id': nomeClasse,
-                    'class':'wrapperClasse',
-                }).appendTo('#rowForInsertClasses').hide();
-
-                $('<a/>',{
-                    'class':'item',
-                    'text' : nomeClasse
-                }).appendTo($('#selezioneClassi'));
-
-
-
-
-                var settingClasse = $('<div/>',{
-                    'class': 'ui raised segment wrapperSettingClasse',
-                    'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>'
-                }).appendTo(wrapperClasse);
-
-
-                for (var prop in proprieta) {
-                    if (prop != "residenza" && prop != "iniziale") {
-                        var li = $('<div/>')
-                            .addClass("ui info message")
-                            .text(prop + ": " + proprieta[prop])
-                           .appendTo(settingClasse);
-                    }
-                }
-
-                var div = $('<ul/>',{
-                    'class':'contenitoreClasse ui vertical menu'
-                }).appendTo(wrapperClasse);
-
-
-                for (var j=0; j < arrayStudenti.length ; j++) {
-                    if (arrayStudenti[j] !== undefined) {
-                        var cognomeStudente = arrayStudenti[j].cognome;
-                        var nomeStudente = arrayStudenti[j].nome;
-                        var cf = arrayStudenti[j].cf
-
-                        var a = $('<a/>').addClass("ui label studenteItem").html(cognomeStudente + '' +' <br>'+ nomeStudente).attr('id', cf);
-
-                        var li = $('<li/>')
-                            .html(a)
-                            .appendTo(div);
-                    }
-                }
-            }
-        },
-        type: 'GET'
-    });
-</script>
-
-<% include sidebar-stop.ejs%>
-<!--personal script for specific page -->
-
-<script>
+                            </div>
+                        </h4>
+                    </td>
+                    <td>
+                        <span id="scelta-indirizzo"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Chiudi
+        </div>
+        <div class="ui positive right labeled icon button">
+            OK
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 
 
+<!--modal for history-->
+<div class="ui modal history">
+    <i class="close icon"></i>
+    <div class="header">
+        History
+    </div>
+    <div class="content">
+        <div id="history-container" class="history-container">
+            <label id="history-label">Qui puoi vedere tutti gli spostamenti compiuti</label>
+            <br>
+            <div class="ui styled fluid accordion">
 
-    /**
-     * Osservatore per gestire la visualizzazione delle classi
-     */
-        $('#selezioneClassi')
-            .on('click', '.item', function() {
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui black deny button">
+            Chiudi
+        </div>
+        <div class="ui positive right labeled icon button">
+            Ok
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
 
-                if ($(this)[0].id != "contenitoreCheckBox"){ //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
-                    if($(this).hasClass('active')) {
-                        $(this).removeClass('active');
-
-                        var classe = $(this).text();
-
-                        //nascondo l'elemento
-
-
-                        //bisogna fare il controllo per quando si preme tante volte
-                        $('#' + classe).hide();
-
-                    }else{
-                        $(this).addClass('active');
-                        var classe = $(this).text();
-
-                        //visualizzo l'elemento
-                        $('#' + classe).show();
-                    }
-                    //attivo il doppio scroll che non funziona bisognerà indagare
-                    $('#wrapper').doubleScroll();
-                }
-            });
-
-    /**
-     * Osservatore per gestire il visualizzza tutto
-     */
-    $('#checkBox').checkbox({
-        onChecked: function () {
-            //visualizzo tutto lasciando in selezione gli altri item
-            $('.wrapperClasse').show();
-        },
-        onUnchecked: function () {
-            //prima di pulire tutto controllo gli item già attivi per portare alla situazione precendente le visualizzazioni
-            $('#selezioneClassi > .item').each(function (i, obj) {
-                if (!$(this).hasClass('active')) {
-                    try{
-                        var id = $(this).text();
-                        $('#' + id).hide();
-                    }catch (e){
-                        //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe
-                    }
-
-                }
-
-            });
-        }
-
-    });
-
-
-    $( ".studenteItem" )
-        .on( "dragstart", function( event, ui ) {alert('start')})
-        .on( "dragstop", function( event, ui ) {alert('stop')});
-
-</script>
+<% include sidebar-stop.ejs %>
 
 
 <!--close html tag-->
-<% include tag-close.ejs%>
+<% include tag-close.ejs %>

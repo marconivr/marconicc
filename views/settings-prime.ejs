@@ -1,0 +1,473 @@
+<% include header %>
+<body xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+<style>
+    .hiddenMessage {
+        visibility: hidden;
+    }
+
+    #sortable1, #sortable2, #sortable3, #sortable4, #sortable5, #sortable6, #sortable7, #sortable8 {
+        border: 1px solid #eee;
+        width: 142px;
+        min-height: 20px;
+        list-style-type: none;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+    }
+
+    #sortable1 li, #sortable2 li, #sortable3 li, #sortable4 li, #sortable5 li, #sortable6 li, #sortable7 li, #sortable8 li {
+        margin: 0 5px 5px 5px;
+        padding: 5px;
+        font-size: 1.2em;
+        width: 120px;
+    }
+
+    .ui.fixed.menu + .ui.grid {
+        padding-top: 0rem;
+    }
+
+</style>
+
+<script>
+    $(function () {
+        $("#sortable1, #sortable2,#sortable3, #sortable4, #sortable5, #sortable6, #sortable7,#sortable8").sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+    });
+</script>
+
+<% include sidebar-start.ejs %>
+<% include finish-menu.ejs %>
+
+
+<div class="ui internally celled grid">
+    <div class="ui text loader disabled  medium" id="loader"> Download settings ...</div>
+    <div class="row">
+        <!--this section represent the realtime data-->
+        <div class="three wide column">
+            <a class="ui teal tag label"> Statistiche RealTime</a><br>
+            <b>Numero di classi:</b>
+            <p id="classe-realtime"></p>
+
+            <b>Numero di classi con femmine:</b>
+            <p id="classi-con-femmine"></p>
+
+            <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
+            <div>
+                <div class="ui items medium-height" id="row-for-insert-date" style="padding-top:10px">
+                </div>
+            </div>
+        </div>
+        <div class="ten wide column">
+            <div class="ui centered grid">
+                <div class="six wide tablet ten wide computer column">
+                    <!--sematic form-->
+                    <form class="ui form success" onsubmit='return onSubmit(this);return validateForm()'>
+                        <h4 class="ui dividing header">Impostazioni prime</h4>
+
+                        <!--sematic fields-->
+                        <div class="field">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Alunni minimi in una classe</label>
+                                    <input type="number" name="alunni_min"
+                                           placeholder="Qual è il numero di alunni minimi di una classe?"
+                                           onkeyup="setDataRealtimeNumberOfStudents()"
+                                           onchange="setDataRealtimeNumberOfStudents()"
+                                           id="alunni-min"
+                                           min="0"
+                                           max="30">
+                                </div>
+                                <div class="field">
+                                    <label>Alunni massimi in una classe</label>
+                                    <input type="number" name="alunni_max"
+                                           placeholder="Qual è il numero di alunni massimi di una classe?"
+                                           id="alunni-max"
+                                           min="0"
+                                           max="50">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Numero femmine in una classe</label>
+                            <input name="max_femmine" placeholder="Quante femmine per classe?" type="number"
+                                   onkeyup="setDataRealtimeNumberOfFemmine()"
+                                   onchange="setDataRealtimeNumberOfFemmine()"
+                                   id="femmine"
+                                   min="0"
+                                   max="25">
+                        </div>
+                        <div class="field">
+                            <label>Numero persone con la stessa nazionalità</label>
+                            <input name="nazionalita" placeholder="Quante nazionaità diverse per classe?" type="number"
+                                   id="nazionalita"
+                                   min="0"
+                                   max="25">
+                        </div>
+                        <div class="field">
+                            <label>Numero nazionalità per classe</label>
+                            <input name="naz_per_classe"
+                                   placeholder="Quanti alunni con la stessa nazionalità per classe?" type="number"
+                                   id="naz_per_classe"
+                                   min="0"
+                                   max="15">
+                        </div>
+                        <div class="field">
+                            <label>Numero persone che hanno residenza simile</label>
+                            <input name="stessa_provenienza" placeholder="Quanti alunni con la stessa residenza?"
+                                   type="number"
+                                   id="residenza"
+                                   min="0"
+                                   max="25">
+                        </div>
+                        <div class="field">
+                            <label>Numero massimo di alunni in una classe in presenza di un 104</label>
+                            <input name="max_al_104"
+                                   placeholder="Qual è il numero di alunni massimi in presenza di un 104?" type="number"
+                                   id="max_al_104"
+                                   min="0"
+                                   max="30">
+                        </div>
+                        <div class="field">
+                            <label>Descrizione</label>
+                            <input name="descrizione"
+                                   placeholder="Inserisci una descrizione per identificare questa configurazione"
+                                   type="text" id="descrizione">
+                        </div>
+                        <div>
+                            <button class="ui basic button" tabindex="0" id="sendButton" onclick="addSettings()">
+                                <i class="upload icon"></i>
+                                Aggiungi configurazione
+                            </button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--this section represent data in db-->
+        <div class="three wide column">
+
+            <a class="ui orange tag label">Dati Studenti</a><br><br>
+            <div class="ui vertical menu">
+                <a class="teal item">
+                    Studenti
+                    <div class="ui yellow left pointing label" id="alunni-in-classe-prima">
+                        <%= studentiPrima[0].result %>
+                    </div>
+                </a>
+                <a class="item">
+                    Femmine
+                    <div class="ui green left pointing label" id="femmine-in-classe-prima">
+                        <%= femminePrima[0].result %>
+                    </div>
+                </a>
+                <a class="item">
+                    Media voti
+                    <div class="ui blue left pointing label">
+                        <%= mediaPrima[0].result %>
+                    </div>
+                </a>
+                <a class="item">
+                    Stranieri
+                    <div class="ui teal left pointing label">
+                        <%= stranieriPrima[0].result %>
+                    </div>
+                </a>
+            </div>
+
+            <br>
+
+        </div>
+    </div>
+</div>
+
+<div class="ui modal large">
+    <i class="close icon"></i>
+    <div class="header">
+
+        <h2 class="ui header">
+            <span class="ui header" id="modal-header"></span>
+            <div class="sub header"><span class="ui header" id="modal-date"></span></div>
+        </h2>
+
+    </div>
+    <div class="content">
+        <table class="ui very basic collapsing celled table">
+            <thead>
+            <tr>
+                <th>Descrizione</th>
+                <th>Alunni minimi</th>
+                <th>Alunni massimi</th>
+                <th>Numero massimo di femmine</th>
+                <th>Stessa nazionalità</th>
+                <th>Numero di nazionalità</th>
+                <th>Residenza simile</th>
+                <th>Alunni massimi con un 104</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="row-settings">
+            </tr>
+            </tbody>
+        </table>
+        <div class="ui right aligned grid">
+
+            <div class="right floated left aligned five wide column">
+                <label class="align left">
+                    Vuoi rendere attiva questa configurazione?
+                </label>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="actions">
+
+        <div class="ui black deny button">
+            No
+        </div>
+        <div class="ui positive right labeled icon button">
+            Attiva
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<% include sidebar-stop.ejs %>
+<!--personal script for specific page -->
+
+
+<script>
+    $('.ui.dropdown').dropdown();
+
+</script>
+
+<script>
+    var settings = [];
+    var global_index = 0; // indice della configurazione
+
+    /**
+     *
+     * @param index -> index dell'array per popolare il modal
+     * @param databaseIndex -> indice per settare attiva del database
+     */
+    function createModal(index, databaseIndex) {
+        var s = "";
+
+        $('#modal-header').text(settings[index].nome);
+        $('#modal-date').text(settings[index].data);
+        for (setting in settings[index]) {
+            if(setting != "data")
+            s += '<td class="center aligned">' + settings[index][setting] + "</td>";
+        }
+        document.getElementById("row-settings").innerHTML = s;
+        $('.ui.modal')
+            .modal({
+                closable: false,
+                onApprove: function () {
+                    //setto questa configurazione attiva
+                    var id = databaseIndex;
+                    $.ajax({
+                        type: "POST",
+                        url: '<%= endpoint.alunni.setActiveConfiguration %>',
+                        data: {id: id},
+                        success: function (data) {
+                            if (data.error) {
+                                alertify.error("Opss, ci deve essere stato un problema");
+                                console.error(data.error);
+                            }
+                            else {
+                                alertify.success("Questa configurazione è attiva");
+                                downloadSettings();
+                                $('#row-for-insert-date').children().remove();
+                            }
+                        },
+                        error: function (errMsg) {
+                            alertify.error('Opss, ci deve essere stato un problema interno al server');
+                        }
+                    });
+                }
+
+            })
+            .modal('show')
+        ;
+    }
+
+    //this function set the number of student for class
+    function setDataRealtimeNumberOfStudents() {
+        var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML;
+        var alunniMin = $("#alunni-min").val();
+
+        if (alunniMin == "") {
+            $("#classe-realtime").html("");
+        }
+        else {
+            $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
+        }
+    }
+
+    function setDataRealtimeNumberOfFemmine() {
+        var femmineTot = document.getElementById("femmine-in-classe-prima").innerHTML;
+        var femmineMax = $("#femmine").val();
+
+        if (femmineMax == "") {
+            $("#classi-con-femmine").html("");
+        }
+        else {
+            $("#classi-con-femmine").html(Math.floor(femmineTot / femmineMax));
+        }
+    }
+    function addSettings() {
+
+        var d = new Date();
+        var data = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+        var descrizione = $("#descrizione").val()
+        var alunniMin = parseInt($("#alunni-min").val());
+        var alunniMax = parseInt($("#alunni-max").val());
+        var femmine = parseInt($("#femmine").val());
+        var residenza = parseInt($("#residenza").val());
+        var nazionalita = parseInt($("#nazionalita").val());
+        var naz_per_classe = parseInt($("#naz_per_classe").val());
+        var max_al_104 = parseInt($("#max_al_104").val());
+        $.ajax({
+            url: '<%= endpoint.alunni.insertSettingsPrime %>',
+            data: {
+                "data": data,
+                "descrizione": descrizione,
+                "alunniMin": alunniMin,
+                "alunniMax": alunniMax,
+                "femmine": femmine,
+                "residenza": residenza,
+                "nazionalita": nazionalita,
+                "naz_per_classe": naz_per_classe,
+                "max_al_104": max_al_104
+            },
+            type: 'post',
+            success: function (dati) {
+                if (dati == "no-error") {
+                    alertify.success("Configurazione inserita");
+                    document.getElementById("sendButton").setAttribute("class", "ui basic button disabled")
+
+                    settings.push({
+                        "data": data,
+                        "descrizione": descrizione,
+                        "alunniMin": alunniMin,
+                        "alunniMax": alunniMax,
+                        "femmine": femmine,
+                        "residenza": residenza,
+                        "nazionalita": nazionalita,
+                        "naz_per_classe": naz_per_classe,
+                        "max_al_104": max_al_104
+                    });
+                    var item = $('<div/>')
+                        .addClass('item')
+                        .appendTo($('#row-for-insert-date'));
+                    var content = $('<div/>')
+                        .addClass('content')
+                        .appendTo(item);
+
+                    var header = $('<div/>')
+                        .addClass('header')
+                        .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
+                        .appendTo(content);
+
+                    var meta = $('<div/>')
+                        .addClass('meta')
+                        .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
+                        .appendTo(content);
+                    global_index += 1;
+
+                    $('.ui.form.success')[0].reset();
+
+                }
+                else {
+                    alertify.error("Opps, ci deve essere stato un problema");
+                }
+            },
+            error: function (xhr, status, error) {
+                alertify.error("Opps, ci deve essere stato un problema");
+
+            }
+        });
+    }
+
+    function downloadSettings() {
+        $.ajax({
+            type: "GET",
+            url: '<%= endpoint.alunni.getPastSettingsPrime %>',
+            data: {
+                format: 'json'
+            },
+            error: function (xhr, status, error) {
+                alertify.error("Opps, ci deve essere stato un problema");
+                console.log(error)
+            },
+            dataType: 'json',
+            beforeSend: function () {
+                $('#loader').removeClass('disabled').addClass('active');
+            },
+            success: createListOfSettings
+
+        });
+    }
+
+    function createListOfSettings(listaSettings) {
+        settings = listaSettings;//use when createModal() is call
+
+        for (var index = 0; index < listaSettings.length; index++) {
+            var item = $('<div/>')
+                    .addClass('item')
+                    .appendTo($('#row-for-insert-date'));
+
+            var content = $('<div/>')
+                    .addClass('content')
+                    .appendTo(item);
+            if (listaSettings[index].attiva == 1) {
+                content.append('<i class="checkmark green  icon"></i>');
+            }
+
+            var header = $('<div/>')
+                    .addClass('header')
+                    .html('<a style="font-size: 16px;" onclick="createModal(' + index + ',' + listaSettings[index].id + ')">' + listaSettings[index].nome + '</a>')
+                    .appendTo(content);
+
+            var meta = $('<div/>')
+                    .addClass('meta')
+                    .html('<i class="calendar icon"></i> ' + listaSettings[index].data + '<hr>')
+                    .appendTo(content);
+            global_index += 1;
+        }
+        $('#loader').removeClass('active').addClass('disabled');
+    }
+
+
+    $(document).ready(function () {
+        downloadSettings();
+
+        document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
+        var $fields = $(".field :input");
+        $fields.keyup(function () {
+
+            var $emptyFields = $fields.filter(function () {
+
+                // remove the $.trim if whitespace is counted as filled
+                return $.trim(this.value) === "";
+            });
+
+            if (!$emptyFields.length) {
+                document.getElementById("sendButton").setAttribute("class", "ui basic button")
+
+            } else {
+                document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
+            }
+        });
+    });
+
+</script>
+
+
+<!--close html tag-->
+<% include tag-close.ejs %>
