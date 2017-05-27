@@ -118,6 +118,18 @@ module.exports = {
         });
     },
 
+    cleanClassi: function (scuola, annoScolastico, callback) {
+
+        connection.query("delete from classi_composte WHERE classi_composte.classe IN " +
+        "(SELECT c.id FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?)", [annoScolastico, scuola], function (err, row) {
+            callback(err, row);
+        });
+
+        connection.query("DELETE FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?", [annoScolastico, scuola], function (err, row) {
+            callback(err, row);
+        });
+    },
+
 
     /**
      *
