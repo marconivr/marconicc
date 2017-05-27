@@ -1381,7 +1381,7 @@ function removeStudentsFromHistory(cf, id, classeSuccessiva, classePrecendente, 
             try {
                 moveStudent(cf, classeSuccessiva, classePrecendente, false, getStudentObject(cf).anno_scolastico);
                 updateStudentGUI(cf, classeSuccessiva, classePrecendente);
-                alertify.success('Alunno spostato correttamente');
+                alertify.success('<i class="thumbs outline up icon"></i>Alunno spostato correttamente');
             }
             catch (e) {
                 alertify.error("Opps, ci deve essere stato un problema" + "\n" + e);
