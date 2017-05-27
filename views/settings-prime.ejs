@@ -41,7 +41,6 @@
 <% include sidebar-start.ejs %>
 <% include finish-menu.ejs %>
 
-
 <div class="ui internally celled grid">
     <div class="ui text loader disabled  medium" id="loader"> Download settings ...</div>
     <div class="row">
@@ -64,7 +63,7 @@
             <div class="ui centered grid">
                 <div class="six wide tablet ten wide computer column">
                     <!--sematic form-->
-                    <form class="ui form success" id="form-inserimento" >
+                    <form class="ui form success" id="form-inserimento">
                         <h4 class="ui dividing header">Impostazioni prime</h4>
 
                         <!--sematic fields-->
@@ -137,7 +136,7 @@
                                    type="text" id="descrizione">
                         </div>
                         <div>
-                            <button class="ui basic button" tabindex="0" id="sendButton" >
+                            <button class="ui basic button" tabindex="0" id="sendButton">
                                 <i class="upload icon"></i>
                                 Aggiungi configurazione
                             </button>
@@ -255,44 +254,60 @@
      * @param databaseIndex -> indice per settare attiva del database
      */
     function createModal(index, databaseIndex) {
-        var s = "";
+        var tableLine = "";
 
         $('#modal-header').text(settings[index].nome);
         $('#modal-date').text(settings[index].data);
-        for (setting in settings[index]) {
-            if(setting != "data" || setting != "id" || setting != "attiva")
-            s += '<td class="center aligned">' + settings[index][setting] + "</td>";
-        }
-        document.getElementById("row-settings").innerHTML = s;
-        $('.ui.modal')
-            .modal({
-                closable: false,
-                onApprove: function () {
-                    //setto questa configurazione attiva
-                    var id = databaseIndex;
-                    $.ajax({
-                        type: "POST",
-                        url: '<%= endpoint.alunni.setActiveConfiguration %>',
-                        data: {id: id},
-                        success: function (data) {
-                            if (data.error) {
-                                alertify.error("Opss, ci deve essere stato un problema");
-                                console.error(data.error);
-                            }
-                            else {
-                                alertify.success("Questa configurazione è attiva");
-                                downloadSettings();
-                                $('#row-for-insert-date').children().remove();
-                            }
-                        },
-                        error: function (errMsg) {
-                            alertify.error('Opss, ci deve essere stato un problema interno al server');
-                        }
-                    });
-                }
 
-            })
-            .modal('show')
+
+//        for (setting in settings[index]) {
+//            if((setting != "data") || (setting != "id") || (setting != "attiva"))
+//            {
+//                tableLine += '<td class="center aligned">' + settings[index][setting] + "</td>";
+//            }
+//
+//        }
+
+        tableLine += '<td class="center aligned">' + settings[index].nome + "</td>";
+        tableLine += '<td class="center aligned">' + settings[index].min_alunni + "</td>";
+        tableLine += '<td class="center aligned">' + settings[index].max_alunni + "</td>";
+        tableLine += '<td class="center aligned">' + settings[index].gruppo_femmine + "</td>";
+        tableLine += '<td class="center aligned">' + settings[index].gruppo_nazionalita + "</td>";
+        tableLine += '<td class="center aligned">' + settings[index].nazionalita_per_classe + "</td>";
+        tableLine += '<td class="center aligned">' + settings[index].gruppo_cap + "</td>";
+        tableLine += '<td class="center aligned">' + settings[index].numero_alunni_con_104 + "</td>";
+
+
+        document.getElementById("row-settings").innerHTML = tableLine;
+        $('.ui.modal')
+                .modal({
+                    closable: false,
+                    onApprove: function () {
+                        //setto questa configurazione attiva
+                        var id = databaseIndex;
+                        $.ajax({
+                            type: "POST",
+                            url: '<%= endpoint.alunni.setActiveConfiguration %>',
+                            data: {id: id},
+                            success: function (data) {
+                                if (data.error) {
+                                    alertify.error("Opss, ci deve essere stato un problema");
+                                    console.error(data.error);
+                                }
+                                else {
+                                    alertify.success("Questa configurazione è attiva");
+                                    downloadSettings();
+                                    $('#row-for-insert-date').children().remove();
+                                }
+                            },
+                            error: function (errMsg) {
+                                alertify.error('Opss, ci deve essere stato un problema interno al server');
+                            }
+                        });
+                    }
+
+                })
+                .modal('show')
         ;
     }
 
@@ -321,7 +336,7 @@
         }
     }
 
-    $('#form-inserimento').submit(function(e) {
+    $('#form-inserimento').submit(function (e) {
 
         var d = new Date();
         var data = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
@@ -364,23 +379,22 @@
                         "max_al_104": max_al_104
                     });
                     var item = $('<div/>')
-                        .addClass('item')
-                        .appendTo($('#row-for-insert-date'));
+                            .addClass('item')
+                            .appendTo($('#row-for-insert-date'));
                     var content = $('<div/>')
-                        .addClass('content')
-                        .appendTo(item);
+                            .addClass('content')
+                            .appendTo(item);
 
                     var header = $('<div/>')
-                        .addClass('header')
-                        .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
-                        .appendTo(content);
+                            .addClass('header')
+                            .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
+                            .appendTo(content);
 
                     var meta = $('<div/>')
-                        .addClass('meta')
-                        .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
-                        .appendTo(content);
+                            .addClass('meta')
+                            .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
+                            .appendTo(content);
                     global_index += 1;
-
 
 
                 }
@@ -466,7 +480,7 @@
 
 
     $(document).ready(function () {
-       downloadSettings();
+        downloadSettings();
     });
 
 </script>
