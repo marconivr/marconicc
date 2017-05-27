@@ -28,11 +28,19 @@ class Classe {
 
         if (!Classe.checkValidazione(ris)){
             this.alunni.pop();
-            return ris;
         }
-        return "ok";
+        return ris;
      }
 
+    push(alunno){
+        if(this.alunni.indexOf(alunno) === -1 ){
+            this.alunni.push(alunno);
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 
     setBocciato(alunno){
         this.alunni.push(alunno);
@@ -40,36 +48,29 @@ class Classe {
     }
 
     static checkValidazione(ris){
-        _.forEach(ris, function (value, key) {
-            if(value === false){
-                return false;
+        for (let property in ris) {
+            if (ris.hasOwnProperty(property)) {
+                if(ris[property] === false){
+                    return false;
+                }
             }
-        });
+        }
 
         return true;
     }
 
     checkAlunno(){
         let ris = {};
-        if(!this.limitiAlunni()){
-            ris.limitiAlunni = false;
-        }
 
-        if(!this.legge_104_107()){
-            ris.legge_104_107 =false;
-        }
+        ris.limitiAlunni = !this.limitiAlunni();
 
-        if(!this.femmine()){
-            ris.femmine = false;
-        }
+        ris.legge_104_107 = !this.legge_104_107();
 
-        if(!this.nazionalita()){
-            ris.nazionalita = false;
-        }
+        ris.femmine = !this.femmine();
 
-        if(!this.cap()){
-            ris.cap = false;
-        }
+        ris.nazionalita = !this.nazionalita();
+
+        ris.cap = !this.cap;
 
         return ris;
     }
@@ -187,8 +188,7 @@ class Classe {
 
 let classe1 = new Classe("1A");
 
-for(i in alunni){
-    console.log(classe1.setAlunno(alunni[i]));
-}
+classe1.setAlunno(alunni[0]);
+
 
 console.log(classe1);

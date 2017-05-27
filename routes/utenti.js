@@ -37,7 +37,7 @@ module.exports = function (app, passport) {
      */
     //todo controllo che se questa scuola non ha studenti caricati si apre la pagina per caricarli
     app.post(endpoint.utenti.login, passport.authenticate('local-login', {
-            successRedirect: endpoint.alunni.settings,
+            successRedirect: endpoint.alunni.studenti,
             failureRedirect: endpoint.utenti.login,
             failureFlash: true
         }),
