@@ -39,9 +39,21 @@ module.exports = {
                     if (err) {
                         console.log(err);
                     } else {
+                        var flag = true;
                         if (rows.length > 0) {
-                            callback(module.exports.generateListaClassi(rows));
-                        } else {
+                            async.series([
+                                    function (callback) {
+                                        var idConf = module.exports.getIdConfiguration(annoScolastico, scuola, classeFutura);
+                                        callback(err, idConf);
+                                    }
+                                ],
+                                function (err, idConf) {
+                                    if(rows[0].configurazione == idConf){
+                                        callback(module.exports.generateListaClassi(rows));
+                                        flag = false;
+                                    }
+                                });
+                        } if (flag) {
                             async.waterfall(
                                 [
                                     function (callback) {
@@ -123,8 +135,18 @@ module.exports = {
             }
         });
     }
-
     ,
+
+    getIdConfiguration: function (annoScolastico, scuola, classeFutura) {
+        query.scaricaSettings(annoScolastico, scuola, classeFutura, function (err, results) {
+            if (err)
+                console.log(err);
+            else {
+                return results[0]["id"];
+            }
+        });
+    },
+
     /**
      * creaInsiemi genera i possibili insiemi dati gli alunni
      */
