@@ -84,9 +84,7 @@
     height: .8em;
 }
 
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: 0px 0px 1px 0px #ADADAD inset;
-}
+
 
 ::-webkit-scrollbar-thumb {
     background-color: #ADADAD;

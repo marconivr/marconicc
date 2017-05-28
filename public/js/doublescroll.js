@@ -19,8 +19,7 @@
             topScrollBarInnerSelector: '.suwala-doubleScroll-scroll',
             scrollCss: {
                 'overflow-x': 'scroll',
-                'overflow-y':'hidden',
-                'background-color': '#ADADAD'
+                'overflow-y':'hidden'
             },
             contentCss: {
                 'overflow-x': 'scroll',
