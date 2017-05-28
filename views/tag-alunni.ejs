@@ -24,8 +24,8 @@
                     <i class="tags icon"></i>
                     Tag esistenti
                 </h4>
-                <div id="row_tag">
-                    <div class="ui list">
+                <div>
+                    <div class="ui list" id="row_tag">
                         <% for(var i = 0; i < tagAlunni.length;i++){ %>
 
                         <div class="item"><%= tagAlunni[i].tag%></div>
@@ -59,7 +59,6 @@
         })
     }
 
-</script>
 </script>
 </body>
 <% include sidebar-stop.ejs%>
