@@ -556,7 +556,7 @@ module.exports = function (app) {
                 }
                 objRes.splice(0, 0, intestazione);
                 results = objRes;
-                csv.separator = ",";
+                csv.separator = ";";
                 res.setHeader('Content-disposition', 'attachment; filename=exportCsv.csv');
                 res.set('Content-Type', 'text/csv');
                 res.csv(results);
@@ -591,9 +591,9 @@ module.exports = function (app) {
                 }
                 objRes.splice(0, 0, intestazione);
                 results = objRes;
-                csv.separator = ";";
-                res.setHeader('Content-disposition', 'attachment; filename=exportExcel.xls');
-                res.set('Content-Type', 'text/csv');
+                csv.separator = ",";
+                res.setHeader('Content-disposition', 'attachment; filename=exportExcel.csv');
+                res.set('Content-Type', 'text/csv; charset=utf-16le; header=present;');
                 res.csv(results);
             }
         })
