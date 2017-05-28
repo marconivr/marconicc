@@ -22,6 +22,7 @@ module.exports = {
         exportSingleCsv: "/export-single-csv",
         exportSingleExcel: "/export-single-excel",
         uploadAlunniCsv :"/upload-alunni-csv",
+        uploadAlunniRimandatiSettembre: "/upload-alunni-rimandati-settembre",
         allTag: "/all-tag",
         studenti : "/studenti",
         updateTag : "/update-tag",

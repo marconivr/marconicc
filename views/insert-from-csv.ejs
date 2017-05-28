@@ -3,24 +3,46 @@
 
 <% include sidebar-start.ejs %>
 <% include finish-menu.ejs %>
-    <div class="ui raised very padded text container segment">
-        <h2 class="ui header">Inserisci studenti da un csv</h2>
+<!--inserisci studenti-->
+<div class="ui raised very padded text container segment">
+    <h2 class="ui header">Inserisci studenti da un csv</h2>
 
-        <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniCsv %>">
-            <button class="ui basic button" id="upload">
-                <i class="cloud download icon"></i>
-                Upload file
-            </button>
-            <input type="file" id="hidde-new-file" onchange="setFileName()" name="csv" style="display: none"
-                   name="anno_scolastico">
-            <div class="ui small label">
-                Nessun file selezionato
-            </div>
-            <button class="ui green button tiny" type="submit">Send</button>
-        </form>
-    </div>
-<% include sidebar-stop.ejs%>
+    <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniCsv %>">
+        <button class="ui basic button" id="upload">
+            <i class="cloud upload icon"></i>
+            Upload file
+        </button>
+        <input type="file" id="hidde-new-file" onchange="setFileName()" name="csv" style="display: none"
+               name="anno_scolastico">
+        <div class="ui small label" id="csv-studenti">
+            Nessun file selezionato
+        </div>
+        <button class="ui green button tiny" type="submit">Send</button>
+    </form>
+</div>
+
+<!--inserimento ripetenti-->
+<div class="ui raised very padded text container segment">
+    <h2 class="ui header">Inserisci studenti rimandati a settembre</h2>
+
+    <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniRimandatiSettembre %>">
+        <button class="ui basic button" id="upload-ripetenti">
+            <i class="cloud upload icon"></i>
+            Upload file
+        </button>
+        <input type="file" id="hidde-new-file-ripetenti" onchange="setFileNameRipetenti()" name="csv"
+               style="display: none"
+               name="anno_scolastico">
+        <div class="ui small label" id="csv-studenti-ripetenti">
+            Nessun file selezionato
+        </div>
+        <button class="ui green button tiny" type="submit">Send</button>
+    </form>
+</div>
+<% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
+
+
 <script>
 
     $("#upload").on("click", function (e) {
@@ -30,11 +52,22 @@
 
     function setFileName() {
         var value = $('#hidde-new-file').val().split("\\")[2]
-        $('.ui.small.label').html(value);
+        $('#csv-studenti').html(value);
+    }
+
+    //ripetenti
+    $("#upload-ripetenti").on("click", function (e) {
+        e.preventDefault();
+        $('#hidde-new-file-ripetenti').click();
+    });
+
+    function setFileNameRipetenti() {
+        var value = $('#hidde-new-file-ripetenti').val().split("\\")[2]
+        $('#csv-studenti-ripetenti').html(value);
     }
 
 </script>
 
 
 <!--close html tag-->
-<% include tag-close.ejs%>
+<% include tag-close.ejs %>

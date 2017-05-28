@@ -29,6 +29,7 @@ module.exports = function (app) {
         });
     });
 
+
     app.post(endpoint.alunni.uploadAlunniCsv, upload.single('csv'), middleware.isLoggedIn, function (req, res) {
 
         const data = req.file;
@@ -53,6 +54,33 @@ module.exports = function (app) {
 
             console.error(error);
         });
+    });
+
+    app.post(endpoint.alunni.uploadAlunniRimandatiSettembre, upload.single('csv'), middleware.isLoggedIn, function (req, res) {
+
+        // const data = req.file;
+        // const pathFile = data.path;
+        // const scuola = req.user.id_scuola;
+        // const utente = req.user.id;
+        //
+        // csv_post().from.path(pathFile, {
+        //     delimiter: ";",
+        //     escape: ''
+        //
+        // }).on("record", function (row, index) {
+        //
+        //     query.insertRecordFromCSV(row,scuola,utente);
+        //
+        // }).on("end", function () {
+        //
+        //     console.log("LETTURA FILE RIUSCITA");
+        //     res.redirect(endpoint.alunni.studenti);
+        //
+        // }).on("error", function (error) {
+        //
+        //     console.error(error);
+        // });
+        res.redirect(endpoint.alunni.studenti);
     });
 
     app.get(endpoint.alunni.allTag, middleware.isLoggedIn, function (req, res) {
@@ -398,8 +426,6 @@ module.exports = function (app) {
                         return o.classe_futura;
                     });
 
-
-
                     app.locals.sessioneIniziale = {
                         classeFutura: obj[0].classe_futura,
                         annoScolastico:obj[0].anno_scolastico
@@ -411,8 +437,6 @@ module.exports = function (app) {
                 }
 
             }
-
-
         });
 
 
