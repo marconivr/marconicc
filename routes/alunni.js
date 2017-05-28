@@ -9,6 +9,7 @@ const middleware = require('./middleware/middleware');
 const newAlg = require("./new-algorithm.js");
 const async = require('async');
 const csv = require('express-csv');
+const nodeExcel = require('excel-export');
 const endpoint = require('./endpoint/endpoint.js');
 const sessione = require('./../query/sessione.js');
 const _ = require('lodash');
@@ -567,6 +568,7 @@ module.exports = function (app) {
                 for (var o in objRes[0]){
                     intestazione.push(o);
                 }
+                intestazione.push("posizione_in_classe");
                 var count = 1;
                 var classe = ""
                 for (var o in objRes){
@@ -589,7 +591,7 @@ module.exports = function (app) {
 
     });
 
-    app.get(endpoint.alunni.exportSingleExcel, middleware.isLoggedIn, function (req, res) {
+    /*app.get(endpoint.alunni.exportSingleExcel, middleware.isLoggedIn, function (req, res) {
         query.getClassiComposteForExport(function (err, results) {
             if (err) {
                 console.log(err);
@@ -602,6 +604,7 @@ module.exports = function (app) {
                 for (var o in objRes[0]){
                     intestazione.push(o);
                 }
+                intestazione.push("posizione_in_classe");
                 var count = 1;
                 var classe = ""
                 for (var o in objRes){
@@ -617,8 +620,71 @@ module.exports = function (app) {
                 results = objRes;
                 csv.separator = ",";
                 res.setHeader('Content-disposition', 'attachment; filename=exportExcel.csv');
-                res.set('Content-Type', 'text/csv; charset=utf-16le; header=present;');
+                res.set('Content-Type', '	application/vnd.ms-excel; charset=utf-16le');
                 res.csv(results);
+            }
+        })
+
+    });*/
+
+    app.get(endpoint.alunni.exportSingleExcel, middleware.isLoggedIn, function (req, res) {
+        query.getClassiComposteForExport(function (err, results) {
+            if (err) {
+                console.log(err);
+                res.send("Errore nello scaricamento del file");
+            }
+            else {
+                var objRes = JSON.stringify(results);
+                var objRes = JSON.parse(objRes);
+                var count = 1;
+                var classe = "";
+                var intestazione = [];
+                var configuration = {};
+                configuration.cols = [];
+                configuration.rows = [];
+
+                for (var o in objRes[0]){
+                    intestazione.push(o);
+                }
+
+                intestazione.push("posizione_in_classe");
+
+                for (var i in intestazione){
+                    if (intestazione[i] == "voto" || intestazione[i] == "matricola" ||
+                        intestazione[i] == "posizione_in_classe" || intestazione[i] == "CAP"){
+                        configuration.cols.push({caption: intestazione[i], type:'number'});
+                    } else{
+                        configuration.cols.push({caption: intestazione[i], type:'string', width:255});
+                    }
+
+                }
+
+                for (var o in objRes){
+                    if(classe === objRes[o].classe_futura){
+                        count ++;
+                    } else{
+                        count = 1;
+                        classe = objRes[o].classe_futura;
+                    }
+                    objRes[o]["posizione_in_classe"] = count;
+                }
+
+                for (var k in objRes){
+                    configuration.rows.push([]);
+                    for (var i in objRes[k]){
+                        if (intestazione[i] == "voto" || intestazione[i] == "matricola" ||
+                            intestazione[i] == "posizione_in_classe" || intestazione[i] == "CAP"){
+                            configuration.rows[configuration.rows.length - 1].push(objRes[k][i]);
+                        } else{
+                            configuration.rows[configuration.rows.length - 1].push("" + objRes[k][i]);
+                        }
+                    }
+                }
+
+                var result=nodeExcel.execute(configuration);
+                res.setHeader('Content-Type','application/vnd.openxmlformates');
+                res.setHeader("Content-Disposition","attachment;filename="+"exportExcel.xlsx");
+                res.end(result,'binary');
             }
         })
 
