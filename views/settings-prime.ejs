@@ -435,7 +435,7 @@
             var header = $('<div/>')
                     .addClass('header')
                     .html('<a style="font-size: 16px;" onclick="createModal(' + index + ',' + listaSettings[index].id + ')">' + listaSettings[index].nome + '</a>' +
-                        '<i class="remove red icon" style="position: absolute; right: 3px;" onclick="deleteConfiguration('+ listaSettings[index].id +')"></i>')
+                        '<i class="remove red icon" style="position: absolute; right: 3px; cursor:pointer" onclick="deleteConfiguration('+ listaSettings[index].id +')"></i>')
                     .appendTo(content);
 
             var meta = $('<div/>')
