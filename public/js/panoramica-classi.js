@@ -1455,7 +1455,7 @@ function history() {
                         '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
                         '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                         '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                        '<td>' + 'root' + '</td> ';
+                        '<td>' + data[history].username + '</td> ';
 
                     tr.html(th);
                     buttonRevertForHistory($(tr));
@@ -1473,7 +1473,7 @@ function history() {
                             '<td cf=' + data[history].cf + ' id=' + data[history].id + '>' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                            '<td>' + 'root' + '</td> ';//todo
+                            '<td>' +data[history].username + '</td> ';
                         tr.html(th);
                         buttonRevertForHistory($(tr));
                         tbody.append(tr).appendTo(table);
@@ -1512,7 +1512,7 @@ function history() {
                             '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
                             '<td id="cp">' + data[history].classe_precedente + '</td> ' +
                             '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                            '<td>' + data[history].id_utente + '</td> ';
+                            '<td>' + data[history].username + '</td> ';
 
                         tr.html(th);
                         buttonRevertForHistory($(tr));

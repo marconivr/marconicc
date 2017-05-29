@@ -238,11 +238,12 @@ module.exports = {
 
     getHistory: function (scuola, callback) {
         var query = connection.query(
-            "SELECT timestamp, alunni.cf as cf,history.id as id, classe_uno.nome as classe_precedente,classe_due.nome as classe_successiva FROM history" +
+            "SELECT timestamp, alunni.cf as cf,history.id as id, classe_uno.nome as classe_precedente,classe_due.nome as classe_successiva, utenti.username  FROM history" +
             " INNER JOIN scuole ON history.scuola = scuole.id" +
             " INNER JOIN  classi AS classe_uno on classe_uno.id = classe_precedente" +
             " INNER JOIN classi AS classe_due  on classe_due.id = classe_successiva" +
             " INNER JOIN alunni ON alunni.id = alunno" +
+            " INNER JOIN utenti on utenti.id = history.utente"+
             " ORDER BY timestamp DESC",
             function (err, rows) {
                 callback(err, rows);
