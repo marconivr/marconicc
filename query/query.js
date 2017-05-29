@@ -182,7 +182,7 @@ module.exports = {
                 });
             }],
             function (succes) {
-                return succes;
+                callback(succes);
             });
     },
 
