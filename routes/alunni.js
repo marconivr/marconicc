@@ -562,6 +562,8 @@ module.exports = function (app) {
                 res.send("Errore nello scaricamento del file");
             }
             else {
+                var d = new Date();
+                var data = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
                 var objRes = JSON.stringify(results);
                 var objRes = JSON.parse(objRes);
                 var intestazione = [];
@@ -583,7 +585,7 @@ module.exports = function (app) {
                 objRes.splice(0, 0, intestazione);
                 results = objRes;
                 csv.separator = ";";
-                res.setHeader('Content-disposition', 'attachment; filename=exportCsv.csv');
+                res.setHeader('Content-disposition', 'attachment; filename=classi_' + data + '.csv');
                 res.set('Content-Type', 'text/csv');
                 res.csv(results);
             }
@@ -598,6 +600,9 @@ module.exports = function (app) {
                 res.send("Errore nello scaricamento del file");
             }
             else {
+                var d = new Date();
+                var data = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear();
+                console.log(data);
                 var objRes = JSON.stringify(results);
                 var objRes = JSON.parse(objRes);
                 var count = 1;
@@ -647,7 +652,7 @@ module.exports = function (app) {
 
                 var result=nodeExcel.execute(configuration);
                 res.setHeader('Content-Type','application/vnd.openxmlformates');
-                res.setHeader("Content-Disposition","attachment;filename="+"exportExcel.xlsx");
+                res.setHeader("Content-Disposition","attachment;filename=classi_" + data + ".xlsx");
                 res.end(result,'binary');
             }
         })
