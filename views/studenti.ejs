@@ -109,7 +109,7 @@
                         <td>
                             <h4 class="ui image header">
                                 <div class="content">
-                                    <b>Media voti </b>
+                                    <b>Voto </b>
                                 </div>
                             </h4>
                         </td>
@@ -121,13 +121,13 @@
                         <td>
                             <h4 class="ui image header">
                                 <div class="content">
-                                    <b>Codice catastale </b>
+                                    <b>Cap </b>
 
                                 </div>
                             </h4>
                         </td>
                         <td>
-                            <span id="codice-catastale"></span>
+                            <span id="cap"></span>
                         </td>
                     </tr>
                     <tr>
@@ -395,7 +395,7 @@
                 var ret = jQuery.parseJSON(data);
                 $('#cognome').text(ret[0].cognome);
                 $('#nome').text(ret[0].nome);
-                $('#codice-catastale').text(ret[0].cod_cat);
+                $('#cap').text(ret[0].cap);
                 $('#media-voti').text(ret[0].voto);
                 $('#anno-scolastico').text(ret[0].anno_scolastico);
                 $('#cf').text(ret[0].cf);
