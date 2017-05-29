@@ -658,12 +658,13 @@ module.exports = function (app) {
 
         const id = req.body.id;
 
-        query.deleteConfiguration(id, function (err) {
+        query.deleteConfiguration(id, function (err,ris) {
             if(err){
                 res.send({
                     "error": err
                 });
-
+            }else{
+                res.send("no-error")
             }
         });
     });

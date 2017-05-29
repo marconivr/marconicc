@@ -196,7 +196,7 @@ module.exports = {
 
     },
 
-    deleteConfiguration: function (id) {
+    deleteConfiguration: function (id, callback) {
         async.waterfall([
             function (callback) {
                 connection.query("DELETE FROM configurazione WHERE id = ?;",[id], function (err, row) {
@@ -209,8 +209,8 @@ module.exports = {
                     else {callback("Success")}
                 });
             }],
-            function (succes) {
-                return succes;
+            function (ris) {
+                callback(ris)
             });
     },
 
