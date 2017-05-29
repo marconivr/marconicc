@@ -62,20 +62,25 @@
 <!--tags and insert-->
 <div class="ui bottom attached tab segment" data-tab="tags">
     <div class="ui raised very padded text container segment">
+        <div class="ui equal width center aligned padded grid">
         <h1 class="ui header">
             Inserimento tag
             <div class="sub header">Ricerca studente</div>
         </h1>
         <!--search-->
-        <div class="ui category search">
-            <div class="ui icon input">
-                <input class="prompt" type="text" placeholder="Scrivi il nome...">
-                <i class="search icon"></i>
+            <div class="row">
+                <div class="column">
+                    <div class="ui category search">
+                        <div class="ui icon input">
+                            <input class="prompt" type="text" placeholder="Scrivi il nome...">
+                            <i class="search icon"></i>
+                        </div>
+                        <div class="results"></div>
+                    </div>
             </div>
-            <div class="results"></div>
         </div>
     </div>
-
+    </div>
 
     <!--modal response -->
     <div class="ui modal">
@@ -284,7 +289,7 @@
                 }
 
                 table.buttons().container()
-                    .appendTo($('div.eight.column:eq(0)', table.table().container()));
+                        .appendTo($('div.eight.column:eq(0)', table.table().container()));
                 $('.sixteen').removeClass().addClass('tableContainer');
                 $('.tableContainer').show();
                 $('#table-loader').removeClass('active').addClass('disabled');
@@ -334,46 +339,46 @@
     ///////////////////////////////////////////////////////////////////this section is execute when user type in the search field//////////////////////////////////////////////////////////////////
 
     $('.ui.search')
-        .search({
-            apiSettings: {
-                url: '<%= endpoint.alunni.allStudents %>?q={query}&annoScolastico={annoScolastico}&classeFutura={classeFutura}',
-                beforeSend: function(settings) {
-                    settings.urlData.annoScolastico = ANNO_SCOLASTICO;
-                    settings.urlData.classeFutura = CLASSE_FUTURA;
-                    return settings;
+            .search({
+                apiSettings: {
+                    url: '<%= endpoint.alunni.allStudents %>?q={query}&annoScolastico={annoScolastico}&classeFutura={classeFutura}',
+                    beforeSend: function (settings) {
+                        settings.urlData.annoScolastico = ANNO_SCOLASTICO;
+                        settings.urlData.classeFutura = CLASSE_FUTURA;
+                        return settings;
+                    }
                 }
-            }
 
-            ,
-            searchFullText: false,
-            silent: true,
+                ,
+                searchFullText: false,
+                silent: true,
 
-            onResults: function (response) {
+                onResults: function (response) {
 
-                var html = '';
-                if (response.length != 0) {
-                    $.each(response, function (index, result) {
+                    var html = '';
+                    if (response.length != 0) {
+                        $.each(response, function (index, result) {
 
-                        html += '<a onclick="setCardStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
-                        html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
-                        html += '<i> Media voti: ' + result.voto + '</i>';
+                            html += '<a onclick="setCardStudentData(this.id)" id="' + result.cf + '" class="result"><div class="content">';
+                            html += '<div class="title"><b>' + result.cognome + '</b> ' + result.nome + '</div>';
+                            html += '<i> Media voti: ' + result.voto + '</i>';
 
-                        html += '' + '</div></a>';
-                        return index < 6;
+                            html += '' + '</div></a>';
+                            return index < 6;
 
-                    });
+                        });
+                        $('.ui.search div.results').html(html);
+                    }
+                    else {
+                        html += '<div class="content">' +
+                                '<div class="title">' +
+                                '<b> Nessun risultato, riprovare con un altro nome' + '' +
+                                '</div></div>';
+                    }
                     $('.ui.search div.results').html(html);
+                    return false;
                 }
-                else {
-                    html += '<div class="content">' +
-                        '<div class="title">' +
-                        '<b> Nessun risultato, riprovare con un altro nome' + '' +
-                        '</div></div>';
-                }
-                $('.ui.search div.results').html(html);
-                return false;
-            }
-        })
+            })
     ;
 
 
