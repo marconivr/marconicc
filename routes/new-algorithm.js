@@ -92,12 +92,12 @@ module.exports = {
                                         });
                                     },
                                     function (callback) {
-                                        if (settings !== undefined) {
-                                            var ris = module.exports.generaListaClassi();
-                                            callback(ris);
-                                        } else {
-                                            callback(err);
-                                        }
+                                            if (settings !== undefined) {
+                                                var ris = module.exports.generaListaClassi();
+                                                callback(ris);
+                                            } else {
+                                                callback(err);
+                                    }
                                     }
                                 ],
                                 function (succes) {

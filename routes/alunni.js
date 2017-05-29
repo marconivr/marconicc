@@ -663,10 +663,10 @@ module.exports = function (app) {
                 res.send({
                     "error": err
                 });
-            }else{
-                res.send("no-error");
+
             }
         });
     });
+
 
 };

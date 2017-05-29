@@ -200,15 +200,17 @@ module.exports = {
         async.waterfall([
             function (callback) {
                 connection.query("DELETE FROM configurazione WHERE id = ?;",[id], function (err, row) {
-                    callback(null, err);
+                    if (err){callback(err)}
+                    else {callback("Success")}
                 })
             }, function (err, callback) {
                 connection.query("UPDATE configurazione SET attiva = 1 WHERE id = (SELECT * FROM(SELECT MAX(id) FROM configurazione)AS p);", function (err, row) {
-                    callback(null, err);
+                    if (err){callback(err)}
+                    else {callback("Success")}
                 });
             }],
             function (succes) {
-                callback(succes);
+                return succes;
             });
     },
 
