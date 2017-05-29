@@ -452,7 +452,7 @@
             type: "POST",
             url: '<%= endpoint.alunni.deleteSetting %>',
             data: {
-                format: 'json'
+                id: idToDelete
             },
             error: function (xhr, status, error) {
                 alertify.error("Opps, ci deve essere stato un problema");
