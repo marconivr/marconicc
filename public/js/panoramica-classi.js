@@ -1707,7 +1707,7 @@ function generatePage(data) {
                 //tooltip for handicap
                 var handicapTooltip = "";
                 if ((arrayStudenti[j])['legge_' + tooltipValue] !== undefined) {
-                    handicapTooltip = '<br>' + tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
+                    handicapTooltip =  tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
                 }
 
                 var tooltip = $('<span/>')

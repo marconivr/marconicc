@@ -418,7 +418,7 @@
 
     function createListOfSettings(listaSettings) {
         $('#row-for-insert-date').children().remove();
-        settings = listaSettings;//use when createModal() is call
+        settings = listaSettings;//use when createModa  l() is call
 
         for (var index = 0; index < listaSettings.length; index++) {
             var item = $('<div/>')
@@ -434,7 +434,8 @@
 
             var header = $('<div/>')
                     .addClass('header')
-                    .html('<a style="font-size: 16px;" onclick="createModal(' + index + ',' + listaSettings[index].id + ')">' + listaSettings[index].nome + '</a>')
+                    .html('<a style="font-size: 16px;" onclick="createModal(' + index + ',' + listaSettings[index].id + ')">' + listaSettings[index].nome + '</a>' +
+                        '<i class="remove red icon" style="position: absolute; right: 3px;" onclick="deleteConfiguration('+ listaSettings[index].id +')"></i>')
                     .appendTo(content);
 
             var meta = $('<div/>')
@@ -444,6 +445,32 @@
             global_index += 1;
         }
         $('#loader').removeClass('active').addClass('disabled');
+    }
+
+    function deleteConfiguration(idToDelete) {
+        $.ajax({
+            type: "POST",
+            url: '<%= endpoint.alunni.deleteSetting %>',
+            data: {
+                format: 'json'
+            },
+            error: function (xhr, status, error) {
+                alertify.error("Opps, ci deve essere stato un problema");
+                console.log(error)
+            },
+            dataType: 'json',
+            success: function (response) {
+                if(response.error)
+                {
+                    alertify.error("Opps, ci deve essere stato un problema");
+                }
+                else{
+                    alertify.success("Configurazione eliminata correttamente");
+                    downloadSettings();
+                }
+            }
+
+        });
     }
 
     document.getElementById("sendButton").setAttribute("class", "ui basic disabled button")
