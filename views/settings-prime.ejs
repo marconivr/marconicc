@@ -454,10 +454,6 @@
             data: {
                 id: idToDelete
             },
-            error: function (xhr, status, error) {
-                alertify.error("Opps, ci deve essere stato un problema");
-                console.log(error)
-            },
             dataType: 'json',
             success: function (response) {
                 if(response.error)
@@ -468,8 +464,11 @@
                     alertify.success("Configurazione eliminata correttamente");
                     downloadSettings();
                 }
-            }
-
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+                alertify.error("Opps, ci deve essere stato un problema");
+            },
         });
     }
 
