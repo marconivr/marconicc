@@ -80,6 +80,7 @@
             topScrollBar.width(self.element[0].clientWidth);
         }
     });
-})(jQuery);/**
+})(jQuery);
+/**
  * Created by mattiacorradi on 27/02/2017.
  */

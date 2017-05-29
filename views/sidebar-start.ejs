@@ -1,22 +1,43 @@
 <!--menu-->
 <!--diritto 0 -> tutto-->
-<!--diritto 1 -> tutto tranne creare utenti-->
-<!--diritto 2 -> panoramica classi elenco studenti e export-->
+<!--diritto 1 modifica -> tutto tranne creare utenti-->
+<!--diritto 2 visualizza -> puo panoramica classi(no spostamenti) elenco studenti(no tag) e export, no creare utenti-->
 <div class="ui inverted left vertical sidebar menu" id="left-menu">
 
-    <a class="item" href="/insert-from-csv">Caricamento studenti</a>
-    <a class="item" href="/studenti">Elenco Studenti</a>
-    <a class="item" href="/settings">Configurazione</a>
-    <a class="item" href="/panoramica-classi">Panoramica classi</a>
-    <a class="item" href="/crea-utente">Crea un utente</a>
+
+    <%if (user.diritti ==  0) { %>
+    <a class="item" href="<%= endpoint.alunni.uploadAlunniCsv %>">Caricamento studenti</a>
+    <a class="item" href="<%= endpoint.alunni.studenti%>">Elenco Studenti</a>
+    <a class="item" href="<%= endpoint.alunni.settings%>">Configurazione</a>
+    <a class="item" href="<%= endpoint.alunni.panoramicaClassi%>">Panoramica classi</a>
+    <a class="item" href="<%= endpoint.utenti.creaUtente%>">Crea un utente</a>
     <br>
-    <a class="item" href="/logout">Esci</a>
+    <a class="item" href="<%= endpoint.utenti.logout%>">Disconnetti <%=user.username%></a>
+    <% } %>
+
+    <%if (user.diritti == 1) { %>
+    <a class="item" href="<%= endpoint.alunni.uploadAlunniCsv %>">Caricamento studenti</a>
+    <a class="item" href="<%= endpoint.alunni.studenti%>">Elenco Studenti</a>
+    <a class="item" href="<%= endpoint.alunni.settings%>">Configurazione</a>
+    <a class="item" href="<%= endpoint.alunni.panoramicaClassi%>">Panoramica classi</a>
+    <br>
+    <a class="item" href="<%= endpoint.utenti.logout%>">Disconnetti <%=user.username%></a>
+    <% } %>
 
 
+    <%if (user.diritti == 2) { %>
+    <a class="item" href="<%= endpoint.alunni.uploadAlunniCsv %>">Caricamento studenti</a>
+    <a class="item" href="<%= endpoint.alunni.studenti%>">Elenco Studenti</a>
+    <a class="item" href="<%= endpoint.alunni.settings%>">Configurazione</a>
+    <a class="item" href="<%= endpoint.alunni.panoramicaClassi%>">Panoramica classi</a>
+    <br>
+    <a class="item" href="<%= endpoint.utenti.logout%>">Disconnetti <%=user.username%></a>
+    <% } %>
 </div>
 
 <!--site content-->
 <div class="pusher">
 
     <div class="ui sticky menu fixed top" id="top-menu" style="top:0px!important;">
-        <a class="item mobile-button">Menu</a>
+        <a class="item mobile-button"> <i class="list layout icon"></i>Menu</a>
+
