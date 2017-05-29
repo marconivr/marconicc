@@ -378,22 +378,7 @@
                         "naz_per_classe": naz_per_classe,
                         "max_al_104": max_al_104
                     });
-                    var item = $('<div/>')
-                            .addClass('item')
-                            .appendTo($('#row-for-insert-date'));
-                    var content = $('<div/>')
-                            .addClass('content')
-                            .appendTo(item);
-
-                    var header = $('<div/>')
-                            .addClass('header')
-                            .html('<a onclick="createModal(\'' + global_index + '\')">' + settings[global_index].descrizione + '</a>')
-                            .appendTo(content);
-
-                    var meta = $('<div/>')
-                            .addClass('meta')
-                            .html('<i class="wait icon"></i> ' + settings[global_index].data + '<hr>')
-                            .appendTo(content);
+                    downloadSettings();
                     global_index += 1;
 
 
@@ -432,6 +417,7 @@
     }
 
     function createListOfSettings(listaSettings) {
+        $('#row-for-insert-date').children().remove();
         settings = listaSettings;//use when createModal() is call
 
         for (var index = 0; index < listaSettings.length; index++) {
