@@ -30,7 +30,6 @@ module.exports = {
         scuola = s;
         classeFutura = c;
         module.exports.inizializzaSettings(annoScolastico, scuola, classeFutura);
-
         query.getStudentiOfschool(scuola, annoScolastico, classeFutura, function (err, results) {
             if (err)
                 console.log(err);
@@ -59,13 +58,16 @@ module.exports = {
                                         callback();
                                     },
                                     function(callback){
-                                        if(vecchiaConf != settings.id){
-                                            query.cleanClassi(scuola, annoScolastico, function (err) {
-                                                if (err) {
-                                                    console.log(err);
-                                                }
-                                            });
+                                        if (settings !== undefined){
+                                            if(vecchiaConf != settings.id){
+                                                query.cleanClassi(scuola, annoScolastico, function (err) {
+                                                    if (err) {
+                                                        console.log(err);
+                                                    }
+                                                });
+                                            }
                                         }
+
                                         callback();
                                     },
                                     function (callback) {
