@@ -118,32 +118,6 @@ module.exports = {
         });
     },
 
-    cleanClassi: function (scuola, annoScolastico, callback) {
-        async.waterfall([
-            function(callback){
-                connection.query("delete from classi_composte WHERE classi_composte.classe IN " +
-                    "(SELECT c.id FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?)", [annoScolastico, scuola], function (err, row) {
-                    if (err){
-                        console.error(err);
-                    }
-                });
-                callback();
-            },
-            function(callback){
-                connection.query("delete FROM classi WHERE anno_scolastico = ? AND scuola = ?", [annoScolastico, scuola], function (err, row) {
-                    if (err){
-                        console.error(err);
-                    }
-                });
-                callback();
-            }
-            ],
-            function (succes) {
-
-            });
-
-    },
-
 
     /**
      *
@@ -195,6 +169,42 @@ module.exports = {
         });
 
     },
+
+    deleteConfiguration: function (id) {
+        async.waterfall([
+            function (callback) {
+                connection.query("DELETE FROM configurazione WHERE id = ?;",[id], function (err, row) {
+                    if(err){
+                        callback(null, err);
+                    } else{
+                        callback(null, null);
+                    }
+                })
+            }, function (err, callback) {
+                connection.query("UPDATE configurazione SET attiva = 1 WHERE id = (SELECT * FROM(SELECT MAX(id) FROM configurazione)AS p);", function (err, row) {
+                    if(err){
+                        callback(null, err);
+                    } else{
+                        callback(null, null);
+                    }
+                });
+            }],
+            function (succes) {
+                callback(succes);
+            });
+    },
+
+    /**
+     *
+     * @param cf
+     * @param nomeNuovaClasse
+     * @param nomeVecchiaClasse
+     * @param idUtente
+     * @param annoScolastico
+     * @param scuola
+     * @param classeFutura
+     * @param callback
+     */
 
     insertHistory: function (cf, nomeNuovaClasse, nomeVecchiaClasse, idUtente, annoScolastico, scuola, classeFutura, callback) {
 
@@ -628,6 +638,8 @@ module.exports = {
             callback(err, rows);
         });
     }
+
+
 
 
 };

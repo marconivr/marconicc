@@ -347,7 +347,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.post(endpoint.alunni.setActiveConfiguration, function (req, res) {
+    app.post(endpoint.alunni.setActiveConfiguration, middleware.restrictTo([0, 1]), function (req, res) {
         const scuola = req.user.id_scuola;
         query.setActiveConfiguration(scuola, "PRIMA", req.body.id, function (err, results) {
             if (err)
@@ -591,42 +591,6 @@ module.exports = function (app) {
 
     });
 
-    /*app.get(endpoint.alunni.exportSingleExcel, middleware.isLoggedIn, function (req, res) {
-        query.getClassiComposteForExport(function (err, results) {
-            if (err) {
-                console.log(err);
-                res.send("Errore nello scaricamento del file");
-            }
-            else {
-                var objRes = JSON.stringify(results);
-                var objRes = JSON.parse(objRes);
-                var intestazione = [];
-                for (var o in objRes[0]){
-                    intestazione.push(o);
-                }
-                intestazione.push("posizione_in_classe");
-                var count = 1;
-                var classe = ""
-                for (var o in objRes){
-                    if(classe === objRes[o].classe_futura){
-                        count ++;
-                    } else{
-                        count = 1;
-                        classe = objRes[o].classe_futura;
-                    }
-                    objRes[o]["posizione_in_classe"] = count;
-                }
-                objRes.splice(0, 0, intestazione);
-                results = objRes;
-                csv.separator = ",";
-                res.setHeader('Content-disposition', 'attachment; filename=exportExcel.csv');
-                res.set('Content-Type', '	application/vnd.ms-excel; charset=utf-16le');
-                res.csv(results);
-            }
-        })
-
-    });*/
-
     app.get(endpoint.alunni.exportSingleExcel, middleware.isLoggedIn, function (req, res) {
         query.getClassiComposteForExport(function (err, results) {
             if (err) {
@@ -688,6 +652,21 @@ module.exports = function (app) {
             }
         })
 
+    });
+
+    app.post(endpoint.alunni.deleteSetting, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
+
+        const id = req.body.id;
+
+        query.deleteConfiguration(id, function (err) {
+            if(err){
+                res.send({
+                    "error": err
+                });
+            }else{
+                res.send("no-error");
+            }
+        });
     });
 
 };
