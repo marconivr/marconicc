@@ -664,7 +664,7 @@ module.exports = function (app) {
                     "error": err
                 });
             } else{
-                res.send({"no-error": "Success"});
+                res.send("no-error");
             }
         });
     });
