@@ -1548,7 +1548,7 @@ function generatePage(data) {
         alertify.error('Errore di scaricamento dei dati.\nControlla di aver creato la configurazione');
         setTimeout(function () {
             window.location.href = '/settings-prime';
-        }, 3000);
+        }, 2500);
     }
 
     dirittiUtente = data.dirittiUtente;

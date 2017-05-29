@@ -25,7 +25,7 @@ module.exports = function (app) {
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
         //hideDropDown if true -> dropdown not show
         res.render('insert-from-csv.ejs', {
-            pageTitle: " main ",
+            pageTitle: " Inserisci alunni ",
             hideDropDown: true
         });
     });
