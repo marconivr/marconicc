@@ -5,7 +5,7 @@
 <% include finish-menu.ejs %>
 <!--inserisci studenti-->
 <div class="ui raised very padded text container segment">
-    <h2 class="ui header">Inserisci studenti da un csv</h2>
+    <h2 class="ui header">Studenti</h2>
 
     <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniCsv %>">
         <button class="ui basic button" id="upload">
@@ -23,7 +23,7 @@
 
 <!--inserimento ripetenti-->
 <div class="ui raised very padded text container segment">
-    <h2 class="ui header">Inserisci studenti rimandati a settembre</h2>
+    <h2 class="ui header">Studenti che verranno aggiunti alle classi composte</h2>
 
     <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniRimandatiSettembre %>">
         <button class="ui basic button" id="upload-ripetenti">
