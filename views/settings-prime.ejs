@@ -52,31 +52,35 @@
                     <div class="header">Statistiche Realtime</div>
                 </div>
                 <div class="content">
-                    <div class="ui one column centered grid">
-                        <div class="column">
-                            <div class="ui vertical menu">
-                                <a class="teal item">
-                                    Numero di classi
-                                    <div class="ui yellow left pointing label">
-                                        <p id="classe-realtime">0</p>
-                                    </div>
-                                </a>
-                                <a class="item">
-                                    Numero di classi con femmine
-                                    <div class="ui green left pointing label">
-                                        <p id="classi-con-femmine">0</p>
-                                    </div>
-                                </a>
+
+                    <div class="ui vertical menu large">
+                        <a class="teal item">
+                            Classi
+                            <div class="ui yellow left pointing label">
+                                <p id="classe-realtime">0</p>
                             </div>
-                        </div>
+                        </a>
+                        <a class="item">
+                            Classi con femmine
+                            <div class="ui green left pointing label">
+                                <p id="classi-con-femmine">0</p>
+                            </div>
+                        </a>
                     </div>
+
 
                 </div>
             </div>
-            <a class="ui blue tag label"> Elenco configurazioni passate</a><br>
             <div>
-                <div class="ui items medium-height" id="row-for-insert-date" style="padding-top:10px">
+                <div class="ui card">
+                    <div class="content">
+                        <div class="header">Elenco configurazioni passate</div>
+                    </div>
+                    <div class="content">
+                        <div class="ui items medium-height" id="row-for-insert-date" style="padding-top:10px"></div>
+                    </div>
                 </div>
+
             </div>
         </div>
         <div class="ten wide column">
@@ -174,38 +178,31 @@
                     <div class="header">Dati Studenti</div>
                 </div>
                 <div class="content">
-                    <div class="ui one column centered grid">
-                        <div class="column">
-                            <div class="ui vertical menu">
-                                <a class="teal item">
-                                    Studenti
-                                    <div class="ui yellow left pointing label" id="alunni-in-classe-prima">
-                                        <%= studentiPrima[0].result %>
-                                    </div>
-                                </a>
-                                <a class="item">
-                                    Femmine
-                                    <div class="ui green left pointing label" id="femmine-in-classe-prima">
-                                        <%= femminePrima[0].result %>
-                                    </div>
-                                </a>
-                                <a class="item">
-                                    Media voti
-                                    <div class="ui blue left pointing label">
-                                        <%= mediaPrima[0].result %>
-                                    </div>
-                                </a>
-                                <a class="item">
-                                    Stranieri
-                                    <div class="ui teal left pointing label">
-                                        <%= stranieriPrima[0].result %>
-                                    </div>
-                                </a>
+                    <div class="ui vertical menu large">
+                        <a class="teal item">
+                            Studenti
+                            <div class="ui yellow left pointing label" id="alunni-in-classe-prima">
+                                <%= studentiPrima[0].result %>
                             </div>
-
-
-                        </div>
-
+                        </a>
+                        <a class="item">
+                            Femmine
+                            <div class="ui green left pointing label" id="femmine-in-classe-prima">
+                                <%= femminePrima[0].result %>
+                            </div>
+                        </a>
+                        <a class="item">
+                            Media voti
+                            <div class="ui blue left pointing label">
+                                <%= mediaPrima[0].result %>
+                            </div>
+                        </a>
+                        <a class="item">
+                            Stranieri
+                            <div class="ui teal left pointing label">
+                                <%= stranieriPrima[0].result %>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
