@@ -172,7 +172,8 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.settings, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
         res.render('settings.ejs', {
-            pageTitle: "Settings   "
+            pageTitle: "Settings ",
+            hideDropDown: true
         })
     });
 
