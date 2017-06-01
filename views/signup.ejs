@@ -1,41 +1,38 @@
 <% include header %>
 <body class="signupBackground">
+<div class="container-signup">
 <div class="ui middle aligned center aligned grid ">
-	<div class="columnLogSign">
-		<!-- show any messages that come back with authentication -->
+	<div class="opacity" data-use-content="true">
 
-		<form class="ui large form" action="<%= endpoint.utenti.signup%>" method="post" >
-			<div class="ui stacked segment">
-				<h2 class="ui teal image header">
-					<div class="content">
-						Signup
-					</div>
-				</h2>
-				<div class="field" id="field_user">
-					<div class="ui left icon input">
-						<i class="user icon"></i>
-						<input type="text" name="username" placeholder="username">
-					</div>
+		<div class="ui equal width form">
+			<div class="fields">
+				<div class="field">
+					<label>Username</label>
+					<input type="text" placeholder="Username">
 				</div>
-				<div class="field" id="field_password">
-					<div class="ui left icon input">
-						<i class="lock icon"></i>
-						<input type="password" name="password" placeholder="Password">
-					</div>
+				<div class="field">
+					<label class="white">Password</label>
+					<input type="password">
 				</div>
-
-				<button class="ui fluid large teal submit button" type="submit">Signup</button>
 			</div>
-		</form>
-
-		<div class="ui message">
-			Already have an account? <a href="<%= endpoint.utenti.login%>">Login</a>
+			<div class="fields">
+				<div class="field">
+					<label>First name</label>
+					<input type="text" placeholder="First Name">
+				</div>
+				<div class="field">
+					<label>Middle name</label>
+					<input type="text" placeholder="Middle Name">
+				</div>
+				<div class="field">
+					<label>Last name</label>
+					<input type="text" placeholder="Last Name">
+				</div>
+			</div>
 		</div>
-
-        <% if (message.length > 0) { %>
-		<div class="ui negative message visible" id="negative"><%= message %></div>
-        <% } %>
 	</div>
+
+</div>
 </div>
 
 </body>
