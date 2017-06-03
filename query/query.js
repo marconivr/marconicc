@@ -466,6 +466,14 @@ module.exports = {
         });
     },
 
+    getNumberCentoQuattro: function (classeFutura, scuola, annoScolastico, callback) {
+        connection.query("SELECT  DISTINCT count(legge_104)  as result from alunni WHERE classe_futura = ? AND SCUOLA = ? and anno_scolastico = ? and legge_104 <> ''",
+            [classeFutura, scuola, annoScolastico], function (err, rows) {
+                callback(err, rows);
+
+            });
+    },
+
     getNumberSameResidence: function (callback, classe, cap, catasto) {
         var qry = "SELECT count(*) residences from alunni WHERE classe_futura = '" + classe + "' AND cap_provenienza = " + cap;
 

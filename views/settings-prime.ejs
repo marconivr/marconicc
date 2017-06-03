@@ -203,6 +203,12 @@
                                 <%= stranieriPrima[0].result %>
                             </div>
                         </a>
+                        <a class="item">
+                            104
+                            <div class="ui red left pointing label" id="cento-quattro">
+                                <%= centoQuattro[0].result %>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -285,15 +291,6 @@
             $('#modal-header').text(settings[index].nome);
             $('#modal-date').text(settings[index].data);
 
-
-//        for (setting in settings[index]) {
-//            if((setting != "data") || (setting != "id") || (setting != "attiva"))
-//            {
-//                tableLine += '<td class="center aligned">' + settings[index][setting] + "</td>";
-//            }
-//
-//        }
-
             tableLine += '<td class="center aligned">' + settings[index].nome + "</td>";
             tableLine += '<td class="center aligned">' + settings[index].min_alunni + "</td>";
             tableLine += '<td class="center aligned">' + settings[index].max_alunni + "</td>";
@@ -339,14 +336,23 @@
 
         //this function set the number of student for class
         function setDataRealtimeNumberOfStudents() {
-            var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML;
+            var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML.trim();
             var alunniMin = $("#alunni-min").val();
+            var totalOfCentoQuattro = $('#cento-quattro').text().trim();
+            var max_al_104 = $('#max_al_104').val();
 
             if (alunniMin == "") {
                 $("#classe-realtime").html("0");
             }
             else {
+                //controllo se ci sono gia i 104
+                if (max_al_104 != "") {
+                    //TODO: CALCOLARE LE CLASSI CORRETTAMENTE
+                    //$("#classe-realtime").html(Math.floor((alunniTot- (max_al_104*totalOfCentoQuattro)) / ( alunniMin)) + totalOfCentoQuattro );
+                }
+                else {
                 $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
+                }
             }
         }
 

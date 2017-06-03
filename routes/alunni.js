@@ -248,6 +248,12 @@ module.exports = function (app) {
                     else
                         callback(null, {'stranieri': results})
                 });
+            },
+            centoQuattroPrima: function (callback) {
+                var annoScolastico = "2017-2018";
+                query.getNumberCentoQuattro("PRIMA", req.user.id_scuola, annoScolastico, function (err, results) {
+                    callback(err, {'centoQuattro': results})
+                });
             }
         }, function (err, results) {
             res.render('settings-prime.ejs', {
@@ -257,6 +263,7 @@ module.exports = function (app) {
                 femminePrima: results.femminePrima.femmine,
                 mediaPrima: results.mediaPrima.media,
                 stranieriPrima: results.stranieriPrima.stranieri,
+                centoQuattro: results.centoQuattroPrima.centoQuattro,
                 hideDropDown: true
             });
 

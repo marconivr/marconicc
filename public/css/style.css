@@ -41,6 +41,11 @@
     table-layout: fixed;
 }
 
+.columnLogSign {
+    max-width: 19%;
+    min-width: 19%;
+    padding-top: 12%;
+}
 .roboto {
     font-family: Roboto, sans-serif !important;
     font-size: 0.7em;
