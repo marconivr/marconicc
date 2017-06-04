@@ -222,7 +222,7 @@ var debug = true;
 //         alunni = _.union(alunni, array_gruppi_femmine[i]);
 //         listaClassi[i].alunni = alunni;
 //         for (var i in alunni){
-//             var amico = checkDesiderata(alunni[i]);
+//             var amico = checkDesideta(alunni[i]);
 //             if(amico !== null){
 //                 listaClassi[i].alunni.push(amico);
 //                 _.remove(femmine, function(obj) {

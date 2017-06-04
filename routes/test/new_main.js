@@ -1,7 +1,7 @@
 /**
  * Created by mattiacorradi on 26/05/2017.
  */
-
+"use strict";
 
 const _ = require("lodash");
 const data = require("./data");
@@ -9,6 +9,8 @@ const data = require("./data");
 const settings = data.settings;
 const alunni = data.alunni;
 const classi = data.classi;
+
+const colors = require('colors').enabled = true;
 
 
 
@@ -32,11 +34,11 @@ let femmine = _.filter(alunni, function (item) {
 });
 
 
-let bocciati = _.groupBy(alunni, function (item) {
+let bocciati = _.omit(_.groupBy(alunni, function (item) {
     if(item.classe_precedente !== ""){
         return item.classe_precedente;
     }
-});
+}),[undefined]); //uso l'omit per rimuovere la proprietà undefined che racchiude tutti gli studenti non bocciati
 
 let n_107 = legge_107.length;
 
@@ -127,17 +129,23 @@ class Classe {
         this.proprietaIdeali = proprietaIdeali;
     }
 
-    setAlunno(alunno){
-        this.push(alunno);
-        this.proprietaAttuali = this.generaProprieta();
+    setAlunno(alunno, param){
 
-        let ris = this.checkAlunno();
+        if(this.push(alunno)){
+            this.proprietaAttuali = this.generaProprieta();
 
-        if (Classe.checkValidazione(ris)){
-            this.alunni.pop();
+            let ris = this.checkAlunno(param);
+
+            if (Classe.checkValidazione(ris)){
+                this.alunni.pop();
+            }
+            return ris;
+        }else{
+            return null;
         }
-        return ris;
+
      }
+
 
      push(alunno){
         if(this.alunni.indexOf(alunno) === -1 ){
@@ -147,11 +155,6 @@ class Classe {
             return false;
         }
 
-    }
-
-    setBocciato(alunno){
-        this.alunni.push(alunno);
-        this.proprietaAttuali = this.generaProprieta();
     }
 
     static checkValidazione(ris){
@@ -166,7 +169,8 @@ class Classe {
         return false;
     }
 
-    checkAlunno(){
+    checkAlunno(param){
+
         let ris = {};
 
         ris.limitiAlunni = !this.limitiAlunni();
@@ -175,7 +179,7 @@ class Classe {
 
         ris.femmine = !this.femmine();
 
-        ris.nazionalita = !this.nazionalita();
+        ris.nazionalita = !this.nazionalita(param);
 
         ris.cap = !this.cap;
 
@@ -208,16 +212,19 @@ class Classe {
         return true;
     }
 
-    nazionalita(){
+    nazionalita(param){
         let n_naz = Object.keys(this.proprietaAttuali.nazionalita).length;
 
         if(_.has(this.proprietaAttuali.nazionalita, "ITALIANA")){
             n_naz--;
         }
 
-        if(n_naz > settings.nazionalita_per_classe){
-            return false;
+        if(param !== "rimanente"){
+            if(n_naz > settings.nazionalita_per_classe){
+                return false;
+            }
         }
+
 
         _.forEach(this.proprietaAttuali.nazionalita, function (key, value) {
             if(value > settings.gruppo_nazionalita){
@@ -305,6 +312,20 @@ class Classe {
 let propIdeali = generateProprietaIdeale(n_classi,n_104, n_107,n_femmine);
 
 
+function checkDesiderata(objStudente){
+
+    let amico = _.filter(alunni, function (obj) {
+        if (objStudente.desiderata === obj.cf){
+            return obj;
+        }
+    });
+
+    amico = amico[0];
+
+    if(amico === undefined) return null;
+
+    return amico.desiderata === objStudente.cf ? amico : null;
+}
 
 
 function inserisci104(classe){
@@ -322,12 +343,18 @@ function inserisci104(classe){
             if (alunno[0] !== undefined){
                 alunno = alunno[0]
             }else{
-                alunno = femmine[0];
+                alunno = legge_104[0];
+            }
+
+            let amico = checkDesiderata(alunno);
+
+            if(amico !== null){
+                let ris = classe.setAlunno(amico);
             }
 
             let ris = classe.setAlunno(alunno);
 
-            femmine = _.reject(legge_104, function(obj) { return obj.id === alunno.id; });
+            legge_104 = _.reject(legge_104, function(obj) { return obj.id === alunno.id; });
 
             condizione-- ;
         }
@@ -351,12 +378,19 @@ function inserisci107(classe){
             if (alunno[0] !== undefined){
                 alunno = alunno[0]
             }else{
-                alunno = femmine[0];
+                alunno = legge_107[0];
+            }
+
+            let amico = checkDesiderata(alunno);
+
+            if(amico !== null){
+                let ris = classe.setAlunno(amico);
             }
 
             let ris = classe.setAlunno(alunno);
 
-            femmine = _.reject(legge_107, function(obj) { return obj.id === alunno.id; });
+
+            legge_107 = _.reject(legge_107, function(obj) { return obj.id === alunno.id; });
 
             condizione-- ;
         }
@@ -383,13 +417,18 @@ function inserisciFemmine(classe) {
                     alunno = femmine[0];
                 }
 
-                let ris = classe.setAlunno(alunno);
+            let amico = checkDesiderata(alunno);
+
+            if(amico !== null){
+                let ris = classe.setAlunno(amico);
+            }
+
+            let ris = classe.setAlunno(alunno);
+
 
                 femmine = _.reject(femmine, function(obj) { return obj.id === alunno.id; });
 
                 condizione-- ;
-
-                break;
             }
         }
 
@@ -398,44 +437,136 @@ function inserisciFemmine(classe) {
 function inserisciBocciati(classe) {
 
     try{
-        bocciati = bocciati[classe.nome];
-        classe.bocciati = bocciati.length;
-        for (i in bocciati){
-            let ris = classe.setAlunno(bocciati[i]);
+        let bocciati_local = bocciati[classe.nome];
+        classe.bocciati = bocciati_local.length;
+        for (let i in bocciati_local){
+            let ris = classe.setAlunno(bocciati_local[i]);
         }
+        delete bocciati[classe.nome];
     }catch (e){
+        //Qui entra quando la classe non ha bocciati
     }
 
 }
 
-let classi_composte = [];
-for (var i in classi){
 
-    let classe = new Classe(classi[i].nome,propIdeali[i]);
 
-    inserisci104(classe);
-    inserisci107(classe);
-    inserisciBocciati(classe);
-    inserisciFemmine(classe);
 
-    classi_composte.push(classe);
+function debugNumeroNazPerClasse(bool, classi_composte){
+    if(bool){
+        console.log("NUMERO NAZIONALITA' PER CLASSE".black.bgBlue);
+
+        for(let i in classi_composte){
+            let naz = _.countBy(classi_composte[i].alunni,function (obj) {
+                return obj.nazionalita;
+            });
+
+            let n_naz = Object.keys(naz).length;
+
+            if(n_naz <= settings.nazionalita_per_classe){
+                console.log(`| ${classi_composte[i].nome} | ${n_naz} |`.green);
+            }else{
+                console.log(`| ${classi_composte[i].nome} | ${n_naz} |`.blue);
+            }
+        }
+        console.log("##############################".black.bgBlue);
+    }
 }
 
 
-console.log("fine");
+
+function debugInsiemiVuoti(bool) {
+    if(bool){
+
+
+        if(_.isEmpty(bocciati) && _.isEmpty(femmine) && _.isEmpty(legge_104) && _.isEmpty(legge_107)){
+            console.log("1)Sono stati inseriti correttamente. Insiemi vuoti".yellow.bold);
+        }else{
+            console.log("1)Qualuno non è stato inserito. Insiemi ancora pieni".red.underline)
+        }
+
+    }
+}
+
+
+function inserisciAlunniRimanenti(alunni, classiComposte) {
+
+    let nazionalita = _.groupBy(alunni, function (o) {
+        return o.nazionalita;
+    });
+
+    let cap = _.groupBy(alunni, function (o) {
+        return o.cap;
+    });
+
+    let voto = _.groupBy(alunni, function (o) {
+        return o.voto;
+    });
+
+    for(let naz in nazionalita){
+        if(naz !== "ITALIANA"){
+            let alunniNaz = nazionalita[naz];
+            for(let i in alunniNaz){
+                for(let j in classiComposte){
+                    let alunno = alunniNaz[i];
+                    let classe = classiComposte[i];
+
+                    let ris = classe.setAlunno(alunno, "rimanente");
+
+                    if(Classe.checkValidazione(ris)){
+                        console.log("inserito");
+                        delete  alunniNaz[i];
+                        break;
+
+                        // qui non va un cazzo todo
+                    }else{
+                        console.log("non va");
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
+    return classiComposte;
 
 
 
-//
-//     for(var i in legge_104){
-//         let ris = classe.setAlunno(alunni[i]);
-//         let output = "ok";
-//         for(let prop in ris){
-//             if (ris.hasOwnProperty(prop)) {
-//                 if(ris[prop] === true)
-//                     output = `non va bene ${prop} -->` + i;
-//             }
-//         }
-//         console.log(output);
-//     }
-// // }
+}
+
+function generaClassiComposte(classi) {
+    let classiComposte = [];
+
+
+    for(let i in classi){
+        let classe = new Classe(classi[i].nome, propIdeali[i]);
+
+        inserisci104(classe);
+        inserisci107(classe);
+        inserisciBocciati(classe);
+        inserisciFemmine(classe);
+
+        classiComposte.push(classe);
+    }
+
+    let alunniRimanenti = [];
+
+    for(let i in classiComposte){
+        let alunni = classiComposte[i].alunni;
+        alunniRimanenti = alunniRimanenti.concat(alunni);
+    }
+
+    alunniRimanenti = _.difference(alunni, alunniRimanenti);
+
+    classiComposte = inserisciAlunniRimanenti(alunniRimanenti, classiComposte);
+
+    return classiComposte;
+}
+
+let ris = generaClassiComposte(classi);
+
+
+debugInsiemiVuoti(true);
+debugNumeroNazPerClasse(true, ris);
