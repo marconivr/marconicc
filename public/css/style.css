@@ -173,7 +173,7 @@ body::-webkit-scrollbar-thumb {
     outline: 1px solid #424242;
 }
 
- body > .grid {
+body > .grid {
     height: 100%;
 }
 .girl{
@@ -254,25 +254,4 @@ body::-webkit-scrollbar-thumb {
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
-}
-
-/*signupage*/
-.container-signup{
-    padding-top: 15%;
-}
-.opacity{
-    color: white;
-    border-radius: 2%;
-    background: rgba(255, 255, 255, 0.3)!important;
-    -ms-word-break: break-all;
-    word-break: break-all;
-    word-break: break-word;
-    -webkit-hyphens: auto;
-    -moz-hyphens: auto;
-    -ms-hyphens: auto;
-    hyphens: auto;
-    padding-left: 10%;
-}
-.white{
-    color: white;
 }
