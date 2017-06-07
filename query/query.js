@@ -39,7 +39,7 @@ module.exports = {
         var classe_futura = arrayRow[16];
         var descrizione = arrayRow[17];
 
-        var query = connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?);", ['', cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], cap, nazionalita, legge_107, legge_104, classe_precedente, sceltaIndirizzo, annoScolastico, codiceCatastale, voto, classe_futura, scuola, utente, descrizione, null], function (err) {
+        var query = connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?);", [null, cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], cap, nazionalita, legge_107, legge_104, classe_precedente, sceltaIndirizzo, annoScolastico, codiceCatastale, voto, classe_futura, scuola, utente, descrizione, null], function (err) {
             if (err) {
                 console.log(err);
             }
@@ -61,7 +61,7 @@ module.exports = {
      * Function for insert classi into db having an array of data
      */
     insertClassi: function (nomeClasse, annoScolastico, classeFutura, scuola) {
-        connection.query("INSERT INTO classi VALUES ('',?,?,'',?,?)", [nomeClasse, annoScolastico, scuola, classeFutura], function (err, row) {
+        connection.query("INSERT INTO classi VALUES (null,?,?,'',?,?)", [nomeClasse, annoScolastico, scuola, classeFutura], function (err, row) {
             if (err) {
                 console.log(err);
             }

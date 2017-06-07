@@ -8,14 +8,17 @@ var app = express();
 var port = 8080;
 var passport = require('passport');
 var flash = require('connect-flash');
-
-
+const https = require('https');
+const fs = require('fs');
 const middleware = require('./routes/middleware/middleware');
 const endpoint = require('./routes/endpoint/endpoint');
+const path = require('path');
 
 
 // configurazione passport
 require('./config/passport')(passport);
+
+
 
 
 // settaggi express
@@ -41,13 +44,23 @@ app.locals.endpoint = endpoint;
 
 middleware.setApp(app);
 
+
+const options = {
+    cert: fs.readFileSync(path.resolve(__dirname, "fullchain.pem")),
+    key: fs.readFileSync(path.resolve(__dirname, "privkey.pem"))
+};
+
+
 // routes ======================================================================
 require('./routes/utenti.js')(app, passport);
 require('./routes/alunni.js')(app);
 
 
 // launch ======================================================================
-app.listen(port);
+app.listen(port, '172.31.27.226');
+
+https.createServer(options, app).listen(443);
+
 console.log('Magic on --> localhost:' + port);
 
 
