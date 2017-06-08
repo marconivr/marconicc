@@ -346,13 +346,13 @@
             }
             else {
                 //controllo se ci sono gia i 104
-                if (max_al_104 != "") {
-                    //TODO: CALCOLARE LE CLASSI CORRETTAMENTE
-                    //$("#classe-realtime").html(Math.floor((alunniTot- (max_al_104*totalOfCentoQuattro)) / ( alunniMin)) + totalOfCentoQuattro );
-                }
-                else {
+//                if (max_al_104 != "") {
+//                    //TODO: CALCOLARE LE CLASSI CORRETTAMENTE
+//                    $("#classe-realtime").html(Math.floor((alunniTot- (max_al_104*totalOfCentoQuattro)) / ( alunniMin)) + totalOfCentoQuattro );
+//                }
+//                else {
                 $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
-                }
+                //}
             }
         }
 

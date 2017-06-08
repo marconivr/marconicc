@@ -71,9 +71,9 @@ module.exports = function (app, passport) {
     app.post(endpoint.utenti.insertUtente, middleware.isLoggedIn, middleware.restrictTo([0]), function (req, res) {
         query.insertUtente(req.body.username, bcrypt.hashSync(req.body.password, null, null), req.body.diritto, req.user.id_scuola, function (err, results) {
             if (err)
-                res.send(err);
+                res.send({"error": err});
             else
-                res.send("1");
+                res.send("no-error");
         });
     });
 

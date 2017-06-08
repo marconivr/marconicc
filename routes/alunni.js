@@ -202,7 +202,7 @@ module.exports = function (app) {
     /**
      * inserisce i tag
      */
-    app.get(endpoint.alunni.insertTag, function (req, res) {
+    app.get(endpoint.alunni.insertTag, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         const scuola = req.user.id_scuola;
         query.insertTag(scuola, req.query.tag, function (err, results) {
             if (err)
@@ -340,7 +340,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.post(endpoint.alunni.insertSettingsPrime, function (req, res) {
+    app.post(endpoint.alunni.insertSettingsPrime, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
         query.insertSettingsPrime(scuola, annoScolastico, req.body.data, req.body.descrizione, req.body.alunniMin, req.body.alunniMax, req.body.femmine, req.body.residenza, req.body.nazionalita, req.body.naz_per_classe, req.body.max_al_104, function (err, results) {
@@ -355,7 +355,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.post(endpoint.alunni.setActiveConfiguration, middleware.restrictTo([0, 1]), function (req, res) {
+    app.post(endpoint.alunni.setActiveConfiguration, middleware.restrictTo([0, 1]), middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         query.setActiveConfiguration(scuola, "PRIMA", req.body.id, function (err, results) {
             if (err)
@@ -369,7 +369,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle terze
      */
-    app.get(endpoint.alunni.insertSettingsTerze, function (req, res) {
+    app.get(endpoint.alunni.insertSettingsTerze, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         query.insertSettingsTerze(function (err, results) {
             if (err)

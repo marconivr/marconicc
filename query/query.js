@@ -575,9 +575,8 @@ module.exports = {
             function (err, rows) {
                 if (err) {
                     console.log(err);
-                } else {
-                    callback(err, rows);
                 }
+                callback(err, rows);
             });
     },
 

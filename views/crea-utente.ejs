@@ -84,12 +84,16 @@
                 },
 
                 success: function (data) {
-                    if (data == 1) {
+                    if (!data.error) {
                         alertify.set('notifier', 'position', 'top-right');
                         alertify.success('Utente aggiunto');
                         $("#password").val("");
                         $("#ripeti_password").val("");
                         $("#username").val("");
+                    }
+                    else {
+                        alertify.set('notifier', 'position', 'top-right');
+                        alertify.error(" Oops, ci deve essere stato un problema");
                     }
                     $("#sendButton").addClass('ui disabled button');
 
