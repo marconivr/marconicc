@@ -39,7 +39,7 @@ module.exports = {
         var classe_futura = arrayRow[16];
         var descrizione = arrayRow[17];
 
-        var query = connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?);", ['', cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], cap, nazionalita, legge_107, legge_104, classe_precedente, sceltaIndirizzo, annoScolastico, codiceCatastale, voto, classe_futura, scuola, utente, descrizione, null], function (err) {
+        var query = connection.query("INSERT INTO alunni VALUES (?,?,?,?,?,?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?,?,?,?,?,?,?,?,?);", [null, cognome, nome, matricola, cf, desiderata, sesso, dataDiNascita.split(" ")[0], cap, nazionalita, legge_107, legge_104, classe_precedente, sceltaIndirizzo, annoScolastico, codiceCatastale, voto, classe_futura, scuola, utente, descrizione, null], function (err) {
             if (err) {
                 console.log(err);
             }
@@ -61,7 +61,7 @@ module.exports = {
      * Function for insert classi into db having an array of data
      */
     insertClassi: function (nomeClasse, annoScolastico, classeFutura, scuola) {
-        connection.query("INSERT INTO classi VALUES ('',?,?,'',?,?)", [nomeClasse, annoScolastico, scuola, classeFutura], function (err, row) {
+        connection.query("INSERT INTO classi VALUES (null,?,?,'',?,?)", [nomeClasse, annoScolastico, scuola, classeFutura], function (err, row) {
             if (err) {
                 console.log(err);
             }
@@ -120,23 +120,23 @@ module.exports = {
 
     cleanClassi: function (scuola, annoScolastico, callback) {
         async.waterfall([
-            function(callback){
-                connection.query("delete from classi_composte WHERE classi_composte.classe IN " +
-                    "(SELECT c.id FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?)", [annoScolastico, scuola], function (err, row) {
-                    if (err){
-                        console.error(err);
-                    }
-                });
-                callback();
-            },
-            function(callback){
-                connection.query("delete FROM classi WHERE anno_scolastico = ? AND scuola = ?", [annoScolastico, scuola], function (err, row) {
-                    if (err){
-                        console.error(err);
-                    }
-                });
-                callback();
-            }
+                function(callback){
+                    connection.query("delete from classi_composte WHERE classi_composte.classe IN " +
+                        "(SELECT c.id FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?)", [annoScolastico, scuola], function (err, row) {
+                        if (err){
+                            console.error(err);
+                        }
+                    });
+                    callback();
+                },
+                function(callback){
+                    connection.query("delete FROM classi WHERE anno_scolastico = ? AND scuola = ?", [annoScolastico, scuola], function (err, row) {
+                        if (err){
+                            console.error(err);
+                        }
+                    });
+                    callback();
+                }
             ],
             function (succes) {
 
@@ -198,17 +198,17 @@ module.exports = {
 
     deleteConfiguration: function (id, callback) {
         async.waterfall([
-            function (callback) {
-                connection.query("DELETE FROM configurazione WHERE id = ?;",[id], function (err, row) {
-                    if (err){callback(null, err, null)}
-                    else {callback(null, null, "Success")}
-                })
-            }, function (err, ris, callback) {
-                connection.query("UPDATE configurazione SET attiva = 1 WHERE id = (SELECT * FROM(SELECT MAX(id) FROM configurazione)AS p);", function (err, row) {
-                    if (err){callback(err, null)}
-                    else {callback(null,"Success")}
-                });
-            }],
+                function (callback) {
+                    connection.query("DELETE FROM configurazione WHERE id = ?;",[id], function (err, row) {
+                        if (err){callback(null, err, null)}
+                        else {callback(null, null, "Success")}
+                    })
+                }, function (err, ris, callback) {
+                    connection.query("UPDATE configurazione SET attiva = 1 WHERE id = (SELECT * FROM(SELECT MAX(id) FROM configurazione)AS p);", function (err, row) {
+                        if (err){callback(err, null)}
+                        else {callback(null,"Success")}
+                    });
+                }],
             function (err, ris) {
                 callback(err, ris);
             });
@@ -556,7 +556,7 @@ module.exports = {
     getStudentByCf: function (cf, scuola, callback) {
 
         connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ", [cf, scuola], function (err, rows) {
-                callback(err, rows);
+            callback(err, rows);
         });
     },
 
@@ -618,7 +618,7 @@ module.exports = {
         else  query = "UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'";
 
         connection.query(query, function (err, rows) {
-                callback(err, rows);
+            callback(err, rows);
         });
     },
 
