@@ -477,7 +477,6 @@ module.exports = function (app) {
         const vecchiaClasse = req.body.fromClass;
         const idUtente = req.user.id;
 
-
         query.updateAlunnoClass(cfALunno, nuovaClasse ,annoScolastico, scuola, classeFutura, function (err) {
             if(err){
                 res.send({
@@ -508,8 +507,9 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA";
+        const classeFutura = req.body.classeFutura;
+        const annoScolastico = req.body.annoScolastico;
+
         query.getHistory(scuola, function (err, results) {
             if (err)
                 console.log(err);
