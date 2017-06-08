@@ -1530,7 +1530,15 @@ function history() {
     });
 }
 function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
-
+    arrayClassi = [];
+    barChartArray = [];
+    pieChartArray = [];
+    $('#download-loader').removeClass('disabled').addClass('active');
+    $('#selezioneClassi').children('.classi').remove();
+    $.contextMenu('destroy', '.contenitoreClasse.ui.vertical.menu.ui-sortable');
+    $('.context-menu-list.context-menu-root').remove();
+    $('#rowForInsertClasses').children().remove()
+    downloadClassi(anno_scolastico, classeFutura);
 }
 
 function setLoader(value) {
@@ -2037,15 +2045,19 @@ function generatePage(data) {
 // - CREAZIONE BOX INFORMAZIONI
 // - CREAZIONE CHART
 // - INIZIALIZZAZIONE DRAG AND DROP STUDENTI
-$(document).ready(function () {
 
-    /**
-     * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
-     */
+/**
+ * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
+ */
+function downloadClassi(annoScolastico, classeFutura) {
+
+
     $.ajax({
         url: '/generate-classi',
         data: {
-            format: 'json'
+            format: 'json',
+            annoscolastico: annoScolastico,
+            classefutura: classeFutura
         },
         error: function () {
             $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
@@ -2060,7 +2072,14 @@ $(document).ready(function () {
         success: generatePage,
         type: 'GET'
     });
+}
 
+
+
+
+$(document).ready(function () {
+
+    downloadClassi($('#anno-scolastico').html(), $('#classe-futura').html());
     /**
      * Osservatore per gestire la visualizzazione delle classi
      */

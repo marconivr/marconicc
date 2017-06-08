@@ -137,8 +137,8 @@
 
 <% include sidebar-start.ejs %>
 <div style="display: none;">
-    <p id="anno-scolastico"> <%= sessioneIniziale.annoScolastico %></p>
-    <p id="classe-futura"></p>
+    <p id="anno-scolastico"><%= sessioneIniziale.annoScolastico %></p>
+    <p id="classe-futura"><%= sessioneIniziale.classeFutura %> </p>
 </div>
 
 <div id="selezioneClassi" class="ui icon tiny menu">
@@ -267,7 +267,7 @@
 
 <% include finish-menu.ejs %>
 
-<div class="ui text loader active medium"> Download classi ...</div>
+<div class="ui text loader active medium" id="download-loader"> Download classi ...</div>
 <!--<div class="ui indicating progress">-->
 <!--<div class="bar"></div>-->
 <!--<div class="label">0% loading</div>-->
