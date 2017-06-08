@@ -219,11 +219,11 @@ class Classe {
             n_naz--;
         }
 
-        if(param !== "rimanente"){
-            if(n_naz > settings.nazionalita_per_classe){
-                return false;
-            }
+
+        if(n_naz > settings.nazionalita_per_classe){
+            return false;
         }
+
 
 
         _.forEach(this.proprietaAttuali.nazionalita, function (key, value) {
@@ -478,7 +478,6 @@ function debugNumeroNazPerClasse(bool, classi_composte){
 function debugInsiemiVuoti(bool) {
     if(bool){
 
-
         if(_.isEmpty(bocciati) && _.isEmpty(femmine) && _.isEmpty(legge_104) && _.isEmpty(legge_107)){
             console.log("1)Sono stati inseriti correttamente. Insiemi vuoti".yellow.bold);
         }else{
@@ -503,35 +502,7 @@ function inserisciAlunniRimanenti(alunni, classiComposte) {
         return o.voto;
     });
 
-    for(let naz in nazionalita){
-        if(naz !== "ITALIANA"){
-            let alunniNaz = nazionalita[naz];
-            for(let i in alunniNaz){
-                for(let j in classiComposte){
-                    let alunno = alunniNaz[i];
-                    let classe = classiComposte[i];
-
-                    let ris = classe.setAlunno(alunno, "rimanente");
-
-                    if(Classe.checkValidazione(ris)){
-                        console.log("inserito");
-                        delete  alunniNaz[i];
-                        break;
-
-                        // qui non va un cazzo todo
-                    }else{
-                        console.log("non va");
-                    }
-                }
-            }
-
-        }
-
-
-    }
-
     return classiComposte;
-
 
 
 }
