@@ -446,8 +446,8 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
-        const classeFutura = req.body.classeFutura;
-        const annoScolastico = req.body.annoScolastico;
+        const classeFutura = req.query.classeFutura;
+        const annoScolastico = req.query.annoScolastico;
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
 

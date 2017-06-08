@@ -2056,8 +2056,8 @@ function downloadClassi(annoScolastico, classeFutura) {
         url: '/generate-classi',
         data: {
             format: 'json',
-            annoscolastico: annoScolastico,
-            classefutura: classeFutura
+            annoScolastico: annoScolastico,
+            classeFutura: classeFutura
         },
         error: function () {
             $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
