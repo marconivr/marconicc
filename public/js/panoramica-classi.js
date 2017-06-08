@@ -1999,8 +1999,8 @@ function generatePage(data) {
             }
         }
         //create contex menu
+        handleContexMenu($(containerClassi).children().last());
         var container = $(containerClassi).children().first();
-        handleContexMenu(container);
         createBarChart(nomeClasse, container);
         createPieChart(nomeClasse, container);
         createBoxInformazioni(container, nomeClasse);
