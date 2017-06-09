@@ -2117,9 +2117,20 @@ $(document).ready(function () {
      */
     $('#checkBox').checkbox({
         onChecked: function () {
+
+            $('#selezioneClassi > .classi').each(function (i, obj) {
+                if ($(this).children().hasClass('active')) {
+                    try {
+                        $('#' + id).hide();
+                    } catch (e) {
+                    }
+                }
+            });
             displayAllClass();
+            $('#no-classes').hide();
         },
         onUnchecked: function () {
+            var active = 0;
             //prima di pulire tutto controllo gli item già attivi per portare alla situazione precendente le visualizzazioni
             $('#selezioneClassi > .classi').each(function (i, obj) {
                 if (!$(this).children().hasClass('active')) {
@@ -2130,7 +2141,11 @@ $(document).ready(function () {
                         //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe
                     }
                 }
+                else {
+                    active++;
+                }
             });
+            if (active == 0) $('#no-classes').show();
         }
     });
 });
