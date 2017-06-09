@@ -20,6 +20,10 @@ var nazionalitaItems = [];
 var dirittiUtente = undefined;
 var idUtente = undefined;
 
+//anno scolastico e classe futura
+var classeFuturaGlobal = undefined;
+var annoScolasticoGlobal = undefined;
+
 
 //chart
 var informationArray = [];//reference to information
@@ -476,8 +480,9 @@ function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory, anno_scola
         toClass: toClass,
         id_utente: idUtente,
         anno_scolastico: anno_scolastico,
-        saveHistory: saveHistory
-
+        saveHistory: saveHistory,
+        classeFutura: classeFuturaGlobal,
+        annoScolastico: annoScolasticoGlobal
     };
 
     if (saveRealTimeOnDb) {
@@ -2050,7 +2055,8 @@ function generatePage(data) {
  * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
  */
 function downloadClassi(annoScolastico, classeFutura) {
-
+    classeFuturaGlobal = classeFutura;
+    annoScolasticoGlobal = annoScolastico;
 
     $.ajax({
         url: '/generate-classi',

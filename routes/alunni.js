@@ -451,6 +451,7 @@ module.exports = function (app) {
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
 
+            //noinspection JSAnnotator
             let wrapper = {
                 scuola: scuola,
                 annoScolastico: annoScolastico,
@@ -477,7 +478,7 @@ module.exports = function (app) {
         const vecchiaClasse = req.body.fromClass;
         const idUtente = req.user.id;
 
-        query.updateAlunnoClass(cfALunno, nuovaClasse ,annoScolastico, scuola, classeFutura, function (err) {
+        query.updateAlunnoClass(cfALunno, nuovaClasse, annoScolastico, scuola, classeFutura, function (err) {
             if(err){
                 res.send({
                     "error": err
