@@ -13,7 +13,6 @@ const classi = data.classi;
 const colors = require('colors').enabled = true;
 
 
-
 //INIZIO POPOLAZIONE INSIEME
 let legge_104 = _.filter(alunni, function (item) {
     if (item.legge_104 !== "") {
@@ -35,10 +34,10 @@ let femmine = _.filter(alunni, function (item) {
 
 
 let bocciati = _.omit(_.groupBy(alunni, function (item) {
-    if(item.classe_precedente !== ""){
+    if (item.classe_precedente !== "") {
         return item.classe_precedente;
     }
-}),[undefined]); //uso l'omit per rimuovere la proprietà undefined che racchiude tutti gli studenti non bocciati
+}), [undefined]); //uso l'omit per rimuovere la proprietà undefined che racchiude tutti gli studenti non bocciati
 
 let n_107 = legge_107.length;
 
@@ -50,18 +49,20 @@ let n_classi = classi.length;
 
 function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
 
-    let ris = Array.apply(null, new Array(n_classi)).map(function() { return {n_104 : null, n_107 : null, n_femmine: null, n_bocciati: null} });
+    let ris = Array.apply(null, new Array(n_classi)).map(function () {
+        return {n_104: null, n_107: null, n_femmine: null, n_bocciati: null}
+    });
 
     //104
     let div_104 = n_104 / n_classi;
     let gruppo_104 = [];
-    if(div_104 < 1){
+    if (div_104 < 1) {
         gruppo_104 = new Array(n_104).fill(1);
-        for (let i=0; i<gruppo_104.length; i++){
+        for (let i = 0; i < gruppo_104.length; i++) {
             ris[i].n_104 = gruppo_104[i];
         }
 
-    }else{
+    } else {
         console.log("ECCEZIONE NON GESTITA CI SONO TROPPI 104 - SE LA VEDI CONTATTA CORRADI E PREGA") //TODO
     }
     //FINE 104
@@ -69,7 +70,7 @@ function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
 
     //107
     let countClassiCon104 = _(_.filter(ris, function (obj) {
-        if(obj.n_104 > 0){
+        if (obj.n_104 > 0) {
             return obj;
         }
     })).size();
@@ -78,7 +79,7 @@ function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
 
     let gruppo_107 = [];
 
-    if(n_107 < classiDisponibili) { //ce ne sta uno per classe
+    if (n_107 < classiDisponibili) { //ce ne sta uno per classe
         gruppo_107 = new Array(n_107).fill(1);
 
         for (let i = 0; i < gruppo_107.length; i++) {
@@ -91,7 +92,7 @@ function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
                 }
             }
         }
-    }else{
+    } else {
         console.log("ECCEZIONE NON GESTITA CI SONO TROPPI 107 - SE LA VEDI CONTATTA CORRADI E PREGA") //TODO
     }
 
@@ -101,66 +102,67 @@ function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
     //FEMMINE
     let div_femmine = n_femmine / settings.gruppo_femmine;
     let gruppi_femmine = [];
-    if (n_femmine % settings.gruppo_femmine === 0){
+    if (n_femmine % settings.gruppo_femmine === 0) {
         gruppi_femmine = new Array(div_femmine).fill(settings.gruppo_femmine);
-        for (let i=0; i<gruppi_femmine.length; i++){
+        for (let i = 0; i < gruppi_femmine.length; i++) {
             ris[i].n_femmine = gruppi_femmine[i];
         }
-    }else{
+    } else {
         console.log("ECCEZIONE NON GESTITA LE FEMMINE NON SONO DIVISIBILI PER LA CLASSE - SE LA VEDI CONTATTA CORRADI E PREGA") //TODO
     }
     //FINE FEMMINE
-
 
 
     return ris;
 }
 
 
-
-
-
-
 class Classe {
-    constructor(nome,proprietaIdeali){
+    constructor(nome, proprietaIdeali) {
         this.nome = nome;
         this.alunni = [];
         this.proprietaAttuali = {};
         this.proprietaIdeali = proprietaIdeali;
     }
 
-    setAlunno(alunno, param){
+    setAlunno(alunno, param) {
 
-        if(this.push(alunno)){
+        if (alunno === undefined) {
+            console.log(this.nome);
+            return null;
+        }
+
+        if (this.push(alunno)) {
             this.proprietaAttuali = this.generaProprieta();
 
             let ris = this.checkAlunno(param);
 
-            if (Classe.checkValidazione(ris)){
+            if (Classe.checkValidazione(ris)) {
                 this.alunni.pop();
+                this.proprietaAttuali = this.generaProprieta();
             }
             return ris;
-        }else{
+        } else {
             return null;
         }
 
-     }
+    }
 
 
-     push(alunno){
-        if(this.alunni.indexOf(alunno) === -1 ){
+    push(alunno) {
+        if (this.alunni.indexOf(alunno) === -1) {
             this.alunni.push(alunno);
             return true;
-        }else{
+        } else {
             return false;
         }
 
     }
 
-    static checkValidazione(ris){
+    static checkValidazione(ris) {
         for (let property in ris) {
             if (ris.hasOwnProperty(property)) {
-                if(ris[property] === true){
+                if (ris[property] === true) {
                     return true;
                 }
             }
@@ -169,7 +171,7 @@ class Classe {
         return false;
     }
 
-    checkAlunno(param){
+    checkAlunno(param) {
 
         let ris = {};
 
@@ -187,8 +189,8 @@ class Classe {
     }
 
 
-    limitiAlunni(){
-        if(this.alunni.length > settings.max_alunni){
+    limitiAlunni() {
+        if (this.alunni.length > settings.max_alunni) {
             return false;
         }
 
@@ -196,15 +198,15 @@ class Classe {
     }
 
 
-    cap(){
+    cap() {
         let n_cap = Object.keys(this.proprietaAttuali.cap).length;
 
-        if(n_cap > settings.nazionalita_per_classe){
+        if (n_cap > settings.nazionalita_per_classe) {
             return false;
         }
 
         _.forEach(this.proprietaAttuali.nazionalita, function (key, value) {
-            if(value > settings.gruppo_cap){
+            if (value > settings.gruppo_cap) {
                 return false;
             }
         });
@@ -212,22 +214,21 @@ class Classe {
         return true;
     }
 
-    nazionalita(param){
+    nazionalita(param) {
         let n_naz = Object.keys(this.proprietaAttuali.nazionalita).length;
 
-        if(_.has(this.proprietaAttuali.nazionalita, "ITALIANA")){
+        if (_.has(this.proprietaAttuali.nazionalita, "ITALIANA")) {
             n_naz--;
         }
 
 
-        if(n_naz > settings.nazionalita_per_classe){
+        if (n_naz > settings.nazionalita_per_classe) {
             return false;
         }
 
 
-
         _.forEach(this.proprietaAttuali.nazionalita, function (key, value) {
-            if(value > settings.gruppo_nazionalita){
+            if (value > settings.gruppo_nazionalita) {
                 return false;
             }
         });
@@ -235,30 +236,30 @@ class Classe {
         return true;
     }
 
-    femmine(){
-        if(this.proprietaAttuali.femmine > settings.gruppo_femmine){
+    femmine() {
+        if (this.proprietaAttuali.femmine > settings.gruppo_femmine) {
             return false;
         }
         return true;
     }
 
-    legge_104_107(){
-        if(this.proprietaAttuali.n_legge_104 > 0 && this.proprietaAttuali.n_legge_107 > 0){
+    legge_104_107() {
+        if (this.proprietaAttuali.n_legge_104 > 0 && this.proprietaAttuali.n_legge_107 > 0) {
             return false;
         }
 
-        if(this.proprietaAttuali.n_legge_104 > 0 && this.alunni.length > settings.numero_alunni_con_104){
+        if (this.proprietaAttuali.n_legge_104 > 0 && this.alunni.length > settings.numero_alunni_con_104) {
             return false;
         }
 
-        if(this.proprietaAttuali.n_legge_107 > this.proprietaIdeali.n_107){
+        if (this.proprietaAttuali.n_legge_107 > this.proprietaIdeali.n_107) {
             return false;
         }
 
         return true;
     }
 
-    generaProprieta(){
+    generaProprieta() {
 
         let n_femmine = _(_.filter(this.alunni, function (o) {
             if (o.sesso.toLowerCase() === "f") {
@@ -301,7 +302,7 @@ class Classe {
         };
     }
 
-    set bocciati(n_bocciati){
+    set bocciati(n_bocciati) {
         this.proprietaIdeali.n_bocciati = n_bocciati;
     }
 
@@ -309,164 +310,240 @@ class Classe {
 }
 
 
-let propIdeali = generateProprietaIdeale(n_classi,n_104, n_107,n_femmine);
+let propIdeali = generateProprietaIdeale(n_classi, n_104, n_107, n_femmine);
 
 
-function checkDesiderata(objStudente){
+function checkDesiderata(objStudente) {
 
     let amico = _.filter(alunni, function (obj) {
-        if (objStudente.desiderata === obj.cf){
+        if (objStudente.desiderata === obj.cf) {
             return obj;
         }
     });
 
     amico = amico[0];
 
-    if(amico === undefined) return null;
+    if (amico === undefined) return null;
 
     return amico.desiderata === objStudente.cf ? amico : null;
 }
 
 
-function inserisci104(classe){
-    if(classe.proprietaIdeali.n_104 > 0){
+function inserisci104(classe) {
+    if (classe.proprietaIdeali.n_104 !== classe.proprietaAttuali.n_legge_104 && classe.proprietaIdeali.n_104 !== null) {
 
         let condizione = classe.proprietaIdeali.n_104;
 
-        while (condizione !== 0){
+        while (condizione !== 0) {
             let alunno = _.filter(legge_104, function (alunno) {
-                if(alunno.classe_precedente === classe.nome){
+                if (alunno.classe_precedente === classe.nome) {
                     return alunno;
                 }
             });
 
-            if (alunno[0] !== undefined){
+            if (alunno[0] !== undefined) {
                 alunno = alunno[0]
-            }else{
+            } else {
                 alunno = legge_104[0];
+            }
+
+            if (alunno === undefined) {
+                console.log(classe.nome + " errore inserisci 104");
+                break;
             }
 
             let amico = checkDesiderata(alunno);
 
-            if(amico !== null){
+            if (amico !== null) {
+                console.log(amico.cognome);
                 let ris = classe.setAlunno(amico);
             }
 
             let ris = classe.setAlunno(alunno);
 
-            legge_104 = _.reject(legge_104, function(obj) { return obj.id === alunno.id; });
+            legge_104 = _.reject(legge_104, function (obj) {
+                return obj.id === alunno.id;
+            });
 
-            condizione-- ;
+            condizione--;
         }
 
 
     }
 }
 
-function inserisci107(classe){
-    if(classe.proprietaIdeali.n_107 > 0){
+function inserisci107(classe) {
+    if (classe.proprietaIdeali.n_107 > 0) {
 
         let condizione = classe.proprietaIdeali.n_107;
 
-        while (condizione !== 0){
+        while (condizione !== 0) {
             let alunno = _.filter(legge_107, function (alunno) {
-                if(alunno.classe_precedente === classe.nome){
+                if (alunno.classe_precedente === classe.nome) {
                     return alunno;
                 }
             });
 
-            if (alunno[0] !== undefined){
+            if (alunno[0] !== undefined) {
                 alunno = alunno[0]
-            }else{
+            } else {
                 alunno = legge_107[0];
             }
 
             let amico = checkDesiderata(alunno);
 
-            if(amico !== null){
+            if (amico !== null) {
+                console.log(amico.cognome);
                 let ris = classe.setAlunno(amico);
             }
 
             let ris = classe.setAlunno(alunno);
 
 
-            legge_107 = _.reject(legge_107, function(obj) { return obj.id === alunno.id; });
+            legge_107 = _.reject(legge_107, function (obj) {
+                return obj.id === alunno.id;
+            });
 
-            condizione-- ;
+            condizione--;
         }
     }
 }
 
 
 function inserisciFemmine(classe) {
-    if(classe.proprietaIdeali.n_femmine > 0){
+    if (classe.proprietaIdeali.n_femmine > 0) {
 
         let condizione = classe.proprietaIdeali.n_femmine;
 
-        while (condizione !== 0){
+        while (condizione !== 0) {
 
-                let alunno = _.filter(femmine, function (alunno) {
-                   if(alunno.classe_precedente === classe.nome){
-                       return alunno;
-                   }
-                });
-
-                if (alunno[0] !== undefined){
-                    alunno = alunno[0]
-                }else{
-                    alunno = femmine[0];
+            let alunno = _.filter(femmine, function (alunno) {
+                if (alunno.classe_precedente === classe.nome) {
+                    return alunno;
                 }
+            });
+
+            if (alunno[0] !== undefined) {
+                alunno = alunno[0]
+            } else {
+                alunno = femmine[0];
+            }
+
+            if (alunno.cognome === "BRUSCO") {
+                console.log("lo");
+            }
 
             let amico = checkDesiderata(alunno);
 
-            if(amico !== null){
+            if (amico !== null) {
+                console.log(amico.cognome);
                 let ris = classe.setAlunno(amico);
+                if(Classe.checkValidazione(ris)){
+                    femmine = _.reject(femmine, function (obj) {
+                        return obj.id === amico.id;
+                    });
+                }
+
             }
 
             let ris = classe.setAlunno(alunno);
 
+            if(Classe.checkValidazione(ris)){
+                femmine = _.reject(femmine, function (obj) {
+                    return obj.id === alunno.id;
+                });
+            };
 
-                femmine = _.reject(femmine, function(obj) { return obj.id === alunno.id; });
 
-                condizione-- ;
-            }
+
+            condizione--;
         }
+    }
 
 }
 
 function inserisciBocciati(classe) {
 
-    try{
+    try {
         let bocciati_local = bocciati[classe.nome];
         classe.bocciati = bocciati_local.length;
-        for (let i in bocciati_local){
+        for (let i in bocciati_local) {
             let ris = classe.setAlunno(bocciati_local[i]);
         }
         delete bocciati[classe.nome];
-    }catch (e){
+    } catch (e) {
         //Qui entra quando la classe non ha bocciati
     }
 
 }
 
 
-
-
-function debugNumeroNazPerClasse(bool, classi_composte){
-    if(bool){
+function debugNumeroNazPerClasse(bool, classi_composte) {
+    if (bool) {
         console.log("NUMERO NAZIONALITA' PER CLASSE".black.bgBlue);
-
-        for(let i in classi_composte){
-            let naz = _.countBy(classi_composte[i].alunni,function (obj) {
+        console.log("| cl | n_naz | n_boc | 104 | 107 | fem | n_cap | tot | problemi");
+        for (let i in classi_composte) {
+            let naz = _.countBy(classi_composte[i].alunni, function (obj) {
                 return obj.nazionalita;
             });
 
             let n_naz = Object.keys(naz).length;
 
-            if(n_naz <= settings.nazionalita_per_classe){
-                console.log(`| ${classi_composte[i].nome} | ${n_naz} |`.green);
-            }else{
-                console.log(`| ${classi_composte[i].nome} | ${n_naz} |`.blue);
+
+            let cap = _.countBy(classi_composte[i].alunni, function (obj) {
+                return obj.cap;
+            });
+
+            let n_cap = Object.keys(cap).length;
+
+            let n_femmine = (_.countBy(classi_composte[i].alunni, function (obj) {
+                return obj.sesso;
+            })).F;
+
+            if (n_femmine === undefined) {
+                n_femmine = 0;
+            }
+            let n_bocciati = (_.filter(classi_composte[i].alunni, function (obj) {
+                if (obj.classe_precedente !== "") {
+                    return obj;
+                }
+            })).length;
+
+            let n_104 = (_.filter(classi_composte[i].alunni, function (obj) {
+                if (obj.legge_104 !== "") {
+                    return obj;
+                }
+            })).length;
+
+            let n_107 = (_.filter(classi_composte[i].alunni, function (obj) {
+                if (obj.legge_107 !== "") {
+                    return obj;
+                }
+            })).length;
+
+            let ris = "";
+
+            if (n_naz > settings.nazionalita_per_classe) {
+                ris += " n_naz ";
+            }
+
+            if (n_femmine > settings.gruppo_femmine) {
+                ris += " fem ";
+            }
+
+            if (n_104 > 1) {
+                ris += " 104";
+            }
+
+            if (n_104 > 1 && n_107 > 1) {
+                ris += " 107";
+            }
+
+
+            if (n_naz <= settings.nazionalita_per_classe && n_femmine <= settings.gruppo_femmine && n_104 <= 1) {
+                console.log(`| ${classi_composte[i].nome} |   ${n_naz}   |   ${n_bocciati}   |  ${n_104}  |  ${n_107}  |  ${n_femmine}  |   ${n_cap}   |   ${classi_composte[i].alunni.length}  | `.green);
+            } else {
+                console.log(`| ${classi_composte[i].nome} |   ${n_naz}   |   ${n_bocciati}   |  ${n_104}  |  ${n_107}  |  ${n_femmine}  |   ${n_cap}   |   ${classi_composte[i].alunni.length}  | ${ris} `.blue);
             }
         }
         console.log("##############################".black.bgBlue);
@@ -474,13 +551,12 @@ function debugNumeroNazPerClasse(bool, classi_composte){
 }
 
 
-
 function debugInsiemiVuoti(bool) {
-    if(bool){
+    if (bool) {
 
-        if(_.isEmpty(bocciati) && _.isEmpty(femmine) && _.isEmpty(legge_104) && _.isEmpty(legge_107)){
+        if (_.isEmpty(bocciati) && _.isEmpty(femmine) && _.isEmpty(legge_104) && _.isEmpty(legge_107)) {
             console.log("1)Sono stati inseriti correttamente. Insiemi vuoti".yellow.bold);
-        }else{
+        } else {
             console.log("1)Qualuno non è stato inserito. Insiemi ancora pieni".red.underline)
         }
 
@@ -502,6 +578,11 @@ function inserisciAlunniRimanenti(alunni, classiComposte) {
         return o.voto;
     });
 
+    let n_femmine = _.groupBy(alunni, function (obj) {
+        return obj.sesso;
+    });
+
+
     return classiComposte;
 
 
@@ -511,20 +592,32 @@ function generaClassiComposte(classi) {
     let classiComposte = [];
 
 
-    for(let i in classi){
+    for (let i in classi) {
         let classe = new Classe(classi[i].nome, propIdeali[i]);
 
-        inserisci104(classe);
-        inserisci107(classe);
         inserisciBocciati(classe);
-        inserisciFemmine(classe);
 
         classiComposte.push(classe);
     }
 
+    for (let i in classiComposte) {
+        inserisciFemmine(classiComposte[i]);
+    }
+
+
+    for (let i in classiComposte) {
+        inserisci104(classiComposte[i]);
+    }
+
+    for (let i in classiComposte) {
+        inserisci107(classiComposte[i]);
+    }
+
+
+
     let alunniRimanenti = [];
 
-    for(let i in classiComposte){
+    for (let i in classiComposte) {
         let alunni = classiComposte[i].alunni;
         alunniRimanenti = alunniRimanenti.concat(alunni);
     }
@@ -541,3 +634,5 @@ let ris = generaClassiComposte(classi);
 
 debugInsiemiVuoti(true);
 debugNumeroNazPerClasse(true, ris);
+
+console.log("FINE GENERAZIONE");
