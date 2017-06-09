@@ -1963,7 +1963,7 @@ function generatePage(data) {
 
     if (listaClassi === null) {
         $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
-        alertify.error('Errore di scaricamento dei dati.\nControlla di aver creato la configurazione');
+        alertify.error('Errore download dei dati.\nControlla di aver creato la configurazione');
         setTimeout(function () {
             window.location.href = '/settings-prime';
         }, 2500);
