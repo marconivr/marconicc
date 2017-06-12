@@ -7,7 +7,7 @@ var winston = require('winston');
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.File)({
-            filename: 'exception/utenti.txt',
+            filename: 'exception/' + new Date().toDateString() + '.log',
             handleExceptions: true,
             prettyPrint: true,
             level: 'error',

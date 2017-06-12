@@ -13,7 +13,7 @@ const nodeExcel = require('excel-export');
 const endpoint = require('./endpoint/endpoint.js');
 const sessione = require('./../query/sessione.js');
 const _ = require('lodash');
-
+const logger = require("../logger");
 const multer = require('multer');
 const upload = multer({ dest: 'files/' });
 
@@ -480,6 +480,7 @@ module.exports = function (app) {
 
         query.updateAlunnoClass(cfALunno, nuovaClasse, annoScolastico, scuola, classeFutura, function (err) {
             if(err){
+                logger.error("updateAlunnoClass - errore ", err);
                 res.send({
                     "error": err
                 });
@@ -490,6 +491,7 @@ module.exports = function (app) {
                 if (saveHistory && nuovaClasse !== vecchiaClasse) {
                     query.insertHistory(cfALunno, nuovaClasse, vecchiaClasse, idUtente, annoScolastico, scuola, classeFutura, function (err) {
                         if(err){
+                            logger.error("insertHistory - errore ", err);
                             res.send({
                                 "error": err
                             });
@@ -512,10 +514,20 @@ module.exports = function (app) {
         const annoScolastico = req.body.annoScolastico;
 
         query.getHistory(scuola, function (err, results) {
-            if (err)
+            if (err) { 
                 console.log(err);
+                logger.error("getHistory - errore ", err);
+                res.send({
+                    "error": err
+                });
+            }
             else {
-                res.send(results);
+
+                var history = _.groupBy(results, function (o) {
+                    return o.timestamp.split(" ")[0];
+                });
+
+                res.send(history);
             }
         });
     });

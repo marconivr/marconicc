@@ -26,11 +26,13 @@
     "morgan": "^1.6.0",
     "multer": "latest",
     "mysql": "^2.7.0",
+    "mysqldump": "^1.4.2",
     "passport": "^0.2.2",
     "passport-jwt": "latest",
     "passport-local": "^1.0.0",
     "request": "^2.79.0",
     "underscore": "^1.8.3",
-    "wait.for": "^0.6.6"
+    "wait.for": "^0.6.6",
+    "winston": "^2.3.1"
   }
 }
