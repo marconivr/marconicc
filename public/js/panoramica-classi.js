@@ -1081,7 +1081,7 @@ function setAllFilter() {
             alertify.error("Non ci sono risultati", 1)
         }
         else {
-            alertify.success('Ci sono ' + totalResult + " risultati",1);
+            alertify.success('Ci sono ' + totalResult + " risultati", 1);
         }
     }
 
@@ -1398,17 +1398,24 @@ function removeStudentsFromHistory(cf, id, classeSuccessiva, classePrecendente, 
     });
 }
 
-function history() {
+function createModalHistory(data) {
+    if (!data.error) {
+        if (data.length == 0) $('#history-label').text("Non ci sono elementi nella history");
+        else $('#history-label').text("In questa sezione puoi vedere e ripristinare tutti gli spostamenti compiuti");
+        var thead = $('<thead/>')
+            .html('<tr> ' +
+                '<th>Ora</th> ' +
+                '<th>Alunno</th> ' +
+                '<th>Classe Precedente</th> ' +
+                '<th>Classe Successiva</th> ' +
+                '<th>Utente</th> ' +
+                '<th>Azione</th> ' +
+                '</tr>');
 
-    //clear modal
-    $('.ui.styled.fluid.accordion').children('div').remove();
-    //download history
-    $.ajax({
-        url: '/get-history',
-        type: 'get',
-        success: function (data) {
-            if (data.length == 0) $('#history-label').text("Non ci sono elementi nella history");
-            else $('#history-label').text("In questa sezione puoi vedere e ripristinare tutti gli spostamenti compiuti");
+        //create accordion
+        var accordion = $('.ui.styled.fluid.accordion');
+
+        for (var index in data) {
             var thead = $('<thead/>')
                 .html('<tr> ' +
                     '<th>Ora</th> ' +
@@ -1419,116 +1426,60 @@ function history() {
                     '<th>Azione</th> ' +
                     '</tr>');
 
-            //create accordion
-            var lastDate, date, container, content, p, table, tbody, tr, title;
-            var accordion = $('.ui.styled.fluid.accordion');
-            for (var history = 0; history < data.length; history++) {
-                date = new Date(data[history].timestamp);
+            var content = $('<div/>')
+                .addClass("content");
 
-                if (history == 0) {
-                    //creo tutto
-                    content = $('<div/>')
-                        .addClass("content");
+            var table = $('<table/>')
+                .addClass("ui very basic table")
+                .appendTo(content)
+                .html(thead);
 
-                    var thead = $('<thead/>')
-                        .html('<tr> ' +
-                            '<th>Ora</th> ' +
-                            '<th>Alunno</th> ' +
-                            '<th>Classe Precedente</th> ' +
-                            '<th>Classe Successiva</th> ' +
-                            '<th>Utente</th> ' +
-                            '<th>Azione</th> ' +
-                            '</tr>');
+            var tbody = $('<tbody/>').appendTo(table);
 
-                    table = $('<table/>')
-                        .addClass("ui very basic table")
-                        .appendTo(content)
-                        .html(thead);
+            var date = new Date(data[index][0].timestamp);
 
-                    tbody = $('<tbody/>').appendTo(table);
+            var title = $('<div/>')
+                .addClass('title')
+                .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
+                .appendTo(accordion);
+            content.appendTo(accordion);
 
-                    title = $('<div/>')
-                        .addClass('title')
-                        .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
-                        .appendTo(accordion);
-                    content.appendTo(accordion);
+            for (var historyInASpecificDay in data[index]) {
+                var date = new Date(data[index][historyInASpecificDay].timestamp);
+                var tr = $('<tr/>');
+                var th =
+                    '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
+                    '<td cf=' + data[index][historyInASpecificDay].cf + ' id=' + data[index][historyInASpecificDay].id + ' >' + getStudentByCF(data[index][historyInASpecificDay].cf) + '</td> ' +
+                    '<td id="cp">' + data[index][historyInASpecificDay].classe_precedente + '</td> ' +
+                    '<td id="cs">' + data[index][historyInASpecificDay].classe_successiva + '</td> ' +
+                    '<td>' + data[index][historyInASpecificDay].username + '</td> ';
 
-                    tr = $('<tr/>');
-                    var th =
-                        '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
-                        '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
-                        '<td id="cp">' + data[history].classe_precedente + '</td> ' +
-                        '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                        '<td>' + data[history].username + '</td> ';
+                tr.html(th);
+                buttonRevertForHistory($(tr));
+                tbody.append(tr).appendTo(table);
 
-                    tr.html(th);
-                    buttonRevertForHistory($(tr));
-                    tbody.append(tr).appendTo(table);
-
-                }
-
-                else {
-
-                    if (isTheSameDate(date, lastDate)) {
-
-                        tr = $('<tr/>');
-                        var th =
-                            '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
-                            '<td cf=' + data[history].cf + ' id=' + data[history].id + '>' + getStudentByCF(data[history].cf) + '</td> ' +
-                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
-                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                            '<td>' +data[history].username + '</td> ';
-                        tr.html(th);
-                        buttonRevertForHistory($(tr));
-                        tbody.append(tr).appendTo(table);
-
-                    }
-                    else {
-                        content = $('<div/>')
-                            .addClass("content");
-
-                        var thead = $('<thead/>')
-                            .html('<tr> ' +
-                                '<th>Ora</th> ' +
-                                '<th>Alunno</th> ' +
-                                '<th>Classe Precedente</th> ' +
-                                '<th>Classe Successiva</th> ' +
-                                '<th>Utente</th> ' +
-                                '<th>Azione</th> ' +
-                                '</tr>');
-
-                        table = $('<table/>')
-                            .addClass("ui very basic table")
-                            .appendTo(content)
-                            .html(thead);
-
-                        tbody = $('<tbody/>').appendTo(table);
-
-                        title = $('<div/>')
-                            .addClass('title')
-                            .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
-                            .appendTo(accordion);
-                        content.appendTo(accordion);
-
-                        tr = $('<tr/>');
-                        var th =
-                            '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
-                            '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
-                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
-                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                            '<td>' + data[history].username + '</td> ';
-
-                        tr.html(th);
-                        buttonRevertForHistory($(tr));
-                        tbody.append(tr).appendTo(table);
-                    }
-                }
-                lastDate = date;
 
             }
-            $('.ui.accordion').accordion();
-            $('.ui.modal.history').modal('show');
-        },
+
+        }
+
+    }
+    else {
+        alertify.error('Opss, ci deve essere stato un problema');
+    }
+    $('.ui.accordion').accordion();
+    $('.ui.modal.history').modal('show');
+}
+
+function history() {
+
+    //clear modal
+    $('.ui.styled.fluid.accordion').children('div').remove();
+    //download history
+    $.ajax({
+        url: '/get-history',
+        type: 'get',
+        success: createModalHistory,
         error: function (xhr, status, error) {
             alertify.error('Opss, ci deve essere stato un problema');
         }
@@ -2079,8 +2030,6 @@ function downloadClassi(annoScolastico, classeFutura) {
         type: 'GET'
     });
 }
-
-
 
 
 $(document).ready(function () {
