@@ -47,12 +47,8 @@ let n_femmine = femmine.length;
 
 let n_classi = classi.length;
 
-function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
 
-    let ris = Array.apply(null, new Array(n_classi)).map(function () {
-        return {n_104: null, n_107: null, n_femmine: null, n_bocciati: null}
-    });
-
+function generaProprietaIdeali104(n_classi, n_104, ris) {
     //104
     let div_104 = n_104 / n_classi;
     let gruppo_104 = [];
@@ -65,8 +61,18 @@ function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
     } else {
         console.log("ECCEZIONE NON GESTITA CI SONO TROPPI 104 - SE LA VEDI CONTATTA CORRADI E PREGA") //TODO
     }
-    //FINE 104
 
+    return ris;
+}
+
+function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
+
+    let ris = Array.apply(null, new Array(n_classi)).map(function () {
+        return {n_104: null, n_107: null, n_femmine: null, n_bocciati: null}
+    });
+
+
+    ris = generaProprietaIdeali104(n_classi, n_104, ris);
 
     //107
     let countClassiCon104 = _(_.filter(ris, function (obj) {
@@ -104,9 +110,11 @@ function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
     let gruppi_femmine = [];
     if (n_femmine % settings.gruppo_femmine === 0) {
         gruppi_femmine = new Array(div_femmine).fill(settings.gruppo_femmine);
+        ris.reverse();
         for (let i = 0; i < gruppi_femmine.length; i++) {
             ris[i].n_femmine = gruppi_femmine[i];
         }
+        ris.reverse();
     } else {
         console.log("ECCEZIONE NON GESTITA LE FEMMINE NON SONO DIVISIBILI PER LA CLASSE - SE LA VEDI CONTATTA CORRADI E PREGA") //TODO
     }
@@ -429,32 +437,13 @@ function inserisciFemmine(classe) {
                 alunno = femmine[0];
             }
 
-            if (alunno.cognome === "BRUSCO") {
-                console.log("lo");
-            }
-
             let amico = checkDesiderata(alunno);
 
             if (amico !== null) {
-                console.log(amico.cognome);
                 let ris = classe.setAlunno(amico);
-                if(Classe.checkValidazione(ris)){
-                    femmine = _.reject(femmine, function (obj) {
-                        return obj.id === amico.id;
-                    });
-                }
-
             }
 
             let ris = classe.setAlunno(alunno);
-
-            if(Classe.checkValidazione(ris)){
-                femmine = _.reject(femmine, function (obj) {
-                    return obj.id === alunno.id;
-                });
-            };
-
-
 
             condizione--;
         }
@@ -481,7 +470,7 @@ function inserisciBocciati(classe) {
 function debugNumeroNazPerClasse(bool, classi_composte) {
     if (bool) {
         console.log("NUMERO NAZIONALITA' PER CLASSE".black.bgBlue);
-        console.log("| cl | n_naz | n_boc | 104 | 107 | fem | n_cap | tot | problemi");
+        console.log("| cl | n_naz | n_boc | 104 | 107 | fem | n_cap | tot  | problemi");
         for (let i in classi_composte) {
             let naz = _.countBy(classi_composte[i].alunni, function (obj) {
                 return obj.nazionalita;
@@ -606,11 +595,11 @@ function generaClassiComposte(classi) {
 
 
     for (let i in classiComposte) {
-        inserisci104(classiComposte[i]);
+        //inserisci104(classiComposte[i]);
     }
 
     for (let i in classiComposte) {
-        inserisci107(classiComposte[i]);
+        //inserisci107(classiComposte[i]);
     }
 
 
