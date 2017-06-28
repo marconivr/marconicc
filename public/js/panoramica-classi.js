@@ -1,7 +1,7 @@
 'use strict';
 var debug = false;
 var saveRealTimeOnDb = true;
-
+var itemCounter = 0;
 
 var barChartArray = [];//reference to barChart
 var pieChartArray = [];//reference to pieChart
@@ -2040,10 +2040,11 @@ $(document).ready(function () {
      */
     $('#selezioneClassi')
         .on('click', '.item', function () {
+
             if (!$($(this)[0]).hasClass('notSelectable')) { //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
-
+                    itemCounter--;
                     if ($('#check').prop("checked") == false) {
                         var classe = $(this).text();
                         $('#' + classe).hide();
@@ -2052,13 +2053,15 @@ $(document).ready(function () {
 
                 } else {
                     $(this).addClass('active');
-
+                    itemCounter++;
                     if ($('#check').prop("checked") == false) {
                         var classe = $(this).text();
                         $('#' + classe).show();
                     }
                 }
             }
+            if (itemCounter == 0) $('#no-classes').show();
+            
         });
 
     /**
@@ -2077,6 +2080,7 @@ $(document).ready(function () {
             });
             displayAllClass();
             $('#no-classes').hide();
+            $('#top-scroller').show();
         },
         onUnchecked: function () {
             var active = 0;
@@ -2087,14 +2091,15 @@ $(document).ready(function () {
                         var id = $(this).children().text();
                         $('#' + id).hide();
                     } catch (e) {
-                        //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe
                     }
                 }
                 else {
                     active++;
                 }
             });
-            if (active == 0) $('#no-classes').show();
+            if (active == 0)$('#no-classes').show();
+            $('#top-scroller').hide();
+
         }
     });
 });
