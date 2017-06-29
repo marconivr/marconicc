@@ -6,6 +6,8 @@
 <!--inserisci studenti-->
 <div class="ui raised very padded text container segment">
     <h2 class="ui header">Studenti</h2>
+    <div class="ui equal width center aligned padded grid">
+
 
     <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniCsv %>">
         <button class="ui basic button" id="upload">
@@ -19,12 +21,13 @@
         </div>
         <button class="ui green button tiny" type="submit">Send</button>
     </form>
+    </div>
 </div>
 
 <!--inserimento ripetenti-->
 <div class="ui raised very padded text container segment">
     <h2 class="ui header">Studenti che verranno aggiunti alle classi composte</h2>
-
+    <div class="ui equal width center aligned padded grid">
     <form method="post" enctype="multipart/form-data" action="<%= endpoint.alunni.uploadAlunniRimandatiSettembre %>">
         <button class="ui basic button" id="upload-ripetenti">
             <i class="cloud upload icon"></i>
@@ -38,6 +41,7 @@
         </div>
         <button class="ui green button tiny" type="submit">Send</button>
     </form>
+    </div>
 </div>
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->

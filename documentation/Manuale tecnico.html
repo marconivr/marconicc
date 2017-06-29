@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manuale tecnico marconiCC</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/base.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body><div class="container"><h1 id="manuale-tecnico-marconicc">Manuale tecnico marconiCC</h1>
+
+<p><div class="toc">
+<ul>
+<li><a href="#manuale-tecnico-marconicc">Manuale tecnico marconiCC</a><ul>
+<li><a href="#prerequisiti">Prerequisiti</a><ul>
+<li><a href="#server">Server</a></li>
+</ul>
+</li>
+<li><a href="#configurazione-database">Configurazione database</a><ul>
+<li><a href="#creazione-database-e-utente">Creazione Database e utente</a></li>
+<li><a href="#creazione-struttura-del-database">Creazione struttura del database</a><ul>
+<li><a href="#errori-lanciati-da-mysql">Errori lanciati da MySQL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#installazione-e-lancio">Installazione e lancio</a><ul>
+<li><a href="#installazione-applicazione">Installazione applicazione</a></li>
+<li><a href="#lancio">Lancio</a></li>
+</ul>
+</li>
+<li><a href="#produzione-file-di-caricamento-studenti">Produzione file di caricamento studenti</a></li>
+<li><a href="#cambiare-la-porta-dellapplicativo">Cambiare la porta dell’applicativo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</p>
+
+
+
+<h2 id="prerequisiti">Prerequisiti</h2>
+
+
+
+<h3 id="server">Server</h3>
+
+<ol>
+<li>Node js (scaricabile tramite il seguente link: <a href="https://nodejs.org/it/">nodejs</a>)</li>
+<li>MySQL (scaricabile tramite il seguente link: <a href="https://mariadb.org/download/">mysql</a>)</li>
+</ol>
+
+
+
+<h2 id="configurazione-database">Configurazione database</h2>
+
+
+
+<h3 id="creazione-database-e-utente">Creazione Database e utente</h3>
+
+<pre><code>Nome_Database: composizione_classi
+Utente: composizioneclassi
+Password: 5BFF9B615FBEDCD197BFB9371BB5A7D1
+</code></pre>
+
+
+
+<h3 id="creazione-struttura-del-database">Creazione struttura del database</h3>
+
+<ol>
+<li>Aprire il file <strong>new-db(unstable).sql</strong> contenuto nella cartella <strong>composizioneclassi/config/</strong></li>
+<li>Copiare il contenuto ed eseguirlo sul DBMS (MySQL)</li>
+</ol>
+
+
+
+<h4 id="errori-lanciati-da-mysql"><strong>Errori lanciati da MySQL</strong></h4>
+
+<p>Se il DBMS dovesse lanciare qualche errore eseguire il comando su MySQL per cancellare il database:</p>
+
+<pre><code>drop database composizione_classi;
+</code></pre>
+
+<p>Una volta fatto questo bisogna copiare ed eseguire piccole porzioni del codice SQL sul DBMS fino ad arrivare alla fine.</p>
+
+
+
+<h2 id="installazione-e-lancio">Installazione e lancio</h2>
+
+
+
+<h3 id="installazione-applicazione">Installazione applicazione</h3>
+
+<p>Per installare l’applicazione digitare i seguenti comandi da console</p>
+
+<pre><code>cd composizione_classi
+npm install
+npm install bower -g
+npm install pm2 -g
+cd public
+bower install
+</code></pre>
+
+<p>Una volta completata questa serie di operazioni ci si troverà in un percorso di questo tipo <strong>/composizioneclassi/public</strong></p>
+
+<h3 id="lancio">Lancio</h3>
+
+<p>Sempre da console per lanciare l’applicazione digitare il comando dalla cartella  <strong>/composizioneclassi/</strong></p>
+
+<pre><code>pm2 start server.js
+</code></pre>
+
+<p>Per tornare indietro dalla cartella <strong>/composizioneclassi/public</strong> alla <strong>/composizioneclassi/</strong></p>
+
+<h2 id="produzione-file-di-caricamento-studenti">Produzione file di caricamento studenti</h2>
+
+<p>L’applicativo necessita di un file ben formattato per il caricamento degli studenti; il file deve essere un csv con questi campi:</p>
+
+<table>
+<thead>
+<tr>
+  <th>Nome campo</th>
+  <th>Tipo di dato</th>
+  <th>Descrizione</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>cognome</td>
+  <td>Stringa</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td>nome</td>
+  <td>Stringa</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td>matricola</td>
+  <td>Intero</td>
+  <td>Codice numerico identificativo all’interno della scuola</td>
+</tr>
+<tr>
+  <td>cf</td>
+  <td>Stringa di 16 caratteri</td>
+  <td>Codice fiscale</td>
+</tr>
+<tr>
+  <td>desiderata</td>
+  <td>Stringa di 16 caratteri</td>
+  <td>Codice fiscale della persona con la quale l’alunno vuole stare in classe</td>
+</tr>
+<tr>
+  <td>sesso</td>
+  <td>Stringa di 1 carattere (M-F)</td>
+  <td>Maschio o femmina</td>
+</tr>
+<tr>
+  <td>data_di_nascita</td>
+  <td>Data(gg/mm/aaaa)</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td>CAP</td>
+  <td>Stringa di 5 caratteri(e.g. 00184)</td>
+  <td>Codice di avviamento postale del comune in cui abita</td>
+</tr>
+<tr>
+  <td>nazionalità</td>
+  <td>Stringa</td>
+  <td>Nazionalità  dell’alunno</td>
+</tr>
+<tr>
+  <td>legge_104</td>
+  <td>Stringa</td>
+  <td>Individua un alunno disabile e contiene la sua specifica disabilità</td>
+</tr>
+<tr>
+  <td>legge_107</td>
+  <td>Stringa</td>
+  <td>Dislessia, disgrafia, disortografia e discalculia</td>
+</tr>
+<tr>
+  <td>classe_precedente</td>
+  <td>Stringa</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td>scelta_indirizzo</td>
+  <td>Stringa</td>
+  <td>Indirizzo scelto prima di iscriversi</td>
+</tr>
+<tr>
+  <td>anno_scolastico</td>
+  <td>Stringa(aaaa-aaaa)</td>
+  <td>L’anno scolastico corrente</td>
+</tr>
+<tr>
+  <td>codice_catastale</td>
+  <td>Stringa di 4 caratteri</td>
+  <td>Codice catastale del comune di residenza</td>
+</tr>
+<tr>
+  <td>voto</td>
+  <td>Intero di 2 caratteri</td>
+  <td>Voto d’uscita dalle medie</td>
+</tr>
+<tr>
+  <td>classe_futura</td>
+  <td>Stringa</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td>descrizione</td>
+  <td>Stringa</td>
+  <td>-</td>
+</tr>
+</tbody></table>
+
+
+<p>Esempio di record del csv:</p>
+
+<pre><code>MARIO;ROSSI;10001;RSSMAR03D99L345B;AAAGBC01k99L797k;M;03/04/1999 00:00;00184;ITALIANA;DSA;;; INFORMATICA E TELECOMUNICAZIONI;2017-2018;H501;9;PRIMA;Simple description
+</code></pre>
+
+
+
+<h2 id="cambiare-la-porta-dellapplicativo">Cambiare la porta dell’applicativo</h2>
+
+<p>La porta di marconiCC è la <strong>8080</strong></p>
+
+<ol>
+<li>Con un qualsiasi editor aprire il file <strong>server.js</strong> che si trova nella cartella <strong>/composizioneclasse/</strong></li>
+<li>Cambiare il numero di questa istruzione <em>var port = 8080;</em></li>
+<li>Salvare il file</li>
+</ol></div></body>
+</html>

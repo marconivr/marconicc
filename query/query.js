@@ -120,23 +120,23 @@ module.exports = {
 
     cleanClassi: function (scuola, annoScolastico, callback) {
         async.waterfall([
-            function(callback){
-                connection.query("delete from classi_composte WHERE classi_composte.classe IN " +
-                    "(SELECT c.id FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?)", [annoScolastico, scuola], function (err, row) {
-                    if (err){
-                        console.error(err);
-                    }
-                });
-                callback();
-            },
-            function(callback){
-                connection.query("delete FROM classi WHERE anno_scolastico = ? AND scuola = ?", [annoScolastico, scuola], function (err, row) {
-                    if (err){
-                        console.error(err);
-                    }
-                });
-                callback();
-            }
+                function(callback){
+                    connection.query("delete from classi_composte WHERE classi_composte.classe IN " +
+                        "(SELECT c.id FROM classi AS c WHERE c.anno_scolastico = ? AND c.scuola = ?)", [annoScolastico, scuola], function (err, row) {
+                        if (err){
+                            console.error(err);
+                        }
+                    });
+                    callback();
+                },
+                function(callback){
+                    connection.query("delete FROM classi WHERE anno_scolastico = ? AND scuola = ?", [annoScolastico, scuola], function (err, row) {
+                        if (err){
+                            console.error(err);
+                        }
+                    });
+                    callback();
+                }
             ],
             function (succes) {
 
@@ -198,17 +198,17 @@ module.exports = {
 
     deleteConfiguration: function (id, callback) {
         async.waterfall([
-            function (callback) {
-                connection.query("DELETE FROM configurazione WHERE id = ?;",[id], function (err, row) {
-                    if (err){callback(null, err, null)}
-                    else {callback(null, null, "Success")}
-                })
-            }, function (err, ris, callback) {
-                connection.query("UPDATE configurazione SET attiva = 1 WHERE id = (SELECT * FROM(SELECT MAX(id) FROM configurazione)AS p);", function (err, row) {
-                    if (err){callback(err, null)}
-                    else {callback(null,"Success")}
-                });
-            }],
+                function (callback) {
+                    connection.query("DELETE FROM configurazione WHERE id = ?;",[id], function (err, row) {
+                        if (err){callback(null, err, null)}
+                        else {callback(null, null, "Success")}
+                    })
+                }, function (err, ris, callback) {
+                    connection.query("UPDATE configurazione SET attiva = 1 WHERE id = (SELECT * FROM(SELECT MAX(id) FROM configurazione)AS p);", function (err, row) {
+                        if (err){callback(err, null)}
+                        else {callback(null,"Success")}
+                    });
+                }],
             function (err, ris) {
                 callback(err, ris);
             });
@@ -466,6 +466,14 @@ module.exports = {
         });
     },
 
+    getNumberCentoQuattro: function (classeFutura, scuola, annoScolastico, callback) {
+        connection.query("SELECT  DISTINCT count(legge_104)  as result from alunni WHERE classe_futura = ? AND SCUOLA = ? and anno_scolastico = ? and legge_104 <> ''",
+            [classeFutura, scuola, annoScolastico], function (err, rows) {
+                callback(err, rows);
+
+            });
+    },
+
     getNumberSameResidence: function (callback, classe, cap, catasto) {
         var qry = "SELECT count(*) residences from alunni WHERE classe_futura = '" + classe + "' AND cap_provenienza = " + cap;
 
@@ -548,7 +556,7 @@ module.exports = {
     getStudentByCf: function (cf, scuola, callback) {
 
         connection.query("SELECT * from alunni  WHERE cf = ? and scuola = ? ", [cf, scuola], function (err, rows) {
-                callback(err, rows);
+            callback(err, rows);
         });
     },
 
@@ -567,9 +575,8 @@ module.exports = {
             function (err, rows) {
                 if (err) {
                     console.log(err);
-                } else {
-                    callback(err, rows);
                 }
+                callback(err, rows);
             });
     },
 
@@ -611,7 +618,7 @@ module.exports = {
         else  query = "UPDATE alunni set tag = '" + tag + "'  WHERE cf = '" + cf + "'";
 
         connection.query(query, function (err, rows) {
-                callback(err, rows);
+            callback(err, rows);
         });
     },
 

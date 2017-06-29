@@ -13,7 +13,7 @@ const nodeExcel = require('excel-export');
 const endpoint = require('./endpoint/endpoint.js');
 const sessione = require('./../query/sessione.js');
 const _ = require('lodash');
-
+const logger = require("../logger");
 const multer = require('multer');
 const upload = multer({ dest: 'files/' });
 
@@ -143,20 +143,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
-        query.getPriorita(function (err, results) {
-            if (err)
-                throw err;
-            else
-                alg.createArrayPriorita(results);
-        })
-
-        res.render('panoramica-classi.ejs', {
-            pageTitle: "Panoramica classi   "
-        })
-    });
-
-    app.get(endpoint.utenti.creaUtente, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.utenti.creaUtente, middleware.isLoggedIn, function (req, res) {
 
         res.render('crea-utente.ejs', {
             pageTitle: "Creazione utente ",
@@ -164,19 +151,22 @@ module.exports = function (app) {
         })
     });
 
-    app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.panoramicaClassi, middleware.isLoggedIn, function (req, res) {
+
+
         res.render('panoramica-classi.ejs', {
             pageTitle: "Panoramica classi   "
         })
     });
 
-    app.get(endpoint.alunni.settings, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.settings, middleware.isLoggedIn, function (req, res) {
         res.render('settings.ejs', {
-            pageTitle: "Settings   "
+            pageTitle: "Settings ",
+            hideDropDown: true
         })
     });
 
-    app.get(endpoint.alunni.tagAlunni, middleware.isLoggedIn, function (req, res) { // render the page and pass in any flash data if it exists
+    app.get(endpoint.alunni.tagAlunni, middleware.isLoggedIn, function (req, res) {
 
         async.parallel({
             tagAlunni: function (callback) {
@@ -201,8 +191,10 @@ module.exports = function (app) {
     /**
      * inserisce i tag
      */
-    app.get(endpoint.alunni.insertTag, function (req, res) {
+    app.get(endpoint.alunni.insertTag, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
+
         const scuola = req.user.id_scuola;
+
         query.insertTag(scuola, req.query.tag, function (err, results) {
             if (err)
                 res.send(err);
@@ -247,6 +239,12 @@ module.exports = function (app) {
                     else
                         callback(null, {'stranieri': results})
                 });
+            },
+            centoQuattroPrima: function (callback) {
+                var annoScolastico = "2017-2018";
+                query.getNumberCentoQuattro("PRIMA", req.user.id_scuola, annoScolastico, function (err, results) {
+                    callback(err, {'centoQuattro': results})
+                });
             }
         }, function (err, results) {
             res.render('settings-prime.ejs', {
@@ -256,6 +254,7 @@ module.exports = function (app) {
                 femminePrima: results.femminePrima.femmine,
                 mediaPrima: results.mediaPrima.media,
                 stranieriPrima: results.stranieriPrima.stranieri,
+                centoQuattro: results.centoQuattroPrima.centoQuattro,
                 hideDropDown: true
             });
 
@@ -332,9 +331,11 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.post(endpoint.alunni.insertSettingsPrime, function (req, res) {
+    app.post(endpoint.alunni.insertSettingsPrime, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
+
         const scuola = req.user.id_scuola;
         const annoScolastico = "2017-2018";
+
         query.insertSettingsPrime(scuola, annoScolastico, req.body.data, req.body.descrizione, req.body.alunniMin, req.body.alunniMax, req.body.femmine, req.body.residenza, req.body.nazionalita, req.body.naz_per_classe, req.body.max_al_104, function (err, results) {
             if (err)
                 res.send({"error":err});
@@ -347,7 +348,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle prime
      */
-    app.post(endpoint.alunni.setActiveConfiguration, middleware.restrictTo([0, 1]), function (req, res) {
+    app.post(endpoint.alunni.setActiveConfiguration, middleware.restrictTo([0, 1]), middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         query.setActiveConfiguration(scuola, "PRIMA", req.body.id, function (err, results) {
             if (err)
@@ -361,7 +362,7 @@ module.exports = function (app) {
     /**
      * inserisce le impostazioni delle terze
      */
-    app.get(endpoint.alunni.insertSettingsTerze, function (req, res) {
+    app.get(endpoint.alunni.insertSettingsTerze, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         query.insertSettingsTerze(function (err, results) {
             if (err)
@@ -445,20 +446,19 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.generateClassi, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA";
-
-
+        const classeFutura = req.query.classeFutura;
+        const annoScolastico = req.query.annoScolastico;
 
         newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
 
-            var wrapper = {
-                scuola:scuola,
-                annoScolastico:annoScolastico,
-                classeFutura:classeFutura,
+            //noinspection JSAnnotator
+            let wrapper = {
+                scuola: scuola,
+                annoScolastico: annoScolastico,
+                classeFutura: classeFutura,
                 idUtente: req.user.id,
                 dirittiUtente: req.user.diritti,
-                classi:classi
+                classi: classi
             };
 
             res.send(wrapper);
@@ -470,17 +470,17 @@ module.exports = function (app) {
     //HISTORY & MOVE STUDENT
     app.post(endpoint.alunni.moveStudent, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
         const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA";
+        const classeFutura = req.body.classeFutura;
+        const annoScolastico = req.body.annoScolastico;
 
         const cfALunno = req.body.cf;
         const nuovaClasse = req.body.toClass;
         const vecchiaClasse = req.body.fromClass;
         const idUtente = req.user.id;
 
-
-        query.updateAlunnoClass(cfALunno, nuovaClasse ,annoScolastico, scuola, classeFutura, function (err) {
+        query.updateAlunnoClass(cfALunno, nuovaClasse, annoScolastico, scuola, classeFutura, function (err) {
             if(err){
+                logger.error("updateAlunnoClass - errore ", err);
                 res.send({
                     "error": err
                 });
@@ -491,6 +491,7 @@ module.exports = function (app) {
                 if (saveHistory && nuovaClasse !== vecchiaClasse) {
                     query.insertHistory(cfALunno, nuovaClasse, vecchiaClasse, idUtente, annoScolastico, scuola, classeFutura, function (err) {
                         if(err){
+                            logger.error("insertHistory - errore ", err);
                             res.send({
                                 "error": err
                             });
@@ -509,13 +510,24 @@ module.exports = function (app) {
 
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
-        const annoScolastico = "2017-2018";
-        const classeFutura = "PRIMA";
+        const classeFutura = req.body.classeFutura;
+        const annoScolastico = req.body.annoScolastico;
+
         query.getHistory(scuola, function (err, results) {
-            if (err)
+            if (err) { 
                 console.log(err);
+                logger.error("getHistory - errore ", err);
+                res.send({
+                    "error": err
+                });
+            }
             else {
-                res.send(results);
+
+                var history = _.groupBy(results, function (o) {
+                    return o.timestamp.split(" ")[0];
+                });
+
+                res.send(history);
             }
         });
     });

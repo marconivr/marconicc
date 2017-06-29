@@ -100,7 +100,7 @@
                                            onkeyup="setDataRealtimeNumberOfStudents()"
                                            onchange="setDataRealtimeNumberOfStudents()"
                                            id="alunni-min"
-                                           min="15"
+                                           min="1"
                                            max="30">
                                 </div>
                                 <div class="field">
@@ -108,7 +108,7 @@
                                     <input type="number" name="alunni_max"
                                            placeholder="Qual è il numero di alunni massimi di una classe?"
                                            id="alunni-max"
-                                           min="15"
+                                           min="1"
                                            max="50">
                                 </div>
                             </div>
@@ -119,14 +119,14 @@
                                    onkeyup="setDataRealtimeNumberOfFemmine()"
                                    onchange="setDataRealtimeNumberOfFemmine()"
                                    id="femmine"
-                                   min="0"
+                                   min="1"
                                    max="25">
                         </div>
                         <div class="field">
                             <label>Numero persone con la stessa nazionalità</label>
                             <input name="nazionalita" placeholder="Quante nazionaità diverse per classe?" type="number"
                                    id="nazionalita"
-                                   min="0"
+                                   min="1"
                                    max="25">
                         </div>
                         <div class="field">
@@ -134,7 +134,7 @@
                             <input name="naz_per_classe"
                                    placeholder="Quanti alunni con la stessa nazionalità per classe?" type="number"
                                    id="naz_per_classe"
-                                   min="0"
+                                   min="1"
                                    max="15">
                         </div>
                         <div class="field">
@@ -142,7 +142,7 @@
                             <input name="stessa_provenienza" placeholder="Quanti alunni con la stessa residenza?"
                                    type="number"
                                    id="residenza"
-                                   min="0"
+                                   min="1"
                                    max="25">
                         </div>
                         <div class="field">
@@ -150,7 +150,7 @@
                             <input name="max_al_104"
                                    placeholder="Qual è il numero di alunni massimi in presenza di un 104?" type="number"
                                    id="max_al_104"
-                                   min="0"
+                                   min="1"
                                    max="30">
                         </div>
                         <div class="field">
@@ -201,6 +201,12 @@
                             Stranieri
                             <div class="ui teal left pointing label">
                                 <%= stranieriPrima[0].result %>
+                            </div>
+                        </a>
+                        <a class="item">
+                            104
+                            <div class="ui red left pointing label" id="cento-quattro">
+                                <%= centoQuattro[0].result %>
                             </div>
                         </a>
                     </div>
@@ -285,15 +291,6 @@
             $('#modal-header').text(settings[index].nome);
             $('#modal-date').text(settings[index].data);
 
-
-//        for (setting in settings[index]) {
-//            if((setting != "data") || (setting != "id") || (setting != "attiva"))
-//            {
-//                tableLine += '<td class="center aligned">' + settings[index][setting] + "</td>";
-//            }
-//
-//        }
-
             tableLine += '<td class="center aligned">' + settings[index].nome + "</td>";
             tableLine += '<td class="center aligned">' + settings[index].min_alunni + "</td>";
             tableLine += '<td class="center aligned">' + settings[index].max_alunni + "</td>";
@@ -339,14 +336,23 @@
 
         //this function set the number of student for class
         function setDataRealtimeNumberOfStudents() {
-            var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML;
+            var alunniTot = document.getElementById("alunni-in-classe-prima").innerHTML.trim();
             var alunniMin = $("#alunni-min").val();
+            var totalOfCentoQuattro = $('#cento-quattro').text().trim();
+            var max_al_104 = $('#max_al_104').val();
 
             if (alunniMin == "") {
                 $("#classe-realtime").html("0");
             }
             else {
+                //controllo se ci sono gia i 104
+//                if (max_al_104 != "") {
+//                    //TODO: CALCOLARE LE CLASSI CORRETTAMENTE
+//                    $("#classe-realtime").html(Math.floor((alunniTot- (max_al_104*totalOfCentoQuattro)) / ( alunniMin)) + totalOfCentoQuattro );
+//                }
+//                else {
                 $("#classe-realtime").html(Math.floor(alunniTot / alunniMin));
+                //}
             }
         }
 

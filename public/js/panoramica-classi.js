@@ -1,7 +1,7 @@
 'use strict';
 var debug = false;
 var saveRealTimeOnDb = true;
-
+var itemCounter = 0;
 
 var barChartArray = [];//reference to barChart
 var pieChartArray = [];//reference to pieChart
@@ -19,6 +19,10 @@ var nazionalitaItems = [];
 //sezione diritti
 var dirittiUtente = undefined;
 var idUtente = undefined;
+
+//anno scolastico e classe futura
+var classeFuturaGlobal = undefined;
+var annoScolasticoGlobal = undefined;
 
 
 //chart
@@ -40,7 +44,6 @@ var iconJson = {
     }
 
 };
-
 
 var flagJson = {
     ITALIANA: {iso: 'it', color: '#16db60'},
@@ -477,8 +480,9 @@ function saveStudentMovementOnDb(cf, fromClass, toClass, saveHistory, anno_scola
         toClass: toClass,
         id_utente: idUtente,
         anno_scolastico: anno_scolastico,
-        saveHistory: saveHistory
-
+        saveHistory: saveHistory,
+        classeFutura: classeFuturaGlobal,
+        annoScolastico: annoScolasticoGlobal
     };
 
     if (saveRealTimeOnDb) {
@@ -1077,7 +1081,7 @@ function setAllFilter() {
             alertify.error("Non ci sono risultati", 1)
         }
         else {
-            alertify.success('Ci sono ' + totalResult + " risultati",1);
+            alertify.success('Ci sono ' + totalResult + " risultati", 1);
         }
     }
 
@@ -1394,17 +1398,24 @@ function removeStudentsFromHistory(cf, id, classeSuccessiva, classePrecendente, 
     });
 }
 
-function history() {
+function createModalHistory(data) {
+    if (!data.error) {
+        if (data.length == 0) $('#history-label').text("Non ci sono elementi nella history");
+        else $('#history-label').text("In questa sezione puoi vedere e ripristinare tutti gli spostamenti compiuti");
+        var thead = $('<thead/>')
+            .html('<tr> ' +
+                '<th>Ora</th> ' +
+                '<th>Alunno</th> ' +
+                '<th>Classe Precedente</th> ' +
+                '<th>Classe Successiva</th> ' +
+                '<th>Utente</th> ' +
+                '<th>Azione</th> ' +
+                '</tr>');
 
-    //clear modal
-    $('.ui.styled.fluid.accordion').children('div').remove();
-    //download history
-    $.ajax({
-        url: '/get-history',
-        type: 'get',
-        success: function (data) {
-            if (data.length == 0) $('#history-label').text("Non ci sono elementi nella history");
-            else $('#history-label').text("In questa sezione puoi vedere e ripristinare tutti gli spostamenti compiuti");
+        //create accordion
+        var accordion = $('.ui.styled.fluid.accordion');
+
+        for (var index in data) {
             var thead = $('<thead/>')
                 .html('<tr> ' +
                     '<th>Ora</th> ' +
@@ -1415,123 +1426,75 @@ function history() {
                     '<th>Azione</th> ' +
                     '</tr>');
 
-            //create accordion
-            var lastDate, date, container, content, p, table, tbody, tr, title;
-            var accordion = $('.ui.styled.fluid.accordion');
-            for (var history = 0; history < data.length; history++) {
-                date = new Date(data[history].timestamp);
+            var content = $('<div/>')
+                .addClass("content");
 
-                if (history == 0) {
-                    //creo tutto
-                    content = $('<div/>')
-                        .addClass("content");
+            var table = $('<table/>')
+                .addClass("ui very basic table")
+                .appendTo(content)
+                .html(thead);
 
-                    var thead = $('<thead/>')
-                        .html('<tr> ' +
-                            '<th>Ora</th> ' +
-                            '<th>Alunno</th> ' +
-                            '<th>Classe Precedente</th> ' +
-                            '<th>Classe Successiva</th> ' +
-                            '<th>Utente</th> ' +
-                            '<th>Azione</th> ' +
-                            '</tr>');
+            var tbody = $('<tbody/>').appendTo(table);
 
-                    table = $('<table/>')
-                        .addClass("ui very basic table")
-                        .appendTo(content)
-                        .html(thead);
+            var date = new Date(data[index][0].timestamp);
 
-                    tbody = $('<tbody/>').appendTo(table);
+            var title = $('<div/>')
+                .addClass('title')
+                .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
+                .appendTo(accordion);
+            content.appendTo(accordion);
 
-                    title = $('<div/>')
-                        .addClass('title')
-                        .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
-                        .appendTo(accordion);
-                    content.appendTo(accordion);
+            for (var historyInASpecificDay in data[index]) {
+                var date = new Date(data[index][historyInASpecificDay].timestamp);
+                var tr = $('<tr/>');
+                var th =
+                    '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
+                    '<td cf=' + data[index][historyInASpecificDay].cf + ' id=' + data[index][historyInASpecificDay].id + ' >' + getStudentByCF(data[index][historyInASpecificDay].cf) + '</td> ' +
+                    '<td id="cp">' + data[index][historyInASpecificDay].classe_precedente + '</td> ' +
+                    '<td id="cs">' + data[index][historyInASpecificDay].classe_successiva + '</td> ' +
+                    '<td>' + data[index][historyInASpecificDay].username + '</td> ';
 
-                    tr = $('<tr/>');
-                    var th =
-                        '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
-                        '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
-                        '<td id="cp">' + data[history].classe_precedente + '</td> ' +
-                        '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                        '<td>' + data[history].username + '</td> ';
+                tr.html(th);
+                buttonRevertForHistory($(tr));
+                tbody.append(tr).appendTo(table);
 
-                    tr.html(th);
-                    buttonRevertForHistory($(tr));
-                    tbody.append(tr).appendTo(table);
-
-                }
-
-                else {
-
-                    if (isTheSameDate(date, lastDate)) {
-
-                        tr = $('<tr/>');
-                        var th =
-                            '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
-                            '<td cf=' + data[history].cf + ' id=' + data[history].id + '>' + getStudentByCF(data[history].cf) + '</td> ' +
-                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
-                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                            '<td>' +data[history].username + '</td> ';
-                        tr.html(th);
-                        buttonRevertForHistory($(tr));
-                        tbody.append(tr).appendTo(table);
-
-                    }
-                    else {
-                        content = $('<div/>')
-                            .addClass("content");
-
-                        var thead = $('<thead/>')
-                            .html('<tr> ' +
-                                '<th>Ora</th> ' +
-                                '<th>Alunno</th> ' +
-                                '<th>Classe Precedente</th> ' +
-                                '<th>Classe Successiva</th> ' +
-                                '<th>Utente</th> ' +
-                                '<th>Azione</th> ' +
-                                '</tr>');
-
-                        table = $('<table/>')
-                            .addClass("ui very basic table")
-                            .appendTo(content)
-                            .html(thead);
-
-                        tbody = $('<tbody/>').appendTo(table);
-
-                        title = $('<div/>')
-                            .addClass('title')
-                            .html('<i class="dropdown icon"></i>' + returnFormatDate(date))
-                            .appendTo(accordion);
-                        content.appendTo(accordion);
-
-                        tr = $('<tr/>');
-                        var th =
-                            '<th>' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + (date.getMinutes())).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '</th> ' +
-                            '<td cf=' + data[history].cf + ' id=' + data[history].id + ' >' + getStudentByCF(data[history].cf) + '</td> ' +
-                            '<td id="cp">' + data[history].classe_precedente + '</td> ' +
-                            '<td id="cs">' + data[history].classe_successiva + '</td> ' +
-                            '<td>' + data[history].username + '</td> ';
-
-                        tr.html(th);
-                        buttonRevertForHistory($(tr));
-                        tbody.append(tr).appendTo(table);
-                    }
-                }
-                lastDate = date;
 
             }
-            $('.ui.accordion').accordion();
-            $('.ui.modal.history').modal('show');
-        },
+
+        }
+
+    }
+    else {
+        alertify.error('Opss, ci deve essere stato un problema');
+    }
+    $('.ui.accordion').accordion();
+    $('.ui.modal.history').modal('show');
+}
+
+function history() {
+
+    //clear modal
+    $('.ui.styled.fluid.accordion').children('div').remove();
+    //download history
+    $.ajax({
+        url: '/get-history',
+        type: 'get',
+        success: createModalHistory,
         error: function (xhr, status, error) {
             alertify.error('Opss, ci deve essere stato un problema');
         }
     });
 }
 function changeYearAndCLass(anno_scolastico, classeFutura, firstTime) {
-
+    arrayClassi = [];
+    barChartArray = [];
+    pieChartArray = [];
+    $('#download-loader').removeClass('disabled').addClass('active');
+    $('#selezioneClassi').children('.classi').remove();
+    $.contextMenu('destroy', '.contenitoreClasse.ui.vertical.menu.ui-sortable');
+    $('.context-menu-list.context-menu-root').remove();
+    $('#rowForInsertClasses').children().remove()
+    downloadClassi(anno_scolastico, classeFutura);
 }
 
 function setLoader(value) {
@@ -1540,392 +1503,56 @@ function setLoader(value) {
     });
 }
 
-function generatePage(data) {
-    var listaClassi = data.classi;
+/**
+ *
+ * @param div div to apply the context menu
+ */
+function handleContexMenu(div) {
+    div.contextMenu({
+        selector: 'li',
+        callback: function (key, options) {
+            var studente = getStudentObject($(this).children().attr("id"));
+            switch (key) {
+                case "informazioni":
+                    //open modal
+                    $('.ui.modal.informazioni').modal({
+                        onHide: function () {
 
-    if (listaClassi === null){
-        $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
-        alertify.error('Errore di scaricamento dei dati.\nControlla di aver creato la configurazione');
-        setTimeout(function () {
-            window.location.href = '/settings-prime';
-        }, 2500);
-    }
+                        },
+                        onApprove: function () {
 
-    dirittiUtente = data.dirittiUtente;
-    idUtente = data.idUtente;
-    // setLoader(22);
 
-    //dropdown for the settings
-    $('.ui.dropdown.settings').dropdown(
-        {
-            action: 'nothing'
+                        },
+                        onShow: function () {
+
+                            populateModal(studente);
+                        }
+                    }).modal('show');
+
+                    break;
+                //for further case
+                case "spostamento" :
+
+                    moveStudentFromContextMenu(key, studente);
+                    break;
+                //spostamento nelle classi
+                default:
+                    moveStudentFromContextMenu(key, studente);
+                    break;
+            }
+        },
+        items: {
+            "informazioni": {name: "Informazioni", icon: "view"},
+            "spostamento": {
+                name: "Spostamento",
+                icon: "move",
+                "items": returnJsonOfClassName()
+            }
         }
-    );
-    $('.ui.accordion').accordion();
-    handleCheckBoxVoti();
-    createDynamicStyle();
-    createNazionalitaMenu();
-    handleCheckBoxNazionalita();
-    handleCheckBoxDesiderata();
-    handleCheckBoxBocciati();
-    var selezioneClassi = $('#selezioneClassi');
-
-    //handle history click
-    $('#history').click(function (e) {
-        history();
     });
-
-    for (i = 0; i < listaClassi.length; i++) {
-        listaClassi[i].alunni.sort(compare);
-    }
-
-    populate(listaClassi);
-    for (var i = 0; i < listaClassi.length; i++) {
-
-        var nomeClasse = listaClassi[i].nome;
-        var arrayStudenti = listaClassi[i].alunni;
-
-        var wrapperClasse = $('<div/>', {
-            'id': nomeClasse,
-            'class': 'wrapperClasse',
-        }).appendTo('#rowForInsertClasses').hide();
-
-        var classButton = $('<a/>', {
-            'class': 'item',
-            'text': nomeClasse
-        });
-
-        $('<div/>')
-            .css
-            ({
-                top: '15%',
-                position: 'relative'
-            })
-            .html(classButton)
-            .addClass('classi')
-            .appendTo(selezioneClassi);
-
-        var settingClasse = $('<div/>', {
-            'class': 'ui raised segment wrapperSettingClasse',
-            'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>' +
-            ' <div class="ui icon buttons mini" style="left:15%;position:relative">' +
-            '<button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button>' +
-            '<button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button>' +
-            '</div>'
-        }).appendTo(wrapperClasse);
-
-        var div = $('<ul/>', {
-            'class': 'contenitoreClasse ui vertical menu'
-        }).appendTo(wrapperClasse);
-
-
-        jsonVoti = {};
-        for (var j = 0; j < arrayStudenti.length; j++) {
-            if (arrayStudenti[j] !== undefined) {
-                var cognomeStudente = arrayStudenti[j].cognome;
-                var nomeStudente = arrayStudenti[j].nome;
-                var cf = arrayStudenti[j].cf;
-                var nazionalita = arrayStudenti[j].nazionalita;
-                var desiderata = arrayStudenti[j].desiderata;
-                var voto = arrayStudenti[j].voto;
-
-
-                var iconFlagElement = "";
-                if (nazionalita != "ITALIANA") {
-                    iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
-                }
-
-                /////////////////////STUDENTI//////////////////
-                //CREAZIONE TAG
-                //ES : CIECO
-                //ES : DSA-> DISGRAFICO
-
-                //CONTROLLO ANAGRAFICA
-                //CONTROLLO DESIDERATA
-                //AGGIUGNO CLASSE VOTO
-
-                var tag;
-                var anagrafica = $('<p/>')
-                    .addClass('roboto')
-                    .html(iconFlagElement + " " + cognomeStudente + " " + nomeStudente);
-
-                //CREO GLI STUDENTI
-                var container;
-                if (arrayStudenti[j].sesso == "M") {
-                    container = $('<div/>',
-                        {
-                            'width': $(wrapperClasse).width() - 5,
-                            'height': 40,
-                            'data-content': nazionalita,
-                            'cognome': cognomeStudente,
-                            'data-variation': "tiny"
-
-                        })
-                        .addClass('ui segment tooltip guys popup-information ' + voto)
-                        .attr('id', cf)
-                        .html(anagrafica)
-                }
-                else {
-                    container = $('<div/>',
-                        {
-                            'width': $(wrapperClasse).width() - 5,
-                            'height': 40,
-                            'data-content': nazionalita,
-                            'cognome': cognomeStudente,
-                            'data-variation': "tiny"
-                        })
-                        .addClass('ui segment tooltip girl popup-information ' + voto)
-                        .attr('id', cf)
-                        .html(anagrafica)
-                }
-
-
-                //aggiungo la classe desiderata se presente
-                if (desiderata != "") container.addClass('desiderata');
-
-                var tooltipValue = "";
-                if ((arrayStudenti[j].legge_104) != "") {
-                    tooltipValue = "104"
-                } else if (arrayStudenti[j].legge_107 != "") {
-                    tooltipValue = "107";
-                }
-
-
-                if (tooltipValue != "") {
-                    //contiene il tag studente
-                    tag = $('<div/>')
-                        .addClass('floating ui grey label mini')
-                        .css(
-                            {
-                                'top': '25%'
-                            }
-                        )
-                        .html(tooltipValue)
-                        .appendTo(container)
-                }
-
-                //tooltip for handicap
-                var handicapTooltip = "";
-                if ((arrayStudenti[j])['legge_' + tooltipValue] !== undefined) {
-                    handicapTooltip =  tooltipValue + ': ' + (arrayStudenti[j])['legge_' + tooltipValue];
-                }
-
-                var tooltip = $('<span/>')
-                    .addClass('tooltiptext')
-                    .html('media : ' + voto + '<br>naz : ' + nazionalita.toLowerCase() + '<br>' + handicapTooltip)
-                    .appendTo(container);
-
-                var li = $('<li/>')
-                    .html(container)
-                    .appendTo(div);
-            }
-        }
-
-        //create menu
-        div.contextMenu({
-            selector: 'li',
-            callback: function (key, options) {
-                var studente = getStudentObject($(this).children().attr("id"));
-                switch (key) {
-                    case "informazioni":
-                        //open modal
-                        $('.ui.modal.informazioni').modal({
-                            onHide: function () {
-
-                            },
-                            onApprove: function () {
-
-
-                            },
-                            onShow: function () {
-
-                                populateModal(studente);
-                            }
-                        }).modal('show');
-
-                        break;
-                    //for further case
-                    case "spostamento" :
-
-                        moveStudentFromContextMenu(key, studente);
-                        break;
-                    //spostamento nelle classi
-                    default:
-                        moveStudentFromContextMenu(key, studente);
-                        break;
-                }
-            },
-            items: {
-                "informazioni": {name: "Informazioni", icon: "view"},
-                "spostamento": {
-                    name: "Spostamento",
-                    icon: "move",
-                    "items": returnJsonOfClassName()
-                }
-            }
-        });
-        // setLoader(70);
-
-        var jsonVotiPrima = totalVotiOfAllClass();
-        var jsonVoti = numerOfVotiOfClass(nomeClasse);
-        var numerOfStudent = totalNumberOfStudent(nomeClasse);
-        var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
-
-        // CHART BAR //
-        var canvasBarChart = $('<canvas/>',
-            {
-                'id': nomeClasse + 'barChart',
-                'class': 'barChart',
-                'width': 200,
-                'height': 250
-            }).appendTo(settingClasse);
-
-        var br = $('<br>', {
-            class: 'barChart'
-        }).appendTo(settingClasse);
-
-        var barChart = new Chart(canvasBarChart, {
-            type: 'bar',
-            data: {
-                labels: ["6", "7", "8", "9", "10"],
-                datasets: [{
-                    label: 'classe' + nomeClasse,
-                    data: [
-                        approxNum((jsonVoti[6] / numerOfStudent) * 100),
-                        approxNum((jsonVoti[7] / numerOfStudent) * 100),
-                        approxNum((jsonVoti[8] / numerOfStudent) * 100),
-                        approxNum((jsonVoti[9] / numerOfStudent) * 100),
-                        approxNum((jsonVoti[10] / numerOfStudent) * 100)
-                    ],
-                    backgroundColor: [
-                        '#FFCC80',
-                        '#E6EE9C',
-                        '#D4E157',
-                        '#C5E1A5',
-                        '#AED581'
-                    ],
-                    borderColor: [
-                        '#FFB74D',
-                        '#E6EE9C',
-                        '#CDDC39',
-                        '#C5E1A5',
-                        '#AED581'
-                    ],
-                    borderWidth: 1,
-                    stack: 1
-                },
-                    {
-                        label: 'Totali',
-                        data: [
-                            approxNum((jsonVotiPrima[6] / totalNumberOfAllClass) * 100),
-                            approxNum((jsonVotiPrima[7] / totalNumberOfAllClass) * 100),
-                            approxNum((jsonVotiPrima[8] / totalNumberOfAllClass) * 100),
-                            approxNum((jsonVotiPrima[9] / totalNumberOfAllClass) * 100),
-                            approxNum((jsonVotiPrima[10] / totalNumberOfAllClass) * 100)
-                        ],
-                        backgroundColor: [
-                            '#E0E0E0',
-                            '#E0E0E0',
-                            '#E0E0E0',
-                            '#E0E0E0',
-                            '#E0E0E0'
-                        ],
-                        borderColor: [
-                            '#BDBDBD',
-                            '#BDBDBD',
-                            '#BDBDBD',
-                            '#BDBDBD',
-                            '#BDBDBD'
-                        ],
-                        borderWidth: 1,
-                        stack: 2
-                    }
-                ]
-            },
-            options: {
-                responsive: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            steps: 10,
-                            stepValue: 6,
-                            max: 60,
-                            callback: function (value) {
-                                return value + "%";   //mettendo questa per la percentuale il voto viene messo orizzontale
-                            }
-                        }
-                    }]
-                }
-            }
-        });
-
-        barChartArray.push(barChart);
-
-
-        // PIE CHART
-        //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
-
-        var canvasPieChart = $('<canvas/>',
-            {
-                'id': nomeClasse + 'pieChart',
-                'class': 'pieChart',
-                'width': 200,
-                'height': 250
-            }).appendTo(settingClasse).hide();
-
-
-        var stranieri = getNationalityOfClass(nomeClasse);
-        var labels = [];
-        var data = [];
-
-
-        for (var prop in stranieri) {
-            labels.push(flagTag(prop));
-            data.push(stranieri[prop]);
-        }
-
-        var colorArray = getColorOfNationalitiesByLabelArray(labels);
-
-        var br = $('<br>', {
-            class: 'pieChart'
-        }).appendTo(settingClasse);
-
-        // For a pie chart
-        var pieChart = new Chart(canvasPieChart, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        data: data,
-                        backgroundColor: colorArray,
-                        hoverBackgroundColor: colorArray
-                    }]
-            },
-            options: {
-                responsive: false,
-                tooltips: {
-                    callbacks: {
-                        label: function (tooltipItems, data) {
-                            return data.datasets[0].data[tooltipItems.index] + ' -> naz: ' + nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
-                        }
-
-                    }
-                }
-
-            }
-        });
-
-        pieChartArray.push(pieChart);
-
-        //box informazioni
-
-        createBoxInformazioni(settingClasse, nomeClasse);
-
-
-    }
-    var oldList, newList, item, desiderata, cfAmico;
+}
+function handleDragEDrop() {
+    var oldList, newList, item, desiderata, cfAmico, cf;
     if (dirittiUtente == 0 || dirittiUtente == 1) {
         $(".contenitoreClasse").sortable({
             connectWith: ".contenitoreClasse",
@@ -1983,25 +1610,379 @@ function generatePage(data) {
             }
         }).disableSelection();
     }
+}
 
+/**
+ *
+ * @param nomeClasse
+ * @param settingClasse div to append
+ */
+function createBarChart(nomeClasse, settingClasse) {
+    var jsonVotiPrima = totalVotiOfAllClass();
+    var jsonVoti = numerOfVotiOfClass(nomeClasse);
+    var numerOfStudent = totalNumberOfStudent(nomeClasse);
+    var totalNumberOfAllClass = totalNumberOfStudentOfAllClass();
+
+    // CHART BAR //
+    var canvasBarChart = $('<canvas/>',
+        {
+            'id': nomeClasse + 'barChart',
+            'class': 'barChart',
+            'width': 200,
+            'height': 250
+        }).appendTo(settingClasse);
+
+    var br = $('<br>', {
+        class: 'barChart'
+    }).appendTo(settingClasse);
+
+    var barChart = new Chart(canvasBarChart, {
+        type: 'bar',
+        data: {
+            labels: ["6", "7", "8", "9", "10"],
+            datasets: [{
+                label: 'classe' + nomeClasse,
+                data: [
+                    approxNum((jsonVoti[6] / numerOfStudent) * 100),
+                    approxNum((jsonVoti[7] / numerOfStudent) * 100),
+                    approxNum((jsonVoti[8] / numerOfStudent) * 100),
+                    approxNum((jsonVoti[9] / numerOfStudent) * 100),
+                    approxNum((jsonVoti[10] / numerOfStudent) * 100)
+                ],
+                backgroundColor: [
+                    '#FFCC80',
+                    '#E6EE9C',
+                    '#D4E157',
+                    '#C5E1A5',
+                    '#AED581'
+                ],
+                borderColor: [
+                    '#FFB74D',
+                    '#E6EE9C',
+                    '#CDDC39',
+                    '#C5E1A5',
+                    '#AED581'
+                ],
+                borderWidth: 1,
+                stack: 1
+            },
+                {
+                    label: 'Totali',
+                    data: [
+                        approxNum((jsonVotiPrima[6] / totalNumberOfAllClass) * 100),
+                        approxNum((jsonVotiPrima[7] / totalNumberOfAllClass) * 100),
+                        approxNum((jsonVotiPrima[8] / totalNumberOfAllClass) * 100),
+                        approxNum((jsonVotiPrima[9] / totalNumberOfAllClass) * 100),
+                        approxNum((jsonVotiPrima[10] / totalNumberOfAllClass) * 100)
+                    ],
+                    backgroundColor: [
+                        '#E0E0E0',
+                        '#E0E0E0',
+                        '#E0E0E0',
+                        '#E0E0E0',
+                        '#E0E0E0'
+                    ],
+                    borderColor: [
+                        '#BDBDBD',
+                        '#BDBDBD',
+                        '#BDBDBD',
+                        '#BDBDBD',
+                        '#BDBDBD'
+                    ],
+                    borderWidth: 1,
+                    stack: 2
+                }
+            ]
+        },
+        options: {
+            responsive: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        steps: 10,
+                        stepValue: 6,
+                        max: 60,
+                        callback: function (value) {
+                            return value + "%";   //mettendo questa per la percentuale il voto viene messo orizzontale
+                        }
+                    }
+                }]
+            }
+        }
+    });
+    barChartArray.push(barChart);
+}
+
+/**
+ *
+ * @param nomeClasse
+ * @param settingClasse div to append
+ */
+function createPieChart(nomeClasse, settingClasse) {
+    //TODO occhio che qui è un punto critico infatti mi baso per il label sul codice iso della bandiera quindi se manca qualche nazionalità e il relativo codice iso si rompe tutto. Bisogna fare un controllo quando carichiamo gli studenti e in caso non avessimo una nazionalità fare inserire il codice iso della bandiera
+    var canvasPieChart = $('<canvas/>',
+        {
+            'id': nomeClasse + 'pieChart',
+            'class': 'pieChart',
+            'width': 200,
+            'height': 250
+        }).appendTo(settingClasse).hide();
+
+
+    var stranieri = getNationalityOfClass(nomeClasse);
+    var labels = [];
+    var data = [];
+
+
+    for (var prop in stranieri) {
+        labels.push(flagTag(prop));
+        data.push(stranieri[prop]);
+    }
+
+    var colorArray = getColorOfNationalitiesByLabelArray(labels);
+
+    var br = $('<br>', {
+        class: 'pieChart'
+    }).appendTo(settingClasse);
+
+    // For a pie chart
+    var pieChart = new Chart(canvasPieChart, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    data: data,
+                    backgroundColor: colorArray,
+                    hoverBackgroundColor: colorArray
+                }]
+        },
+        options: {
+            responsive: false,
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItems, data) {
+                        return data.datasets[0].data[tooltipItems.index] + ' -> naz: ' + nazionalitaByTag(data.labels[tooltipItems.index]).toLowerCase();
+                    }
+
+                }
+            }
+
+        }
+    });
+
+    pieChartArray.push(pieChart);
+}
+
+/**
+ *
+ * @param nomeClasse
+ * @param divToAppend
+ */
+function createBoxClassi(nomeClasse, divToAppend) {
+    var wrapperClasse = $('<div/>', {
+        'id': nomeClasse,
+        'class': 'wrapperClasse',
+    }).appendTo('#rowForInsertClasses').hide();
+
+    var classButton = $('<a/>', {
+        'class': 'item',
+        'text': nomeClasse
+    });
+
+    $('<div/>')
+        .css
+        ({
+            top: '15%',
+            position: 'relative'
+        })
+        .html(classButton)
+        .addClass('classi')
+        .appendTo(selezioneClassi);
+
+    var settingClasse = $('<div/>', {
+        'class': 'ui raised segment wrapperSettingClasse',
+        'html': '<a class="ui red ribbon label">' + nomeClasse + '</a>' +
+        ' <div class="ui icon buttons mini" style="left:15%;position:relative">' +
+        '<button id=' + nomeClasse + 'barButton' + ' class="ui button barChartButton"><i class="bar chart icon"></i></button>' +
+        '<button id=' + nomeClasse + 'chartButton' + ' class="ui button pieChartButton"><i class="pie chart icon"></i></button>' +
+        '</div>'
+    }).appendTo(wrapperClasse);
+
+    var contenitoreAlunniClasse = $('<ul/>', {
+        'class': 'contenitoreClasse ui vertical menu'
+    }).appendTo(wrapperClasse);
+
+    return wrapperClasse;
+}
+
+
+function createStudent(studentData, containerStudent) {
+    var cognomeStudente = studentData.cognome;
+    var nomeStudente = studentData.nome;
+    var cf = studentData.cf;
+    var nazionalita = studentData.nazionalita;
+    var desiderata = studentData.desiderata;
+    var voto = studentData.voto;
+
+
+    var iconFlagElement = "";
+    if (nazionalita != "ITALIANA") {
+        iconFlagElement = "<i class='" + flagTag(nazionalita) + " flag'></i>";
+    }
+
+
+    var tag;
+    var anagrafica = $('<p/>')
+        .addClass('roboto')
+        .html(iconFlagElement + " " + cognomeStudente + " " + nomeStudente);
+
+    //CREO GLI STUDENTI
+    var container;
+    if (studentData.sesso == "M") {
+        container = $('<div/>',
+            {
+                'width': $(containerStudent).width() - 5,
+                'height': 40,
+                'data-content': nazionalita,
+                'cognome': cognomeStudente,
+                'data-variation': "tiny"
+
+            })
+            .addClass('ui segment tooltip guys popup-information ' + voto)
+            .attr('id', cf)
+            .html(anagrafica)
+    }
+    else {
+        container = $('<div/>',
+            {
+                'width': $(containerStudent).width() - 5,
+                'height': 40,
+                'data-content': nazionalita,
+                'cognome': cognomeStudente,
+                'data-variation': "tiny"
+            })
+            .addClass('ui segment tooltip girl popup-information ' + voto)
+            .attr('id', cf)
+            .html(anagrafica)
+    }
+
+
+    //aggiungo la classe desiderata se presente
+    if (desiderata != "") container.addClass('desiderata');
+
+    var tooltipValue = "";
+    if ((studentData.legge_104) != "") {
+        tooltipValue = "104"
+    } else if (studentData.legge_107 != "") {
+        tooltipValue = "107";
+    }
+
+
+    if (tooltipValue != "") {
+        //contiene il tag studente
+        tag = $('<div/>')
+            .addClass('floating ui grey label mini')
+            .css(
+                {
+                    'top': '25%'
+                }
+            )
+            .html(tooltipValue)
+            .appendTo(container)
+    }
+
+    //tooltip for handicap
+    var handicapTooltip = "";
+    if ((studentData)['legge_' + tooltipValue] !== undefined) {
+        handicapTooltip = tooltipValue + ': ' + (studentData)['legge_' + tooltipValue];
+    }
+
+    var tooltip = $('<span/>')
+        .addClass('tooltiptext')
+        .html('media : ' + voto + '<br>naz : ' + nazionalita.toLowerCase() + '<br>' + handicapTooltip)
+        .appendTo(container);
+
+    var li = $('<li/>')
+        .html(container)
+        .appendTo($(containerStudent).children().last());
+}
+
+function generatePage(data) {
+    var listaClassi = data.classi;
+
+    if (listaClassi === null) {
+        $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
+        alertify.error('Errore download dei dati.\nControlla di aver creato la configurazione');
+        setTimeout(function () {
+            window.location.href = '/settings-prime';
+        }, 2500);
+    }
+
+    dirittiUtente = data.dirittiUtente;
+    idUtente = data.idUtente;
+    // setLoader(22);
+
+    //dropdown for the settings
+    $('.ui.dropdown.settings').dropdown(
+        {
+            action: 'nothing'
+        }
+    );
+    $('.ui.accordion').accordion();
+    handleCheckBoxVoti();
+    createDynamicStyle();
+    createNazionalitaMenu();
+    handleCheckBoxNazionalita();
+    handleCheckBoxDesiderata();
+    handleCheckBoxBocciati();
+    var containerBoxCLasses = $('#selezioneClassi');
+
+    //handle history click
+    $('#history').click(function (e) {
+        history();
+    });
+
+    for (i = 0; i < listaClassi.length; i++) {
+        listaClassi[i].alunni.sort(compare);
+    }
+
+    populate(listaClassi);
+    for (var i = 0; i < listaClassi.length; i++) {
+
+        var nomeClasse = listaClassi[i].nome;
+        var arrayStudenti = listaClassi[i].alunni;
+
+        var containerClassi = createBoxClassi(nomeClasse, containerBoxCLasses);
+
+        for (var j = 0; j < arrayStudenti.length; j++) {
+            if (arrayStudenti[j] !== undefined) {
+                createStudent(arrayStudenti[j], containerClassi)
+
+            }
+        }
+        //create contex menu
+        handleContexMenu($(containerClassi).children().last());
+        var container = $(containerClassi).children().first();
+        createBarChart(nomeClasse, container);
+        createPieChart(nomeClasse, container);
+        createBoxInformazioni(container, nomeClasse);
+    }
+    handleDragEDrop();
     displayAllClass();
 
     $(".barChartButton").on('click', function (e) {
         var classe = $(this).parent().parent().parent().attr('id');
-
-        pieChart = $("#" + classe + "pieChart").hide();
-        barChart = $("#" + classe + "barChart").show();
-
+        var pieChart = $("#" + classe + "pieChart").hide();
+        var barChart = $("#" + classe + "barChart").show();
     });
 
     $(".pieChartButton").on('click', function (e) {
-
         var classe = $(this).parent().parent().parent().attr('id');
-
-        barChart = $("#" + classe + "barChart").hide();
-        pieChart = $("#" + classe + "pieChart").show();
+        var barChart = $("#" + classe + "barChart").hide();
+        var pieChart = $("#" + classe + "pieChart").show();
     });
-
 
     //contents it's load, remove loader
     $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
@@ -2010,7 +1991,8 @@ function generatePage(data) {
         alertify.set('notifier', 'position', 'top-right');
         alertify.warning('Attenzione, non hai i diritti per spostare gli utenti');
     }
-}
+};
+
 
 ////////////////////////////////////////////////////
 //AJAX CALL//
@@ -2019,16 +2001,20 @@ function generatePage(data) {
 // - CREAZIONE BOX INFORMAZIONI
 // - CREAZIONE CHART
 // - INIZIALIZZAZIONE DRAG AND DROP STUDENTI
-$(document).ready(function () {
 
+/**
+ * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
+ */
+function downloadClassi(annoScolastico, classeFutura) {
+    classeFuturaGlobal = classeFutura;
+    annoScolasticoGlobal = annoScolastico;
 
-    /**
-     * Richiesta ajax che compone la pagina con le classi. Inizialmente sono settate nascoste
-     */
     $.ajax({
         url: '/generate-classi',
         data: {
-            format: 'json'
+            format: 'json',
+            annoScolastico: annoScolastico,
+            classeFutura: classeFutura
         },
         error: function () {
             $('.ui.text.loader.active.medium').removeClass('active').addClass('disabled');
@@ -2043,16 +2029,22 @@ $(document).ready(function () {
         success: generatePage,
         type: 'GET'
     });
+}
 
+
+$(document).ready(function () {
+
+    downloadClassi($('#anno-scolastico').html(), $('#classe-futura').html());
     /**
      * Osservatore per gestire la visualizzazione delle classi
      */
     $('#selezioneClassi')
         .on('click', '.item', function () {
+
             if (!$($(this)[0]).hasClass('notSelectable')) { //faccio questo controllo per evitare che venga considerato click anche lo switch per mostrare le classi(ho dovuto dargli classe item se no non era in linea)
                 if ($(this).hasClass('active')) {
                     $(this).removeClass('active');
-
+                    itemCounter--;
                     if ($('#check').prop("checked") == false) {
                         var classe = $(this).text();
                         $('#' + classe).hide();
@@ -2061,13 +2053,15 @@ $(document).ready(function () {
 
                 } else {
                     $(this).addClass('active');
-
+                    itemCounter++;
                     if ($('#check').prop("checked") == false) {
                         var classe = $(this).text();
                         $('#' + classe).show();
                     }
                 }
             }
+            if (itemCounter == 0) $('#no-classes').show();
+            
         });
 
     /**
@@ -2075,9 +2069,21 @@ $(document).ready(function () {
      */
     $('#checkBox').checkbox({
         onChecked: function () {
+
+            $('#selezioneClassi > .classi').each(function (i, obj) {
+                if ($(this).children().hasClass('active')) {
+                    try {
+                        $('#' + id).hide();
+                    } catch (e) {
+                    }
+                }
+            });
             displayAllClass();
+            $('#no-classes').hide();
+            $('#top-scroller').show();
         },
         onUnchecked: function () {
+            var active = 0;
             //prima di pulire tutto controllo gli item già attivi per portare alla situazione precendente le visualizzazioni
             $('#selezioneClassi > .classi').each(function (i, obj) {
                 if (!$(this).children().hasClass('active')) {
@@ -2085,10 +2091,15 @@ $(document).ready(function () {
                         var id = $(this).children().text();
                         $('#' + id).hide();
                     } catch (e) {
-                        //mi serviva per fare il controllo perchè il riquadro attorno allo switch viene considerato active allora passa l'id ma va in eccezione perchè non si riferisce a nessuna classe
                     }
                 }
+                else {
+                    active++;
+                }
             });
+            if (active == 0)$('#no-classes').show();
+            $('#top-scroller').hide();
+
         }
     });
 });

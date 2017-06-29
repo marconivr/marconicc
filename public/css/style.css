@@ -172,7 +172,7 @@ body::-webkit-scrollbar-thumb {
     outline: 1px solid #424242;
 }
 
- body > .grid {
+body > .grid {
     height: 100%;
 }
 .girl{

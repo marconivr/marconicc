@@ -454,46 +454,45 @@
 
     function setDropDonwData() {
         var userTagInformation = null;
-
-        $('<div/>', {
+        var container = $('#dropdown-container');
+        var dropdown = $('<div/>', {
             'class': 'ui selection dropdown',
             'id': 'dropdown-data'
-        }).appendTo($('#dropdown-container'));
+        }).appendTo(container);
 
         $('<input/>', {
             'type': 'hidden',
             'name': 'nessun tag'
-        }).appendTo($('#dropdown-data'));
+        }).appendTo(dropdown);
 
         $('<i/>', {
             'class': 'dropdown icon'
-        }).appendTo($('#dropdown-data'));
+        }).appendTo(dropdown);
 
         if (hasExistingTag != null) {
             for (var i = 0; i < allTag.length; i++) {
                 if (allTag[i].id == hasExistingTag) userTagInformation = allTag[i];
-
             }
-
             $('<div/>', {
                 'class': 'default text',
                 'text': userTagInformation.type,
                 'data-value': userTagInformation.id,
-            }).appendTo($('#dropdown-data'));
+            }).appendTo(dropdown);
         }
         else {
             $('<div/>', {
                 'class': 'default text',
                 'data-value': "-1",
                 'text': 'nessuno'
-            }).appendTo($('#dropdown-data'));
+            }).appendTo(dropdown);
         }
+
 
         $('<div/>', {
             'class': 'menu',
             'id': 'tag'
         }).appendTo($('#dropdown-data'));
-        $('.ui.dropdown').dropdown();
+
 
         //tag nel dropdown
         if (hasExistingTag == null) {
@@ -526,6 +525,7 @@
                 }
             }
         }
+        dropdown.dropdown();
     }
 </script>
 <!--SAVE TAG TO DB-->
