@@ -419,9 +419,9 @@ function inserisci107(classe) {
 
 
 function inserisciFemmine(classe) {
-    if (classe.proprietaIdeali.n_femmine > 0) {
+    if (classe.proprietaAttuali.femmine > 0) {
 
-        let condizione = classe.proprietaIdeali.n_femmine;
+        let condizione = classe.proprietaIdeali.n_femmine - classe.proprietaAttuali.femmine;
 
         while (condizione !== 0) {
 
