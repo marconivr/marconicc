@@ -2059,7 +2059,8 @@ $(document).ready(function () {
                         $('#' + classe).show();
                     }
                 }
-                if (itemCounter == 0) $('#no-classes').show();
+                if (itemCounter == 0) $('#no-classes').show()
+                else   $('#no-classes').hide();
             }
 
             
