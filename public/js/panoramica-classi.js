@@ -2059,13 +2059,15 @@ $(document).ready(function () {
                         $('#' + classe).show();
                     }
                 }
+                if (itemCounter == 0) $('#no-classes').show()
+                else   $('#no-classes').hide();
             }
-            if (itemCounter == 0) $('#no-classes').show();
+
             
         });
 
     /**
-     * Osservatore per gestire il visualizzza tutto
+     * Osservatore per gestire il visualizza tutto
      */
     $('#checkBox').checkbox({
         onChecked: function () {
