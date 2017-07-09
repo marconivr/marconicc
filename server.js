@@ -25,16 +25,16 @@ require('./config/passport')(passport);
 app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.urlencoded({
-	extended: true
+    extended: true
 }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.set('view engine', 'ejs');
 app.use(session({
-	secret: 'vidyapathaisalwaysrunning',
-	resave: true,
-	saveUninitialized: true
- } )); // session secret
+    secret: 'vidyapathaisalwaysrunning',
+    resave: true,
+    saveUninitialized: true
+} )); // session secret
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -54,6 +54,5 @@ app.listen(port, '127.0.0.1');
 
 
 console.log('Magic on --> localhost:' + port);
-
 
 
