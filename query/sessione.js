@@ -4,9 +4,28 @@
 
 const mysql = require('mysql');
 const dbconfig = require('./../config/database');
-const connection = mysql.createConnection(dbconfig.connection);
+//const connection = mysql.createConnection(dbconfig.connection);
 
-connection.query('USE ' + dbconfig.database);
+function startConnection() {
+    console.error('CONNECTING');
+    connection = mysql.createConnection(dbconfig.connection);
+
+    connection.connect(function(err) {
+        if (err) {
+            console.error('CONNECT FAILED', err.code);
+            startConnection();
+        }
+        else
+            console.error('CONNECTED');
+        connection.query('USE ' + dbconfig.database);
+    });
+    connection.on('error', function(err) {
+        if (err.fatal)
+            startConnection();
+    });
+}
+
+startConnection();
 
 
 module.exports = {

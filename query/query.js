@@ -8,10 +8,30 @@
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var dbconfig = require('./../config/database');
-var connection = mysql.createConnection(dbconfig.connection);
+//var connection = mysql.createConnection(dbconfig.connection);
 var async = require('async');
 
-connection.query('USE ' + dbconfig.database);
+function startConnection() {
+    console.error('CONNECTING');
+    connection = mysql.createConnection(dbconfig.connection);
+
+    connection.connect(function(err) {
+        if (err) {
+            console.error('CONNECT FAILED', err.code);
+            startConnection();
+        }
+        else
+            console.error('CONNECTED');
+            connection.query('USE ' + dbconfig.database);
+    });
+    connection.on('error', function(err) {
+        if (err.fatal)
+            startConnection();
+    });
+}
+
+startConnection();
+
 
 
 module.exports = {

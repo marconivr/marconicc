@@ -44,22 +44,14 @@ app.locals.endpoint = endpoint;
 
 middleware.setApp(app);
 
-
-const options = {
-    cert: fs.readFileSync(path.resolve(__dirname, "fullchain.pem")),
-    key: fs.readFileSync(path.resolve(__dirname, "privkey.pem"))
-};
-
-
 // routes ======================================================================
 require('./routes/utenti.js')(app, passport);
 require('./routes/alunni.js')(app);
 
 
 // launch ======================================================================
-app.listen(port, '172.31.27.226');
+app.listen(port, '127.0.0.1');
 
-https.createServer(options, app).listen(443);
 
 console.log('Magic on --> localhost:' + port);
 

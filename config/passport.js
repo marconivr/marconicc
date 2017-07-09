@@ -7,9 +7,30 @@ var LocalStrategy   = require('passport-local').Strategy;
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var dbconfig = require('./database');
-var connection = mysql.createConnection(dbconfig.connection);
+//var connection = mysql.createConnection(dbconfig.connection);
 
-connection.query('USE ' + dbconfig.database);
+function startConnection() {
+    console.error('CONNECTING');
+    connection = mysql.createConnection(dbconfig.connection);
+
+    connection.connect(function(err) {
+        if (err) {
+            console.error('CONNECT FAILED', err.code);
+            startConnection();
+        }
+        else
+            console.error('CONNECTED');
+            connection.query('USE ' + dbconfig.database);
+    });
+    connection.on('error', function(err) {
+        if (err.fatal)
+            startConnection();
+    });
+}
+
+startConnection();
+
+
 // expose this function to our routes using module.exports
 module.exports = function(passport) {
 
