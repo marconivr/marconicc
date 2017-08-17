@@ -277,7 +277,7 @@ function countBocciatiOfClass(className) {
 
 /**
  * ritorna un json con le proprietà
- * @param nomeClasse
+ * @param className nome classe
  * @returns {{}}
  */
 function createProprietaForASpecificClass(className) {
