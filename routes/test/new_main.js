@@ -99,7 +99,7 @@ function generateProprietaIdeale(n_classi, n_104, n_107, n_femmine) {
             }
         }
     } else {
-        console.log("ECCEZIONE NON GESTITA CI SONO TROPPI 107 - SE LA VEDI CONTATTA CORRADI E PREGA") //TODO
+          console.log("ECCEZIONE NON GESTITA CI SONO TROPPI 107 - SE LA VEDI CONTATTA CORRADI E PREGA") //TODO
     }
 
     //FINE 107
