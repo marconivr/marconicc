@@ -64,7 +64,19 @@ var flagJson = {
     PERUVIANA: {iso: 'pe', color: '#a99985'},
     CUBANA: {iso: 'cu', color: '#2F3F73'},
     CROATA: {iso: 'hr', color: '#048ba8'},
-    SENEGALESE: {iso: 'sn', color: '#a4036f'}
+    SENEGALESE: {iso: 'sn', color: '#a4036f'},
+    PAKISTANA:  {iso: 'pk', color: '#609C35'},
+    MACEDONE:  {iso: 'mk', color: '#C05F30'},
+    BULGARA:  {iso: 'bg', color: '#556b2f'},
+    BOSNIACA:  {iso: 'ba', color: '#122D85'},
+    POLACCA:  {iso: 'pl', color: '#f0e68c'},
+    INDIANA:  {iso: 'in', color: '#C05F30'},
+    UCRAINA:  {iso: 'ua', color: '#ffd400'},
+    STATUNITENSE:  {iso: 'us', color: '#d90368'},
+    SPAGNOLA:  {iso: 'es', color: '#048ba8'},
+
+
+
 };
 
 
@@ -630,7 +642,12 @@ function createNazionalitaMenu() {
  * @returns {*}
  */
 function flagTag(nazionalita) {
-    return flagJson[nazionalita].iso;
+    if (flagJson[nazionalita] === undefined){
+        console.log(nazionalita);
+    }else{
+        return flagJson[nazionalita].iso;
+    }
+
 }
 
 /**
