@@ -32,6 +32,7 @@ let legge104 = data.legge104;
 function inserisciBocciati(classi, bocciati) {
     for(let i in classi){
         classi[i].alunni = _.merge(classi[i].alunni, bocciati[classi[i].nome]);
+        functions.deleteStudenti(bocciati[classi[i].nome]);
     }
     return classi;
 }

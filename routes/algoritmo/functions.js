@@ -4,6 +4,7 @@
  */
 
 const _ = require("lodash");
+const data = require("./data");
 
 module.exports = {
 
@@ -76,8 +77,40 @@ module.exports = {
         };
     },
 
+    /**
+     * Funzione che preso in input un array di studenti li toglie dagli insiemi. Questo serve ad esempio quando inserisco
+     * i bocciati per toglierli da altri insiemi. In questo modo non vengono inseriti 2 volte
+     * @param studenti[]
+     */
     deleteStudenti: function (studenti) {
+        for(let i in studenti){
 
+            //eliminare da bocciati
+            if(studenti[i].classe_precedente !== ''){
+                let classePrecedente = studenti[i].classe_precedente;
+                _.remove(data.bocciati[classePrecedente], studenti[i]);
+            }
+
+            //eliminare da cap
+            let cap = studenti[i].cap;
+            _.remove(data.cap[cap], studenti[i]);
+
+            //eliminare da voto
+            let voto = studenti[i].voto;
+            _.remove(data.voto[voto], studenti[i]);
+
+            //eliminare da 104
+            if(studenti[i].legge_104 !== '')
+                _.remove(data.legge104, studenti[i]);
+
+            //eliminare da 107
+            if(studenti[i].legge_107 !== '')
+                _.remove(data.legge107, studenti[i]);
+
+            //eliminare da femmine
+            if(studenti[i].sesso === 'F')
+                _.remove(data.femmine, studenti[i]);
+        }
     }
 
 };
