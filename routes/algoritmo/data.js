@@ -5554,6 +5554,18 @@ let bocciati = _.omit(_.groupBy(alunni, function (item) {
     }
 }), [undefined]); //uso l'omit per rimuovere la proprietà undefined che racchiude tutti gli studenti non bocciati
 
+let cap = _.groupBy(alunni, function (item){
+   return item.cap;
+});
+
+let nazionalita = _.groupBy(alunni, function (item){
+    return item.nazionalita;
+});
+
+let voto = _.groupBy(alunni, function (item){
+    return item.voto;
+});
+
 
 let n107 = legge107.length;
 
@@ -5572,6 +5584,9 @@ exports.legge104 = legge104;
 exports.legge107 = legge107;
 exports.femmine = femmine;
 exports.bocciati = bocciati;
+exports.cap = cap;
+exports.nazionalita = nazionalita;
+exports.voto = voto;
 
 exports.n107 = n107;
 exports.n104 = n104;

@@ -13,7 +13,6 @@ const functions = require("./functions");
 
 //Variabili e costanti
 const settings = data.settings;
-
 let alunni = data.alunni;
 let classi = data.classi;
 let bocciati = data.bocciati;
@@ -31,7 +30,11 @@ let legge104 = data.legge104;
  */
 function inserisciBocciati(classi, bocciati) {
     for(let i in classi){
-        classi[i].alunni = _.merge(classi[i].alunni, bocciati[classi[i].nome]);
+        if(bocciati[classi[i].nome] === undefined){
+            classi[i].alunni = _.merge(classi[i].alunni, bocciati[classi[i].nome]);
+            functions.deleteStudenti(bocciati[classi[i].nome]);
+        }
+
     }
     return classi;
 }
