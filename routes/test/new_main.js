@@ -321,20 +321,7 @@ class Classe {
 let propIdeali = generateProprietaIdeale(n_classi, n_104, n_107, n_femmine);
 
 
-function checkDesiderata(objStudente) {
 
-    let amico = _.filter(alunni, function (obj) {
-        if (objStudente.desiderata === obj.cf) {
-            return obj;
-        }
-    });
-
-    amico = amico[0];
-
-    if (amico === undefined) return null;
-
-    return amico.desiderata === objStudente.cf ? amico : null;
-}
 
 
 function inserisci104(classe) {

@@ -80,13 +80,17 @@ module.exports = {
     /**
      * Funzione che preso in input un array di studenti li toglie dagli insiemi. Questo serve ad esempio quando inserisco
      * i bocciati per toglierli da altri insiemi. In questo modo non vengono inseriti 2 volte
-     * @param studenti[]
+     * Uso una variabile d'appoggio
+     * @param app[]
      */
-    deleteStudenti: function (studenti) {
-        for(let i in studenti){
+    deleteStudenti: function (app) {
+
+        let studenti = app.slice(0);
+
+        for (let i in studenti) {
 
             //eliminare da bocciati
-            if(studenti[i].classe_precedente !== ''){
+            if (studenti[i].classe_precedente !== '') {
                 let classePrecedente = studenti[i].classe_precedente;
                 _.remove(data.bocciati[classePrecedente], studenti[i]);
             }
@@ -100,17 +104,38 @@ module.exports = {
             _.remove(data.voto[voto], studenti[i]);
 
             //eliminare da 104
-            if(studenti[i].legge_104 !== '')
+            if (studenti[i].legge_104 !== '')
                 _.remove(data.legge104, studenti[i]);
 
             //eliminare da 107
-            if(studenti[i].legge_107 !== '')
+            if (studenti[i].legge_107 !== '')
                 _.remove(data.legge107, studenti[i]);
 
             //eliminare da femmine
-            if(studenti[i].sesso === 'F')
+            if (studenti[i].sesso === 'F')
                 _.remove(data.femmine, studenti[i]);
         }
+    },
+
+    /**
+     * Funzione che dato l'oggetto di uno studente torna l'oggetto del suo amico se questo desiderata è reciproco. In caso
+     * contrario o se non c'è nessun desiderata torna undefined
+     * @param objStudente
+     * @returns {*}
+     */
+    checkDesiderata: function (objStudente) {
+
+        let amico = _.filter(data.alunni, function (obj) {
+            if (objStudente.desiderata === obj.cf) {
+                return obj;
+            }
+        });
+
+        amico = amico[0];
+
+        if (amico === undefined) return undefined;
+
+        return amico.desiderata === objStudente.cf ? amico : undefined;
     }
 
 };
