@@ -1788,22 +1788,6 @@ let alunni = [
         "nome": "CARLOTTA",
         "matricola": "18612",
         "cf": "DSTCLT03M57D284D",
-        "desiderata": "CNTSML03B28L781K",
-        "sesso": "F",
-        "data_di_nascita": "2003-08-17",
-        "cap": "37030",
-        "nazionalita": "ITALIANA",
-        "legge_107": "",
-        "legge_104": "",
-        "classe_precedente": "1ZI",
-        "scelta_indirizzo": "INFORMATICA E TELECOMUNICAZIONI",
-        "voto": 7
-    },
-    {
-        "cognome": "DI STEFANO",
-        "nome": "CARLOTTA",
-        "matricola": "18612",
-        "cf": "DSTCLT03M57D284D",
         "desiderata": "GRNNNA03T63F861Q",
         "sesso": "F",
         "data_di_nascita": "2003-08-17",
@@ -3848,22 +3832,6 @@ let alunni = [
         "voto": 9
     },
     {
-        "cognome": "OJOG",
-        "nome": "MARIO STELIAN",
-        "matricola": "18717",
-        "cf": "JGOMST03D26L781P",
-        "desiderata": "FKRHMZ03B26L781I",
-        "sesso": "M",
-        "data_di_nascita": "2003-04-26",
-        "cap": "37136",
-        "nazionalita": "ROMENA",
-        "legge_107": "",
-        "legge_104": "",
-        "classe_precedente": "1ZI",
-        "scelta_indirizzo": "INFORMATICA E TELECOMUNICAZIONI",
-        "voto": 9
-    },
-    {
         "cognome": "OKUONGHAE",
         "nome": "DIVINE FAVOUR",
         "matricola": "18348",
@@ -4408,22 +4376,6 @@ let alunni = [
         "voto": 7
     },
     {
-        "cognome": "PULLIA",
-        "nome": "DOMENICO GABRIELE",
-        "matricola": "18749",
-        "cf": "PLLDNC03D08L781F",
-        "desiderata": "RBNNCL03M28L781H",
-        "sesso": "M",
-        "data_di_nascita": "2003-04-08",
-        "cap": "37132",
-        "nazionalita": "ITALIANA",
-        "legge_107": "",
-        "legge_104": "",
-        "classe_precedente": "1ZI",
-        "scelta_indirizzo": "INFORMATICA E TELECOMUNICAZIONI",
-        "voto": 7
-    },
-    {
         "cognome": "RAMADANI",
         "nome": "BLEND",
         "matricola": "18751",
@@ -4493,22 +4445,6 @@ let alunni = [
         "matricola": "18755",
         "cf": "RGIDNL03L09L781C",
         "desiderata": "CHNGRL03D15B296I",
-        "sesso": "M",
-        "data_di_nascita": "2003-07-09",
-        "cap": "37026",
-        "nazionalita": "ITALIANA",
-        "legge_107": "",
-        "legge_104": "",
-        "classe_precedente": "1ZE",
-        "scelta_indirizzo": "ELETTRONICA ED ELETTROTECNICA",
-        "voto": 8
-    },
-    {
-        "cognome": "RIGO",
-        "nome": "DANIEL",
-        "matricola": "18755",
-        "cf": "RGIDNL03L09L781C",
-        "desiderata": "MSNNDR03D07F861V",
         "sesso": "M",
         "data_di_nascita": "2003-07-09",
         "cap": "37026",
@@ -5822,9 +5758,9 @@ alunni = functions.fixBocciati(alunni);
 let settings = {
     "min_alunni": 23,
     "max_alunni": 25,
-    "gruppo_femmine": 4,
+    "gruppo_femmine": 5,
     "gruppo_cap": 3,
-    "gruppo_nazionalita": 2,
+    "gruppo_nazionalita": 3,
     "nazionalita_per_classe": 3,
     "numero_alunni_con_104": 23
 };
@@ -5867,14 +5803,6 @@ let classi = [
         "alunni": []
     },
     {
-        "nome": "1J",
-        "alunni": []
-    },
-    {
-        "nome": "1K",
-        "alunni": []
-    },
-    {
         "nome": "1L",
         "alunni": []
     },
@@ -5884,6 +5812,10 @@ let classi = [
     },
     {
         "nome": "1N",
+        "alunni": []
+    },
+    {
+        "nome": "1O",
         "alunni": []
     },
     {
