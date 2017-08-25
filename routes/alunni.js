@@ -6,7 +6,9 @@
 const query = require('./../query/query.js');
 const csv_post = require("csv");
 const middleware = require('./middleware/middleware');
-const newAlg = require("./new-algorithm.js");
+
+const algoritmo = require("./algoritmo/main.js");
+
 const async = require('async');
 const csv = require('express-csv');
 const nodeExcel = require('excel-export');
@@ -19,7 +21,6 @@ const upload = multer({ dest: 'files/' });
 
 
 module.exports = function (app) {
-
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
@@ -449,7 +450,7 @@ module.exports = function (app) {
         const classeFutura = req.query.classeFutura;
         const annoScolastico = req.query.annoScolastico;
 
-        newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
+        algoritmo.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
 
             //noinspection JSAnnotator
             let wrapper = {
