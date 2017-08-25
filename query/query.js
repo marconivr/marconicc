@@ -461,7 +461,6 @@ module.exports = {
             callback(err, rows);
         });
 
-        console.log(ris.sql);
     },
 
     getNumberGirl: function (scuola, classe, callback) {

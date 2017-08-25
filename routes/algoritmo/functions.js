@@ -5,6 +5,7 @@
 
 const _ = require("lodash");
 const data = require("./data");
+const query = require('../../query/query.js');
 
 module.exports = {
 
@@ -285,5 +286,38 @@ module.exports = {
         return ris;
 
 
+    },
+
+
+    generaClassi: function (lenghtAlunni, settings) {
+
+        let num = Math.round(lenghtAlunni / (settings.min_alunni));
+
+        let listaClassi = [];
+
+        for (let i = 0; i < num; i++) {
+
+            let lettera = String.fromCharCode(65 + i);
+
+            if(lettera === "J"){
+                i += 2;
+                num += 2;
+                lettera = String.fromCharCode(65 + i);
+            }
+
+            if(lettera === "K"){
+                i += 1;
+                num += 2;
+                lettera = String.fromCharCode(65 + i);
+            }
+
+            let classe = "1" + lettera ;
+            listaClassi.push({
+                nome: classe, alunni: []
+            });
+
+        }
+
+        return listaClassi;
     }
 };

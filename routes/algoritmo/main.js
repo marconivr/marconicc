@@ -2,36 +2,20 @@
  * Created by matti on 12/07/2017.
  */
 
-
 //Dipendenze
 const _ = require("lodash");
 const colors = require('colors').enabled = true;
+const async = require('async');
 
 //File
-const data = require("./data");
-const functions = require("./functions");
 
-//Variabili e costanti
-const settings = data.settings;
-let alunni = data.alunni;
-let classi = data.classi;
-let bocciati = data.bocciati;
-let legge104 = data.legge104;
-let legge107 = data.legge107;
-let femmine = data.femmine;
-
-let cap = data.cap;
-let nazionalita = data.nazionalita;
-let voto = data.voto;
-
-let copyVotoIniziale = functions.countGroupAlunniClasse(alunni).voti;
+let functions = undefined;
+let data = undefined;
+const query = require('../../query/query.js');
 
 const debug = true;
 
 //Funzioni
-
-
-
 
 /**
  * Funzione che ritorna l'array di studenti di una classe con l'aggiunta dell'amico dell'alunno passato
@@ -154,7 +138,7 @@ function inserisciFemmine(classi, femmine){
 
     let nFemmine = femmine.length;
 
-    let nFemminePerClasse = settings.gruppo_femmine;
+    let nFemminePerClasse = data.settings.gruppo_femmine;
 
     let classiConFemmine = functions.classiConFemmine(classi, femmine);
 
@@ -174,7 +158,7 @@ function inserisciFemmine(classi, femmine){
 
                     //Inserisco studenti con una nuova nazionalità nella classe
                     for(let i in countGroupClasse.nazionalita){
-                        if(countGroupClasse.nazionalita[i] < settings.gruppo_nazionalita){
+                        if(countGroupClasse.nazionalita[i] < data.settings.gruppo_nazionalita){
                             if(groupFemmine[i] !== undefined){
                                 let arrayRis = groupFemmine[i];
 
@@ -200,7 +184,7 @@ function inserisciFemmine(classi, femmine){
                     }
 
                     //Inserisco studenti che hanno una nazionalità già presente in quella classe
-                    if(_.size(countGroupClasse.nazionalita) < settings.nazionalita_per_classe){
+                    if(_.size(countGroupClasse.nazionalita) < data.settings.nazionalita_per_classe){
                         let arrayRis = _.filter(femmine, function (o){
                             if(countGroupClasse.nazionalita[o.nazionalita] === undefined){
                                 return o;
@@ -322,7 +306,7 @@ function inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale){
             bool104 = true;
         }
 
-        if(_.size(countGroupClasse.nazionalita) < settings.nazionalita_per_classe){
+        if(_.size(countGroupClasse.nazionalita) < data.settings.nazionalita_per_classe){
             for(let i in nazionalita){
                 if(nazionalita[i].length === 0){
                     delete nazionalita[i];
@@ -333,21 +317,21 @@ function inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale){
                 if(countGroupClasse.nazionalita[j] === undefined){
                     let countGroupClasse = functions.countGroupAlunniClasse(classi[i].alunni);
 
-                    if(bool104 && classi[i].alunni.length === settings.numero_alunni_con_104) {
+                    if(bool104 && classi[i].alunni.length === data.settings.numero_alunni_con_104) {
                         break;
                     }
 
-                    if(_.size(countGroupClasse.nazionalita) < settings.nazionalita_per_classe ){
+                    if(_.size(countGroupClasse.nazionalita) < data.settings.nazionalita_per_classe ){
 
                         //Vuol dire che questa nazionalità manca alla classe e la posso pusharee
                         let alunniInseribili = nazionalita[j].length;
 
-                        if((alunniInseribili - settings.gruppo_nazionalita) < 0){
+                        if((alunniInseribili - data.settings.gruppo_nazionalita) < 0){
                             alunniInseribili = nazionalita[j].length;
-                        }if((alunniInseribili - settings.gruppo_nazionalita) === 0){
+                        }if((alunniInseribili - data.settings.gruppo_nazionalita) === 0){
                             alunniInseribili = nazionalita[j].length;
-                        }if((alunniInseribili - settings.gruppo_nazionalita) > 0){
-                            alunniInseribili = settings.gruppo_nazionalita;
+                        }if((alunniInseribili - data.settings.gruppo_nazionalita) > 0){
+                            alunniInseribili = data.settings.gruppo_nazionalita;
                         }
 
                         let k = 0;
@@ -437,7 +421,7 @@ function inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale){
                 break;
             }
 
-            if(propClassi.cap[j] !== undefined && countClassi.cap[j] < settings.gruppo_cap){
+            if(propClassi.cap[j] !== undefined && countClassi.cap[j] < data.settings.gruppo_cap){
 
                 classi[i].alunni.push(cap[j][0]);
 
@@ -457,11 +441,6 @@ function inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale){
     }
 
     //Faccio arrivare tutte le classi al minimo numero di studenti
-
-    let groupVotiRimanenti = functions.groupBy(alunni,"voto");
-
-
-    console.log(copyVotoIniziale);
 
     for(let i in classi){
         let votiClasse = functions.countGroupAlunniClasse(classi[i].alunni).voti;
@@ -502,7 +481,7 @@ function inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale){
 
         for (let j in voto) {
             let exit = 0;
-            while (classi[i].alunni.length < settings.min_alunni) {
+            while (classi[i].alunni.length < data.settings.min_alunni) {
                 votiClasse = functions.countGroupAlunniClasse(classi[i].alunni).voti;
                 if (votiClasse[j] < (copyVotoIniziale[j] / classi.length)) {
                     classi[i].alunni.push(voto[j][0]);
@@ -565,24 +544,86 @@ function inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale){
 }
 
 
+function generaClassiPrima(annoScolastico, scuola, classeFutura, callback){
 
-//Main
+    query.getClassiComposte(scuola, classeFutura, annoScolastico, function (err, rows) {
+        if (err) {
+            console.log(err);
+        } else {
+            if(rows.length === 0){
+                data = require("./data.js");
 
-/**
- * Come prima operazione aggiungo tutti i bocciati nelle loro classi precedenti.
- */
+                data.initVariabili(annoScolastico, scuola, classeFutura, function(){
+                    functions = require("./functions.js");
 
-classi = inserisciBocciati(classi, bocciati);
+                    let alunni = data.alunni;
+                    let classi = data.classi;
+                    let bocciati = data.bocciati;
+                    let legge104 = data.legge104;
+                    let legge107 = data.legge107;
+                    let femmine = data.femmine;
 
-classi = inserisci104(classi, legge104);
+                    let cap = data.cap;
+                    let nazionalita = data.nazionalita;
+                    let voto = data.voto;
 
-classi = inserisci107(classi, legge107);
+                    let copyVotoIniziale = functions.countGroupAlunniClasse(alunni).voti;
 
-classi = inserisciFemmine(classi, femmine);
+                    classi = inserisciBocciati(classi, bocciati);
 
-classi = inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale);
+                    classi = inserisci104(classi, legge104);
 
-functions.debugNumeriClasse(debug, classi, settings);
+                    classi = inserisci107(classi, legge107);
 
-console.log("FINE");
+                    classi = inserisciFemmine(classi, femmine);
+
+                    classi = inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale);
+
+                    //functions.debugNumeriClasse(debug, classi, settings);
+
+                    for (let i = 0; i < classi.length; i++) {
+                        let alunniClasse = classi[i].alunni;
+                        let nomeClasse = classi[i].nome;
+
+                        for (let j = 0; j < alunniClasse.length; j++) {
+                            let cfAlunno = alunniClasse[j].cf;
+                            query.insertAlunnoInClass(nomeClasse, annoScolastico, scuola, classeFutura, cfAlunno);
+                        }
+                    }
+
+
+
+                    callback(_.orderBy(classi, [classe => classe.nome], ['asc']));
+                });
+
+            }else{
+
+                let listaClassiObj = _.groupBy(rows, function (obj) {
+                    return obj.classe_attuale;
+                });
+
+                let array = [];
+                for (let classe in listaClassiObj) {
+                    var app = {
+                        'nome': classe,
+                        'alunni': listaClassiObj[classe]
+                    };
+
+                    array.push(app);
+                }
+
+                 callback(array);
+            }
+        }
+    });
+
+
+
+
+
+}
+
+
+exports.generaClassiPrima = generaClassiPrima;
+
 
