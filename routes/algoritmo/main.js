@@ -213,6 +213,10 @@ function inserisciFemmine(classi, femmine){
                     //TODO al posto di inserire quella in posizione 0 potrei guardare cap e voti
                     while(femmineRimanenti !== 0){
 
+                        if(femmineRimanenti >= femmine.length){
+                            femmineRimanenti = femmine.length;
+                        }
+
                         let studente = femmine[0];
 
                         if(femmineRimanenti === 1){
@@ -248,37 +252,42 @@ function inserisciFemmine(classi, femmine){
 
     let femmineRimanenti = femmine.length;
 
-    for(let i in classi){
-        if(!classiConFemmine.includes(classi[i].nome)){
-            let j = 0;
-            while (j <= 3){
-                classi[i].alunni.push(femmine[0]);
 
-                let amico = getAmico(femmine[0]);
+    if(femmineRimanenti !== 0){
+        for(let i in classi){
+            if(!classiConFemmine.includes(classi[i].nome)){
+                let j = 0;
 
-                functions.deleteStudenti([femmine[0]]);
+                while (j < data.settings.gruppo_femmine && j < femmine.length){
+                    classi[i].alunni.push(femmine[0]);
 
-                if(amico !== undefined){
-                    classi[i].alunni.push(amico);
-                    if(amico.sesso === "F"){
-                        femmineRimanenti--;
-                        //qua va a meno uno perchè l'ultima femmina ha una amica e quindi diventano 5, devo quindi rimuovere una femmina che non ha amici dalla classe e ripusharlo nell'insieme delle femmine
-                        if(femmineRimanenti <= 0){
-                            break;
+                    let amico = getAmico(femmine[0]);
+
+                    functions.deleteStudenti([femmine[0]]);
+
+                    if(amico !== undefined){
+                        classi[i].alunni.push(amico);
+                        if(amico.sesso === "F"){
+                            femmineRimanenti--;
+                            //qua va a meno uno perchè l'ultima femmina ha una amica e quindi diventano 5, devo quindi rimuovere una femmina che non ha amici dalla classe e ripusharlo nell'insieme delle femmine
+                            if(femmineRimanenti <= 0){
+                                break;
+                            }
+
                         }
-
                     }
+
+                    j++;
+                    femmineRimanenti--;
                 }
 
-                j++;
-                femmineRimanenti--;
-            }
-
-            if(femmineRimanenti === 0){
-                break;
+                if(femmineRimanenti === 0){
+                    break;
+                }
             }
         }
     }
+
 
 
 
@@ -314,6 +323,7 @@ function inserisciRimanenti(classi, nazionalita, cap, voto, copyVotoIniziale){
             }
 
             for(let j in nazionalita){
+
                 if(countGroupClasse.nazionalita[j] === undefined){
                     let countGroupClasse = functions.countGroupAlunniClasse(classi[i].alunni);
 
