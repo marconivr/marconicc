@@ -91,6 +91,22 @@ module.exports = {
         })
     },
 
+    deleteStudenti: function (scuola, classeFutura, annoScolastico, callback) {
+
+        module.exports.deleteClassiComposte(scuola,classeFutura,annoScolastico, function (err, ris) {
+           if(ris === "ok"){
+               connection.query("DELETE FROM alunni WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?", [annoScolastico, scuola, classeFutura], function (err, rows) {
+                   if (err) {
+                       console.log(err);
+                   } else {
+                       callback(err,"ok");
+                   }
+               });
+           }
+        });
+
+    },
+
 
     getIdAlunnoByCf: function (cf, annoScolastico, classeFutura, callback) {
         connection.query("SELECT id FROM alunni WHERE cf = ? AND anno_scolastico = ? AND classe_futura = ?", [cf, annoScolastico, classeFutura], function (err, row) {

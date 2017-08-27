@@ -525,6 +525,22 @@ module.exports = function (app) {
 
     });
 
+    app.get(endpoint.alunni.eliminaStudenti, middleware.isLoggedIn, function (req, res) {
+        const scuola = 0//req.user.id_scuola;
+        const classeFutura = "PRIMA"//req.body.classeFutura;
+        const annoScolastico = "2017-2018"//req.body.annoScolastico;
+
+        query.deleteStudenti(scuola, classeFutura, annoScolastico, function (err, ris) {
+            if(err){
+                res.send(err);
+            }else{
+                res.send("ok");
+            }
+        });
+
+
+    });
+
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const classeFutura = req.body.classeFutura;

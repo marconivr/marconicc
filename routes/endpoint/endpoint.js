@@ -51,7 +51,8 @@ module.exports = {
         getPastSettingsTerze: "/get-past-settings-terze",
         getStudentsFromSpecifiCYear: "/get-students-from-specifiC-year",
         setActiveConfiguration : "/set-active-configuration",
-        eliminaClassiCreate: "/delete-classes"
+        eliminaClassiCreate: "/delete-classes",
+        eliminaStudenti: "/delete-studenti"
         
     }
 
