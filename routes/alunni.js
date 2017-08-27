@@ -509,6 +509,22 @@ module.exports = function (app) {
         });
     });
 
+    app.get(endpoint.alunni.eliminaClassiCreate, middleware.isLoggedIn, function (req, res) {
+        const scuola = 0//req.user.id_scuola;
+        const classeFutura = "PRIMA"//req.body.classeFutura;
+        const annoScolastico = "2017-2018"//req.body.annoScolastico;
+
+        query.deleteClassiComposte(scuola, classeFutura, annoScolastico, function (err, ris) {
+            if(err){
+                res.send(err);
+            }else{
+                res.send("ok");
+            }
+        });
+
+
+    });
+
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const classeFutura = req.body.classeFutura;
@@ -524,7 +540,7 @@ module.exports = function (app) {
             }
             else {
 
-                var history = _.groupBy(results, function (o) {
+                let history = _.groupBy(results, function (o) {
                     return o.timestamp.split(" ")[0];
                 });
 

@@ -70,6 +70,27 @@ module.exports = {
 
     },
 
+    deleteClassiComposte: function (scuola, classeFutura, annoScolastico, callback) {
+        connection.query("DELETE FROM classi_composte WHERE classe IN (SELECT id from classi WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?)", [annoScolastico, scuola, classeFutura], function (err, rows) {
+            if(err){
+                console.log(err);
+            }else{
+                connection.query("DELETE FROM history WHERE classe_precedente IN (SELECT id from classi WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?)", [annoScolastico, scuola, classeFutura], function (err, rows) {
+                    if(err){
+                        console.log(err);
+                    }
+                });
+                connection.query("DELETE FROM classi WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?", [annoScolastico, scuola, classeFutura], function (err, rows) {
+                    if(err)
+                        console.log(err);
+                    else{
+                        callback(err,"ok");
+                    }
+                });
+            }
+        })
+    },
+
 
     getIdAlunnoByCf: function (cf, annoScolastico, classeFutura, callback) {
         connection.query("SELECT id FROM alunni WHERE cf = ? AND anno_scolastico = ? AND classe_futura = ?", [cf, annoScolastico, classeFutura], function (err, row) {
