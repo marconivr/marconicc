@@ -5,6 +5,7 @@ var itemCounter = 0;
 
 var barChartArray = [];//reference to barChart
 var pieChartArray = [];//reference to pieChart
+var classNameArray = [];
 
 //FILTER
 var votiCheckBoxArray = []; //array for filter voto
@@ -223,12 +224,16 @@ function approxNum(num) {
 
 }
 
+function getPositionFromClassName(className) {
+    return $.inArray(className, classNameArray)
+}
+
 /**
  * update a  pie chart for a specific chart
  * @param newClassName
  */
 function updateChartPie(className) {
-    var position = className[1].charCodeAt(0) - 65;//65 is the first ASCII letter
+    var position = getPositionFromClassName(className);
     var chart = pieChartArray[position];
 
     var stranieri = getNationalityOfClass(className);
@@ -258,7 +263,7 @@ function updateChartPie(className) {
 function updateChartBar(newClassName) {
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(newClassName);
-    var position = newClassName[1].charCodeAt(0) - 65;//65 is the first ASCII letter
+    var position = getPositionFromClassName(newClassName);
     var barChart = barChartArray[position];
     var numerOfStudent = totalNumberOfStudent(newClassName);
     barChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
@@ -1792,6 +1797,13 @@ function createPieChart(nomeClasse, settingClasse) {
     pieChartArray.push(pieChart);
 }
 
+function populateArrayClassName(classList) {
+    for (var i = 0; i < classList.length; i++) {
+        classNameArray.push(classList[i].nome);
+    }
+}
+
+
 /**
  *
  * @param nomeClasse
@@ -1954,6 +1966,7 @@ function generatePage(data) {
     handleCheckBoxNazionalita();
     handleCheckBoxDesiderata();
     handleCheckBoxBocciati();
+    populateArrayClassName(listaClassi);
     var containerBoxCLasses = $('#selezioneClassi');
 
     //handle history click
