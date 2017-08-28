@@ -70,6 +70,43 @@ module.exports = {
 
     },
 
+    deleteClassiComposte: function (scuola, classeFutura, annoScolastico, callback) {
+        connection.query("DELETE FROM classi_composte WHERE classe IN (SELECT id from classi WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?)", [annoScolastico, scuola, classeFutura], function (err, rows) {
+            if(err){
+                console.log(err);
+            }else{
+                connection.query("DELETE FROM history WHERE classe_precedente IN (SELECT id from classi WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?)", [annoScolastico, scuola, classeFutura], function (err, rows) {
+                    if(err){
+                        console.log(err);
+                    }
+                });
+                connection.query("DELETE FROM classi WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?", [annoScolastico, scuola, classeFutura], function (err, rows) {
+                    if(err)
+                        console.log(err);
+                    else{
+                        callback(err,"ok");
+                    }
+                });
+            }
+        })
+    },
+
+    deleteStudenti: function (scuola, classeFutura, annoScolastico, callback) {
+
+        module.exports.deleteClassiComposte(scuola,classeFutura,annoScolastico, function (err, ris) {
+           if(ris === "ok"){
+               connection.query("DELETE FROM alunni WHERE anno_scolastico = ? AND scuola = ? AND classe_futura = ?", [annoScolastico, scuola, classeFutura], function (err, rows) {
+                   if (err) {
+                       console.log(err);
+                   } else {
+                       callback(err,"ok");
+                   }
+               });
+           }
+        });
+
+    },
+
 
     getIdAlunnoByCf: function (cf, annoScolastico, classeFutura, callback) {
         connection.query("SELECT id FROM alunni WHERE cf = ? AND anno_scolastico = ? AND classe_futura = ?", [cf, annoScolastico, classeFutura], function (err, row) {
@@ -461,7 +498,6 @@ module.exports = {
             callback(err, rows);
         });
 
-        console.log(ris.sql);
     },
 
     getNumberGirl: function (scuola, classe, callback) {
@@ -627,7 +663,7 @@ module.exports = {
 
     getStudentsFromSpecifiYear: function (scuola, classeFutura, annoScolastico, callback) {
 
-        connection.query("SELECT cognome,nome,matricola,cf,sesso,data_di_nascita,cap,nazionalita,legge_107,legge_104, classe_precedente, scelta_indirizzo, voto FROM alunni where scuola = ? and classe_futura = ? and anno_scolastico = ?", [scuola, classeFutura, annoScolastico], function (err, rows) {
+        connection.query("SELECT cognome,nome,matricola,cf, desiderata, sesso,data_di_nascita,cap,nazionalita,legge_107,legge_104, classe_precedente, scelta_indirizzo, voto FROM alunni where scuola = ? and classe_futura = ? and anno_scolastico = ?", [scuola, classeFutura, annoScolastico], function (err, rows) {
             callback(err, rows);
         });
     },

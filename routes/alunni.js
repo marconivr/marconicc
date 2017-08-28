@@ -6,7 +6,9 @@
 const query = require('./../query/query.js');
 const csv_post = require("csv");
 const middleware = require('./middleware/middleware');
-const newAlg = require("./new-algorithm.js");
+
+const algoritmo = require("./algoritmo/main.js");
+
 const async = require('async');
 const csv = require('express-csv');
 const nodeExcel = require('excel-export');
@@ -19,7 +21,6 @@ const upload = multer({ dest: 'files/' });
 
 
 module.exports = function (app) {
-
 
 
     app.get(endpoint.alunni.uploadAlunniCsv, function (req, res) {
@@ -449,7 +450,7 @@ module.exports = function (app) {
         const classeFutura = req.query.classeFutura;
         const annoScolastico = req.query.annoScolastico;
 
-        newAlg.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
+        algoritmo.generaClassiPrima(annoScolastico, scuola, classeFutura, function (classi) {
 
             //noinspection JSAnnotator
             let wrapper = {
@@ -508,6 +509,38 @@ module.exports = function (app) {
         });
     });
 
+    app.get(endpoint.alunni.eliminaClassiCreate, middleware.isLoggedIn, function (req, res) {
+        const scuola = 0//req.user.id_scuola;
+        const classeFutura = "PRIMA"//req.body.classeFutura;
+        const annoScolastico = "2017-2018"//req.body.annoScolastico;
+
+        query.deleteClassiComposte(scuola, classeFutura, annoScolastico, function (err, ris) {
+            if(err){
+                res.send(err);
+            }else{
+                res.send("ok");
+            }
+        });
+
+
+    });
+
+    app.get(endpoint.alunni.eliminaStudenti, middleware.isLoggedIn, function (req, res) {
+        const scuola = 0//req.user.id_scuola;
+        const classeFutura = "PRIMA"//req.body.classeFutura;
+        const annoScolastico = "2017-2018"//req.body.annoScolastico;
+
+        query.deleteStudenti(scuola, classeFutura, annoScolastico, function (err, ris) {
+            if(err){
+                res.send(err);
+            }else{
+                res.send("ok");
+            }
+        });
+
+
+    });
+
     app.get(endpoint.alunni.getHistory, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
         const classeFutura = req.body.classeFutura;
@@ -523,7 +556,7 @@ module.exports = function (app) {
             }
             else {
 
-                var history = _.groupBy(results, function (o) {
+                let history = _.groupBy(results, function (o) {
                     return o.timestamp.split(" ")[0];
                 });
 

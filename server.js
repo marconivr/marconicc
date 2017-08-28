@@ -1,13 +1,13 @@
 // imposto vari moduli
-var express  = require('express');
-var session  = require('express-session');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
-var app = express();
-var port = 8080;
-var passport = require('passport');
-var flash = require('connect-flash');
+const express  = require('express');
+const session  = require('express-session');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const app = express();
+const port = 8080;
+const passport = require('passport');
+const flash = require('connect-flash');
 const https = require('https');
 const fs = require('fs');
 const middleware = require('./routes/middleware/middleware');
@@ -17,8 +17,6 @@ const path = require('path');
 
 // configurazione passport
 require('./config/passport')(passport);
-
-
 
 
 // settaggi express
