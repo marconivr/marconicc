@@ -263,7 +263,7 @@ function updateChartPie(className) {
 function updateChartBar(newClassName) {
     //json voti di questa classe
     var jsonVoti = numerOfVotiOfClass(newClassName);
-    var position = getPositionFromClassName(newClassName);
+    var position = getPositionFromClassName(newClassName); //work
     var barChart = barChartArray[position];
     var numerOfStudent = totalNumberOfStudent(newClassName);
     barChart.data.datasets[0].data[0] = approxNum((jsonVoti[6] / numerOfStudent) * 100);
