@@ -2,7 +2,7 @@ cd composizione_classi
 
 -INSTALLAZIONE
 npm install
------
+------
 
 cd public
 bower install
