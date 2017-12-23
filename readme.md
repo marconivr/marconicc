@@ -1,7 +1,5 @@
 # Manuale tecnico marconiCC
-
-[TOC]
-
+ [guarda il risultato](https://vimeo.com/218364343)
 ## Prerequisiti
 ### Server
 
