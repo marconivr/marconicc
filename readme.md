@@ -10,3 +10,4 @@ bower install
 -LANCIARE
 creare il db su mysql,copiando l'sql in script->composizione_classi.sql
 node server.js  (nella directory composizione_classi)
+prova
