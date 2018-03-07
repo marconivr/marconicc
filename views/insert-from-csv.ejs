@@ -19,7 +19,7 @@
         <div class="ui small label" id="csv-studenti">
             Nessun file selezionato
         </div>
-        <button class="ui green button tiny" type="submit">Send</button>
+        <button id="send-file" class="ui green button tiny" type="submit">Send</button>
     </form>
     </div>
 </div>
@@ -43,11 +43,20 @@
     </form>
     </div>
 </div>
+<div id="alert" class="alertify-notifier ajs-bottom ajs-right"></div>
 <% include sidebar-stop.ejs %>
 <!--personal script for specific page -->
 
 
 <script>
+
+    $("#send-file").on("click", function (e) {
+        
+            var writeHTML = "";
+            writeHTML += '<div class="ajs-message ajs-success ajs-visible">Caricamento riuscito</div>';
+            document.getElementById("alert").innerHTML = writeHTML;
+        
+    });
 
     $("#upload").on("click", function (e) {
         e.preventDefault();
