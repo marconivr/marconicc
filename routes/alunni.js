@@ -35,27 +35,32 @@ module.exports = function (app) {
     app.post(endpoint.alunni.uploadAlunniCsv, upload.single('csv'), middleware.isLoggedIn, function (req, res) {
 
         const data = req.file;
-        const pathFile = data.path;
-        const scuola = req.user.id_scuola;
-        const utente = req.user.id;
 
-        csv_post().from.path(pathFile, {
-            delimiter: ";",
-            escape: ''
+        if(data === undefined){
+          res.redirect(endpoint.alunni.uploadAlunniCsv);
+        } else {
+          const pathFile = data.path;
+          const scuola = req.user.id_scuola;
+          const utente = req.user.id;
 
-        }).on("record", function (row, index) {
+          csv_post().from.path(pathFile, {
+              delimiter: ";",
+              escape: ''
 
-                query.insertRecordFromCSV(row,scuola,utente);
+          }).on("record", function (row, index) {
 
-        }).on("end", function () {
+                  query.insertRecordFromCSV(row,scuola,utente);
 
-            console.log("LETTURA FILE RIUSCITA");
-            res.redirect(endpoint.alunni.studenti);
+          }).on("end", function () {
 
-        }).on("error", function (error) {
+              console.log("LETTURA FILE RIUSCITA");
+              res.redirect(endpoint.alunni.studenti);
 
-            console.error(error);
-        });
+          }).on("error", function (error) {
+
+              console.error(error);
+          });
+        }
     });
 
     app.post(endpoint.alunni.uploadAlunniRimandatiSettembre, upload.single('csv'), middleware.isLoggedIn, function (req, res) {
@@ -97,7 +102,7 @@ module.exports = function (app) {
     });
 
     app.get(endpoint.alunni.updateTag, middleware.isLoggedIn, middleware.restrictTo([0, 1]), function (req, res) {
-        
+
             query.updateTagFromCF(function (err, results) {
                 if (err)
                     throw err;
@@ -118,7 +123,7 @@ module.exports = function (app) {
         });
 
     });
-    
+
 
     app.get(endpoint.alunni.allStudents, middleware.isLoggedIn, function (req, res) {
         const scuola = req.user.id_scuola;
@@ -547,7 +552,7 @@ module.exports = function (app) {
         const annoScolastico = req.body.annoScolastico;
 
         query.getHistory(scuola, function (err, results) {
-            if (err) { 
+            if (err) {
                 console.log(err);
                 logger.error("getHistory - errore ", err);
                 res.send({

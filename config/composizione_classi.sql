@@ -107,7 +107,7 @@ CREATE TABLE `configurazione` (
 --
 
 INSERT INTO `configurazione` (`id`, `attiva`, `scuola`, `anno_scolastico`, `data`, `nome`, `min_alunni`, `max_alunni`, `gruppo_femmine`, `gruppo_cap`, `gruppo_nazionalita`, `nazionalita_per_classe`, `numero_alunni_con_104`, `classe`) VALUES
-(1, 1, 0, '2017-2018', '2017-05-09', 'Default config', 25, 28, 4, 4, 4, 3, 23, 'PRIMA');
+(1, 1, 0, '2017-2018', '2017-05-09', 'Default config', 25, 30, 4, 2, 3, 5, 30, 'PRIMA');
 
 -- --------------------------------------------------------
 
@@ -520,7 +520,7 @@ CREATE TABLE `configurazione` (
 --
 
 INSERT INTO `configurazione` (`id`, `attiva`, `scuola`, `anno_scolastico`, `data`, `nome`, `min_alunni`, `max_alunni`, `gruppo_femmine`, `gruppo_cap`, `gruppo_nazionalita`, `nazionalita_per_classe`, `numero_alunni_con_104`, `classe`) VALUES
-(1, 1, 0, '2017-2018', '2017-05-09', 'Default config', 25, 28, 4, 4, 4, 3, 23, 'PRIMA');
+(1, 1, 0, '2017-2018', '2018-3-14', 'Config', 25, 30, 4, 2, 3, 5, 30, 'PRIMA');
 
 -- --------------------------------------------------------
 
