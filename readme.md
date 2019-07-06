@@ -12,7 +12,7 @@
 ### Creazione Database e utente
 	Nome_Database: composizione_classi
 	Utente: composizioneclassi
-	Password: 5BFF9B615FBEDCD197BFB9371BB5A7D1
+	Password: 
 
 ### Creazione struttura del database
 1. Aprire il file **new-db(unstable).sql** contenuto nella cartella **composizioneclassi/config/**
@@ -79,8 +79,8 @@ Esempio di record del csv:
 
 
 ## Cambiare la porta dell'applicativo
-La porta di marconiCC è la **8080**
+La porta di marconiCC è la ****
 
 1. Con un qualsiasi editor aprire il file **server.js** che si trova nella cartella **/composizioneclasse/**
-2. Cambiare il numero di questa istruzione *var port = 8080;*
+2. Cambiare il numero di questa istruzione *var port = ;*
 3. Salvare il file
